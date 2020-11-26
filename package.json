@@ -1,0 +1,32 @@
+{
+  "name": "sparkle",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "lerna run --parallel start",
+    "build": "lerna run build",
+    "build:watch": "lerna run --parallel build:watch",
+    "build:types": "lerna run build:types",
+    "build:types:watch": "lerna run --parallel build:types:watch"
+  },
+  "keywords": [
+    "create-babel-typescript-monorepo"
+  ],
+  "author": "",
+  "license": "ISC",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@andersdjohnson/tsconfig": "^1.0.1",
+    "@babel/cli": "^7.12.8",
+    "@babel/core": "^7.12.9",
+    "@babel/node": "^7.12.6",
+    "@babel/plugin-transform-runtime": "^7.12.1",
+    "@babel/preset-env": "^7.12.7",
+    "@babel/preset-typescript": "^7.12.7",
+    "lerna": "^3.22.1",
+    "typescript": "^4.1.2"
+  }
+}

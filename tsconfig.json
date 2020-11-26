@@ -1,0 +1,6 @@
+{
+  "extends": "@andersdjohnson/tsconfig",
+  "compilerOptions": {
+    "target": "esnext"
+  }
+}

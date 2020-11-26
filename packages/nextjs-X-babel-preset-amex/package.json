@@ -1,0 +1,25 @@
+{
+  "name": "nextjs-X-babel-preset-amex",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "node .",
+    "build": "babel --root-mode upward -x .ts,.tsx src --out-dir dist",
+    "build:watch": "npm run build -- --watch",
+    "build:types": "tsc --emitDeclarationOnly",
+    "build:types:watch": "npm run build:types -- --watch"
+  },
+  "keywords": [
+    "create-babel-typescript-monorepo"
+  ],
+  "author": "",
+  "license": "ISC",
+  "files": [
+    "dist"
+  ],
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "@babel/runtime": "^7.12.5"
+  }
+}
