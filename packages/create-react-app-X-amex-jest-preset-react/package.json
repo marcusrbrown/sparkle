@@ -1,7 +1,8 @@
 {
-  "name": "create-react-app-X-amex-jest-preset-react",
+  "private": true,
+  "name": "create-react-app-x-amex-jest-preset-react",
   "version": "1.0.0",
-  "description": "",
+  "description": "Create React App application configured with amex-jest-preset-react.",
   "main": "dist/index.js",
   "scripts": {
     "start": "node .",
@@ -13,8 +14,8 @@
   "keywords": [
     "create-babel-typescript-monorepo"
   ],
-  "author": "",
-  "license": "ISC",
+  "author": "Marcus R. Brown <contact@marcusrbrown.com>",
+  "license": "MIT",
   "files": [
     "dist"
   ],
