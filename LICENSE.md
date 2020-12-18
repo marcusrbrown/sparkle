@@ -1,4 +1,4 @@
-# The MIT License ([MIT])
+# The MIT License
 
 > Copyright (c) 2020 Marcus R. Brown <<contact@marcusrbrown.com>>
 
