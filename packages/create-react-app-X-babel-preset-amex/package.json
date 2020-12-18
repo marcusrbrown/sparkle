@@ -1,7 +1,8 @@
 {
-  "name": "create-react-app-X-babel-preset-amex",
+  "private": true,
+  "name": "create-react-app-x-babel-preset-amex",
   "version": "1.0.0",
-  "description": "",
+  "description": "Create React App application configured with babel-preset-amex.",
   "main": "dist/index.js",
   "scripts": {
     "start": "node .",
@@ -13,8 +14,8 @@
   "keywords": [
     "create-babel-typescript-monorepo"
   ],
-  "author": "",
-  "license": "ISC",
+  "author": "Marcus R. Brown <contact@marcusrbrown.com>",
+  "license": "MIT",
   "files": [
     "dist"
   ],
