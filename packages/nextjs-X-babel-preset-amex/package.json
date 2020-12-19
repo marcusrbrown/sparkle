@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "nextjs-x-babel-preset-amex",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "Next.js application configured with babel-preset-amex.",
   "main": "dist/index.js",
   "scripts": {

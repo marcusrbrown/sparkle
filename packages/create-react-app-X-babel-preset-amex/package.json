@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "create-react-app-x-babel-preset-amex",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "Create React App application configured with babel-preset-amex.",
   "main": "dist/index.js",
   "scripts": {

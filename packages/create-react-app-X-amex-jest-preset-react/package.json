@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "create-react-app-x-amex-jest-preset-react",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "Create React App application configured with amex-jest-preset-react.",
   "main": "dist/index.js",
   "scripts": {
