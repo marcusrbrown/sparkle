@@ -1,6 +1,5 @@
 {
   "name": "sparkle",
-  "version": "1.0.0",
   "description": "TypeScript playground.",
   "scripts": {
     "start": "lerna run --parallel start",
