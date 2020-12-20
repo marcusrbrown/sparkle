@@ -6,7 +6,8 @@
     "build": "lerna run build",
     "build:watch": "lerna run --parallel build:watch",
     "build:types": "lerna run build:types",
-    "build:types:watch": "lerna run --parallel build:types:watch"
+    "build:types:watch": "lerna run --parallel build:types:watch",
+    "prepare": "install-git-lfs"
   },
   "keywords": [
     "create-babel-typescript-monorepo"
@@ -15,7 +16,8 @@
   "license": "MIT",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "scripts"
   ],
   "devDependencies": {
     "@andersdjohnson/tsconfig": "^1.0.1",
@@ -28,5 +30,8 @@
     "lerna": "^3.22.1",
     "markdownlint": "^0.22.0",
     "typescript": "^4.1.2"
+  },
+  "dependencies": {
+    "scripts": "*"
   }
 }
