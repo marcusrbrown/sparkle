@@ -25,7 +25,7 @@
     "@babel/core": "7.15.5",
     "@babel/node": "7.15.4",
     "@babel/plugin-transform-runtime": "7.15.0",
-    "@babel/preset-env": "7.15.4",
+    "@babel/preset-env": "7.15.6",
     "@babel/preset-typescript": "7.15.0",
     "lerna": "3.22.1",
     "markdownlint": "0.24.0",
