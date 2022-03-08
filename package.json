@@ -29,7 +29,7 @@
     "@babel/preset-typescript": "7.16.7",
     "lerna": "3.22.1",
     "markdownlint": "0.25.1",
-    "typescript": "4.5.5"
+    "typescript": "4.6.2"
   },
   "dependencies": {
     "scripts": "*"
