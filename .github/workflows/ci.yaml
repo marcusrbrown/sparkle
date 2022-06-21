@@ -1,6 +1,10 @@
 name: ci
 
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+    branches: [main, 'renovate/**']
+  pull_request:
+    branches: [main]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -8,25 +12,18 @@ concurrency:
 
 env:
   FORCE_COLOR: 3
-  LOG_LEVEL: debug
+  NODE_VERSION: 16
 
 jobs:
-  lint-renovate:
+  build:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-
-    strategy:
-      matrix:
-        file:
-          - default
-          - onboarding
-          - personal
-          # - .github/renovate   # is validated by `renovate` during loading for each preset.
-    env:
-      RENOVATE_CONFIG_FILE: ${{ matrix.file }}.json
-
     steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3.0.2
-
-      - name: Validating ${{ env.RENOVATE_CONFIG_FILE }}
-        run: npx -p renovate renovate-config-validator
+      - name: Checkout
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3.0.2
+      - name: Setup Node ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@eeb10cff27034e7acf239c5d29f62154018672fd # tag=v3.3.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - run: yarn build
