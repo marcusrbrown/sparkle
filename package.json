@@ -2,11 +2,11 @@
   "name": "sparkle",
   "description": "TypeScript playground.",
   "scripts": {
-    "start": "lerna run --parallel start",
-    "build": "lerna run build",
-    "build:watch": "lerna run --parallel build:watch",
-    "build:types": "lerna run build:types",
-    "build:types:watch": "lerna run --parallel build:types:watch",
+    "start": "pnpm -r run --parallel start",
+    "build": "pnpm build:types && pnpm -r run --filter=./packages/** build",
+    "build:watch": "pnpm -r run --parallel build:watch",
+    "build:types": "pnpm -r run --filter=./packages/** build:types",
+    "build:types:watch": "pnpm -r run --parallel build:types:watch",
     "prepare": "install-git-lfs"
   },
   "keywords": [
@@ -15,10 +15,11 @@
   "author": "Marcus R. Brown <contact@marcusrbrown.com>",
   "license": "MIT",
   "private": true,
-  "workspaces": [
-    "packages/*",
-    "scripts"
-  ],
+  "packageManager": "pnpm@7.5.2",
+  "engines": {
+    "node": ">=16.16.0",
+    "pnpm": ">=7.5.2"
+  },
   "devDependencies": {
     "@andersdjohnson/tsconfig": "1.0.1",
     "@babel/cli": "7.18.6",
@@ -27,11 +28,10 @@
     "@babel/plugin-transform-runtime": "7.18.6",
     "@babel/preset-env": "7.18.6",
     "@babel/preset-typescript": "7.18.6",
-    "lerna": "5.1.8",
     "markdownlint": "0.26.0",
     "typescript": "4.7.4"
   },
   "dependencies": {
-    "scripts": "*"
+    "scripts": "workspace:*"
   }
 }
