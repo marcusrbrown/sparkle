@@ -6,8 +6,7 @@
     "build": "pnpm build:types && pnpm -r run --filter=./packages/** build",
     "build:watch": "pnpm -r run --parallel build:watch",
     "build:types": "pnpm -r run --filter=./packages/** build:types",
-    "build:types:watch": "pnpm -r run --parallel build:types:watch",
-    "prepare": "install-git-lfs"
+    "build:types:watch": "pnpm -r run --parallel build:types:watch"
   },
   "keywords": [
     "create-babel-typescript-monorepo"
