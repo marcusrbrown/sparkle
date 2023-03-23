@@ -19,6 +19,9 @@
     "node": ">=16.16.0",
     "pnpm": ">=7.5.2"
   },
+  "publishConfig": {
+    "linkDirectory": true
+  },
   "devDependencies": {
     "@andersdjohnson/tsconfig": "1.0.1",
     "@babel/cli": "7.21.0",
