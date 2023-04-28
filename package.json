@@ -24,12 +24,12 @@
   },
   "devDependencies": {
     "@andersdjohnson/tsconfig": "1.0.1",
-    "@babel/cli": "7.21.0",
-    "@babel/core": "7.21.4",
+    "@babel/cli": "7.21.5",
+    "@babel/core": "7.21.5",
     "@babel/node": "7.20.7",
     "@babel/plugin-transform-runtime": "7.21.4",
-    "@babel/preset-env": "7.21.4",
-    "@babel/preset-typescript": "7.21.4",
+    "@babel/preset-env": "7.21.5",
+    "@babel/preset-typescript": "7.21.5",
     "markdownlint": "0.28.2",
     "typescript": "5.0.4"
   },
