@@ -30,7 +30,7 @@
     "@babel/plugin-transform-runtime": "7.21.4",
     "@babel/preset-env": "7.21.4",
     "@babel/preset-typescript": "7.21.4",
-    "markdownlint": "0.28.1",
+    "markdownlint": "0.28.2",
     "typescript": "5.0.4"
   },
   "dependencies": {
