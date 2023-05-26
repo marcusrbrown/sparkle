@@ -25,10 +25,10 @@
   "devDependencies": {
     "@andersdjohnson/tsconfig": "1.0.1",
     "@babel/cli": "7.21.5",
-    "@babel/core": "7.21.8",
-    "@babel/node": "7.20.7",
-    "@babel/plugin-transform-runtime": "7.21.4",
-    "@babel/preset-env": "7.21.5",
+    "@babel/core": "7.22.1",
+    "@babel/node": "7.22.1",
+    "@babel/plugin-transform-runtime": "7.22.2",
+    "@babel/preset-env": "7.22.2",
     "@babel/preset-typescript": "7.21.5",
     "markdownlint": "0.28.2",
     "typescript": "5.0.4"
