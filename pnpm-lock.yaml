@@ -16,8 +16,8 @@ importers:
         specifier: 1.0.1
         version: 1.0.1
       '@babel/cli':
-        specifier: 7.21.5
-        version: 7.21.5(@babel/core@7.22.5)
+        specifier: 7.22.5
+        version: 7.22.5(@babel/core@7.22.5)
       '@babel/core':
         specifier: 7.22.5
         version: 7.22.5
@@ -31,8 +31,8 @@ importers:
         specifier: 7.22.5
         version: 7.22.5(@babel/core@7.22.5)
       '@babel/preset-typescript':
-        specifier: 7.21.5
-        version: 7.21.5(@babel/core@7.22.5)
+        specifier: 7.22.5
+        version: 7.22.5(@babel/core@7.22.5)
       markdownlint:
         specifier: 0.29.0
         version: 0.29.0
@@ -117,8 +117,8 @@ packages:
     resolution: {integrity: sha512-AkxzPdjL4+PJgbLgfQxgrC+8wkIThzVT8otdbB///PzL73lGrqg0dmlxVPIlOWMRqChv7Gg8ObpLbytnWxzgTg==}
     dev: true
 
-  /@babel/cli@7.21.5(@babel/core@7.22.5):
-    resolution: {integrity: sha512-TOKytQ9uQW9c4np8F+P7ZfPINy5Kv+pizDIUwSVH8X5zHgYHV4AA8HE5LA450xXeu4jEfmUckTYvv1I4S26M/g==}
+  /@babel/cli@7.22.5(@babel/core@7.22.5):
+    resolution: {integrity: sha512-N5d7MjzwsQ2wppwjhrsicVDhJSqF9labEP/swYiHhio4Ca2XjEehpgPmerjnLQl7BPE59BLud0PTWGYwqFl/cQ==}
     engines: {node: '>=6.9.0'}
     hasBin: true
     peerDependencies:
@@ -567,8 +567,8 @@ packages:
       '@babel/helper-plugin-utils': 7.22.5
     dev: true
 
-  /@babel/plugin-syntax-jsx@7.21.4(@babel/core@7.22.5):
-    resolution: {integrity: sha512-5hewiLct5OKyh6PLKEYaFclcqtIgCb6bmELouxjF6up5q3Sov7rOayW4RwhbaBL0dit8rA80GNfY+UuDp2mBbQ==}
+  /@babel/plugin-syntax-jsx@7.22.5(@babel/core@7.22.5):
+    resolution: {integrity: sha512-gvyP4hZrgrs/wWMaocvxZ44Hw0b3W8Pe+cMxc8V1ULQ07oh8VNbIRaoD1LRZVTvD+0nieDKjfgKg89sD7rrKrg==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
@@ -651,8 +651,8 @@ packages:
       '@babel/helper-plugin-utils': 7.22.5
     dev: true
 
-  /@babel/plugin-syntax-typescript@7.20.0(@babel/core@7.22.5):
-    resolution: {integrity: sha512-rd9TkG+u1CExzS4SM1BlMEhMXwFLKVjOAFFCDx9PbX5ycJWDoWMcwdJH9RhkPu1dOgn5TrxLot/Gx6lWFuAUNQ==}
+  /@babel/plugin-syntax-typescript@7.22.5(@babel/core@7.22.5):
+    resolution: {integrity: sha512-1mS2o03i7t1c6VzH6fdQ3OA8tcEIxwG18zIPRp+UY1Ihv6W+XZzBCVxExF9upussPXJ0xE9XRHwMoNs1ep/nRQ==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
@@ -1222,8 +1222,8 @@ packages:
       '@babel/helper-plugin-utils': 7.22.5
     dev: true
 
-  /@babel/plugin-transform-typescript@7.21.3(@babel/core@7.22.5):
-    resolution: {integrity: sha512-RQxPz6Iqt8T0uw/WsJNReuBpWpBqs/n7mNo18sKLoTbMp+UrEekhH+pKSVC7gWz+DNjo9gryfV8YzCiT45RgMw==}
+  /@babel/plugin-transform-typescript@7.22.5(@babel/core@7.22.5):
+    resolution: {integrity: sha512-SMubA9S7Cb5sGSFFUlqxyClTA9zWJ8qGQrppNUm05LtFuN1ELRFNndkix4zUJrC9F+YivWwa1dHMSyo0e0N9dA==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
@@ -1232,7 +1232,7 @@ packages:
       '@babel/helper-annotate-as-pure': 7.22.5
       '@babel/helper-create-class-features-plugin': 7.22.5(@babel/core@7.22.5)
       '@babel/helper-plugin-utils': 7.22.5
-      '@babel/plugin-syntax-typescript': 7.20.0(@babel/core@7.22.5)
+      '@babel/plugin-syntax-typescript': 7.22.5(@babel/core@7.22.5)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -1384,8 +1384,8 @@ packages:
       esutils: 2.0.3
     dev: true
 
-  /@babel/preset-typescript@7.21.5(@babel/core@7.22.5):
-    resolution: {integrity: sha512-iqe3sETat5EOrORXiQ6rWfoOg2y68Cs75B9wNxdPW4kixJxh7aXQE1KPdWLDniC24T/6dSnguF33W9j/ZZQcmA==}
+  /@babel/preset-typescript@7.22.5(@babel/core@7.22.5):
+    resolution: {integrity: sha512-YbPaal9LxztSGhmndR46FmAbkJ/1fAsw293tSU+I5E5h+cnJ3d4GTwyUgGYmOXJYdGA+uNePle4qbaRzj2NISQ==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
@@ -1393,9 +1393,9 @@ packages:
       '@babel/core': 7.22.5
       '@babel/helper-plugin-utils': 7.22.5
       '@babel/helper-validator-option': 7.22.5
-      '@babel/plugin-syntax-jsx': 7.21.4(@babel/core@7.22.5)
+      '@babel/plugin-syntax-jsx': 7.22.5(@babel/core@7.22.5)
       '@babel/plugin-transform-modules-commonjs': 7.22.5(@babel/core@7.22.5)
-      '@babel/plugin-transform-typescript': 7.21.3(@babel/core@7.22.5)
+      '@babel/plugin-transform-typescript': 7.22.5(@babel/core@7.22.5)
     transitivePeerDependencies:
       - supports-color
     dev: true
