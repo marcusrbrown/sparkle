@@ -29,7 +29,7 @@
     "@babel/node": "7.22.19",
     "@babel/plugin-transform-runtime": "7.22.15",
     "@babel/preset-env": "7.22.20",
-    "@babel/preset-typescript": "7.23.0",
+    "@babel/preset-typescript": "7.23.2",
     "markdownlint": "0.31.1",
     "typescript": "5.2.2"
   },
