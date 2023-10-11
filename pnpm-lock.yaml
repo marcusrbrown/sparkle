@@ -31,8 +31,8 @@ importers:
         specifier: 7.22.20
         version: 7.22.20(@babel/core@7.23.0)
       '@babel/preset-typescript':
-        specifier: 7.23.0
-        version: 7.23.0(@babel/core@7.23.0)
+        specifier: 7.23.2
+        version: 7.23.2(@babel/core@7.23.0)
       markdownlint:
         specifier: 0.31.1
         version: 0.31.1
@@ -43,38 +43,38 @@ importers:
   packages/create-react-app-X-amex-jest-preset-react:
     dependencies:
       '@babel/runtime':
-        specifier: 7.23.1
-        version: 7.23.1
+        specifier: 7.23.2
+        version: 7.23.2
 
   packages/create-react-app-X-babel-preset-amex:
     dependencies:
       '@babel/runtime':
-        specifier: 7.23.1
-        version: 7.23.1
+        specifier: 7.23.2
+        version: 7.23.2
 
   packages/create-react-app-X-eslint-config-amex:
     dependencies:
       '@babel/runtime':
-        specifier: 7.23.1
-        version: 7.23.1
+        specifier: 7.23.2
+        version: 7.23.2
 
   packages/nextjs-X-amex-jest-preset-react:
     dependencies:
       '@babel/runtime':
-        specifier: 7.23.1
-        version: 7.23.1
+        specifier: 7.23.2
+        version: 7.23.2
 
   packages/nextjs-X-babel-preset-amex:
     dependencies:
       '@babel/runtime':
-        specifier: 7.23.1
-        version: 7.23.1
+        specifier: 7.23.2
+        version: 7.23.2
 
   packages/nextjs-X-eslint-config-amex:
     dependencies:
       '@babel/runtime':
-        specifier: 7.23.1
-        version: 7.23.1
+        specifier: 7.23.2
+        version: 7.23.2
 
   packages/vite-react-app:
     dependencies:
@@ -1330,8 +1330,8 @@ packages:
       esutils: 2.0.3
     dev: true
 
-  /@babel/preset-typescript@7.23.0(@babel/core@7.23.0):
-    resolution: {integrity: sha512-6P6VVa/NM/VlAYj5s2Aq/gdVg8FSENCg3wlZ6Qau9AcPaoF5LbN1nyGlR9DTRIw9PpxI94e+ReydsJHcjwAweg==}
+  /@babel/preset-typescript@7.23.2(@babel/core@7.23.0):
+    resolution: {integrity: sha512-u4UJc1XsS1GhIGteM8rnGiIvf9rJpiVgMEeCnwlLA7WJPC+jcXWJAGxYmeqs5hOZD8BbAfnV5ezBOxQbb4OUxA==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
@@ -1362,8 +1362,8 @@ packages:
     resolution: {integrity: sha512-x/rqGMdzj+fWZvCOYForTghzbtqPDZ5gPwaoNGHdgDfF2QA/XZbCBp4Moo5scrkAMPhB7z26XM/AaHuIJdgauA==}
     dev: true
 
-  /@babel/runtime@7.23.1:
-    resolution: {integrity: sha512-hC2v6p8ZSI/W0HUzh3V8C5g+NwSKzKPtJwSpTjwl0o297GP9+ZLQSkdvHz46CM3LqyoXxq+5G9komY+eSqSO0g==}
+  /@babel/runtime@7.23.2:
+    resolution: {integrity: sha512-mM8eg4yl5D6i3lu2QKPuPH4FArvJ8KhTofbE7jwMUv9KX5mBvwPAqnV3MlyBNqdp9RyRKP6Yck8TrfYrPvX3bg==}
     engines: {node: '>=6.9.0'}
     dependencies:
       regenerator-runtime: 0.14.0
@@ -2674,7 +2674,7 @@ packages:
   /regenerator-transform@0.15.2:
     resolution: {integrity: sha512-hfMp2BoF0qOk3uc5V20ALGDS2ddjQaLrdl7xrGXvAIow7qeWRM2VA2HuCHkUKk9slq3VwEwLNK3DFBqDfPGYtg==}
     dependencies:
-      '@babel/runtime': 7.23.1
+      '@babel/runtime': 7.23.2
     dev: true
 
   /regexp.prototype.flags@1.4.3:
