@@ -25,7 +25,7 @@
   "devDependencies": {
     "@andersdjohnson/tsconfig": "1.0.1",
     "@babel/cli": "7.23.0",
-    "@babel/core": "7.23.0",
+    "@babel/core": "7.23.2",
     "@babel/node": "7.22.19",
     "@babel/plugin-transform-runtime": "7.22.15",
     "@babel/preset-env": "7.22.20",
