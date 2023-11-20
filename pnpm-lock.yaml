@@ -16,8 +16,8 @@ importers:
         specifier: 1.0.1
         version: 1.0.1
       '@babel/cli':
-        specifier: 7.23.0
-        version: 7.23.0(@babel/core@7.23.3)
+        specifier: 7.23.4
+        version: 7.23.4(@babel/core@7.23.3)
       '@babel/core':
         specifier: 7.23.3
         version: 7.23.3
@@ -43,38 +43,38 @@ importers:
   packages/create-react-app-X-amex-jest-preset-react:
     dependencies:
       '@babel/runtime':
-        specifier: 7.23.2
-        version: 7.23.2
+        specifier: 7.23.4
+        version: 7.23.4
 
   packages/create-react-app-X-babel-preset-amex:
     dependencies:
       '@babel/runtime':
-        specifier: 7.23.2
-        version: 7.23.2
+        specifier: 7.23.4
+        version: 7.23.4
 
   packages/create-react-app-X-eslint-config-amex:
     dependencies:
       '@babel/runtime':
-        specifier: 7.23.2
-        version: 7.23.2
+        specifier: 7.23.4
+        version: 7.23.4
 
   packages/nextjs-X-amex-jest-preset-react:
     dependencies:
       '@babel/runtime':
-        specifier: 7.23.2
-        version: 7.23.2
+        specifier: 7.23.4
+        version: 7.23.4
 
   packages/nextjs-X-babel-preset-amex:
     dependencies:
       '@babel/runtime':
-        specifier: 7.23.2
-        version: 7.23.2
+        specifier: 7.23.4
+        version: 7.23.4
 
   packages/nextjs-X-eslint-config-amex:
     dependencies:
       '@babel/runtime':
-        specifier: 7.23.2
-        version: 7.23.2
+        specifier: 7.23.4
+        version: 7.23.4
 
   packages/vite-react-app:
     dependencies:
@@ -117,8 +117,8 @@ packages:
     resolution: {integrity: sha512-AkxzPdjL4+PJgbLgfQxgrC+8wkIThzVT8otdbB///PzL73lGrqg0dmlxVPIlOWMRqChv7Gg8ObpLbytnWxzgTg==}
     dev: true
 
-  /@babel/cli@7.23.0(@babel/core@7.23.3):
-    resolution: {integrity: sha512-17E1oSkGk2IwNILM4jtfAvgjt+ohmpfBky8aLerUfYZhiPNg7ca+CRCxZn8QDxwNhV/upsc2VHBCqGFIR+iBfA==}
+  /@babel/cli@7.23.4(@babel/core@7.23.3):
+    resolution: {integrity: sha512-j3luA9xGKCXVyCa5R7lJvOMM+Kc2JEnAEIgz2ggtjQ/j5YUVgfsg/WsG95bbsgq7YLHuiCOzMnoSasuY16qiCw==}
     engines: {node: '>=6.9.0'}
     hasBin: true
     peerDependencies:
@@ -1362,8 +1362,8 @@ packages:
     resolution: {integrity: sha512-x/rqGMdzj+fWZvCOYForTghzbtqPDZ5gPwaoNGHdgDfF2QA/XZbCBp4Moo5scrkAMPhB7z26XM/AaHuIJdgauA==}
     dev: true
 
-  /@babel/runtime@7.23.2:
-    resolution: {integrity: sha512-mM8eg4yl5D6i3lu2QKPuPH4FArvJ8KhTofbE7jwMUv9KX5mBvwPAqnV3MlyBNqdp9RyRKP6Yck8TrfYrPvX3bg==}
+  /@babel/runtime@7.23.4:
+    resolution: {integrity: sha512-2Yv65nlWnWlSpe3fXEyX5i7fx5kIKo4Qbcj+hMO0odwaneFjfXw5fdum+4yL20O0QiaHpia0cYQ9xpNMqrBwHg==}
     engines: {node: '>=6.9.0'}
     dependencies:
       regenerator-runtime: 0.14.0
@@ -2770,7 +2770,7 @@ packages:
   /regenerator-transform@0.15.2:
     resolution: {integrity: sha512-hfMp2BoF0qOk3uc5V20ALGDS2ddjQaLrdl7xrGXvAIow7qeWRM2VA2HuCHkUKk9slq3VwEwLNK3DFBqDfPGYtg==}
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.4
     dev: true
 
   /regexp.prototype.flags@1.4.3:
