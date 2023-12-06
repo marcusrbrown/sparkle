@@ -31,7 +31,7 @@
     "@babel/preset-env": "7.22.20",
     "@babel/preset-typescript": "7.23.3",
     "markdownlint": "0.32.1",
-    "typescript": "5.3.2"
+    "typescript": "5.3.3"
   },
   "dependencies": {
     "scripts": "workspace:*"
