@@ -43,42 +43,6 @@ importers:
         specifier: 5.3.3
         version: 5.3.3
 
-  packages/create-react-app-X-amex-jest-preset-react:
-    dependencies:
-      '@babel/runtime':
-        specifier: 7.23.5
-        version: 7.23.5
-
-  packages/create-react-app-X-babel-preset-amex:
-    dependencies:
-      '@babel/runtime':
-        specifier: 7.23.5
-        version: 7.23.5
-
-  packages/create-react-app-X-eslint-config-amex:
-    dependencies:
-      '@babel/runtime':
-        specifier: 7.23.5
-        version: 7.23.5
-
-  packages/nextjs-X-amex-jest-preset-react:
-    dependencies:
-      '@babel/runtime':
-        specifier: 7.23.5
-        version: 7.23.5
-
-  packages/nextjs-X-babel-preset-amex:
-    dependencies:
-      '@babel/runtime':
-        specifier: 7.23.5
-        version: 7.23.5
-
-  packages/nextjs-X-eslint-config-amex:
-    dependencies:
-      '@babel/runtime':
-        specifier: 7.23.5
-        version: 7.23.5
-
   packages/vite-react-app:
     dependencies:
       react:
@@ -1370,6 +1334,7 @@ packages:
     engines: {node: '>=6.9.0'}
     dependencies:
       regenerator-runtime: 0.14.0
+    dev: true
 
   /@babel/template@7.22.15:
     resolution: {integrity: sha512-QPErUVm4uyJa60rkI73qneDacvdvzxshT3kksGqlGWYdOTIUOwJ7RDUL8sGqslY1uXWSL6xMFKEXDS3ox2uF0w==}
@@ -2775,6 +2740,7 @@ packages:
 
   /regenerator-runtime@0.14.0:
     resolution: {integrity: sha512-srw17NI0TUWHuGa5CFGGmhfNIeja30WMBfbslPNhf6JrqQlLN5gcrvig1oqPxiVaXb0oW0XRKtH6Nngs5lKCIA==}
+    dev: true
 
   /regenerator-transform@0.15.2:
     resolution: {integrity: sha512-hfMp2BoF0qOk3uc5V20ALGDS2ddjQaLrdl7xrGXvAIow7qeWRM2VA2HuCHkUKk9slq3VwEwLNK3DFBqDfPGYtg==}
