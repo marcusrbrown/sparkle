@@ -11,7 +11,7 @@
     "format": "prettier --write ."
   },
   "keywords": [
-    "create-babel-typescript-monorepo"
+    "sparkle"
   ],
   "author": "Marcus R. Brown <contact@marcusrbrown.com>",
   "license": "MIT",
@@ -26,12 +26,6 @@
   },
   "devDependencies": {
     "@andersdjohnson/tsconfig": "1.0.1",
-    "@babel/cli": "7.23.4",
-    "@babel/core": "7.23.5",
-    "@babel/node": "7.22.19",
-    "@babel/plugin-transform-runtime": "7.22.15",
-    "@babel/preset-env": "7.22.20",
-    "@babel/preset-typescript": "7.23.3",
     "markdownlint": "0.32.1",
     "prettier": "3.1.0",
     "typescript": "5.3.3"
