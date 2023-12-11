@@ -43,38 +43,38 @@ importers:
   packages/create-react-app-X-amex-jest-preset-react:
     dependencies:
       '@babel/runtime':
-        specifier: 7.23.5
-        version: 7.23.5
+        specifier: 7.23.6
+        version: 7.23.6
 
   packages/create-react-app-X-babel-preset-amex:
     dependencies:
       '@babel/runtime':
-        specifier: 7.23.5
-        version: 7.23.5
+        specifier: 7.23.6
+        version: 7.23.6
 
   packages/create-react-app-X-eslint-config-amex:
     dependencies:
       '@babel/runtime':
-        specifier: 7.23.5
-        version: 7.23.5
+        specifier: 7.23.6
+        version: 7.23.6
 
   packages/nextjs-X-amex-jest-preset-react:
     dependencies:
       '@babel/runtime':
-        specifier: 7.23.5
-        version: 7.23.5
+        specifier: 7.23.6
+        version: 7.23.6
 
   packages/nextjs-X-babel-preset-amex:
     dependencies:
       '@babel/runtime':
-        specifier: 7.23.5
-        version: 7.23.5
+        specifier: 7.23.6
+        version: 7.23.6
 
   packages/nextjs-X-eslint-config-amex:
     dependencies:
       '@babel/runtime':
-        specifier: 7.23.5
-        version: 7.23.5
+        specifier: 7.23.6
+        version: 7.23.6
 
   packages/vite-react-app:
     dependencies:
@@ -1362,8 +1362,8 @@ packages:
     resolution: {integrity: sha512-x/rqGMdzj+fWZvCOYForTghzbtqPDZ5gPwaoNGHdgDfF2QA/XZbCBp4Moo5scrkAMPhB7z26XM/AaHuIJdgauA==}
     dev: true
 
-  /@babel/runtime@7.23.5:
-    resolution: {integrity: sha512-NdUTHcPe4C99WxPub+K9l9tK5/lV4UXIoaHSYgzco9BCyjKAAwzdBI+wWtYqHt7LJdbo74ZjRPJgzVweq1sz0w==}
+  /@babel/runtime@7.23.6:
+    resolution: {integrity: sha512-zHd0eUrf5GZoOWVCXp6koAKQTfZV07eit6bGPmJgnZdnSAvvZee6zniW2XMF7Cmc4ISOOnPy3QaSiIJGJkVEDQ==}
     engines: {node: '>=6.9.0'}
     dependencies:
       regenerator-runtime: 0.14.0
@@ -2770,7 +2770,7 @@ packages:
   /regenerator-transform@0.15.2:
     resolution: {integrity: sha512-hfMp2BoF0qOk3uc5V20ALGDS2ddjQaLrdl7xrGXvAIow7qeWRM2VA2HuCHkUKk9slq3VwEwLNK3DFBqDfPGYtg==}
     dependencies:
-      '@babel/runtime': 7.23.5
+      '@babel/runtime': 7.23.6
     dev: true
 
   /regexp.prototype.flags@1.4.3:
