@@ -12,9 +12,9 @@ importers:
         specifier: workspace:*
         version: link:scripts
     devDependencies:
-      '@andersdjohnson/tsconfig':
-        specifier: 1.0.1
-        version: 1.0.1
+      '@tsconfig/strictest':
+        specifier: 2.0.2
+        version: 2.0.2
       markdownlint:
         specifier: 0.32.1
         version: 0.32.1
@@ -60,10 +60,6 @@ packages:
     dependencies:
       '@jridgewell/gen-mapping': 0.3.3
       '@jridgewell/trace-mapping': 0.3.20
-    dev: true
-
-  /@andersdjohnson/tsconfig@1.0.1:
-    resolution: {integrity: sha512-AkxzPdjL4+PJgbLgfQxgrC+8wkIThzVT8otdbB///PzL73lGrqg0dmlxVPIlOWMRqChv7Gg8ObpLbytnWxzgTg==}
     dev: true
 
   /@babel/code-frame@7.23.5:
@@ -613,6 +609,10 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /@tsconfig/strictest@2.0.2:
+    resolution: {integrity: sha512-jt4jIsWKvUvuY6adJnQJlb/UR7DdjC8CjHI/OaSQruj2yX9/K6+KOvDt/vD6udqos/FUk5Op66CvYT7TBLYO5Q==}
+    dev: true
 
   /@types/babel__core@7.20.5:
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
