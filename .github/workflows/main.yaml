@@ -1,6 +1,7 @@
-name: ci
+---
+name: main
 
-on:
+'on':
   push:
     branches: [main, 'renovate/**']
   pull_request:
@@ -9,6 +10,9 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.number || github.sha }}
   cancel-in-progress: true
+
+permissions:
+  contents: read
 
 env:
   FORCE_COLOR: 3
@@ -27,4 +31,5 @@ jobs:
           cache: pnpm
           node-version-file: '.node-version'
       - run: pnpm install --frozen-lockfile --strict-peer-dependencies
+      - run: pnpm run check-format
       - run: pnpm run build
