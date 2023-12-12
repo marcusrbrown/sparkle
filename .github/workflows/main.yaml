@@ -1,8 +1,9 @@
-name: ci
+---
+name: main
 
-on:
+'on':
   push:
-    branches: [main, 'renovate/**', 'feat/**', 'fix/**']
+    branches: [main, 'renovate/**']
   pull_request:
   workflow_dispatch:
 
@@ -10,9 +11,11 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.number || github.sha }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 env:
   FORCE_COLOR: 3
-  NODE_VERSION: 16
 
 jobs:
   build:
@@ -22,10 +25,11 @@ jobs:
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: Setup pnpm
         uses: pnpm/action-setup@d882d12c64e032187b2edb46d3a0d003b7a43598 # v2.4.0
-      - name: Setup Node ${{ env.NODE_VERSION }}
+      - name: Setup Node.js
         uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
         with:
-          node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
+          node-version-file: '.node-version'
       - run: pnpm install --frozen-lockfile --strict-peer-dependencies
+      - run: pnpm run check-format
       - run: pnpm run build

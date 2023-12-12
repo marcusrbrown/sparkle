@@ -1,8 +1,7 @@
 {
-  "extends": "@andersdjohnson/tsconfig",
+  "extends": "@tsconfig/strictest/tsconfig.json",
   "compilerOptions": {
-    "allowJs": true,
-    "checkJs": true,
+    "noEmit": true,
     "target": "esnext"
   }
 }

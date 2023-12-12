@@ -6,10 +6,12 @@
     "build": "pnpm build:types && pnpm -r run --filter=./packages/** build",
     "build:watch": "pnpm -r run --parallel build:watch",
     "build:types": "pnpm -r run --filter=./packages/** build:types",
-    "build:types:watch": "pnpm -r run --parallel build:types:watch"
+    "build:types:watch": "pnpm -r run --parallel build:types:watch",
+    "check-format": "prettier --check .",
+    "format": "prettier --write ."
   },
   "keywords": [
-    "create-babel-typescript-monorepo"
+    "sparkle"
   ],
   "author": "Marcus R. Brown <contact@marcusrbrown.com>",
   "license": "MIT",
@@ -23,14 +25,9 @@
     "linkDirectory": true
   },
   "devDependencies": {
-    "@andersdjohnson/tsconfig": "1.0.1",
-    "@babel/cli": "7.23.4",
-    "@babel/core": "7.23.6",
-    "@babel/node": "7.22.19",
-    "@babel/plugin-transform-runtime": "7.22.15",
-    "@babel/preset-env": "7.22.20",
-    "@babel/preset-typescript": "7.23.3",
+    "@tsconfig/strictest": "2.0.2",
     "markdownlint": "0.32.1",
+    "prettier": "3.1.0",
     "typescript": "5.3.3"
   },
   "dependencies": {
