@@ -27,7 +27,7 @@
   "devDependencies": {
     "@tsconfig/strictest": "2.0.2",
     "markdownlint": "0.33.0",
-    "prettier": "3.2.2",
+    "prettier": "3.2.3",
     "typescript": "5.3.3"
   },
   "dependencies": {
