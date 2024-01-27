@@ -16,7 +16,7 @@
   "author": "Marcus R. Brown <contact@marcusrbrown.com>",
   "license": "MIT",
   "private": true,
-  "packageManager": "pnpm@8.14.3",
+  "packageManager": "pnpm@8.15.0",
   "engines": {
     "node": ">=16.16.0",
     "pnpm": ">=7.5.2"
