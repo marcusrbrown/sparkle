@@ -14,22 +14,19 @@ concurrency:
 permissions:
   contents: read
 
-env:
-  FORCE_COLOR: 3
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - name: Setup pnpm
-        uses: pnpm/action-setup@a3252b78c470c02df07e9d59298aecedc3ccdd6d # v3.0.0
+      - name: Enable Corepack
+        run: corepack enable
       - name: Setup Node.js
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
         with:
           cache: pnpm
           node-version-file: '.node-version'
-      - run: pnpm install --frozen-lockfile --strict-peer-dependencies
+      - run: pnpm install --frozen-lockfile
       - run: pnpm run check-format
       - run: pnpm run build
