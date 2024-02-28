@@ -3,3 +3,7 @@
 *.png filter=lfs diff=lfs merge=lfs -text
 *.gif filter=lfs diff=lfs merge=lfs -text
 *.jpg filter=lfs diff=lfs merge=lfs -text
+
+*.json text linguist-language=JSON-with-comments
+
+pnpm-lock.yaml -diff linguist-generated=true
