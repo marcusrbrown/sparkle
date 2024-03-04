@@ -11,7 +11,7 @@ name: Renovate
     branches: ['**']
   workflow_dispatch:
     inputs:
-      print_config:
+      print-config:
         description: Log the fully-resolved Renovate config for each repository, plus fully-resolved presets.
         required: false
         type: boolean
@@ -20,10 +20,7 @@ name: Renovate
 jobs:
   renovate:
     name: Renovate
-    secrets:
-      APPLICATION_ID: ${{ secrets.APPLICATION_ID }}
-      APPLICATION_PRIVATE_KEY: ${{ secrets.APPLICATION_PRIVATE_KEY }}
-    uses: bfra-me/.github/.github/workflows/renovate.yaml@v1.8.1
+    secrets: inherit
+    uses: marcusrbrown/.github/.github/workflows/renovate.yaml@main
     with:
-      print_config: ${{ inputs.print_config || false }}
-      renovate_app_slug: 'mrbro-bot'
+      print-config: ${{ inputs.print-config || github.event_name == 'push' }}
