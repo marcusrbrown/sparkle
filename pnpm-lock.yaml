@@ -12,9 +12,9 @@ importers:
         specifier: workspace:*
         version: link:scripts
     devDependencies:
-      '@tsconfig/strictest':
-        specifier: 2.0.3
-        version: 2.0.3
+      '@bfra.me/tsconfig':
+        specifier: 0.2.3
+        version: 0.2.3(@tsconfig/strictest@2.0.3)
       markdownlint:
         specifier: 0.33.0
         version: 0.33.0
@@ -276,6 +276,14 @@ packages:
       '@babel/helper-string-parser': 7.23.4
       '@babel/helper-validator-identifier': 7.22.20
       to-fast-properties: 2.0.0
+    dev: true
+
+  /@bfra.me/tsconfig@0.2.3(@tsconfig/strictest@2.0.3):
+    resolution: {integrity: sha512-XvLvk63rjy8gdD0tVgqUu6mKAKyxEQYXaVyM6rK7xRW1X2sqLaeqdeJ9m3XU7UASLhrK+T4wC6ZF+GloFgkkNw==}
+    peerDependencies:
+      '@tsconfig/strictest': '*'
+    dependencies:
+      '@tsconfig/strictest': 2.0.3
     dev: true
 
   /@esbuild/aix-ppc64@0.19.12:
