@@ -1,6 +1,6 @@
 bracketSpacing: false
 printWidth: 120
-semi: true
+semi: false
 singleQuote: true
 tabWidth: 2
 overrides:
