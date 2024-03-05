@@ -2,9 +2,6 @@
   "name": "scripts",
   "version": "0.1.0",
   "description": "Sparkle scripts.",
-  "main": "index.js",
   "private": true,
-  "bin": {
-    "install-git-lfs": "./installGitLfs.js"
-  }
+  "type": "module"
 }

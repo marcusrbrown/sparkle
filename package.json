@@ -13,14 +13,10 @@
   "keywords": [
     "sparkle"
   ],
-  "author": "Marcus R. Brown <contact@marcusrbrown.com>",
+  "author": "Marcus R. Brown <git@mrbro.dev>",
   "license": "MIT",
   "private": true,
   "packageManager": "pnpm@8.15.4",
-  "engines": {
-    "node": ">=16.16.0",
-    "pnpm": ">=7.5.2"
-  },
   "publishConfig": {
     "linkDirectory": true
   },
