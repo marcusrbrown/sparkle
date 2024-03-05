@@ -1,7 +1,6 @@
 {
-  "extends": "@tsconfig/strictest/tsconfig.json",
+  "extends": "@bfra.me/tsconfig",
   "compilerOptions": {
-    "noEmit": true,
-    "target": "esnext"
+    "noEmit": true
   }
 }
