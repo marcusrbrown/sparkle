@@ -13,8 +13,8 @@ importers:
         version: link:scripts
     devDependencies:
       '@bfra.me/tsconfig':
-        specifier: 0.2.3
-        version: 0.2.3(@tsconfig/strictest@2.0.3)
+        specifier: 0.2.4
+        version: 0.2.4(@tsconfig/strictest@2.0.3)
       markdownlint:
         specifier: 0.33.0
         version: 0.33.0
@@ -278,8 +278,8 @@ packages:
       to-fast-properties: 2.0.0
     dev: true
 
-  /@bfra.me/tsconfig@0.2.3(@tsconfig/strictest@2.0.3):
-    resolution: {integrity: sha512-XvLvk63rjy8gdD0tVgqUu6mKAKyxEQYXaVyM6rK7xRW1X2sqLaeqdeJ9m3XU7UASLhrK+T4wC6ZF+GloFgkkNw==}
+  /@bfra.me/tsconfig@0.2.4(@tsconfig/strictest@2.0.3):
+    resolution: {integrity: sha512-+2pws3BBt9pd8becVxLuIm7cFJDZsVGYHOM2uxx4WLmoeAd8LJj1Gvtc4hbhBsiR3nNyYmPksx6LSQjiOpurdA==}
     peerDependencies:
       '@tsconfig/strictest': '*'
     dependencies:
