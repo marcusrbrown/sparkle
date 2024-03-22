@@ -21,7 +21,7 @@
     "linkDirectory": true
   },
   "devDependencies": {
-    "@bfra.me/tsconfig": "0.3.0",
+    "@bfra.me/tsconfig": "0.3.1",
     "markdownlint": "0.33.0",
     "prettier": "3.2.5",
     "typescript": "5.4.3"
