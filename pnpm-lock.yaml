@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@bfra.me/prettier-config':
+        specifier: ^0.1.0
+        version: 0.1.0(prettier@3.2.5)
       scripts:
         specifier: workspace:*
         version: link:scripts
@@ -1612,6 +1615,14 @@ packages:
   /@bcoe/v8-coverage@0.2.3:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
+
+  /@bfra.me/prettier-config@0.1.0(prettier@3.2.5):
+    resolution: {integrity: sha512-ZiZkDB9XHntBZROuvrx5eQHrqTjRXsJHuz2ixhAcd91NLafmnEjAezWAM9//8ZNaVDLEYri/WN6malwbZmJhwg==}
+    peerDependencies:
+      prettier: ^3.0.0
+    dependencies:
+      prettier: 3.2.5
+    dev: false
 
   /@bfra.me/tsconfig@0.4.1(@tsconfig/strictest@2.0.5):
     resolution: {integrity: sha512-J/wijrR4YxenJDwmVLdVQbKQN/0MBVxVyY1WrTOCzu5s9q2S3npGgwGzOBZKoVG7uJoG5DWVoMA8z3qhfrtHZA==}
@@ -7459,7 +7470,6 @@ packages:
     resolution: {integrity: sha512-3/GWa9aOC0YeD7LUfvOG2NiDyhOWRvt1k+rcKhOuYnMY24iiCphgneUfJDyFXd6rZCAnuLBv6UeAULtrhT/F4A==}
     engines: {node: '>=14'}
     hasBin: true
-    dev: true
 
   /pretty-bytes@5.6.0:
     resolution: {integrity: sha512-FFw039TmrBqFK8ma/7OL3sDz/VytdtJr044/QUJtH0wK9lb9jLq9tJyIxUwtQJHwar2BqtiA4iCWSwo9JLkzFg==}
