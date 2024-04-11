@@ -1,6 +1,7 @@
 {
   "name": "sparkle",
   "description": "TypeScript playground.",
+  "type": "module",
   "scripts": {
     "start": "pnpm -r run --parallel start",
     "build": "pnpm build:types && pnpm -r run --filter='./packages/**' build",
@@ -27,6 +28,7 @@
     "typescript": "5.4.5"
   },
   "dependencies": {
+    "@bfra.me/prettier-config": "^0.1.0",
     "scripts": "workspace:*"
   }
 }

@@ -9,7 +9,7 @@ export function ExternalLink(props: Omit<React.ComponentProps<typeof Link>, 'hre
       target="_blank"
       {...props}
       href={props.href}
-      onPress={(e) => {
+      onPress={e => {
         if (Platform.OS !== 'web') {
           // Prevent the default behavior of linking to the default browser on native.
           e.preventDefault()
