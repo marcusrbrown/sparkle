@@ -6,4 +6,5 @@
     commands: ['npm install -g pnpm@8', 'pnpm install --frozen-lockfile', 'git checkout -- .npmrc', 'pnpm run format'],
     executionMode: 'branch',
   },
+  rangeStrategy: 'auto',
 }
