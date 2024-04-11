@@ -1,7 +1,7 @@
 {
   "name": "scripts",
   "version": "0.1.0",
-  "description": "Sparkle scripts.",
   "private": true,
+  "description": "Sparkle scripts.",
   "type": "module"
 }

@@ -1,14 +1,15 @@
 {
   "name": "fro-jive",
-  "main": "expo-router/entry",
   "version": "1.0.0",
+  "private": true,
+  "main": "expo-router/entry",
   "scripts": {
-    "build:types": "tsc",
-    "start": "expo start",
     "android": "expo start --android",
+    "build:types": "tsc",
     "ios": "expo start --ios",
-    "web": "expo start --web",
-    "test": "jest --watchAll"
+    "start": "expo start",
+    "test": "jest --watchAll",
+    "web": "expo start --web"
   },
   "jest": {
     "preset": "jest-expo"
@@ -38,6 +39,5 @@
     "jest-expo": "~50.0.4",
     "react-test-renderer": "18.2.0",
     "typescript": "^5.4.4"
-  },
-  "private": true
+  }
 }

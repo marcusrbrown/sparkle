@@ -1,25 +1,25 @@
 {
   "name": "sparkle",
+  "private": true,
   "description": "TypeScript playground.",
-  "type": "module",
-  "scripts": {
-    "start": "pnpm -r run --parallel start",
-    "build": "pnpm build:types && pnpm -r run --filter='./packages/**' build",
-    "build:watch": "pnpm -r run --parallel build:watch",
-    "build:types": "pnpm -r run --filter='./packages/**' build:types",
-    "build:types:watch": "pnpm -r run --parallel build:types:watch",
-    "check-format": "prettier --check .",
-    "format": "prettier --write ."
-  },
   "keywords": [
     "sparkle"
   ],
-  "author": "Marcus R. Brown <git@mrbro.dev>",
   "license": "MIT",
-  "private": true,
-  "packageManager": "pnpm@8.15.6",
-  "publishConfig": {
-    "linkDirectory": true
+  "author": "Marcus R. Brown <git@mrbro.dev>",
+  "type": "module",
+  "scripts": {
+    "build": "pnpm build:types && pnpm -r run --filter='./packages/**' build",
+    "build:types": "pnpm -r run --filter='./packages/**' build:types",
+    "build:types:watch": "pnpm -r run --parallel build:types:watch",
+    "build:watch": "pnpm -r run --parallel build:watch",
+    "check-format": "prettier --check .",
+    "format": "prettier --write .",
+    "start": "pnpm -r run --parallel start"
+  },
+  "dependencies": {
+    "@bfra.me/prettier-config": "^0.3.0",
+    "scripts": "workspace:*"
   },
   "devDependencies": {
     "@bfra.me/tsconfig": "0.4.1",
@@ -27,8 +27,8 @@
     "prettier": "3.2.5",
     "typescript": "5.4.5"
   },
-  "dependencies": {
-    "@bfra.me/prettier-config": "^0.1.0",
-    "scripts": "workspace:*"
+  "packageManager": "pnpm@8.15.6",
+  "publishConfig": {
+    "linkDirectory": true
   }
 }
