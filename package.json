@@ -3,9 +3,9 @@
   "description": "TypeScript playground.",
   "scripts": {
     "start": "pnpm -r run --parallel start",
-    "build": "pnpm build:types && pnpm -r run --filter=./packages/** build",
+    "build": "pnpm build:types && pnpm -r run --filter='./packages/**' build",
     "build:watch": "pnpm -r run --parallel build:watch",
-    "build:types": "pnpm -r run --filter=./packages/** build:types",
+    "build:types": "pnpm -r run --filter='./packages/**' build:types",
     "build:types:watch": "pnpm -r run --parallel build:types:watch",
     "check-format": "prettier --check .",
     "format": "prettier --write ."
