@@ -1,10 +1,9 @@
 {
   $schema: 'https://docs.renovatebot.com/renovate-schema.json',
-  extends: ['github>marcusrbrown/renovate-config#v2'],
+  extends: ['github>marcusrbrown/renovate-config#v2', ':preserveSemverRanges'],
   addLabels: ['{{{parentDir}}}'],
   postUpgradeTasks: {
-    commands: ['npm install -g pnpm@8', 'pnpm install --frozen-lockfile', 'git checkout -- .npmrc', 'pnpm run format'],
+    commands: ['npm install -g pnpm@8', 'pnpm install --frozen-lockfile', 'pnpm run format'],
     executionMode: 'branch',
   },
-  rangeStrategy: 'auto',
 }
