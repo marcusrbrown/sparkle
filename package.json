@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@bfra.me/tsconfig": "0.4.1",
-    "markdownlint": "0.33.0",
+    "markdownlint": "0.34.0",
     "prettier": "3.2.5",
     "typescript": "5.4.5"
   },
