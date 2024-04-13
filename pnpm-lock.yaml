@@ -16,8 +16,8 @@ importers:
         version: link:scripts
     devDependencies:
       '@bfra.me/tsconfig':
-        specifier: 0.4.1
-        version: 0.4.1(@tsconfig/strictest@2.0.5)
+        specifier: 0.5.0
+        version: 0.5.0(@tsconfig/strictest@2.0.5)
       markdownlint:
         specifier: 0.34.0
         version: 0.34.0
@@ -1634,8 +1634,8 @@ packages:
       sort-package-json: 2.10.0
     dev: false
 
-  /@bfra.me/tsconfig@0.4.1(@tsconfig/strictest@2.0.5):
-    resolution: {integrity: sha512-J/wijrR4YxenJDwmVLdVQbKQN/0MBVxVyY1WrTOCzu5s9q2S3npGgwGzOBZKoVG7uJoG5DWVoMA8z3qhfrtHZA==}
+  /@bfra.me/tsconfig@0.5.0(@tsconfig/strictest@2.0.5):
+    resolution: {integrity: sha512-0uaeKrGRG0STTq+eqvTN95ZWNhiPlwZm100iiC3TVlEZFTQwwQozQrGb/MFsjNchwbfN7Sn7oaNVWDD0AFoOmQ==}
     peerDependencies:
       '@tsconfig/strictest': '*'
     dependencies:
