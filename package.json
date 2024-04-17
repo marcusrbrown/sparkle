@@ -25,7 +25,8 @@
     "@bfra.me/tsconfig": "0.5.0",
     "markdownlint": "0.34.0",
     "prettier": "3.2.5",
-    "typescript": "5.4.5"
+    "typescript": "5.4.5",
+    "vitest": "^1.5.0"
   },
   "packageManager": "pnpm@8.15.7",
   "publishConfig": {
