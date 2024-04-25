@@ -1,7 +1,45 @@
 {
   $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  description: 'Renovate config for ✨ Sparkle ✨ TypeScript playground',
   extends: ['github>marcusrbrown/renovate-config#v2', ':preserveSemverRanges'],
   addLabels: ['{{{parentDir}}}'],
+  packageRules: [
+    // React Native rules based on React Native Test App:
+    // https://github.com/microsoft/react-native-test-app/blob/bc3579879d053096a34037d82f198d4c2f912682/.github/renovate.json
+    {
+      matchSourceUrlPrefixes: ['https://github.com/facebook/metro'],
+      groupName: 'Metro',
+      allowedVersions: '^0.80.0',
+    },
+    {
+      matchPackageNames: [
+        '@callstack/react-native-visionos',
+        '@react-native/assets-registry',
+        '@react-native/babel-plugin-codegen',
+        '@react-native/babel-preset',
+        '@react-native/codegen',
+        '@react-native/community-cli-plugin',
+        '@react-native/debugger-frontend',
+        '@react-native/dev-middleware',
+        '@react-native/gradle-plugin',
+        '@react-native/js-polyfills',
+        '@react-native/metro-babel-transformer',
+        '@react-native/metro-config',
+        '@react-native/normalize-colors',
+        '@react-native/virtualized-lists',
+        'react-native',
+        'react-native-macos',
+        'react-native-windows',
+      ],
+      groupName: 'React Native',
+      allowedVersions: '^0.73.0',
+    },
+    {
+      matchPackagePrefixes: ['@react-native-community/cli'],
+      groupName: 'React Native CLI',
+      allowedVersions: '^12.0.0',
+    },
+  ],
   postUpgradeTasks: {
     commands: ['npm install -g pnpm@8', 'pnpm install --frozen-lockfile', 'pnpm run format'],
     executionMode: 'branch',
