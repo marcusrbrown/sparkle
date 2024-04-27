@@ -1,8 +1,9 @@
 {
   $schema: 'https://docs.renovatebot.com/renovate-schema.json',
   description: 'Renovate config for ✨ Sparkle ✨ TypeScript playground',
-  extends: ['github>marcusrbrown/renovate-config#v2', ':preserveSemverRanges'],
+  extends: ['github>marcusrbrown/renovate-config#v2', 'security:openssf-scorecard', ':preserveSemverRanges'],
   addLabels: ['{{{parentDir}}}'],
+  automergeType: 'pr',
   packageRules: [
     // React Native rules based on React Native Test App:
     // https://github.com/microsoft/react-native-test-app/blob/bc3579879d053096a34037d82f198d4c2f912682/.github/renovate.json
@@ -39,9 +40,15 @@
       groupName: 'React Native CLI',
       allowedVersions: '^12.0.0',
     },
+    {
+      matchPackageNames: ['com.facebook.react:hermes-engine', 'react', 'react-dom'],
+      enabled: false,
+    },
   ],
   postUpgradeTasks: {
     commands: ['npm install -g pnpm@8', 'pnpm install --frozen-lockfile', 'pnpm run format'],
     executionMode: 'branch',
   },
+  prCreation: 'immediate',
+  rebaseWhen: 'behind-base-branch',
 }
