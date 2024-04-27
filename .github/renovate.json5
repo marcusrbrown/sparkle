@@ -41,7 +41,15 @@
       allowedVersions: '^12.0.0',
     },
     {
-      matchPackageNames: ['com.facebook.react:hermes-engine', 'react', 'react-dom'],
+      matchPackageNames: [
+        '@types/react',
+        '@types/react-dom',
+        'com.facebook.react:hermes-engine',
+        'react',
+        'react-dom',
+        'react-is',
+        'react-test-renderer',
+      ],
       enabled: false,
     },
   ],
