@@ -28,7 +28,7 @@
     "typescript": "5.4.5",
     "vitest": "^1.5.0"
   },
-  "packageManager": "pnpm@8.15.7",
+  "packageManager": "pnpm@8.15.8",
   "publishConfig": {
     "linkDirectory": true
   }
