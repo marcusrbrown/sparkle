@@ -20,7 +20,7 @@
     "expo": "~50.0.14",
     "expo-font": "~11.10.3",
     "expo-linking": "~6.3.0",
-    "expo-router": "~3.4.8",
+    "expo-router": "~3.5.0",
     "expo-splash-screen": "~0.26.4",
     "expo-status-bar": "~1.11.1",
     "expo-system-ui": "~2.9.3",
