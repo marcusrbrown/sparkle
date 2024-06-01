@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@bfra.me/prettier-config':
         specifier: ^0.3.0
-        version: 0.3.3(prettier@3.2.5)
+        version: 0.3.3(prettier@3.3.0)
       scripts:
         specifier: workspace:*
         version: link:scripts
@@ -22,8 +22,8 @@ importers:
         specifier: 0.34.0
         version: 0.34.0
       prettier:
-        specifier: 3.2.5
-        version: 3.2.5
+        specifier: 3.3.0
+        version: 3.3.0
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1628,21 +1628,21 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
-  /@bfra.me/prettier-config@0.3.3(prettier@3.2.5):
+  /@bfra.me/prettier-config@0.3.3(prettier@3.3.0):
     resolution: {integrity: sha512-gLiZ7D1B5DYBh5u/Wfo1lmXctF2VBsDdymj92ffSZgoAkq2KCPazkzsOedQ3CxrqpaZPXFjaJoP5AcghrByGeg==}
     peerDependencies:
       prettier: ^3.0.0
     dependencies:
-      '@bfra.me/prettier-plugins': 0.2.1(prettier@3.2.5)
-      prettier: 3.2.5
+      '@bfra.me/prettier-plugins': 0.2.1(prettier@3.3.0)
+      prettier: 3.3.0
     dev: false
 
-  /@bfra.me/prettier-plugins@0.2.1(prettier@3.2.5):
+  /@bfra.me/prettier-plugins@0.2.1(prettier@3.3.0):
     resolution: {integrity: sha512-Bcf1lf5K4IUxbTHxwiuwDpU0CkO3y74a/1bN3R98S/Rxxlc+FbVX/xiAsYgXJpe5dwFkPOO1a+uIRtWHL9Gw4A==}
     peerDependencies:
       prettier: ^3.0.0
     dependencies:
-      prettier: 3.2.5
+      prettier: 3.3.0
       sort-package-json: 2.10.0
     dev: false
 
@@ -8266,8 +8266,8 @@ packages:
     engines: {node: '>=4'}
     dev: false
 
-  /prettier@3.2.5:
-    resolution: {integrity: sha512-3/GWa9aOC0YeD7LUfvOG2NiDyhOWRvt1k+rcKhOuYnMY24iiCphgneUfJDyFXd6rZCAnuLBv6UeAULtrhT/F4A==}
+  /prettier@3.3.0:
+    resolution: {integrity: sha512-J9odKxERhCQ10OC2yb93583f6UnYutOeiV5i0zEDS7UGTdUt0u+y8erxl3lBKvwo/JHyyoEdXjwp4dke9oyZ/g==}
     engines: {node: '>=14'}
     hasBin: true
 
