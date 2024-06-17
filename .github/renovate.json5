@@ -54,7 +54,7 @@
     },
   ],
   postUpgradeTasks: {
-    commands: ['npm install -g pnpm@9.3.0', 'pnpm install --frozen-lockfile', 'pnpm run format'],
+    commands: ['npm install -g pnpm@9.4.0', 'pnpm install --frozen-lockfile', 'pnpm run format'],
     executionMode: 'branch',
   },
   prCreation: 'immediate',
