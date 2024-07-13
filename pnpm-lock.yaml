@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@bfra.me/prettier-config':
         specifier: ^0.3.0
-        version: 0.3.3(prettier@3.3.2)
+        version: 0.3.3(prettier@3.3.3)
       scripts:
         specifier: workspace:*
         version: link:scripts
@@ -22,8 +22,8 @@ importers:
         specifier: 0.34.0
         version: 0.34.0
       prettier:
-        specifier: 3.3.2
-        version: 3.3.2
+        specifier: 3.3.3
+        version: 3.3.3
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -4107,8 +4107,8 @@ packages:
     resolution: {integrity: sha512-ravE6m9Atw9Z/jjttRUZ+clIXogdghyZAuWJ3qEzjT+jI/dL1ifAqhZeC5VHzQp1MSt1+jxKkFNemj/iO7tVUA==}
     engines: {node: '>=4'}
 
-  prettier@3.3.2:
-    resolution: {integrity: sha512-rAVeHYMcv8ATV5d508CFdn+8/pHPpXeIid1DdrPwXnaAdH7cqjVbpJaT5eq4yRAFU/lsbwYwSF/n5iNrdJHPQA==}
+  prettier@3.3.3:
+    resolution: {integrity: sha512-i2tDNA0O5IrMO757lfrdQZCc2jPNDVntV0m/+4whiDfWaTKfMNgR7Qz0NAeGz/nRqF4m5/6CLzbP4/liHt12Ew==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -6316,14 +6316,14 @@ snapshots:
 
   '@bcoe/v8-coverage@0.2.3': {}
 
-  '@bfra.me/prettier-config@0.3.3(prettier@3.3.2)':
+  '@bfra.me/prettier-config@0.3.3(prettier@3.3.3)':
     dependencies:
-      '@bfra.me/prettier-plugins': 0.2.1(prettier@3.3.2)
-      prettier: 3.3.2
+      '@bfra.me/prettier-plugins': 0.2.1(prettier@3.3.3)
+      prettier: 3.3.3
 
-  '@bfra.me/prettier-plugins@0.2.1(prettier@3.3.2)':
+  '@bfra.me/prettier-plugins@0.2.1(prettier@3.3.3)':
     dependencies:
-      prettier: 3.3.2
+      prettier: 3.3.3
       sort-package-json: 2.10.0
 
   '@bfra.me/tsconfig@0.5.0(@tsconfig/strictest@2.0.5)':
@@ -10551,7 +10551,7 @@ snapshots:
 
   prepend-http@2.0.0: {}
 
-  prettier@3.3.2: {}
+  prettier@3.3.3: {}
 
   pretty-bytes@5.6.0: {}
 
