@@ -17,6 +17,7 @@
     "format": "prettier --write .",
     "start": "pnpm -r run --parallel start"
   },
+  "prettier": "@bfra.me/prettier-config/120-proof",
   "dependencies": {
     "@bfra.me/prettier-config": "^0.4.0",
     "scripts": "workspace:*"
