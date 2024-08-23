@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@bfra.me/prettier-config':
-        specifier: ^0.4.0
-        version: 0.4.0(prettier@3.3.3)
+        specifier: ^0.5.0
+        version: 0.5.0(prettier@3.3.3)
       scripts:
         specifier: workspace:*
         version: link:scripts
@@ -890,13 +890,13 @@ packages:
   '@bcoe/v8-coverage@0.2.3':
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
 
-  '@bfra.me/prettier-config@0.4.0':
-    resolution: {integrity: sha512-qXuokIMjLX0cilk0kiZ2snrnYmlCJJkLsidKEMGHF1PhwDLcxE6F8jXH8Ce44vBLzwou4Qn0Fxpi/QKTHtBIlw==}
+  '@bfra.me/prettier-config@0.5.0':
+    resolution: {integrity: sha512-wScr/WcMPsBtsZtIqfYblQdir5b7/P3jnFMvE4UjshVupm4Pv+EQ45KbmVLXHpvWHDf6/K+jBrT0HHT7qcyrXA==}
     peerDependencies:
       prettier: ^3.0.0
 
-  '@bfra.me/prettier-plugins@0.2.1':
-    resolution: {integrity: sha512-Bcf1lf5K4IUxbTHxwiuwDpU0CkO3y74a/1bN3R98S/Rxxlc+FbVX/xiAsYgXJpe5dwFkPOO1a+uIRtWHL9Gw4A==}
+  '@bfra.me/prettier-plugins@0.3.0':
+    resolution: {integrity: sha512-AEAz0G6xpTKqR8xK+2HFT2xhhdjvDsIoAipntKPsAu63rUTShpM//bUZZ1c6U3muZqa07uSv5r7w0pCS/UeitA==}
     peerDependencies:
       prettier: ^3.0.0
 
@@ -6360,12 +6360,12 @@ snapshots:
 
   '@bcoe/v8-coverage@0.2.3': {}
 
-  '@bfra.me/prettier-config@0.4.0(prettier@3.3.3)':
+  '@bfra.me/prettier-config@0.5.0(prettier@3.3.3)':
     dependencies:
-      '@bfra.me/prettier-plugins': 0.2.1(prettier@3.3.3)
+      '@bfra.me/prettier-plugins': 0.3.0(prettier@3.3.3)
       prettier: 3.3.3
 
-  '@bfra.me/prettier-plugins@0.2.1(prettier@3.3.3)':
+  '@bfra.me/prettier-plugins@0.3.0(prettier@3.3.3)':
     dependencies:
       prettier: 3.3.3
       sort-package-json: 2.10.0
