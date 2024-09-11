@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@bfra.me/prettier-config':
-        specifier: ^0.6.0
-        version: 0.6.0(prettier@3.3.3)
+        specifier: ^0.7.0
+        version: 0.7.0(prettier@3.3.3)
       scripts:
         specifier: workspace:*
         version: link:scripts
@@ -890,8 +890,8 @@ packages:
   '@bcoe/v8-coverage@0.2.3':
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
 
-  '@bfra.me/prettier-config@0.6.0':
-    resolution: {integrity: sha512-V6u/U+tibN6obUGC+bRklJMCwTU2sPv3y+kBS9n5o4hE7eX2b+SFntBb+qZoR7K6UVVT5dZW/3dEadhfPFigIA==}
+  '@bfra.me/prettier-config@0.7.0':
+    resolution: {integrity: sha512-qDEvAogLkPLI2l2lbk6i4bhQYKSTGkkEhqHhyiAem/AfwdwCu7uMbx7pDRwqfFJMFhSKalvn7wmoTh5dHh+fOw==}
     peerDependencies:
       prettier: ^3.0.0
 
@@ -6357,7 +6357,7 @@ snapshots:
 
   '@bcoe/v8-coverage@0.2.3': {}
 
-  '@bfra.me/prettier-config@0.6.0(prettier@3.3.3)':
+  '@bfra.me/prettier-config@0.7.0(prettier@3.3.3)':
     dependencies:
       '@bfra.me/prettier-plugins': 0.3.0(prettier@3.3.3)
       prettier: 3.3.3
