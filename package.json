@@ -19,7 +19,7 @@
   },
   "prettier": "@bfra.me/prettier-config/120-proof",
   "dependencies": {
-    "@bfra.me/prettier-config": "^0.6.0",
+    "@bfra.me/prettier-config": "^0.7.0",
     "scripts": "workspace:*"
   },
   "devDependencies": {
