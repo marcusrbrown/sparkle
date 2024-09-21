@@ -23,7 +23,7 @@
     "scripts": "workspace:*"
   },
   "devDependencies": {
-    "@bfra.me/tsconfig": "0.7.0",
+    "@bfra.me/tsconfig": "0.8.0",
     "markdownlint": "0.34.0",
     "prettier": "3.3.3",
     "typescript": "5.4.5",
