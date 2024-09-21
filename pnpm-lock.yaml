@@ -16,8 +16,8 @@ importers:
         version: link:scripts
     devDependencies:
       '@bfra.me/tsconfig':
-        specifier: 0.7.0
-        version: 0.7.0
+        specifier: 0.8.0
+        version: 0.8.0
       markdownlint:
         specifier: 0.34.0
         version: 0.34.0
@@ -900,8 +900,8 @@ packages:
     peerDependencies:
       prettier: ^3.0.0
 
-  '@bfra.me/tsconfig@0.7.0':
-    resolution: {integrity: sha512-hJ/irdEfXYoMlgAJ0Tx7ji8R5yJPZuvOB39Hg0DLNghHa5RtnyREhYKBY8zKcxW9+5lII1luyg/AAU/zNuCLMQ==}
+  '@bfra.me/tsconfig@0.8.0':
+    resolution: {integrity: sha512-XrOF0AmmOdfs2++vpxzyTAAEO8J0tVQ0N+pkUHydEL4q0DRxXUklSkf2Ry5ufv4YtzVylOe/7LmrUZnMATR6Sw==}
 
   '@esbuild/aix-ppc64@0.21.5':
     resolution: {integrity: sha512-1SDgH6ZSPTlggy1yI6+Dbkiz8xzpHJEVAlF/AM1tHPLsf5STom9rwtjE4hKAF20FfXXNTFqEYXyJNWh1GiZedQ==}
@@ -1590,9 +1590,6 @@ packages:
   '@tootallnate/once@2.0.0':
     resolution: {integrity: sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==}
     engines: {node: '>= 10'}
-
-  '@tsconfig/strictest@2.0.5':
-    resolution: {integrity: sha512-ec4tjL2Rr0pkZ5hww65c+EEPYwxOi4Ryv+0MtjeaSQRJyq322Q27eOQiFbuNgw2hpL4hB1/W/HBGk3VKS43osg==}
 
   '@types/babel__core@7.20.5':
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
@@ -6376,9 +6373,7 @@ snapshots:
       prettier: 3.3.3
       sort-package-json: 2.10.0
 
-  '@bfra.me/tsconfig@0.7.0':
-    dependencies:
-      '@tsconfig/strictest': 2.0.5
+  '@bfra.me/tsconfig@0.8.0': {}
 
   '@esbuild/aix-ppc64@0.21.5':
     optional: true
@@ -7565,8 +7560,6 @@ snapshots:
       '@sinonjs/commons': 3.0.1
 
   '@tootallnate/once@2.0.0': {}
-
-  '@tsconfig/strictest@2.0.5': {}
 
   '@types/babel__core@7.20.5':
     dependencies:
