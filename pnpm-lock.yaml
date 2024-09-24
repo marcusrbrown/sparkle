@@ -16,8 +16,8 @@ importers:
         version: link:scripts
     devDependencies:
       '@bfra.me/tsconfig':
-        specifier: 0.8.0
-        version: 0.8.0
+        specifier: 0.8.1
+        version: 0.8.1
       markdownlint:
         specifier: 0.34.0
         version: 0.34.0
@@ -900,8 +900,8 @@ packages:
     peerDependencies:
       prettier: ^3.0.0
 
-  '@bfra.me/tsconfig@0.8.0':
-    resolution: {integrity: sha512-XrOF0AmmOdfs2++vpxzyTAAEO8J0tVQ0N+pkUHydEL4q0DRxXUklSkf2Ry5ufv4YtzVylOe/7LmrUZnMATR6Sw==}
+  '@bfra.me/tsconfig@0.8.1':
+    resolution: {integrity: sha512-6/gbTMCyxM9e4pr9/fiaqm+5qrGsIkZLj+7/UZwRXozSQQyN7vIgQCU/EbHzidAT7qsHMN2UgS53+jyfu9zMXg==}
 
   '@esbuild/aix-ppc64@0.21.5':
     resolution: {integrity: sha512-1SDgH6ZSPTlggy1yI6+Dbkiz8xzpHJEVAlF/AM1tHPLsf5STom9rwtjE4hKAF20FfXXNTFqEYXyJNWh1GiZedQ==}
@@ -6376,7 +6376,7 @@ snapshots:
       prettier: 3.3.3
       sort-package-json: 2.10.0
 
-  '@bfra.me/tsconfig@0.8.0': {}
+  '@bfra.me/tsconfig@0.8.1': {}
 
   '@esbuild/aix-ppc64@0.21.5':
     optional: true
