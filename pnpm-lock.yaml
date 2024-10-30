@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@bfra.me/prettier-config':
-        specifier: ^0.7.0
-        version: 0.7.4(prettier@3.3.3)
+        specifier: ^0.8.0
+        version: 0.8.0(prettier@3.3.3)
       scripts:
         specifier: workspace:*
         version: link:scripts
@@ -888,13 +888,13 @@ packages:
   '@bcoe/v8-coverage@0.2.3':
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
 
-  '@bfra.me/prettier-config@0.7.4':
-    resolution: {integrity: sha512-5YcZmzIUwQv+YCYdaelGhjBKN6tzH3W+tqY29H1JgT6HdnK78Kh37ihOu3EwoLJBJUZuV8t9Nvi1tPCN5eCr9A==}
+  '@bfra.me/prettier-config@0.8.0':
+    resolution: {integrity: sha512-uMq/F4o6vdbuvrcGrf6GJ7IQL9fs63ed51jKkqrXBw2qolt+0ZyfY/fBfoFmVa/tlQZGHeXW8JF6LtAXehj4Ag==}
     peerDependencies:
       prettier: ^3.0.0
 
-  '@bfra.me/prettier-plugins@0.4.0':
-    resolution: {integrity: sha512-/MSWm+LJPrBD5EPlrvrzk45D3gF2mb0A3hzboxk82fA3R0XMEMxx08FUrXM7J1i3kK6ibwE36twyecGeG9WayQ==}
+  '@bfra.me/prettier-plugins@0.5.0':
+    resolution: {integrity: sha512-hGFvZQLVjwWMd+XYZGLquJnJ1BcCEJVuPF2V7BBJjhv6YNM34T4QPlWgjYv49M3JH8GM6LqOaYqF8OomPanAXg==}
     peerDependencies:
       prettier: ^3.0.0
 
@@ -4620,8 +4620,8 @@ packages:
   sort-object-keys@1.1.3:
     resolution: {integrity: sha512-855pvK+VkU7PaKYPc+Jjnmt4EzejQHyhhF33q31qG8x7maDzkeFhAAThdCYay11CISO+qAMwjOBP+fPZe0IPyg==}
 
-  sort-package-json@2.10.0:
-    resolution: {integrity: sha512-MYecfvObMwJjjJskhxYfuOADkXp1ZMMnCFC8yhp+9HDsk7HhR336hd7eiBs96lTXfiqmUNI+WQCeCMRBhl251g==}
+  sort-package-json@2.10.1:
+    resolution: {integrity: sha512-d76wfhgUuGypKqY72Unm5LFnMpACbdxXsLPcL27pOsSrmVqH3PztFp1uq+Z22suk15h7vXmTesuh2aEjdCqb5w==}
     hasBin: true
 
   source-map-js@1.2.1:
@@ -6339,15 +6339,15 @@ snapshots:
 
   '@bcoe/v8-coverage@0.2.3': {}
 
-  '@bfra.me/prettier-config@0.7.4(prettier@3.3.3)':
+  '@bfra.me/prettier-config@0.8.0(prettier@3.3.3)':
     dependencies:
-      '@bfra.me/prettier-plugins': 0.4.0(prettier@3.3.3)
+      '@bfra.me/prettier-plugins': 0.5.0(prettier@3.3.3)
       prettier: 3.3.3
 
-  '@bfra.me/prettier-plugins@0.4.0(prettier@3.3.3)':
+  '@bfra.me/prettier-plugins@0.5.0(prettier@3.3.3)':
     dependencies:
       prettier: 3.3.3
-      sort-package-json: 2.10.0
+      sort-package-json: 2.10.1
 
   '@bfra.me/tsconfig@0.8.1': {}
 
@@ -11186,7 +11186,7 @@ snapshots:
 
   sort-object-keys@1.1.3: {}
 
-  sort-package-json@2.10.0:
+  sort-package-json@2.10.1:
     dependencies:
       detect-indent: 7.0.1
       detect-newline: 4.0.1
