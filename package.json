@@ -19,10 +19,10 @@
   },
   "prettier": "@bfra.me/prettier-config/120-proof",
   "dependencies": {
-    "@bfra.me/prettier-config": "^0.9.0",
     "scripts": "workspace:*"
   },
   "devDependencies": {
+    "@bfra.me/prettier-config": "^0.9.3",
     "@bfra.me/tsconfig": "0.9.1",
     "markdownlint": "0.34.0",
     "prettier": "3.3.3",
