@@ -28,6 +28,6 @@ jobs:
         with:
           cache: pnpm
           node-version-file: '.node-version'
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm run check-format
-      - run: pnpm run build
+      - run: pnpm bootstrap
+      - run: pnpm check
+      - run: pnpm build
