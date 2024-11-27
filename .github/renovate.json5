@@ -59,8 +59,8 @@
     },
     {
       matchFileNames: ['package.json'],
-      extends: [':pinDevDependencies']
-    }
+      extends: [':pinDevDependencies'],
+    },
   ],
   postUpgradeTasks: {
     commands: ['pnpm bootstrap', 'pnpm fix', 'pnpm build'],
