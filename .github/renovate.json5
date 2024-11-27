@@ -52,7 +52,7 @@
     },
   ],
   postUpgradeTasks: {
-    commands: ['npm install -g pnpm@9.14.2', 'pnpm install --frozen-lockfile', 'pnpm run format'],
+    commands: ['pnpm bootstrap', 'pnpm fix', 'pnpm build'],
     executionMode: 'branch',
   },
   prCreation: 'immediate',
