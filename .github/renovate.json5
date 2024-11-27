@@ -5,10 +5,8 @@
   addLabels: ['{{{parentDir}}}'],
   automergeType: 'pr',
   packageRules: [
-    // React Native rules based on React Native Test App:
-    // https://github.com/microsoft/react-native-test-app/blob/bc3579879d053096a34037d82f198d4c2f912682/.github/renovate.json
     {
-      matchSourceUrlPrefixes: ['https://github.com/facebook/metro'],
+      matchSourceUrls: ['https://github.com/facebook/metro{/,}**'],
       groupName: 'Metro',
       allowedVersions: '^0.80.0',
     },
@@ -36,7 +34,7 @@
       allowedVersions: '^0.73.0',
     },
     {
-      matchPackagePrefixes: ['@react-native-community/cli'],
+      matchPackageNames: ['@react-native-community/cli{/,}**'],
       groupName: 'React Native CLI',
       allowedVersions: '^12.0.0',
     },
