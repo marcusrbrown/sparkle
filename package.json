@@ -32,7 +32,7 @@
     "typescript": "5.6.3",
     "vitest": "2.1.6"
   },
-  "packageManager": "pnpm@9.14.2",
+  "packageManager": "pnpm@9.14.3",
   "publishConfig": {
     "linkDirectory": true
   }
