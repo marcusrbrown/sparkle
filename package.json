@@ -29,7 +29,7 @@
     "markdownlint": "0.36.1",
     "prettier": "3.4.2",
     "scripts": "workspace:*",
-    "typescript": "5.6.3",
+    "typescript": "5.7.2",
     "vitest": "2.1.8"
   },
   "packageManager": "pnpm@9.15.0",
