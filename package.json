@@ -9,7 +9,7 @@
   "author": "Marcus R. Brown <git@mrbro.dev>",
   "type": "module",
   "scripts": {
-    "bootstrap": "pnpm install --prefer-frozen-lockfile --ignore-scripts --prefer-offline --loglevel error",
+    "bootstrap": "pnpm install --prefer-offline --loglevel error",
     "build": "pnpm build:types && pnpm -r run --filter='./packages/**' build",
     "build:types": "pnpm -r run --filter='./packages/**' build:types",
     "build:types:watch": "pnpm -r run --parallel build:types:watch",
