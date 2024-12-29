@@ -12,8 +12,8 @@ importers:
         specifier: 0.13.7
         version: 0.13.7(prettier@3.4.2)
       '@bfra.me/tsconfig':
-        specifier: 0.9.6
-        version: 0.9.6
+        specifier: 0.9.7
+        version: 0.9.7
       '@manypkg/cli':
         specifier: 0.23.0
         version: 0.23.0
@@ -709,8 +709,8 @@ packages:
     peerDependencies:
       prettier: ^3.0.0
 
-  '@bfra.me/tsconfig@0.9.6':
-    resolution: {integrity: sha512-aOSbuKRJ/i8B4Zqkuzp105EwXY+CqHKNxyWjVu0P5xM6UzHx1mRv01J8CGDMw54eqdKj9ySZUE1sjCJDNB0sKA==}
+  '@bfra.me/tsconfig@0.9.7':
+    resolution: {integrity: sha512-B61KNTmHmR47crasbyAOgUkn/kxJogioFY9YAe0E7ExOSv3Y5BRvVItZBbhE8GaO2HxWgf3/d8SDQC39QBmKJw==}
 
   '@esbuild/aix-ppc64@0.21.5':
     resolution: {integrity: sha512-1SDgH6ZSPTlggy1yI6+Dbkiz8xzpHJEVAlF/AM1tHPLsf5STom9rwtjE4hKAF20FfXXNTFqEYXyJNWh1GiZedQ==}
@@ -6013,7 +6013,7 @@ snapshots:
       prettier: 3.4.2
       sort-package-json: 2.12.0
 
-  '@bfra.me/tsconfig@0.9.6': {}
+  '@bfra.me/tsconfig@0.9.7': {}
 
   '@esbuild/aix-ppc64@0.21.5':
     optional: true

@@ -24,7 +24,7 @@
   "prettier": "@bfra.me/prettier-config/120-proof",
   "devDependencies": {
     "@bfra.me/prettier-config": "0.13.7",
-    "@bfra.me/tsconfig": "0.9.6",
+    "@bfra.me/tsconfig": "0.9.7",
     "@manypkg/cli": "0.23.0",
     "markdownlint": "0.37.2",
     "prettier": "3.4.2",
