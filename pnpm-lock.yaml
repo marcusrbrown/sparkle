@@ -120,13 +120,13 @@ importers:
         version: 18.2.25
       '@vitejs/plugin-react':
         specifier: 4.3.4
-        version: 4.3.4(vite@6.0.6(@types/node@22.10.2)(lightningcss@1.27.0)(terser@5.37.0)(yaml@2.6.1))
+        version: 4.3.4(vite@6.0.7(@types/node@22.10.2)(lightningcss@1.27.0)(terser@5.37.0)(yaml@2.6.1))
       typescript:
         specifier: 5.7.2
         version: 5.7.2
       vite:
-        specifier: 6.0.6
-        version: 6.0.6(@types/node@22.10.2)(lightningcss@1.27.0)(terser@5.37.0)(yaml@2.6.1)
+        specifier: 6.0.7
+        version: 6.0.7(@types/node@22.10.2)(lightningcss@1.27.0)(terser@5.37.0)(yaml@2.6.1)
 
   scripts: {}
 
@@ -5056,8 +5056,8 @@ packages:
       terser:
         optional: true
 
-  vite@6.0.6:
-    resolution: {integrity: sha512-NSjmUuckPmDU18bHz7QZ+bTYhRR0iA72cs2QAxCqDpafJ0S6qetco0LB3WW2OxlMHS0JmAv+yZ/R3uPmMyGTjQ==}
+  vite@6.0.7:
+    resolution: {integrity: sha512-RDt8r/7qx9940f8FcOIAH9PTViRrghKaK2K1jY3RaAURrEUbm9Du1mJ72G+jlhtG3WwodnfzY8ORQZbBavZEAQ==}
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
     hasBin: true
     peerDependencies:
@@ -7416,14 +7416,14 @@ snapshots:
     transitivePeerDependencies:
       - graphql
 
-  '@vitejs/plugin-react@4.3.4(vite@6.0.6(@types/node@22.10.2)(lightningcss@1.27.0)(terser@5.37.0)(yaml@2.6.1))':
+  '@vitejs/plugin-react@4.3.4(vite@6.0.7(@types/node@22.10.2)(lightningcss@1.27.0)(terser@5.37.0)(yaml@2.6.1))':
     dependencies:
       '@babel/core': 7.26.0
       '@babel/plugin-transform-react-jsx-self': 7.25.9(@babel/core@7.26.0)
       '@babel/plugin-transform-react-jsx-source': 7.25.9(@babel/core@7.26.0)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.2
-      vite: 6.0.6(@types/node@22.10.2)(lightningcss@1.27.0)(terser@5.37.0)(yaml@2.6.1)
+      vite: 6.0.7(@types/node@22.10.2)(lightningcss@1.27.0)(terser@5.37.0)(yaml@2.6.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -11344,7 +11344,7 @@ snapshots:
       lightningcss: 1.27.0
       terser: 5.37.0
 
-  vite@6.0.6(@types/node@22.10.2)(lightningcss@1.27.0)(terser@5.37.0)(yaml@2.6.1):
+  vite@6.0.7(@types/node@22.10.2)(lightningcss@1.27.0)(terser@5.37.0)(yaml@2.6.1):
     dependencies:
       esbuild: 0.24.2
       postcss: 8.4.49
