@@ -18,8 +18,8 @@ importers:
         specifier: 0.23.0
         version: 0.23.0
       markdownlint:
-        specifier: 0.37.3
-        version: 0.37.3
+        specifier: 0.37.4
+        version: 0.37.4
       prettier:
         specifier: 3.4.2
         version: 3.4.2
@@ -3589,8 +3589,8 @@ packages:
     resolution: {integrity: sha512-a54IwgWPaeBCAAsv13YgmALOF1elABB08FxO9i+r4VFk5Vl4pKokRPeX8u5TCgSsPi6ec1otfLjdOpVcgbpshg==}
     hasBin: true
 
-  markdownlint@0.37.3:
-    resolution: {integrity: sha512-eoQqH0291YCCjd+Pe1PUQ9AmWthlVmS0XWgcionkZ8q34ceZyRI+pYvsWksXJJL8OBkWCPwp1h/pnXxrPFC4oA==}
+  markdownlint@0.37.4:
+    resolution: {integrity: sha512-u00joA/syf3VhWh6/ybVFkib5Zpj2e5KB/cfCei8fkSRuums6nyisTWGqjTWIOFoFwuXoTBQQiqlB4qFKp8ncQ==}
     engines: {node: '>=18'}
 
   marky@1.2.5:
@@ -9694,7 +9694,7 @@ snapshots:
       punycode.js: 2.3.1
       uc.micro: 2.1.0
 
-  markdownlint@0.37.3:
+  markdownlint@0.37.4:
     dependencies:
       markdown-it: 14.1.0
       micromark: 4.0.1
