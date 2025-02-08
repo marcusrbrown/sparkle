@@ -30,7 +30,7 @@
     "prettier": "3.4.2",
     "scripts": "workspace:*",
     "typescript": "5.7.3",
-    "vitest": "2.1.8"
+    "vitest": "2.1.9"
   },
   "packageManager": "pnpm@9.15.4",
   "publishConfig": {
