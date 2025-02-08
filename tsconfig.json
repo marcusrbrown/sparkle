@@ -2,5 +2,6 @@
   "extends": "@bfra.me/tsconfig",
   "compilerOptions": {
     "noEmit": true
-  }
+  },
+  "exclude": ["node_modules", "packages/**"]
 }
