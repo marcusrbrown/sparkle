@@ -10,3 +10,4 @@ config:
 globs:
   - '**/*.md'
   - '!node_modules'
+  - '!.cursorrules'

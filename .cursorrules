@@ -1,0 +1,85 @@
+# Sparkle Project Cursor Rules
+
+This is a TypeScript monorepo playground project using pnpm workspaces. The project emphasizes modern TypeScript practices and maintainable code structure.
+
+## Project Context
+
+- This is a monorepo managed with pnpm workspaces
+- All packages are TypeScript-based with ESM modules
+- The project uses Prettier and specific formatting rules
+- Testing is done with Vitest
+- Packages are located in the `packages/` directory
+
+## Coding Standards
+
+- Use TypeScript for all new files with strict type checking
+- Follow ESM module syntax (import/export) instead of CommonJS
+- Use functional programming patterns where possible
+- Prefer `const` over `let`, avoid `var`
+- Use PascalCase for types/interfaces, camelCase for variables/functions
+- Maintain 120 character line length limit as per Prettier config
+- Use explicit return types for public functions and methods
+
+## File Structure
+
+- `/packages/*`: Individual project packages
+- `/scripts`: Build and utility scripts
+- Each package should follow this structure:
+  - `src/`: Source code
+  - `dist/`: Compiled output (gitignored)
+  - `test/`: Test files
+  - `package.json`: Package configuration
+  - `tsconfig.json`: TypeScript configuration
+
+## Testing Guidelines
+
+- Write tests using Vitest
+- Place test files in a `test` directory
+- Name test files with `.test.ts` suffix
+- Include unit tests for utility functions
+- Test component behavior and edge cases
+
+## Documentation Requirements
+
+- Use JSDoc comments for public functions and types
+- Include README.md files in each package
+- Document breaking changes in commit messages
+- Keep documentation up-to-date with code changes
+
+## Package Management
+
+- Use pnpm for package management
+- Maintain clean dependencies with minimal overlap
+- Use workspace references for internal dependencies
+- Pin exact versions for external dependencies
+
+## Error Handling
+
+- Use typed error classes for domain-specific errors
+- Implement proper error boundaries where needed
+- Provide detailed error messages for debugging
+- Handle async errors with try/catch blocks
+
+## Performance Considerations
+
+- Implement lazy loading where appropriate
+- Minimize bundle size through proper code splitting
+- Use appropriate TypeScript compiler options for optimization
+- Consider tree-shaking when structuring code
+
+## Quality Gates
+
+- All code must pass TypeScript compilation with strict mode
+- Tests must pass before merging
+- Code must be formatted according to Prettier rules
+- No ESLint warnings in new code
+- Maintain backwards compatibility unless explicitly breaking
+
+## Development Workflow
+
+- Use feature branches for development
+- Follow conventional commit messages
+- Update documentation alongside code changes
+- Ensure all tests pass locally before pushing
+
+Remember to keep packages focused and maintainable, following the single responsibility principle. When generating code, prioritize type safety and maintainability over brevity.
