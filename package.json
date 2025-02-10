@@ -9,7 +9,7 @@
   "author": "Marcus R. Brown <git@mrbro.dev>",
   "type": "module",
   "scripts": {
-    "bootstrap": "pnpm install --prefer-offline --loglevel error",
+    "bootstrap": "pnpm install --recursive --prefer-offline --loglevel error",
     "build": "pnpm build:types && pnpm -r run --filter='./packages/**' build",
     "build:types": "pnpm -r run --filter='./packages/**' build:types",
     "build:types:watch": "pnpm -r run --parallel build:types:watch",
@@ -17,7 +17,7 @@
     "check": "pnpm check-format && pnpm check-monorepo",
     "check-format": "prettier --check .",
     "check-monorepo": "manypkg check",
-    "fix": "manypkg fix && pnpm format",
+    "fix": "manypkg fix && pnpm bootstrap && pnpm format",
     "format": "prettier --write .",
     "start": "pnpm -r run --parallel start"
   },
