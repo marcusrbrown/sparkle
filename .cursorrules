@@ -1,22 +1,52 @@
 # Sparkle Project Cursor Rules
 
-This is a TypeScript monorepo playground project using pnpm workspaces. The project emphasizes modern TypeScript practices and maintainable code structure.
+This is a modern TypeScript monorepo playground project using pnpm workspaces. The project emphasizes modern TypeScript practices, React components, and maintainable code structure.
 
 ## Project Context
 
-- This is a monorepo managed with pnpm workspaces
-- All packages are TypeScript-based with ESM modules
-- The project uses Prettier and specific formatting rules
-- Testing is done with Vitest
-- Packages are located in the `packages/` directory
+- Monorepo managed with pnpm workspaces (pnpm@9.15.5)
+- All packages are TypeScript-based (v5.7.3) with ESM modules
+- React-based UI components with Tailwind CSS
+- Testing with Vitest and React Testing Library
+- Build system using Vite
+- Storybook for component documentation
+- Packages located in the `packages/` directory
+
+## Technology Stack
+
+### Core Technologies
+- TypeScript 5.7.3 with strict mode
+- React 18.2.0
+- pnpm 9.15.5 for package management
+- Vite 5.4.14 for build tooling
+
+### UI & Styling
+- Tailwind CSS 4.0.6
+- Radix UI primitives
+- CSS Modules support
+- PostCSS for processing
+
+### Testing & Quality
+- Vitest for unit and integration testing
+- React Testing Library
+- TypeScript strict type checking
+- Prettier for code formatting
+- ESLint for code quality
+
+### Documentation
+- Storybook for component documentation
+- JSDoc for API documentation
+- Markdown for general documentation
 
 ## Coding Standards
 
 - Use TypeScript for all new files with strict type checking
 - Follow ESM module syntax (import/export) instead of CommonJS
+- Use functional React components with hooks
+- Implement proper component prop types and interfaces
 - Use functional programming patterns where possible
 - Prefer `const` over `let`, avoid `var`
-- Use PascalCase for types/interfaces, camelCase for variables/functions
+- Use PascalCase for types/interfaces/components, camelCase for variables/functions
 - Maintain 120 character line length limit as per Prettier config
 - Use explicit return types for public functions and methods
 
@@ -81,5 +111,41 @@ This is a TypeScript monorepo playground project using pnpm workspaces. The proj
 - Follow conventional commit messages
 - Update documentation alongside code changes
 - Ensure all tests pass locally before pushing
+- Create/update Storybook stories for components
+- Maintain backwards compatibility unless explicitly breaking
+- Update package versions according to semver
 
-Remember to keep packages focused and maintainable, following the single responsibility principle. When generating code, prioritize type safety and maintainability over brevity.
+## AI Assistant Guidelines
+
+When working with this codebase:
+- Prioritize type safety and maintainability
+- Follow React best practices and hooks guidelines
+- Ensure proper error boundaries and error handling
+- Implement proper loading states and user feedback
+- Consider accessibility in all UI components
+- Write clear, maintainable tests
+- Document complex logic and important decisions
+- Consider bundle size and performance implications
+
+Remember to keep packages focused and maintainable, following the single responsibility principle. When generating code, prioritize type safety, maintainability, and proper error handling over brevity.
+
+## UI Component Guidelines
+
+- Use functional components with TypeScript
+- Implement proper prop types and interfaces
+- Follow atomic design principles
+- Use Tailwind CSS for styling
+- Implement responsive design patterns
+- Create stories for all components
+- Ensure accessibility compliance
+- Use Radix UI primitives where applicable
+
+## Performance Guidelines
+
+- Implement React.memo for expensive renders
+- Use proper React hooks dependencies
+- Implement code splitting with dynamic imports
+- Optimize bundle size through proper code splitting
+- Use appropriate TypeScript compiler options
+- Consider tree-shaking when structuring code
+- Implement lazy loading for routes and large components
