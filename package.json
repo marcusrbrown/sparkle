@@ -27,7 +27,7 @@
     "@bfra.me/tsconfig": "0.9.7",
     "@manypkg/cli": "0.23.0",
     "markdownlint": "0.37.4",
-    "prettier": "3.4.2",
+    "prettier": "3.5.0",
     "scripts": "workspace:*",
     "typescript": "5.7.3"
   },
