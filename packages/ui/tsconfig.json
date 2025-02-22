@@ -1,15 +1,17 @@
 {
-  "extends": "@bfra.me/tsconfig",
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": "src",
     "module": "ESNext",
     "declaration": true,
     "declarationMap": true,
-    "jsx": "react-jsx",
     "sourceMap": true,
-    "strict": true,
-    "noUncheckedIndexedAccess": true
+    "jsx": "react-jsx",
+    "types": ["vitest/globals", "node"],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "test"]

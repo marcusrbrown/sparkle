@@ -120,3 +120,6 @@ yarn.lock
 
 # Storybook
 storybook-static/
+
+# Turborepo
+.turbo

@@ -8,30 +8,41 @@
   "license": "MIT",
   "author": "Marcus R. Brown <git@mrbro.dev>",
   "type": "module",
+  "engines": {
+    "node": ">=22.13.1",
+    "pnpm": ">=9.15.4"
+  },
   "scripts": {
     "bootstrap": "pnpm install --recursive --prefer-offline --loglevel error",
-    "build": "pnpm build:types && pnpm -r run --filter='./packages/**' build",
-    "build:types": "pnpm -r run --filter='./packages/**' build:types",
-    "build:types:watch": "pnpm -r run --parallel build:types:watch",
-    "build:watch": "pnpm -r run --parallel build:watch",
-    "check": "pnpm check-format && pnpm check-monorepo",
-    "check-format": "prettier --check .",
-    "check-monorepo": "manypkg check",
+    "build": "turbo run build",
+    "build:types": "turbo run build:types",
+    "build:types:watch": "turbo run build:types:watch --parallel",
+    "build:watch": "turbo run build:watch --parallel",
+    "check": "pnpm check:format && pnpm check:monorepo && pnpm check:types",
+    "check:format": "prettier --check .",
+    "check:monorepo": "manypkg check",
+    "check:types": "tsc --noEmit",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "dev": "turbo run dev --parallel",
     "fix": "manypkg fix && pnpm bootstrap && pnpm format",
     "format": "prettier --write .",
-    "start": "pnpm -r run --parallel start"
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "start": "turbo run start --parallel"
   },
   "prettier": "@bfra.me/prettier-config/120-proof",
   "devDependencies": {
     "@bfra.me/prettier-config": "0.15.1",
     "@bfra.me/tsconfig": "0.9.7",
+    "@changesets/cli": "2.27.12",
     "@manypkg/cli": "0.23.0",
+    "@types/node": "22.12.0",
     "markdownlint": "0.37.4",
     "prettier": "3.4.2",
-    "scripts": "workspace:*",
+    "turbo": "2.4.1",
     "typescript": "5.7.3"
   },
-  "packageManager": "pnpm@9.15.5",
+  "packageManager": "pnpm@9.15.4",
   "publishConfig": {
     "linkDirectory": true
   }

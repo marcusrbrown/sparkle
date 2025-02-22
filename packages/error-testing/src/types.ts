@@ -1,3 +1,5 @@
+import type {ComponentType} from 'react'
+
 /**
  * Represents a test scenario context that maintains type safety throughout the test lifecycle.
  */
@@ -12,7 +14,7 @@ export interface TestContext<TState = unknown> {
 export interface ErrorBoundaryConfig<TError extends Error = Error> {
   readonly name: string
   readonly errorTypes: ReadonlyArray<new (...args: any[]) => TError>
-  readonly fallback?: React.ComponentType<{error: TError}>
+  readonly fallback?: ComponentType<{error: TError}>
 }
 
 /**

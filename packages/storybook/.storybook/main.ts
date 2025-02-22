@@ -1,24 +1,13 @@
 import type {StorybookConfig} from '@storybook/react-vite'
+import {mergeConfig} from 'vite'
 
 const config: StorybookConfig = {
-  stories: [
-    '../src/**/*.mdx',
-    '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)',
-    '../../**/src/**/*.stories.@(js|jsx|mjs|ts|tsx)',
-  ],
+  stories: ['../src/**/*.stories.@(js|jsx|ts|tsx)'],
   addons: [
     '@storybook/addon-links',
     '@storybook/addon-essentials',
     '@storybook/addon-onboarding',
     '@storybook/addon-interactions',
-    {
-      name: '@storybook/addon-styling',
-      options: {
-        postCss: {
-          implementation: require.resolve('postcss'),
-        },
-      },
-    },
   ],
   framework: {
     name: '@storybook/react-vite',
@@ -29,10 +18,17 @@ const config: StorybookConfig = {
   },
   core: {
     builder: '@storybook/builder-vite',
+    disableTelemetry: true,
   },
   viteFinal: async config => {
-    // Add any custom Vite configuration here
-    return config
+    return mergeConfig(config, {
+      optimizeDeps: {
+        include: ['storybook-dark-mode'],
+      },
+      build: {
+        sourcemap: true,
+      },
+    })
   },
 }
 

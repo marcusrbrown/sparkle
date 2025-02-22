@@ -6,5 +6,5 @@
     "module": "ESNext",
     "moduleResolution": "bundler"
   },
-  "include": [".storybook/main.ts", "vite.config.ts"]
+  "include": ["*.config.*", ".eslintrc.*"]
 }

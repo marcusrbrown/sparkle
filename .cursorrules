@@ -1,151 +1,64 @@
-# Sparkle Project Cursor Rules
+# Sparkle Project Guidelines
 
-This is a modern TypeScript monorepo playground project using pnpm workspaces. The project emphasizes modern TypeScript practices, React components, and maintainable code structure.
+Modern TypeScript monorepo using pnpm workspaces, emphasizing React components and maintainable code.
 
-## Project Context
-
-- Monorepo managed with pnpm workspaces (pnpm@9.15.5)
-- All packages are TypeScript-based (v5.7.3) with ESM modules
-- React-based UI components with Tailwind CSS
-- Testing with Vitest and React Testing Library
-- Build system using Vite
-- Storybook for component documentation
-- Packages located in the `packages/` directory
-
-## Technology Stack
-
-### Core Technologies
-- TypeScript 5.7.3 with strict mode
+## Core Stack & Versions
+- pnpm@9.15.5 workspace monorepo
+- TypeScript 5.7.3 (strict mode)
 - React 18.2.0
-- pnpm 9.15.5 for package management
-- Vite 5.4.14 for build tooling
-
-### UI & Styling
+- Vite 5.4.14
 - Tailwind CSS 4.0.6
 - Radix UI primitives
-- CSS Modules support
-- PostCSS for processing
+- Vitest + React Testing Library
+- Storybook
 
-### Testing & Quality
-- Vitest for unit and integration testing
-- React Testing Library
-- TypeScript strict type checking
-- Prettier for code formatting
-- ESLint for code quality
+## Development Standards
+- ESM modules only, no CommonJS
+- Functional React components with hooks
+- Strong typing with explicit interfaces
+- PascalCase: types/interfaces/components
+- camelCase: variables/functions
+- 120 char line limit
+- Explicit return types on public APIs
 
-### Documentation
-- Storybook for component documentation
-- JSDoc for API documentation
-- Markdown for general documentation
+## Project Structure
+/packages/*
+  ├── src/       # Source code
+  ├── test/      # Test files (.test.ts)
+  ├── dist/      # Compiled output (gitignored)
+  ├── package.json
+  └── tsconfig.json
 
-## Coding Standards
+## Quality Requirements
+- TypeScript strict mode
+- ESLint clean build
+- Vitest passing tests
+- Storybook documentation
+- JSDoc on public APIs
+- Proper error boundaries
+- Accessibility compliance
+- Performance optimized
+  - React.memo for expensive renders
+  - Code splitting
+  - Tree-shaking friendly
+  - Lazy loading where appropriate
 
-- Use TypeScript for all new files with strict type checking
-- Follow ESM module syntax (import/export) instead of CommonJS
-- Use functional React components with hooks
-- Implement proper component prop types and interfaces
-- Use functional programming patterns where possible
-- Prefer `const` over `let`, avoid `var`
-- Use PascalCase for types/interfaces/components, camelCase for variables/functions
-- Maintain 120 character line length limit as per Prettier config
-- Use explicit return types for public functions and methods
+## Component Guidelines
+- Functional components only
+- Proper prop types/interfaces
+- Atomic design principles
+- Tailwind CSS styling
+- Responsive patterns
+- Radix UI primitives preferred
+- Loading states & error handling
+- Accessibility first
 
-## File Structure
+## Workflow
+- Feature branches
+- Conventional commits
+- Pin dependency versions
+- Update documentation
+- Maintain backward compatibility
+- Semver versioning
 
-- `/packages/*`: Individual project packages
-- `/scripts`: Build and utility scripts
-- Each package should follow this structure:
-  - `src/`: Source code
-  - `dist/`: Compiled output (gitignored)
-  - `test/`: Test files
-  - `package.json`: Package configuration
-  - `tsconfig.json`: TypeScript configuration
-
-## Testing Guidelines
-
-- Write tests using Vitest
-- Place test files in a `test` directory
-- Name test files with `.test.ts` suffix
-- Include unit tests for utility functions
-- Test component behavior and edge cases
-
-## Documentation Requirements
-
-- Use JSDoc comments for public functions and types
-- Include README.md files in each package
-- Document breaking changes in commit messages
-- Keep documentation up-to-date with code changes
-
-## Package Management
-
-- Use pnpm for package management
-- Maintain clean dependencies with minimal overlap
-- Use workspace references for internal dependencies
-- Pin exact versions for external dependencies
-
-## Error Handling
-
-- Use typed error classes for domain-specific errors
-- Implement proper error boundaries where needed
-- Provide detailed error messages for debugging
-- Handle async errors with try/catch blocks
-
-## Performance Considerations
-
-- Implement lazy loading where appropriate
-- Minimize bundle size through proper code splitting
-- Use appropriate TypeScript compiler options for optimization
-- Consider tree-shaking when structuring code
-
-## Quality Gates
-
-- All code must pass TypeScript compilation with strict mode
-- Tests must pass before merging
-- Code must be formatted according to Prettier rules
-- No ESLint warnings in new code
-- Maintain backwards compatibility unless explicitly breaking
-
-## Development Workflow
-
-- Use feature branches for development
-- Follow conventional commit messages
-- Update documentation alongside code changes
-- Ensure all tests pass locally before pushing
-- Create/update Storybook stories for components
-- Maintain backwards compatibility unless explicitly breaking
-- Update package versions according to semver
-
-## AI Assistant Guidelines
-
-When working with this codebase:
-- Prioritize type safety and maintainability
-- Follow React best practices and hooks guidelines
-- Ensure proper error boundaries and error handling
-- Implement proper loading states and user feedback
-- Consider accessibility in all UI components
-- Write clear, maintainable tests
-- Document complex logic and important decisions
-- Consider bundle size and performance implications
-
-Remember to keep packages focused and maintainable, following the single responsibility principle. When generating code, prioritize type safety, maintainability, and proper error handling over brevity.
-
-## UI Component Guidelines
-
-- Use functional components with TypeScript
-- Implement proper prop types and interfaces
-- Follow atomic design principles
-- Use Tailwind CSS for styling
-- Implement responsive design patterns
-- Create stories for all components
-- Ensure accessibility compliance
-- Use Radix UI primitives where applicable
-
-## Performance Guidelines
-
-- Implement React.memo for expensive renders
-- Use proper React hooks dependencies
-- Implement code splitting with dynamic imports
-- Optimize bundle size through proper code splitting
-- Use appropriate TypeScript compiler options
-- Consider tree-shaking when structuring code
-- Implement lazy loading for routes and large components
+Remember: Type safety and maintainability over brevity. Keep packages focused and follow single responsibility principle.

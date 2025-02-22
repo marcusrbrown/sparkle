@@ -1,26 +1,11 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "target": "ESNext",
-    "useDefineForClassFields": true,
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "allowJs": false,
-    "skipLibCheck": true,
-    "esModuleInterop": false,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
     "baseUrl": ".",
+    "jsx": "react-jsx",
     "paths": {
       "@sparkle/*": ["../*/src"]
     }
   },
-  "include": ["src", ".storybook/**/*"],
-  "references": [{"path": "./tsconfig.node.json"}]
+  "include": ["src", ".storybook/**/*"]
 }
