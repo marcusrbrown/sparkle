@@ -1,0 +1,57 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": ["**/.env.*local"],
+  "globalEnv": ["NODE_ENV"],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**", "storybook-static/**"],
+      "inputs": [
+        "src/**/*.{ts,tsx,js,jsx}",
+        "package.json",
+        "tsconfig.json",
+        "next.config.{js,ts,mjs,cjs}",
+        ".storybook/**/*"
+      ]
+    },
+    "build:types": {
+      "dependsOn": ["^build:types"],
+      "outputs": ["dist/**/*.d.ts"],
+      "inputs": ["src/**/*.{ts,tsx}", "tsconfig.json"]
+    },
+    "build:types:watch": {
+      "dependsOn": ["^build:types"],
+      "persistent": true,
+      "cache": false
+    },
+    "build:watch": {
+      "dependsOn": ["^build"],
+      "persistent": true,
+      "cache": false
+    },
+    "dev": {
+      "dependsOn": ["^build"],
+      "persistent": true,
+      "cache": false,
+      "inputs": ["src/**/*.{ts,tsx,js,jsx}", "package.json", "tsconfig.json", ".env.*local"]
+    },
+    "start": {
+      "dependsOn": ["^build"],
+      "persistent": true,
+      "cache": false
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/**"],
+      "inputs": ["src/**/*.{ts,tsx}", "test/**/*.{ts,tsx}", "package.json", "tsconfig.json", "vitest.config.{ts,js}"]
+    },
+    "lint": {
+      "outputs": ["eslint-results.json"],
+      "inputs": ["src/**/*.{ts,tsx,js,jsx}", ".eslintrc.*", "package.json", "tsconfig.json"]
+    },
+    "clean": {
+      "cache": false,
+      "outputs": ["dist/**", ".turbo/**", "node_modules/**"]
+    }
+  }
+}

@@ -26,7 +26,7 @@ describe('TestScenarioBuilder', () => {
       })
       .withRecovery({
         canHandle: (error): error is CustomError => error instanceof CustomError,
-        handle: async (error, ctx) => {
+        handle: async (_, ctx) => {
           ctx.state.counter += 1
         },
       })

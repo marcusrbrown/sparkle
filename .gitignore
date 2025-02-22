@@ -117,3 +117,9 @@ build/
 # Lockfiles
 package-lock.json
 yarn.lock
+
+# Storybook
+storybook-static/
+
+# Turborepo
+.turbo
