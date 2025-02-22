@@ -27,7 +27,8 @@
     "react-dom": "18.2.0",
     "react-native": "0.73.11",
     "react-native-safe-area-context": "5.2.0",
-    "react-native-screens": "~4.6.0"
+    "react-native-screens": "~4.7.0",
+    "react-native-web": "~0.19.13"
   },
   "devDependencies": {
     "@babel/core": "^7.24.3",
@@ -37,7 +38,6 @@
     "@types/react": "~18.2.79",
     "@vitejs/plugin-react": "4.3.4",
     "happy-dom": "17.1.1",
-    "react-native-web": "~0.19.13",
     "react-test-renderer": "^18.2.0",
     "typescript": "5.7.3",
     "vite": "5.4.14",
