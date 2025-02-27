@@ -65,7 +65,7 @@ importers:
         version: 5.7.3
       vitest:
         specifier: ^2.1.9
-        version: 2.1.9(@types/node@22.12.0)(happy-dom@17.1.4)(jsdom@20.0.3)(less@4.2.2)(lightningcss@1.29.1)(terser@5.39.0)
+        version: 2.1.9(@types/node@22.12.0)(happy-dom@17.1.6)(jsdom@20.0.3)(less@4.2.2)(lightningcss@1.29.1)(terser@5.39.0)
 
   packages/fro-jive:
     dependencies:
@@ -137,8 +137,8 @@ importers:
         specifier: 4.3.4
         version: 4.3.4(vite@5.4.14(@types/node@22.12.0)(less@4.2.2)(lightningcss@1.29.1)(terser@5.39.0))
       happy-dom:
-        specifier: 17.1.4
-        version: 17.1.4
+        specifier: 17.1.6
+        version: 17.1.6
       react-test-renderer:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
@@ -150,7 +150,7 @@ importers:
         version: 5.4.14(@types/node@22.12.0)(less@4.2.2)(lightningcss@1.29.1)(terser@5.39.0)
       vitest:
         specifier: ^2.1.9
-        version: 2.1.9(@types/node@22.12.0)(happy-dom@17.1.4)(jsdom@20.0.3)(less@4.2.2)(lightningcss@1.29.1)(terser@5.39.0)
+        version: 2.1.9(@types/node@22.12.0)(happy-dom@17.1.6)(jsdom@20.0.3)(less@4.2.2)(lightningcss@1.29.1)(terser@5.39.0)
 
   packages/storybook:
     dependencies:
@@ -253,8 +253,8 @@ importers:
         specifier: ^3.8.0
         version: 3.8.0(vite@5.4.14(@types/node@22.12.0)(less@4.2.2)(lightningcss@1.29.1)(terser@5.39.0))
       happy-dom:
-        specifier: 17.1.4
-        version: 17.1.4
+        specifier: 17.1.6
+        version: 17.1.6
       postcss:
         specifier: ^8.5.2
         version: 8.5.2
@@ -275,7 +275,7 @@ importers:
         version: 5.4.14(@types/node@22.12.0)(less@4.2.2)(lightningcss@1.29.1)(terser@5.39.0)
       vitest:
         specifier: ^2.1.9
-        version: 2.1.9(@types/node@22.12.0)(happy-dom@17.1.4)(jsdom@20.0.3)(less@4.2.2)(lightningcss@1.29.1)(terser@5.39.0)
+        version: 2.1.9(@types/node@22.12.0)(happy-dom@17.1.6)(jsdom@20.0.3)(less@4.2.2)(lightningcss@1.29.1)(terser@5.39.0)
 
   scripts: {}
 
@@ -3905,8 +3905,8 @@ packages:
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
-  happy-dom@17.1.4:
-    resolution: {integrity: sha512-cMxE0HP45kLIgWdI0PFfnitNb95Cv8kG8moqI7CK6kcEcfV7xoYVVvSmJ7EuGfDatSKWtjhG/czVooqEV0L4rA==}
+  happy-dom@17.1.6:
+    resolution: {integrity: sha512-AZBytzdbKKP4jirZa7y8Jwn0/1/ZSX627InHelqmIdsQRla15ld98Uk4TNbHEkRvcF7mhGVeuGTtRHzzXOovfg==}
     engines: {node: '>=18.0.0'}
 
   has-bigints@1.1.0:
@@ -11312,7 +11312,7 @@ snapshots:
 
   graceful-fs@4.2.11: {}
 
-  happy-dom@17.1.4:
+  happy-dom@17.1.6:
     dependencies:
       webidl-conversions: 7.0.0
       whatwg-mimetype: 3.0.0
@@ -14287,7 +14287,7 @@ snapshots:
       lightningcss: 1.29.1
       terser: 5.39.0
 
-  vitest@2.1.9(@types/node@22.12.0)(happy-dom@17.1.4)(jsdom@20.0.3)(less@4.2.2)(lightningcss@1.29.1)(terser@5.39.0):
+  vitest@2.1.9(@types/node@22.12.0)(happy-dom@17.1.6)(jsdom@20.0.3)(less@4.2.2)(lightningcss@1.29.1)(terser@5.39.0):
     dependencies:
       '@vitest/expect': 2.1.9
       '@vitest/mocker': 2.1.9(vite@5.4.14(@types/node@22.12.0)(less@4.2.2)(lightningcss@1.29.1)(terser@5.39.0))
@@ -14311,7 +14311,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 22.12.0
-      happy-dom: 17.1.4
+      happy-dom: 17.1.6
       jsdom: 20.0.3
     transitivePeerDependencies:
       - less
