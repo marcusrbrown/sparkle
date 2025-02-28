@@ -1,0 +1,9 @@
+---
+description: Best practices for using Storybook for component documentation
+globs: **/*.stories.{ts,tsx}
+---
+- Create stories for all components to showcase different states
+- Use Storybook's controls addon for interactive prop manipulation
+- Implement accessibility testing within Storybook
+- Document component props and usage guidelines in Storybook
+- Utilize Storybook's theming capabilities for consistent UI presentation
