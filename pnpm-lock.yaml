@@ -9,8 +9,8 @@ importers:
   .:
     devDependencies:
       '@bfra.me/prettier-config':
-        specifier: 0.15.2
-        version: 0.15.2(prettier@3.5.3)
+        specifier: 0.15.3
+        version: 0.15.3(prettier@3.5.3)
       '@bfra.me/tsconfig':
         specifier: 0.9.7
         version: 0.9.7
@@ -1042,8 +1042,8 @@ packages:
   '@bcoe/v8-coverage@0.2.3':
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
 
-  '@bfra.me/prettier-config@0.15.2':
-    resolution: {integrity: sha512-H+rlvuL4w6ABx3WZVsIoOLeSvRr3OAiESTTbwofNpTM3q4O7/BnKVhq5j8VgUK5bSic/9a5apoHzaGwqSAwS7A==}
+  '@bfra.me/prettier-config@0.15.3':
+    resolution: {integrity: sha512-bYkM19H/YGmdzUEmXmsfUauK3K4eBvcPkYGyIWW3CBXTxqrbaHuwrJCpdUDQA6w34AhDKbs3KL5ZkfozVy2Quw==}
     peerDependencies:
       prettier: ^3.0.0
 
@@ -7643,7 +7643,7 @@ snapshots:
   '@bcoe/v8-coverage@0.2.3':
     optional: true
 
-  '@bfra.me/prettier-config@0.15.2(prettier@3.5.3)':
+  '@bfra.me/prettier-config@0.15.3(prettier@3.5.3)':
     dependencies:
       prettier: 3.5.3
 
