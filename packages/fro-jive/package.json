@@ -40,7 +40,7 @@
     "happy-dom": "17.4.4",
     "react-test-renderer": "^18.2.0",
     "typescript": "5.8.2",
-    "vite": "5.4.15",
+    "vite": "6.2.3",
     "vitest": "^3.0.0"
   }
 }
