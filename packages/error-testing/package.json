@@ -13,7 +13,7 @@
     "type-fest": "^4.10.2"
   },
   "devDependencies": {
-    "@types/node": "22.13.14",
+    "@types/node": "22.14.1",
     "@types/react": "~18.2.79",
     "react": "18.2.0",
     "react-dom": "18.2.0",
