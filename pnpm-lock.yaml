@@ -9,14 +9,14 @@ importers:
   .:
     devDependencies:
       '@bfra.me/prettier-config':
-        specifier: 0.15.4
-        version: 0.15.4(prettier@3.5.3)
+        specifier: 0.15.3
+        version: 0.15.3(prettier@3.5.3)
       '@bfra.me/tsconfig':
         specifier: 0.9.7
         version: 0.9.7
       '@changesets/cli':
-        specifier: 2.29.1
-        version: 2.29.1
+        specifier: 2.29.2
+        version: 2.29.2
       '@manypkg/cli':
         specifier: 0.23.0
         version: 0.23.0
@@ -996,8 +996,8 @@ packages:
     resolution: {integrity: sha512-H45s8fVLYjbhFH62dIJ3WtmJ6RSPt/3DRO0ZcT2SUiYiQyz3BLVb9ADEnLl91m74aQPS3AzzeajZHYOalWe3bg==}
     engines: {node: '>=6.9.0'}
 
-  '@bfra.me/prettier-config@0.15.4':
-    resolution: {integrity: sha512-eH6gzDgbgVTuXUEwDsgaBrPnCrB+y9PDgSfi6+1O74HWcsxjejWHgMiRxlRFLKpZRn2bhf91bMKw2SQqjX87hA==}
+  '@bfra.me/prettier-config@0.15.3':
+    resolution: {integrity: sha512-bYkM19H/YGmdzUEmXmsfUauK3K4eBvcPkYGyIWW3CBXTxqrbaHuwrJCpdUDQA6w34AhDKbs3KL5ZkfozVy2Quw==}
     peerDependencies:
       prettier: ^3.0.0
 
@@ -1013,8 +1013,8 @@ packages:
   '@changesets/changelog-git@0.2.1':
     resolution: {integrity: sha512-x/xEleCFLH28c3bQeQIyeZf8lFXyDFVn1SgcBiR2Tw/r4IAWlk1fzxCEZ6NxQAjF2Nwtczoen3OA2qR+UawQ8Q==}
 
-  '@changesets/cli@2.29.1':
-    resolution: {integrity: sha512-Y1Z7pVxM2PzKIONyz8IOhExr24HgUxyUxd7jkBkpUra0D6rTSeHuOAUE/syUIMQzzFg5r+1YFXq+YVlU/xFk/w==}
+  '@changesets/cli@2.29.2':
+    resolution: {integrity: sha512-vwDemKjGYMOc0l6WUUTGqyAWH3AmueeyoJa1KmFRtCYiCoY5K3B68ErYpDB6H48T4lLI4czum4IEjh6ildxUeg==}
     hasBin: true
 
   '@changesets/config@3.1.1':
@@ -6898,7 +6898,7 @@ snapshots:
       '@babel/helper-string-parser': 7.25.9
       '@babel/helper-validator-identifier': 7.25.9
 
-  '@bfra.me/prettier-config@0.15.4(prettier@3.5.3)':
+  '@bfra.me/prettier-config@0.15.3(prettier@3.5.3)':
     dependencies:
       prettier: 3.5.3
 
@@ -6933,7 +6933,7 @@ snapshots:
     dependencies:
       '@changesets/types': 6.1.0
 
-  '@changesets/cli@2.29.1':
+  '@changesets/cli@2.29.2':
     dependencies:
       '@changesets/apply-release-plan': 7.0.12
       '@changesets/assemble-release-plan': 6.0.6
