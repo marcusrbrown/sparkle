@@ -52,8 +52,8 @@ importers:
         specifier: ^8.56.0
         version: 8.57.1
       typescript:
-        specifier: 5.7.3
-        version: 5.7.3
+        specifier: 5.8.3
+        version: 5.8.3
 
   packages/error-testing:
     dependencies:
@@ -241,14 +241,14 @@ importers:
   packages/types:
     devDependencies:
       '@types/react':
-        specifier: ^18.2.67
+        specifier: ~18.2.79
         version: 18.2.79
       eslint:
         specifier: ^8.56.0
         version: 8.57.1
       typescript:
-        specifier: 5.7.3
-        version: 5.7.3
+        specifier: 5.8.3
+        version: 5.8.3
 
   packages/ui:
     dependencies:
@@ -321,8 +321,8 @@ importers:
         specifier: ^8.56.0
         version: 8.57.1
       typescript:
-        specifier: 5.7.3
-        version: 5.7.3
+        specifier: 5.8.3
+        version: 5.8.3
 
   scripts: {}
 
@@ -5843,11 +5843,6 @@ packages:
   type-fest@4.39.1:
     resolution: {integrity: sha512-uW9qzd66uyHYxwyVBYiwS4Oi0qZyUqwjU+Oevr6ZogYiXt99EOYtwvzMSLw1c3lYo2HzJsep/NB23iEVEgjG/w==}
     engines: {node: '>=16'}
-
-  typescript@5.7.3:
-    resolution: {integrity: sha512-84MVSjMEHP+FQRPy3pX9sTVV/INIex71s9TL2Gm5FG/WG1SqXeKyZ0k7/blY/4FdOzI12CBy1vGc4og/eus0fw==}
-    engines: {node: '>=14.17'}
-    hasBin: true
 
   typescript@5.8.3:
     resolution: {integrity: sha512-p1diW6TqL9L07nNxvRMM7hMMw4c5XOo/1ibL4aAIGmSAt9slTE1Xgw5KWuof2uTOvCg9BY7ZRi+GaF+7sfgPeQ==}
@@ -12713,8 +12708,6 @@ snapshots:
   type-fest@2.19.0: {}
 
   type-fest@4.39.1: {}
-
-  typescript@5.7.3: {}
 
   typescript@5.8.3: {}
 
