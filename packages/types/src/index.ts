@@ -1,3 +1,5 @@
+import type { CSSProperties } from 'react';
+
 /**
  * Common theme configuration types
  */
@@ -12,7 +14,7 @@ export interface ThemeConfig {
  */
 export interface BaseProps {
   className?: string
-  style?: React.CSSProperties
+  style?: CSSProperties
   id?: string
   'data-testid'?: string
 }

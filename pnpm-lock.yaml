@@ -240,6 +240,9 @@ importers:
 
   packages/types:
     devDependencies:
+      '@types/react':
+        specifier: ^18.2.67
+        version: 18.2.79
       eslint:
         specifier: ^8.56.0
         version: 8.57.1
