@@ -11,3 +11,4 @@ globs:
   - '**/*.md'
   - '!node_modules'
   - '!.cursorrules'
+  - '!.cursor/rules/**/*.mdc'

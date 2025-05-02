@@ -1,9 +1,0 @@
----
-description: Best practices for using Turbo in monorepos
-globs: **/turbo.json
----
-- Use task dependencies to optimize build and test processes
-- Implement caching to speed up subsequent runs
-- Utilize the `--parallel` flag for concurrent task execution
-- Configure remote caching for CI/CD pipelines
-- Keep your `turbo.json` file organized and well-documented
