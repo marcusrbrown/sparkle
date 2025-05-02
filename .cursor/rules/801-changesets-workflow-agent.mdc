@@ -1,0 +1,104 @@
+---
+description: FOLLOW when VERSIONING and RELEASING packages to MAINTAIN consistent version control and changelog generation
+globs:
+alwaysApply: false
+---
+# Changesets Workflow Best Practices
+
+## Context
+- When versioning packages in the monorepo
+- When preparing package releases
+- When managing changelogs
+- When publishing packages to npm or other registries
+
+## Requirements
+- Use Changesets for versioning and changelog generation
+- Create changeset files for all significant changes
+- Ensure each changeset file includes the affected packages
+- Understand the different bump types (major, minor, patch)
+- Run changeset version to update package versions and changelogs
+- Commit and push version updates
+- Use proper publish commands for the package registry
+
+## Examples
+<example>
+Creating a changeset for a feature change:
+
+```bash
+# Create a new changeset
+pnpm changeset
+
+# Follow the interactive prompts:
+# 1. Select affected packages (@sparkle/ui)
+# 2. Choose bump type (minor for new features)
+# 3. Write a descriptive message explaining the change
+```
+
+Changeset file example (.changeset/purple-bears-walk.md):
+```md
+---
+"@sparkle/ui": minor
+---
+
+Add new Button variants with hover states and improved accessibility.
+```
+
+Applying changesets to version packages:
+```bash
+# Update package versions and changelogs
+pnpm changeset version
+
+# This command:
+# - Consumes all changesets
+# - Updates package.json versions
+# - Updates/creates CHANGELOG.md files
+# - Commits these changes
+```
+
+Publishing versioned packages:
+```bash
+# After merging version changes to main
+pnpm publish -r
+
+# For packages with private registry:
+pnpm publish -r --registry=https://registry.example.com
+```
+</example>
+
+<example type="invalid">
+Manually updating versions without changesets:
+```bash
+# Directly changing version in package.json
+sed -i '' 's/"version": "1.0.0"/"version": "1.0.1"/' packages/ui/package.json
+
+# Not updating changelog
+```
+
+Creating a changeset with poor description:
+```md
+---
+"@sparkle/ui": patch
+---
+
+Fixed stuff.
+```
+
+Running version without creating changesets:
+```bash
+# No changesets to apply
+pnpm changeset version
+# Result: No changesets found, no changes made
+```
+</example>
+
+## Critical Points
+<critical>
+  - ALWAYS create a changeset file for significant changes
+  - NEVER manually update package versions
+  - INCLUDE clear descriptions of changes in changeset files
+  - CHOOSE the correct bump type (major for breaking changes, minor for features, patch for fixes)
+  - USE `pnpm changeset` to create changeset files
+  - RUN `pnpm changeset version` to update versions and changelogs
+  - COMMIT version changes as a separate commit
+  - ENSURE changesets reference the correct affected packages
+</critical>

@@ -1,0 +1,99 @@
+---
+description:
+globs:
+alwaysApply: true
+tags: [preferences, personal, developer]
+priority: 1
+---
+
+# Personal Development Preferences
+
+## Context
+- This rule contains personal preferences for development in the Sparkle project
+- These preferences should be respected throughout the codebase
+- Preferences will be updated as they are learned or adjusted
+
+## Requirements
+- Follow the personal preferences listed below when writing or modifying code
+- If preferences conflict with project standards, prioritize project standards
+- Ask for clarification when preferences are ambiguous or unclear
+
+## Editor & Environment
+- Prefer 2-space indentation for all file types
+- Always use LF line endings
+- Remove trailing whitespace on save
+- Use VSCode as the primary editor
+
+## Coding Style
+- Prefer arrow functions over function declarations for component definitions
+- Use destructuring for props in React components
+- Use named exports over default exports
+- Organize imports in groups: React/external libraries, project packages, relative imports
+- Add JSDoc comments for functions with complex parameters or return types
+
+## Component Structure
+- Prefer functional components over class components
+- Co-locate component tests with the components they test
+- Place reusable components in the appropriate package based on usage scope
+- Structure component files with imports, types, helper functions, component definition, exports
+
+## Project Organization
+- Keep related files close to each other
+- Place shared utilities in the utils package
+- Create new packages only when the scope is clear and justified
+
+## Examples
+<example>
+  // Good component structure
+  import { useState } from 'react';
+  import { Button } from '@sparkle/ui';
+
+  type TodoItemProps = {
+    id: string;
+    text: string;
+    isCompleted: boolean;
+    onToggle: (id: string) => void;
+  };
+
+  export const TodoItem = ({ id, text, isCompleted, onToggle }: TodoItemProps) => {
+    const handleToggle = () => onToggle(id);
+
+    return (
+      <div className="flex items-center gap-2">
+        <Button onClick={handleToggle}>
+          {isCompleted ? 'Undo' : 'Complete'}
+        </Button>
+        <span className={isCompleted ? 'line-through' : ''}>{text}</span>
+      </div>
+    );
+  };
+</example>
+
+<example type="invalid">
+  // Poor component structure - mixed default/named exports, no types, messy organization
+  import React from 'react'
+  import {Button} from '@sparkle/ui'
+
+  function TodoItem(props) {
+    return (
+      <div>
+        <Button onClick={() => props.onToggle(props.id)}>
+          {props.isCompleted ? 'Undo' : 'Complete'}
+        </Button>
+        <span className={props.isCompleted ? 'line-through' : ''}>{props.text}</span>
+      </div>
+    )
+  }
+
+  export default TodoItem
+</example>
+
+## Critical Points
+<critical>
+  - ALWAYS use consistent formatting (2-space indentation, LF line endings)
+  - NEVER commit code with console.log statements unless explicitly requested
+  - ENSURE all new components have proper TypeScript types
+  - PREFER named exports over default exports
+  - ORGANIZE imports in logical groups with a blank line between groups
+  - PLACE shared code in the appropriate package based on scope
+</critical>

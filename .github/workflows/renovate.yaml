@@ -25,7 +25,9 @@ jobs:
   renovate:
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     name: Renovate
-    secrets: inherit
-    uses: marcusrbrown/.github/.github/workflows/renovate.yaml@main
+    secrets:
+      APPLICATION_ID: ${{ secrets.APPLICATION_ID }}
+      APPLICATION_PRIVATE_KEY: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+    uses: bfra-me/.github/.github/workflows/renovate.yaml@ac4444ddb0432eedfcd2ad5a0b1042dcbdbeeac9 # v2.5.0
     with:
-      print-config: ${{ inputs.print-config || false }}
+      print_config: ${{ inputs.print-config || false }}

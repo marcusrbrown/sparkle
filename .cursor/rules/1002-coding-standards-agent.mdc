@@ -1,0 +1,164 @@
+---
+description: FOLLOW when WRITING code in monorepo to ENSURE readability, maintainability, and consistency
+globs:
+alwaysApply: false
+---
+# Coding Standards Best Practices for Monorepos
+
+## Context
+- When writing or reviewing code in the monorepo
+- When creating new components, functions, or types
+- When configuring linting and formatting tools
+- When running checks via pnpm scripts
+
+## Requirements
+- Follow consistent naming conventions
+- Use TypeScript's strict mode and explicit types
+- Share ESLint and Prettier configurations
+- Implement pre-commit hooks for code quality
+- Follow functional programming principles for React
+- Use Prettier with @bfra.me/prettier-config
+- Run Manypkg checks to ensure workspace consistency
+- Run all checks before committing (format, monorepo, types)
+
+## Examples
+<example>
+Consistent naming conventions:
+```typescript
+// Types/interfaces use PascalCase
+interface ButtonProps {
+  variant: 'primary' | 'secondary' | 'tertiary';
+  size: 'small' | 'medium' | 'large';
+  onClick?: () => void;
+  children: React.ReactNode;
+}
+
+// Functions/variables use camelCase
+function createButtonClassName(props: ButtonProps): string {
+  const baseClassName = 'btn';
+  const variantClassName = `btn-${props.variant}`;
+  const sizeClassName = `btn-${props.size}`;
+
+  return [baseClassName, variantClassName, sizeClassName].join(' ');
+}
+
+// Functional React component with explicit return type
+export function Button({
+  variant = 'primary',
+  size = 'medium',
+  onClick,
+  children
+}: ButtonProps): React.ReactElement {
+  const className = createButtonClassName({ variant, size, children });
+
+  return (
+    <button className={className} onClick={onClick}>
+      {children}
+    </button>
+  );
+}
+```
+
+Shared ESLint configuration:
+```javascript
+// packages/config/eslint/index.js
+module.exports = {
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:react/recommended',
+    'plugin:react-hooks/recommended',
+    'prettier'
+  ],
+  rules: {
+    '@typescript-eslint/explicit-function-return-type': ['error', {
+      allowExpressions: true,
+      allowTypedFunctionExpressions: true
+    }],
+    'react/prop-types': 'off',
+    'react/react-in-jsx-scope': 'off'
+  }
+};
+```
+
+Prettier configuration in root package.json:
+```json
+{
+  "prettier": "@bfra.me/prettier-config/120-proof",
+  "devDependencies": {
+    "@bfra.me/prettier-config": "0.15.3",
+    "prettier": "3.5.3"
+  }
+}
+```
+
+Running all checks:
+```bash
+# Run all checks
+pnpm check
+
+# Individual checks
+pnpm check:format   # Prettier
+pnpm check:monorepo # Manypkg
+pnpm check:types    # TypeScript
+
+# Fix formatting
+pnpm format
+```
+</example>
+
+<example type="invalid">
+Inconsistent naming conventions:
+```typescript
+// Mixing naming conventions
+interface buttonProps {
+  Variant: string;
+  SIZE: string;
+}
+
+// Missing explicit return type
+function Button(props) {
+  return <button>{props.children}</button>;
+}
+```
+
+Using non-functional components:
+```typescript
+// Class component instead of functional component
+class Button extends React.Component {
+  render() {
+    return <button>{this.props.children}</button>;
+  }
+}
+```
+
+Skipping monorepo checks:
+```bash
+# Skipping Manypkg checks
+git commit -m "feat: add new component" --no-verify
+```
+
+Custom Prettier config that doesn't match project standards:
+```json
+{
+  "prettier": {
+    "printWidth": 80,
+    "semi": false
+  }
+}
+```
+</example>
+
+## Critical Points
+<critical>
+  - ALWAYS use PascalCase for types, interfaces, and components
+  - ALWAYS use camelCase for variables, functions, and props
+  - USE explicit return types on public APIs
+  - ENFORCE TypeScript strict mode
+  - USE functional React components with hooks
+  - USE `@bfra.me/prettier-config/120-proof` for formatting
+  - RUN `pnpm check` before committing changes
+  - USE `pnpm check:monorepo` to verify workspace consistency
+  - ADHERE to the 120 character line limit
+  - FIX formatting issues with `pnpm format`
+</critical>

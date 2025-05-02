@@ -1,0 +1,93 @@
+---
+description: IMPLEMENT when DOCUMENTING code in monorepo to MAINTAIN comprehensive and consistent documentation
+globs:
+alwaysApply: false
+---
+# Documentation Strategy Best Practices for Monorepos
+
+## Context
+- When documenting code in a monorepo
+- When creating documentation for packages
+- When maintaining documentation across project changes
+
+## Requirements
+- Use JSDoc comments for code documentation
+- Implement a consistent README structure for each package
+- Use Storybook's docs addon for component documentation
+- Maintain documentation as code evolves
+
+## Examples
+<example>
+Proper JSDoc documentation for a component:
+```typescript
+/**
+ * Button component with customizable appearance
+ * @param props - The component props
+ * @param props.variant - The visual style of the button
+ * @param props.size - The size of the button
+ * @param props.children - The content to display inside the button
+ * @returns A styled button component
+ */
+export function Button({
+  variant = 'primary',
+  size = 'medium',
+  children
+}: ButtonProps): React.ReactElement {
+  // Implementation
+}
+```
+
+Consistent README structure:
+```markdown
+# Package Name
+
+Brief description of the package purpose.
+
+## Installation
+
+How to install and set up the package.
+
+## Usage
+
+Basic usage examples.
+
+## API
+
+Detailed API documentation.
+
+## Contributing
+
+How to contribute to the package.
+```
+</example>
+
+<example type="invalid">
+Missing or insufficient documentation:
+```typescript
+// No JSDoc comments
+export function Button({
+  variant = 'primary',
+  size = 'medium',
+  children
+}: ButtonProps) {
+  // Implementation
+}
+```
+
+Inconsistent README:
+```markdown
+# Package
+
+Some code examples without explanation.
+```
+</example>
+
+## Critical Points
+<critical>
+  - ALWAYS use JSDoc comments for public functions and components
+  - MAINTAIN a consistent README structure across packages
+  - USE explicit return types on public APIs
+  - ENSURE documentation stays updated as code evolves
+  - DOCUMENT exported types and interfaces
+  - CONSIDER using Storybook's docs addon for visual component documentation
+</critical>

@@ -1,0 +1,178 @@
+---
+description: APPLY when CREATING or UPDATING rules to PREVENT repeated mistakes
+globs:
+alwaysApply: true
+tags: [lessons-learned, rule-creation, improvement]
+priority: 1
+---
+
+# Lessons Learned for Rule Creation and Updates
+
+## Context
+- When creating new cursor rules
+- When updating existing cursor rules
+- When learning from past mistakes in rule creation
+
+## Requirements
+- Review past mistakes and ensure they are not repeated
+- Verify all critical fields are properly completed
+- Check the output of rule creation/updates
+- Implement explicit verification steps for rule creation
+- Verify the actual technology stack before referencing specific tools
+- When verifying Cursor rule files, if the frontmatter is not visible in the output from the file reading tool, always use a shell command (head, cat) to check the physical file before assuming the frontmatter is missing or incorrect.
+- If the file content appears empty or missing frontmatter in a tool, always verify with a shell command before assuming the file is empty or corrupted.
+- After creating or updating a rule file, immediately verify the file content, as some tools may silently fail or not write the expected content.
+- If a rule file is not being created as expected, try alternative methods (e.g., shell commands, different file writing tools) and document which methods are reliable.
+- Always ensure the frontmatter is present and correctly formatted at the top of the rule file, especially for "always" rules.
+- If repeated attempts to write a file fail, clear the file and start from scratch to avoid residual corruption.
+- After file creation, always check both the frontmatter and the main content for duplication, truncation, or formatting errors.
+- When using sed or similar tools to update frontmatter in rule files, always search for all occurrences of the pattern first (e.g., using grep -n) to ensure you're only updating the intended sections.
+- Prefer line-number targeting or more specific patterns when editing frontmatter to avoid unintentional changes elsewhere in the file.
+- After making edits to rule files, verify that no unintended changes were made to other parts of the file.
+- Be extra cautious with global search-and-replace operations on patterns that might exist in multiple places within a file.
+- Document new lessons learned immediately after encountering issues to ensure they're not repeated in future sessions.
+- When fixing duplicate or erroneous content, use targeted grep commands (e.g., `grep -n`) to identify the exact line numbers of problematic content.
+- Use sed with specific line targeting (e.g., `sed -i '' '$d'` for last line) to safely remove duplicate content.
+- When fixing file issues, make incremental changes and verify after each step rather than attempting multiple changes at once.
+- For content at the end of files, remember that the `$d` pattern in sed is particularly useful for targeted removal.
+
+## Examples
+<example>
+  When creating an Agent Select rule, always verify the description field is properly formatted:
+
+  ```bash
+  # After creating or updating a rule, verify with:
+  head -n 7 .cursor/rules/new-rule-name-agent.mdc
+
+  # Output should show:
+  # ---
+  # description: ACTION when TRIGGER to OUTCOME
+  # globs:
+  # alwaysApply: false
+  # tags: [tag1, tag2, tag3] {Optional}
+  # priority: 1 {Optional}
+  # ---
+  ```
+
+  If an issue is found, it should be fixed immediately:
+
+  ```bash
+  # Fix incorrect description field:
+  sed -i '' 's/description:/description: IMPLEMENT when CONFIGURING features to ENSURE quality/' .cursor/rules/new-rule-name-agent.mdc
+  ```
+
+  When creating rules referencing specific technologies, always verify what's actually used in the project:
+
+  ```bash
+  # First, check the package.json to identify testing framework
+  grep -r "\"test\":" ./packages/*/package.json
+
+  # Check if Jest is used
+  grep -r "jest" ./packages/*/package.json
+
+  # Check if Vitest is used
+  grep -r "vitest" ./packages/*/package.json
+
+  # Don't assume technologies based on best practices guides alone
+  ```
+
+  When updating frontmatter, always check for multiple occurrences of patterns first:
+
+  ```bash
+  # GOOD: Search for all occurrences first to identify potential conflicts
+  grep -n "description:" .cursor/rules/example-rule-agent.mdc
+
+  # If multiple occurrences found, use line-number specific sed
+  sed -i '' '2s/description:/description: ACTION when TRIGGER to OUTCOME/' .cursor/rules/example-rule-agent.mdc
+
+  # Or use a more specific pattern that only matches frontmatter
+  sed -i '' '/^description:/s/description:/description: ACTION when TRIGGER to OUTCOME/' .cursor/rules/example-rule-agent.mdc
+
+  # After making changes, verify no unintended edits were made
+  diff <(cat .cursor/rules/example-rule-agent.mdc) <(cat .cursor/rules/example-rule-agent.mdc.backup)
+  ```
+
+  Fixing duplicate content safely:
+
+  ```bash
+  # GOOD: Fixing duplicate content at the end of a file
+  # 1. First identify all instances of the duplicate
+  grep -n "</critical>" .cursor/rules/example-rule-agent.mdc
+  # Output might show: 125:</critical> and 127:</critical>
+
+  # 2. Verify by viewing the end of the file
+  tail -n 5 .cursor/rules/example-rule-agent.mdc
+
+  # 3. Remove only the last line with targeted sed
+  sed -i '' '$d' .cursor/rules/example-rule-agent.mdc
+
+  # 4. Verify the change fixed the issue
+  grep -n "</critical>" .cursor/rules/example-rule-agent.mdc
+  # Should now show only one instance
+  ```
+</example>
+
+<example type="invalid">
+  Creating a rule without verifying its content:
+
+  ```
+  # Create rule but never verify:
+  echo "# New Rule Content" > .cursor/rules/new-rule-name-agent.mdc
+  ```
+
+  Leaving incomplete or incorrect frontmatter:
+
+  ```mdc
+  ---
+  description:  # Empty description field
+  globs:
+  alwaysApply: false
+  ---
+  ```
+
+  Creating rules based on assumptions about technologies:
+
+  ```
+  # Assuming Jest is used without verification:
+  echo "# Jest Testing Best Practices" > .cursor/rules/testing-jest-agent.mdc
+
+  # Correct approach: Check package.json first
+  # The project might actually use Vitest, AVA, or another framework
+  ```
+
+  Using a generic pattern without checking for all occurrences:
+
+  ```bash
+  # BAD: Using a generic pattern without checking for all occurrences
+  sed -i '' 's/description:/description: NEW CONTENT/' .cursor/rules/example-rule-agent.mdc
+  # This might modify other instances of "description:" elsewhere in the file!
+  ```
+
+  Blindly removing content without verification:
+
+  ```bash
+  # BAD: Blindly attempt to remove content without verification
+  # This might remove other important content if there are multiple similar blocks
+  sed -i '' 's/<\/critical>//' .cursor/rules/example-rule-agent.mdc
+  ```
+</example>
+
+## Critical Points
+<critical>
+  - ALWAYS verify the content of rules after creation or modification
+  - NEVER leave the description field empty for Agent Select rules
+  - LEARN from past mistakes and document them to prevent repetition
+  - IMPLEMENT explicit verification steps for all rule changes
+  - DOCUMENT common mistakes in the 000-rule-generating-agent.mdc file
+  - REMEMBER that description fields must follow the ACTION-TRIGGER-OUTCOME format
+  - ALWAYS analyze the actual project configuration before creating rules that reference specific technologies
+  - VERIFY framework and library choices by examining package.json files and configuration files
+  - ALWAYS search for all occurrences of a pattern before performing global replacements
+  - NEVER perform sed replacements without verifying target locations
+  - USE line-specific or context-aware patterns when updating frontmatter
+  - VERIFY all changes after editing to ensure only intended modifications were made
+  - ALWAYS identify the exact location of duplicate or problematic content before attempting to fix it
+  - USE line-specific sed commands for precise content removal
+  - VERIFY changes after each incremental modification
+  - PREFER making one small change and verifying it over attempting multiple changes at once
+</critical>
