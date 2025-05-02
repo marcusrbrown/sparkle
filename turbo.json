@@ -46,8 +46,13 @@
       "inputs": ["src/**/*.{ts,tsx}", "test/**/*.{ts,tsx}", "package.json", "tsconfig.json", "vitest.config.{ts,js}"]
     },
     "lint": {
+      "dependsOn": ["^lint"],
       "outputs": ["eslint-results.json"],
       "inputs": ["src/**/*.{ts,tsx,js,jsx}", ".eslintrc.*", "package.json", "tsconfig.json"]
+    },
+    "typecheck": {
+      "dependsOn": ["^build:types"],
+      "inputs": ["src/**/*.{ts,tsx}", "tsconfig.json"]
     },
     "clean": {
       "cache": false,

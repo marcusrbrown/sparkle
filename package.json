@@ -13,7 +13,7 @@
     "pnpm": ">=9.15.4"
   },
   "scripts": {
-    "bootstrap": "pnpm install --recursive --prefer-offline --loglevel error",
+    "bootstrap": "pnpm install --prefer-offline --loglevel warn",
     "build": "turbo run build",
     "build:types": "turbo run build:types",
     "build:types:watch": "turbo run build:types:watch --parallel",
