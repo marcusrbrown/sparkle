@@ -1,0 +1,144 @@
+---
+description: IMPLEMENT when SETTING UP tests in monorepo to ENSURE comprehensive coverage and quality
+globs:
+alwaysApply: false
+---
+# Testing Strategy Best Practices for Monorepos
+
+## Context
+- When setting up testing frameworks in a monorepo
+- When creating test files for components and utilities
+- When configuring test coverage reporting
+- When integrating Vitest with Turborepo
+
+## Requirements
+- Create a shared Vitest configuration in a dedicated package
+- Configure path mapping to match TypeScript aliases
+- Set up aggregated test coverage reporting
+- Follow consistent test patterns across packages
+- Use the Vitest UI for interactive debugging when needed
+
+## Examples
+<example>
+Shared Vitest configuration:
+```typescript
+// packages/config/vitest/index.ts
+import { defineConfig } from 'vitest/config';
+import { mergeConfig } from 'vite';
+import type { UserConfig } from 'vitest/config';
+
+const baseConfig = defineConfig({
+  test: {
+    environment: 'happy-dom',
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      exclude: ['**/node_modules/**', '**/*.stories.{ts,tsx}', '**/*.d.ts'],
+    },
+    globals: true,
+    setupFiles: ['./setup.ts'],
+  },
+  resolve: {
+    alias: {
+      '@sparkle/ui': '/packages/ui/src',
+      '@sparkle/utils': '/packages/utils/src',
+    },
+  },
+});
+
+export default function createVitestConfig(config: UserConfig) {
+  return mergeConfig(baseConfig, config);
+}
+```
+
+Package-specific Vitest configuration:
+```typescript
+// packages/ui/vitest.config.ts
+import { defineConfig } from 'vitest/config';
+import react from '@vitejs/plugin-react-swc';
+import createVitestConfig from '../../packages/config/vitest';
+
+export default defineConfig((env) =>
+  createVitestConfig({
+    plugins: [react()],
+    test: {
+      environment: 'happy-dom',
+      include: ['**/*.test.{ts,tsx}'],
+    },
+  })
+);
+```
+
+Root package.json with aggregated test scripts:
+```json
+{
+  "scripts": {
+    "test": "turbo run test",
+    "test:watch": "turbo run test:watch --parallel",
+    "test:coverage": "turbo run test:coverage"
+  }
+}
+```
+
+Package-specific test scripts:
+```json
+{
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "test:coverage": "vitest run --coverage"
+  }
+}
+```
+</example>
+
+<example type="invalid">
+Duplicated Vitest configuration without sharing:
+```typescript
+// packages/ui/vitest.config.ts
+import { defineConfig } from 'vitest/config';
+import react from '@vitejs/plugin-react-swc';
+
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    environment: 'happy-dom',
+    coverage: {
+      provider: 'v8',
+    },
+  },
+});
+
+// packages/utils/vitest.config.ts
+import { defineConfig } from 'vitest/config';
+
+export default defineConfig({
+  test: {
+    environment: 'node',
+    coverage: {
+      provider: 'v8',
+    },
+  },
+});
+```
+
+Missing coverage configuration:
+```json
+{
+  "scripts": {
+    "test": "vitest"
+  }
+}
+```
+</example>
+
+## Critical Points
+<critical>
+  - ALWAYS create a shared Vitest configuration for consistent testing
+  - CONFIGURE path mapping to match TypeScript aliases
+  - SET UP aggregated test coverage reporting
+  - ENSURE test patterns are consistent across packages
+  - USE Turborepo to run tests efficiently with caching
+  - MAINTAIN compatibility with Vite build process
+  - PREFER using happy-dom or jsdom for component testing environments
+</critical>

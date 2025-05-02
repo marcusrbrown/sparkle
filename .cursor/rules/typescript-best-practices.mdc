@@ -1,9 +1,0 @@
----
-description: TypeScript coding standards and type safety guidelines
-globs: **/*.{ts,tsx}
----
-- Use strict null checks to prevent null or undefined errors
-- Prefer interfaces over types for better extensibility
-- Utilize type guards and assertions for runtime type checking
-- Implement proper type inference to reduce unnecessary type annotations
-- Leverage TypeScript's utility types (e.g., Partial, Readonly) for cleaner code

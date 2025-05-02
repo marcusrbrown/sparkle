@@ -1,0 +1,65 @@
+---
+description: APPLY when ORGANIZING monorepo structure to ENSURE maintainability and scalability
+globs:
+alwaysApply: false
+---
+# Monorepo Structure Best Practices
+
+## Context
+- When creating or modifying the project structure
+- When setting up new packages or applications
+- When refactoring existing code organization
+
+## Requirements
+- Follow the recommended monorepo directory structure
+- Maintain clear separation of concerns between packages
+- Use proper package naming conventions
+- Configure workspace settings correctly in package.json
+
+## Examples
+<example>
+```
+monorepo-root/
+├── packages/          # Shared packages and libraries
+│   ├── ui/            # UI component library
+│   ├── config/        # Shared configurations
+│   ├── utils/         # Utility functions
+│   └── types/         # Shared TypeScript types
+├── scripts/           # Developer tools and scripts
+├── package.json       # Root package file
+└── turbo.json         # Turborepo configuration
+```
+
+Root package.json includes proper workspace configuration:
+```json
+{
+  "private": true,
+  "workspaces": ["packages/*", "scripts"]
+}
+```
+</example>
+
+<example type="invalid">
+```
+monorepo-root/
+├── src/               # Mixed application and library code
+├── lib/               # No clear separation of concerns
+├── package.json       # Missing workspace configuration
+```
+
+Incorrect package.json:
+```json
+{
+  "name": "monorepo",
+  "version": "1.0.0"
+}
+```
+</example>
+
+## Critical Points
+<critical>
+  - ALWAYS organize code with clear separation of concerns
+  - ALWAYS use workspaces in package.json for dependency management
+  - NEVER mix application and library code without proper boundaries
+  - ENSURE consistent directory structure across similar packages
+</critical>

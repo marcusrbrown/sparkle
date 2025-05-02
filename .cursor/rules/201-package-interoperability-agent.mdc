@@ -1,0 +1,129 @@
+---
+description: IMPLEMENT when CONFIGURING package sharing in monorepo to ENABLE seamless interoperability
+globs:
+alwaysApply: false
+---
+# Package Interoperability Best Practices for Monorepos
+
+## Context
+- When configuring shared packages in a pnpm workspace monorepo
+- When setting up ESM packages with TypeScript
+- When handling package exports, including styles
+- When managing internal package dependencies
+
+## Requirements
+- Use pnpm workspace protocol for internal dependencies (workspace:*)
+- Configure package.json with type: "module" for ESM
+- Set up exports field with types, imports, and CSS if needed
+- Configure Vite for ESM-only output with proper externals
+- Set up separate TypeScript build for declarations
+- Define clear peer dependencies
+- Use sideEffects flag appropriately
+
+## Examples
+<example>
+Properly configured package.json for a UI package:
+```json
+{
+  "name": "@sparkle/ui",
+  "version": "0.1.0",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./styles.css": "./dist/styles.css"
+  },
+  "files": ["dist", "src"],
+  "scripts": {
+    "build": "vite build && tsc -p tsconfig.build.json",
+    "build:types": "tsc -p tsconfig.build.json --emitDeclarationOnly"
+  },
+  "dependencies": {
+    "@sparkle/types": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}
+```
+
+Vite config for ESM library:
+```ts
+// vite.config.ts
+import {defineConfig} from 'vite'
+import {resolve} from 'path'
+
+export default defineConfig({
+  build: {
+    lib: {
+      entry: resolve(__dirname, 'src/index.ts'),
+      formats: ['es'],
+      fileName: 'index',
+    },
+    rollupOptions: {
+      external: ['react', 'react-dom'],
+    },
+  },
+})
+```
+
+TypeScript config for declarations:
+```json
+// tsconfig.build.json
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "declaration": true,
+    "emitDeclarationOnly": true
+  },
+  "exclude": ["test", "**/*.test.ts", "**/*.test.tsx"]
+}
+```
+</example>
+
+<example type="invalid">
+Incorrect package.json configuration:
+```json
+{
+  "name": "@sparkle/ui",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "dependencies": {
+    "@sparkle/types": "^0.1.0"  // Not using workspace protocol
+  },
+  "exports": {
+    ".": "./dist/index.js"  // Missing types and format specifiers
+  }
+}
+```
+
+Incorrect Vite config with unnecessary formats:
+```ts
+export default defineConfig({
+  build: {
+    lib: {
+      formats: ['es', 'cjs', 'umd'],  // Unnecessary formats
+    },
+  },
+})
+```
+</example>
+
+## Critical Points
+<critical>
+  - ALWAYS use pnpm workspace protocol (workspace:*) for internal dependencies
+  - ALWAYS use ESM (type: "module") for new packages
+  - ENSURE proper TypeScript declaration file generation
+  - INCLUDE CSS exports if package contains styles
+  - DEFINE clear peer dependencies and handle externals properly
+  - SET sideEffects flag appropriately for tree-shaking
+</critical>

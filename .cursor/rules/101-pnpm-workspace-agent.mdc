@@ -1,0 +1,132 @@
+---
+description: IMPLEMENT when MANAGING pnpm workspace dependencies and commands to ENSURE proper package management and dependency resolution
+globs:
+alwaysApply: false
+---
+# pnpm Workspace Best Practices
+
+## Context
+- When adding or removing dependencies in the monorepo
+- When running scripts in specific packages
+- When setting up new packages in the workspace
+- When managing workspace-level configuration
+
+## Requirements
+- Use workspace protocols for internal dependencies
+- Use the correct flags when adding dependencies
+- Run scripts in specific packages with appropriate filters
+- Configure recursive operations properly
+- Ensure package.json fields are consistent across packages
+- Leverage pnpm's performance optimizations
+
+## Examples
+<example>
+Using workspace protocols for internal dependencies:
+
+```json
+// packages/ui/package.json
+{
+  "dependencies": {
+    "@sparkle/types": "workspace:*"
+  }
+}
+```
+
+Adding dependencies with the correct scope:
+
+```bash
+# Add a dependency to a specific package
+pnpm add react --filter @sparkle/ui
+
+# Add a dev dependency to a specific package
+pnpm add -D typescript --filter @sparkle/ui
+
+# Add a dependency to the root package
+pnpm add -w turbo
+
+# Add the same dependency to multiple packages
+pnpm add react --filter "@sparkle/ui..." --filter "@sparkle/storybook"
+```
+
+Running scripts in specific packages:
+
+```bash
+# Run a script in a specific package
+pnpm --filter @sparkle/ui build
+
+# Run a script in all packages that have it
+pnpm -r test
+
+# Run a script in a package and all its dependencies
+pnpm --filter @sparkle/ui... build
+```
+
+Creating a new package in the workspace:
+
+```bash
+# Create directory and initialize package
+mkdir -p packages/new-package
+cd packages/new-package
+
+# Initialize package.json
+pnpm init
+
+# Edit package.json to add name with workspace scope
+{
+  "name": "@sparkle/new-package",
+  "version": "0.1.0"
+}
+```
+</example>
+
+<example type="invalid">
+Using explicit versions for workspace packages:
+
+```json
+// packages/ui/package.json
+{
+  "dependencies": {
+    "@sparkle/types": "0.1.0"  // Should be "workspace:*"
+  }
+}
+```
+
+Adding dependencies to the wrong scope:
+
+```bash
+# Adding a UI-specific dependency to the root
+pnpm add react # Should be: pnpm add react --filter @sparkle/ui
+
+# Installing everything in a specific package directory (not using workspace)
+cd packages/ui && npm install # Should use pnpm add with --filter
+```
+
+Running scripts inefficiently:
+
+```bash
+# Running the same command in each directory manually
+cd packages/ui && pnpm build
+cd ../types && pnpm build
+# Should use: pnpm -r build
+```
+
+Installing dependencies without leveraging the workspace:
+
+```bash
+# Installing directly without using workspace features
+npm install # Should use: pnpm bootstrap or pnpm install
+```
+</example>
+
+## Critical Points
+<critical>
+  - ALWAYS use `workspace:*` protocol for referencing workspace packages
+  - USE `--filter` flag to target specific packages
+  - USE `-w` flag for root workspace dependencies
+  - USE `-r` flag for recursive operations (all packages)
+  - NEVER use npm or yarn commands in a pnpm workspace
+  - MAINTAIN consistent package.json structure across packages
+  - USE the bootstrap script from the root for initial installation
+  - ALWAYS run commands from the root of the monorepo
+  - PREFER running operations through Turborepo when defined in the pipeline
+</critical>

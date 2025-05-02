@@ -1,0 +1,66 @@
+---
+description: CONFIGURE when SETTING UP Expo in monorepo to ENSURE proper package resolution and performance
+globs:
+alwaysApply: false
+---
+# Expo Configuration Best Practices for Monorepos
+
+## Context
+- When setting up an Expo application in a monorepo
+- When configuring Metro bundler for package resolution (if needed)
+- When optimizing Expo build performance in a monorepo
+- Note: Sparkle currently uses the default Metro config; custom config is only needed for advanced setups or if issues arise with code sharing
+
+## Requirements
+- Place Expo apps within the appropriate directory structure
+- Use the default Metro config unless you need to share code across packages or encounter resolution issues
+- If needed, configure Metro to watch necessary monorepo packages
+- Set up proper node module resolution paths in custom Metro config if sharing code
+- Optimize Metro for performance in larger monorepos
+
+## Examples
+<example>
+Proper Metro configuration for Expo in a monorepo (not currently present in Sparkle, but recommended if sharing code across packages):
+```javascript
+// metro.config.js
+const { getDefaultConfig } = require('expo/metro-config');
+const path = require('path');
+
+const projectRoot = __dirname;
+const workspaceRoot = path.resolve(projectRoot, '../..');
+
+const config = getDefaultConfig(projectRoot);
+
+// Watch all files in the monorepo
+config.watchFolders = [workspaceRoot];
+
+// Allow importing from workspace packages
+config.resolver.nodeModulesPaths = [
+  path.resolve(projectRoot, 'node_modules'),
+  path.resolve(workspaceRoot, 'node_modules')
+];
+
+module.exports = config;
+```
+</example>
+
+<example type="invalid">
+Missing Metro configuration for monorepo (only a problem if you need to share code across packages):
+```javascript
+// metro.config.js
+const { getDefaultConfig } = require('expo/metro-config');
+const config = getDefaultConfig(__dirname);
+
+module.exports = config;
+```
+</example>
+
+## Critical Points
+<critical>
+  - ALWAYS configure Metro to watch workspace packages if sharing code across packages
+  - ALWAYS set up proper node module resolution paths in custom Metro config if needed
+  - CONSIDER performance optimizations for larger monorepos
+  - For larger monorepos, be selective about which folders Metro watches
+  - Consider using the 'exclude' option to ignore irrelevant packages
+  - For simple setups, the default Metro config may be sufficient
+</critical>

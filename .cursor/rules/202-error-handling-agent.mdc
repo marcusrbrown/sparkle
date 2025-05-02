@@ -1,0 +1,123 @@
+---
+description: IMPLEMENT when HANDLING errors in monorepo to ENSURE consistent and robust error management
+globs:
+alwaysApply: false
+---
+# Error Handling and Testing Best Practices for Monorepos
+
+## Context
+- When implementing error handling and testing in a monorepo
+- When creating type-safe error boundaries for React components
+- When designing error recovery strategies
+- When testing error scenarios with proper context
+
+## Requirements
+- Use TestScenarioBuilder for creating error testing scenarios
+- Define type-safe error boundaries with proper configurations
+- Implement error recovery strategies with context
+- Maintain test context type safety throughout lifecycle
+- Provide proper fallback components for error boundaries
+- Track test results including recovery attempts
+- Ensure proper teardown after error recovery
+
+## Examples
+<example>
+Type-safe error testing with TestScenarioBuilder:
+```typescript
+import {TestScenarioBuilder, TestContext, ErrorRecoveryStrategy} from '@sparkle/error-testing'
+
+interface UserState {
+  userId: string
+  isAuthenticated: boolean
+}
+
+class AuthError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = 'AuthError'
+  }
+}
+
+// Define recovery strategy
+const authRecovery: ErrorRecoveryStrategy<AuthError, UserState> = {
+  canHandle: (error): error is AuthError => error instanceof AuthError,
+  handle: async (error, context) => {
+    context.state.isAuthenticated = false
+    await context.services.auth.refreshToken()
+  },
+}
+
+// Create test scenario
+const scenario = new TestScenarioBuilder<AuthError, UserState>()
+  .withDescription('Should recover from auth error')
+  .withSetup(async (context) => {
+    context.state = { userId: '123', isAuthenticated: true }
+    context.services = { auth: new AuthService() }
+  })
+  .withErrorType(AuthError)
+  .withRecovery(authRecovery)
+  .build()
+```
+
+Type-safe error boundary configuration:
+```typescript
+import type {ErrorBoundaryConfig} from '@sparkle/error-testing'
+
+const errorConfig: ErrorBoundaryConfig<AuthError> = {
+  name: 'AuthErrorBoundary',
+  errorTypes: [AuthError],
+  fallback: ({error}) => (
+    <div role="alert">
+      Authentication error: {error.message}
+      <button onClick={handleRetry}>Retry</button>
+    </div>
+  ),
+}
+```
+
+Test scenario execution:
+```typescript
+const result = await scenario.execute()
+expect(result).toEqual({
+  success: true,
+  recoveryAttempted: true,
+  recoverySucceeded: true,
+})
+```
+</example>
+
+<example type="invalid">
+Non-type-safe error handling:
+```typescript
+// Missing type safety and proper error recovery
+class ErrorBoundary extends React.Component {
+  state = { error: null }
+
+  componentDidCatch(error) {
+    this.setState({ error })
+    // Missing proper error typing and recovery strategy
+  }
+}
+
+// Incorrect test scenario setup
+const badScenario = {
+  run: async () => {
+    try {
+      throw new Error('Something went wrong')
+    } catch (e) {
+      return { ok: false, error: e }  // Missing proper result structure
+    }
+  }
+}
+```
+</example>
+
+## Critical Points
+<critical>
+  - ALWAYS use type-safe error testing with TestScenarioBuilder
+  - IMPLEMENT proper error recovery strategies with context
+  - MAINTAIN test context type safety throughout the error lifecycle
+  - PROVIDE meaningful error boundaries with proper fallback components
+  - ENSURE proper setup and teardown in test scenarios
+  - TRACK and validate error recovery attempts
+</critical>

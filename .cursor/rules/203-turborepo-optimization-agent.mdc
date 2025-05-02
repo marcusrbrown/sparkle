@@ -1,0 +1,125 @@
+---
+description: CONFIGURE when OPTIMIZING Turborepo in monorepo to ENHANCE build performance and developer experience
+globs:
+alwaysApply: false
+---
+# Turborepo Optimization Best Practices for Monorepos
+
+## Context
+- When configuring Turborepo in a monorepo
+- When defining build pipelines and task dependencies
+- When optimizing build performance and caching
+- When setting up development workflows
+
+## Requirements
+- Define clear task dependencies using `dependsOn`
+- Configure proper caching with `outputs` and `inputs`
+- Specify correct file patterns for inputs and outputs
+- Use `persistent` flag for long-running tasks
+- Configure global dependencies and environment variables
+- Implement proper type generation tasks
+- Set up watch mode configurations
+
+## Examples
+<example>
+Well-configured turbo.json with modern schema and comprehensive task configuration:
+```json
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": ["**/.env.*local"],
+  "globalEnv": ["NODE_ENV"],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"],
+      "inputs": [
+        "src/**/*.{ts,tsx}",
+        "package.json",
+        "tsconfig.json"
+      ]
+    },
+    "build:types": {
+      "dependsOn": ["^build:types"],
+      "outputs": ["dist/**/*.d.ts"],
+      "inputs": ["src/**/*.{ts,tsx}", "tsconfig.json"]
+    },
+    "dev": {
+      "dependsOn": ["^build"],
+      "persistent": true,
+      "cache": false
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/**"],
+      "inputs": [
+        "src/**/*.{ts,tsx}",
+        "test/**/*.{ts,tsx}",
+        "vitest.config.{ts,js}"
+      ]
+    }
+  }
+}
+```
+
+Task-specific configuration in package.json:
+```json
+{
+  "name": "@repo/ui",
+  "scripts": {
+    "build": "vite build",
+    "build:types": "tsc --emitDeclarationOnly",
+    "dev": "vite build --watch",
+    "test": "vitest run --coverage"
+  },
+  "turbo": {
+    "globalDependencies": ["tsconfig.json"]
+  }
+}
+```
+</example>
+
+<example type="invalid">
+Poorly configured turbo.json with missing or incorrect configurations:
+```json
+{
+  "pipeline": {
+    "build": {
+      "outputs": ["dist"]
+    },
+    "test": {
+      // Missing dependsOn and inputs
+    },
+    "dev": {
+      "cache": true // Should be false for dev tasks
+    }
+  }
+}
+```
+
+Missing type generation configuration:
+```json
+{
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      // Missing separate types build task
+      // Missing proper input/output patterns
+    }
+  }
+}
+```
+</example>
+
+## Critical Points
+<critical>
+  - ALWAYS include "$schema" field for better IDE support
+  - SPECIFY precise input/output patterns to optimize caching
+  - USE persistent: true for long-running development tasks
+  - DISABLE cache for development and watch tasks
+  - CONFIGURE separate type generation tasks for TypeScript
+  - INCLUDE package.json and tsconfig.json in build inputs
+  - SET proper global dependencies and environment variables
+  - EXCLUDE cache directories from outputs (e.g., "!.next/cache/**")
+  - IMPLEMENT watch mode configurations for development
+  - USE proper file extension patterns in globs (e.g., "*.{ts,tsx}")
+</critical>
