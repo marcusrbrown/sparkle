@@ -57,6 +57,7 @@ TypeScript project references are crucial for maintaining clean dependencies bet
 1. Create a `tsconfig.json` at the root level with shared compiler options.
 2. Create package-specific `tsconfig.json` files that extend the root configuration.
 3. Use the `references` field to define dependencies between packages[^1].
+
 ```json
 // Root tsconfig.json
 {
@@ -112,26 +113,27 @@ Expo provides specialized support for monorepos starting from SDK 48, with autom
 1. Place your Expo app within the `apps/` directory.
 2. Ensure proper Metro configuration to watch all necessary dependencies.
 3. Share UI components and business logic across different apps[^4].
+
 ```javascript
 // metro.config.js in your Expo app
-const { getDefaultConfig } = require('expo/metro-config');
-const path = require('path');
+const {getDefaultConfig} = require("expo/metro-config")
+const path = require("path")
 
-const projectRoot = __dirname;
-const workspaceRoot = path.resolve(projectRoot, '../..');
+const projectRoot = __dirname
+const workspaceRoot = path.resolve(projectRoot, "../..")
 
-const config = getDefaultConfig(projectRoot);
+const config = getDefaultConfig(projectRoot)
 
 // Watch all files in the monorepo
-config.watchFolders = [workspaceRoot];
+config.watchFolders = [workspaceRoot]
 
 // Allow importing from workspace packages
 config.resolver.nodeModulesPaths = [
-  path.resolve(projectRoot, 'node_modules'),
-  path.resolve(workspaceRoot, 'node_modules')
-];
+  path.resolve(projectRoot, "node_modules"),
+  path.resolve(workspaceRoot, "node_modules"),
+]
 
-module.exports = config;
+module.exports = config
 ```
 
 This configuration enables the Expo app to properly resolve dependencies from workspace packages[^4].
@@ -203,16 +205,8 @@ With Turborepo, you can run multiple Storybooks simultaneously by configuring di
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [
-        "dist/**",
-        ".next/**",
-        "!.next/cache/**"
-      ],
-      "inputs": [
-        "src/**/*.{ts,tsx,js,jsx}",
-        "package.json",
-        "tsconfig.json"
-      ]
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"],
+      "inputs": ["src/**/*.{ts,tsx,js,jsx}", "package.json", "tsconfig.json"]
     },
     "dev": {
       "dependsOn": ["^build"],
@@ -222,18 +216,11 @@ With Turborepo, you can run multiple Storybooks simultaneously by configuring di
     "test": {
       "dependsOn": ["^build"],
       "outputs": ["coverage/**"],
-      "inputs": [
-        "src/**/*.{ts,tsx}",
-        "test/**/*.{ts,tsx}",
-        "vitest.config.ts"
-      ]
+      "inputs": ["src/**/*.{ts,tsx}", "test/**/*.{ts,tsx}", "vitest.config.ts"]
     },
     "lint": {
       "outputs": ["lint-results.json"],
-      "inputs": [
-        "src/**/*.{ts,tsx,js,jsx}",
-        ".eslintrc.*"
-      ]
+      "inputs": ["src/**/*.{ts,tsx,js,jsx}", ".eslintrc.*"]
     },
     "deploy": {
       "dependsOn": ["build", "test", "lint"],
@@ -253,6 +240,7 @@ For consistent styling across your monorepo, establish a shared Tailwind configu
 
 1. Create a base Tailwind preset in a shared package.
 2. Extend this preset in each application or package that uses Tailwind[^8].
+
 ```javascript
 // packages/config/tailwind/index.js
 module.exports = {
@@ -260,19 +248,19 @@ module.exports = {
     extend: {
       colors: {
         brand: {
-          primary: '#3490dc',
-          secondary: '#ffed4a',
-        }
-      }
-    }
+          primary: "#3490dc",
+          secondary: "#ffed4a",
+        },
+      },
+    },
   },
-  plugins: []
+  plugins: [],
 }
 
 // apps/mobile/tailwind.config.js
 module.exports = {
-  presets: [require('../../packages/config/tailwind')],
-  content: ['./src/**/*.{js,jsx,ts,tsx}']
+  presets: [require("../../packages/config/tailwind")],
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
 }
 ```
 
@@ -287,6 +275,7 @@ To enable seamless package sharing within your monorepo:
 1. Configure each package's `package.json` with proper entry points.
 2. Use the `exports` field to define subpath exports.
 3. Configure TypeScript path aliases for better developer experience[^2].
+
 ```json
 // packages/ui/package.json
 {
@@ -310,6 +299,7 @@ When sharing UI components:
 1. Configure your build process to produce both ESM and CommonJS outputs.
 2. Include TypeScript declaration files.
 3. Ensure CSS/Tailwind styles are properly extracted and included[^9].
+
 ```json
 // packages/ui/package.json
 {
@@ -336,6 +326,7 @@ Set up Jest to work efficiently across your monorepo:
 For a comprehensive view of test coverage across your monorepo:
 
 1. Add a script at the root level to run tests with coverage:
+
 ```json
 // Root package.json
 {
@@ -360,6 +351,7 @@ As a solo developer, maintaining comprehensive documentation is crucial:
 1. Use JSDoc comments for code documentation.
 2. Implement a consistent README structure for each package.
 3. Consider using Storybook's docs addon for component documentation.
+
 ```typescript
 /**
  * Button component with customizable appearance
@@ -367,11 +359,7 @@ As a solo developer, maintaining comprehensive documentation is crucial:
  * @param size - The size of the button
  * @param children - The content to display inside the button
  */
-export function Button({
-  variant = 'primary',
-  size = 'medium',
-  children
-}: ButtonProps) {
+export function Button({variant = "primary", size = "medium", children}: ButtonProps) {
   // Implementation
 }
 ```
@@ -395,6 +383,7 @@ Implement a consistent error handling pattern across your monorepo:
 1. Create a shared error handling package with standardized error classes.
 2. Define consistent error boundaries for React components.
 3. Implement centralized error logging.
+
 ```typescript
 // packages/errors/src/index.ts
 export class APIError extends Error {
@@ -420,6 +409,7 @@ Optimize your development workflow with Turborepo:
 1. Define task dependencies in `turbo.json`.
 2. Configure caching for faster rebuilds.
 3. Use remote caching for even better performance.
+
 ```json
 {
   "$schema": "https://turbo.build/schema.json",
@@ -428,16 +418,8 @@ Optimize your development workflow with Turborepo:
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [
-        "dist/**",
-        ".next/**",
-        "!.next/cache/**"
-      ],
-      "inputs": [
-        "src/**/*.{ts,tsx,js,jsx}",
-        "package.json",
-        "tsconfig.json"
-      ]
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"],
+      "inputs": ["src/**/*.{ts,tsx,js,jsx}", "package.json", "tsconfig.json"]
     },
     "dev": {
       "dependsOn": ["^build"],
@@ -447,18 +429,11 @@ Optimize your development workflow with Turborepo:
     "test": {
       "dependsOn": ["^build"],
       "outputs": ["coverage/**"],
-      "inputs": [
-        "src/**/*.{ts,tsx}",
-        "test/**/*.{ts,tsx}",
-        "vitest.config.ts"
-      ]
+      "inputs": ["src/**/*.{ts,tsx}", "test/**/*.{ts,tsx}", "vitest.config.ts"]
     },
     "lint": {
       "outputs": ["lint-results.json"],
-      "inputs": [
-        "src/**/*.{ts,tsx,js,jsx}",
-        ".eslintrc.*"
-      ]
+      "inputs": ["src/**/*.{ts,tsx,js,jsx}", ".eslintrc.*"]
     },
     "deploy": {
       "dependsOn": ["build", "test", "lint"],

@@ -44,9 +44,9 @@ sparkle/
 - **Build Tool (UI):** [Vite](https://vitejs.dev/) (v5.4.18) - Used in `@sparkle/ui`.
 - **Versioning:** [Changesets](https://github.com/changesets/changesets)
 - **Linting/Formatting:**
-    - [Prettier](https://prettier.io/) (using `@bfra.me/prettier-config`)
-    - [ESLint](https://eslint.org/) (Implied by `lint` script)
-    - [Manypkg](https://github.com/Thinkmill/manypkg) (for monorepo consistency checks)
+  - [Prettier](https://prettier.io/) (using `@bfra.me/prettier-config`)
+  - [ESLint](https://eslint.org/) (Implied by `lint` script)
+  - [Manypkg](https://github.com/Thinkmill/manypkg) (for monorepo consistency checks)
 - **Node Version:** >= 22.13.1
 
 ## Core Development Workflows
@@ -55,24 +55,24 @@ Scripts are defined in the root `package.json` and primarily orchestrated by Tur
 
 - **Installation:** `pnpm bootstrap` (Installs all dependencies across the workspace)
 - **Building:**
-    - `pnpm build`: Builds all packages.
-    - `pnpm build:types`: Generates type declarations.
-    - `pnpm build:watch`: Builds all packages in watch mode.
+  - `pnpm build`: Builds all packages.
+  - `pnpm build:types`: Generates type declarations.
+  - `pnpm build:watch`: Builds all packages in watch mode.
 - **Testing:** `pnpm test` (Runs tests, likely `vitest run`, across relevant packages)
 - **Linting:** `pnpm lint` (Runs linters across relevant packages)
 - **Formatting:**
-    - `pnpm format`: Formats code using Prettier.
-    - `pnpm check:format`: Checks formatting without writing changes.
+  - `pnpm format`: Formats code using Prettier.
+  - `pnpm check:format`: Checks formatting without writing changes.
 - **Type Checking:** `pnpm check:types` (Runs `tsc --noEmit`)
 - **Monorepo Checks:** `pnpm check:monorepo` (Runs `manypkg check`)
 - **All Checks:** `pnpm check` (Runs format check, monorepo check, and type check)
 - **Development:** `pnpm dev` (Starts development servers/watchers for packages, likely including Vite for UI and Storybook)
 - **Cleaning:** `pnpm clean` (Removes `node_modules` and build artifacts)
 - **Versioning:**
-    1. `pnpm changeset`: Interactively create a new changeset file.
-    2. `pnpm changeset version`: Consumes changeset files, updates package versions and changelogs.
-    3. Commit the changes.
-    4. (After merge) `pnpm publish` (or via CI) to publish updated packages.
+  1. `pnpm changeset`: Interactively create a new changeset file.
+  2. `pnpm changeset version`: Consumes changeset files, updates package versions and changelogs.
+  3. Commit the changes.
+  4. (After merge) `pnpm publish` (or via CI) to publish updated packages.
 
 ## Package Details
 
