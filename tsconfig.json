@@ -2,22 +2,22 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "@bfra.me/tsconfig",
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "ES2022",
     "module": "ESNext",
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "noEmit": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["packages/fro-jive/*"],
       "@/components/*": ["packages/fro-jive/components/*"],
       "@/constants/*": ["packages/fro-jive/constants/*"],
       "@/app/*": ["packages/fro-jive/app/*"]
-    }
+    },
+    "composite": true
   },
   "include": ["packages/**/*.ts", "packages/**/*.tsx"],
   "exclude": ["node_modules", "packages/**/dist"]
