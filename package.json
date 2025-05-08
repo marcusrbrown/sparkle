@@ -32,9 +32,9 @@
   },
   "prettier": "@bfra.me/prettier-config/120-proof",
   "devDependencies": {
-    "@bfra.me/prettier-config": "0.15.4",
+    "@bfra.me/prettier-config": "0.15.3",
     "@bfra.me/tsconfig": "0.9.7",
-    "@changesets/cli": "2.29.2",
+    "@changesets/cli": "2.29.3",
     "@manypkg/cli": "0.23.0",
     "@types/node": "22.15.3",
     "markdownlint": "0.37.4",
