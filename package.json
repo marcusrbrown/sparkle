@@ -32,7 +32,7 @@
   },
   "prettier": "@bfra.me/prettier-config/120-proof",
   "devDependencies": {
-    "@bfra.me/prettier-config": "0.15.4",
+    "@bfra.me/prettier-config": "0.15.3",
     "@bfra.me/tsconfig": "0.9.7",
     "@changesets/cli": "2.29.3",
     "@manypkg/cli": "0.23.0",
@@ -40,7 +40,7 @@
     "markdownlint": "0.37.4",
     "prettier": "3.5.3",
     "scripts": "workspace:*",
-    "turbo": "2.5.2",
+    "turbo": "2.5.3",
     "typescript": "5.8.3"
   },
   "packageManager": "pnpm@10.10.0",
