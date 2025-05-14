@@ -41,7 +41,7 @@
     "@types/react": "~18.2.79",
     "@types/react-dom": "18.2.25",
     "@vitejs/plugin-react-swc": "^3.8.0",
-    "happy-dom": "17.4.6",
+    "happy-dom": "17.4.7",
     "postcss": "^8.5.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
