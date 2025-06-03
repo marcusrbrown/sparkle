@@ -46,18 +46,6 @@
       allowedVersions: '^12.0.0',
     },
     {
-      matchPackageNames: [
-        '@types/react',
-        '@types/react-dom',
-        'com.facebook.react:hermes-engine',
-        'react',
-        'react-dom',
-        'react-is',
-        'react-test-renderer',
-      ],
-      enabled: false,
-    },
-    {
       matchFileNames: ['package.json'],
       extends: [':pinDevDependencies'],
     },
