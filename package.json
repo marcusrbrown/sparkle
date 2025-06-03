@@ -37,7 +37,7 @@
     "@changesets/cli": "2.29.4",
     "@manypkg/cli": "0.24.0",
     "@types/node": "22.15.24",
-    "markdownlint": "0.37.4",
+    "markdownlint": "0.38.0",
     "prettier": "3.5.3",
     "scripts": "workspace:*",
     "turbo": "2.5.4",
