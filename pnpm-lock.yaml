@@ -142,7 +142,7 @@ importers:
         version: 6.6.3
       '@testing-library/react':
         specifier: ^16.0.0
-        version: 16.3.0(@testing-library/dom@10.4.0)(@types/react-dom@18.2.25)(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        version: 16.3.0(@testing-library/dom@10.4.0)(@types/react-dom@18.3.7(@types/react@18.2.79))(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@testing-library/react-native':
         specifier: ^13.0.0
         version: 13.2.0(react-native@0.73.11(@babel/core@7.27.4)(@babel/preset-env@7.26.9(@babel/core@7.27.4))(react@18.2.0))(react-test-renderer@18.3.1(react@18.2.0))(react@18.2.0)
@@ -2451,6 +2451,11 @@ packages:
 
   '@types/react-dom@18.2.25':
     resolution: {integrity: sha512-o/V48vf4MQh7juIKZU2QGDfli6p1+OOi5oXx36Hffpc9adsHeXjVp8rHuPkjd8VT8sOJ2Zp05HR7CdpGTIUFUA==}
+
+  '@types/react-dom@18.3.7':
+    resolution: {integrity: sha512-MEe3UeoENYVFXzoXEWsvcpg6ZvlrFNlOQ7EOsvhI3CfAXwzPfO8Qwuxd40nepsYKqyyVQnTdEfv68q91yLcKrQ==}
+    peerDependencies:
+      '@types/react': ^18.0.0
 
   '@types/react@18.2.79':
     resolution: {integrity: sha512-RwGAGXPl9kSXwdNTafkOEuFrTBD5SA2B3iEB96xi8+xu5ddUa/cpvyVCSNn+asgLCTHkb5ZxN8gbuibYJi4s1w==}
@@ -8922,6 +8927,16 @@ snapshots:
       '@types/react': 18.2.79
       '@types/react-dom': 18.2.25
 
+  '@testing-library/react@16.3.0(@testing-library/dom@10.4.0)(@types/react-dom@18.3.7(@types/react@18.2.79))(@types/react@18.2.79)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+    dependencies:
+      '@babel/runtime': 7.27.0
+      '@testing-library/dom': 10.4.0
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    optionalDependencies:
+      '@types/react': 18.2.79
+      '@types/react-dom': 18.3.7(@types/react@18.2.79)
+
   '@testing-library/user-event@14.5.2(@testing-library/dom@10.4.0)':
     dependencies:
       '@testing-library/dom': 10.4.0
@@ -9001,6 +9016,11 @@ snapshots:
   '@types/react-dom@18.2.25':
     dependencies:
       '@types/react': 18.2.79
+
+  '@types/react-dom@18.3.7(@types/react@18.2.79)':
+    dependencies:
+      '@types/react': 18.2.79
+    optional: true
 
   '@types/react@18.2.79':
     dependencies:
