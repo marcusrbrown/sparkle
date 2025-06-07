@@ -81,7 +81,7 @@ importers:
         version: 5.8.3
       vitest:
         specifier: ^3.0.0
-        version: 3.2.0(@types/debug@4.1.12)(@types/node@22.15.24)(happy-dom@17.6.2)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.39.0)(yaml@2.7.1)
+        version: 3.2.0(@types/debug@4.1.12)(@types/node@22.15.24)(happy-dom@17.6.3)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.39.0)(yaml@2.7.1)
 
   packages/fro-jive:
     dependencies:
@@ -153,8 +153,8 @@ importers:
         specifier: 4.5.1
         version: 4.5.1(vite@6.3.5(@types/node@22.15.29)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.39.0)(yaml@2.7.1))
       happy-dom:
-        specifier: 17.6.2
-        version: 17.6.2
+        specifier: 17.6.3
+        version: 17.6.3
       react-test-renderer:
         specifier: ^19.0.0
         version: 19.1.0(react@19.1.0)
@@ -166,7 +166,7 @@ importers:
         version: 6.3.5(@types/node@22.15.29)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.39.0)(yaml@2.7.1)
       vitest:
         specifier: ^3.0.0
-        version: 3.2.0(@types/debug@4.1.12)(@types/node@22.15.29)(happy-dom@17.6.2)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.39.0)(yaml@2.7.1)
+        version: 3.2.0(@types/debug@4.1.12)(@types/node@22.15.29)(happy-dom@17.6.3)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.39.0)(yaml@2.7.1)
 
   packages/storybook:
     dependencies:
@@ -269,8 +269,8 @@ importers:
         specifier: ^3.8.0
         version: 3.10.1(vite@6.3.5(@types/node@22.15.29)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.39.0)(yaml@2.7.1))
       happy-dom:
-        specifier: 17.6.2
-        version: 17.6.2
+        specifier: 17.6.3
+        version: 17.6.3
       postcss:
         specifier: ^8.5.2
         version: 8.5.4
@@ -291,7 +291,7 @@ importers:
         version: 6.3.5(@types/node@22.15.29)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.39.0)(yaml@2.7.1)
       vitest:
         specifier: ^3.0.0
-        version: 3.2.0(@types/debug@4.1.12)(@types/node@22.15.29)(happy-dom@17.6.2)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.39.0)(yaml@2.7.1)
+        version: 3.2.0(@types/debug@4.1.12)(@types/node@22.15.29)(happy-dom@17.6.3)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.39.0)(yaml@2.7.1)
 
   packages/utils:
     dependencies:
@@ -3353,8 +3353,8 @@ packages:
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
-  happy-dom@17.6.2:
-    resolution: {integrity: sha512-b7+pugVePvHpY7w3G8b5pRqNK4st/fox/Y0/8sULUoHogKLiRvbWKPMqT1g2Y6PH0ut2Wr8g4Ln+/00qjMmUaw==}
+  happy-dom@17.6.3:
+    resolution: {integrity: sha512-UVIHeVhxmxedbWPCfgS55Jg2rDfwf2BCKeylcPSqazLz5w3Kri7Q4xdBJubsr/+VUzFLh0VjIvh13RaDA2/Xug==}
     engines: {node: '>=20.0.0'}
 
   has-flag@3.0.0:
@@ -9335,7 +9335,7 @@ snapshots:
 
   graceful-fs@4.2.11: {}
 
-  happy-dom@17.6.2:
+  happy-dom@17.6.3:
     dependencies:
       webidl-conversions: 7.0.0
       whatwg-mimetype: 3.0.0
@@ -11539,7 +11539,7 @@ snapshots:
       terser: 5.39.0
       yaml: 2.7.1
 
-  vitest@3.2.0(@types/debug@4.1.12)(@types/node@22.15.24)(happy-dom@17.6.2)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.39.0)(yaml@2.7.1):
+  vitest@3.2.0(@types/debug@4.1.12)(@types/node@22.15.24)(happy-dom@17.6.3)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.39.0)(yaml@2.7.1):
     dependencies:
       '@types/chai': 5.2.2
       '@vitest/expect': 3.2.0
@@ -11567,7 +11567,7 @@ snapshots:
     optionalDependencies:
       '@types/debug': 4.1.12
       '@types/node': 22.15.24
-      happy-dom: 17.6.2
+      happy-dom: 17.6.3
     transitivePeerDependencies:
       - jiti
       - less
@@ -11582,7 +11582,7 @@ snapshots:
       - tsx
       - yaml
 
-  vitest@3.2.0(@types/debug@4.1.12)(@types/node@22.15.29)(happy-dom@17.6.2)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.39.0)(yaml@2.7.1):
+  vitest@3.2.0(@types/debug@4.1.12)(@types/node@22.15.29)(happy-dom@17.6.3)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.39.0)(yaml@2.7.1):
     dependencies:
       '@types/chai': 5.2.2
       '@vitest/expect': 3.2.0
@@ -11610,7 +11610,7 @@ snapshots:
     optionalDependencies:
       '@types/debug': 4.1.12
       '@types/node': 22.15.29
-      happy-dom: 17.6.2
+      happy-dom: 17.6.3
     transitivePeerDependencies:
       - jiti
       - less
