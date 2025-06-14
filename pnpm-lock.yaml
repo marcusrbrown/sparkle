@@ -101,8 +101,8 @@ importers:
         specifier: ~7.1.0
         version: 7.1.5(expo@53.0.11(@babel/core@7.27.4)(@expo/metro-runtime@5.0.4(react-native@0.73.11(@babel/core@7.27.4)(@babel/preset-env@7.27.2(@babel/core@7.27.4))(react@19.1.0)))(react-native@0.73.11(@babel/core@7.27.4)(@babel/preset-env@7.27.2(@babel/core@7.27.4))(react@19.1.0))(react@19.1.0))(react-native@0.73.11(@babel/core@7.27.4)(@babel/preset-env@7.27.2(@babel/core@7.27.4))(react@19.1.0))(react@19.1.0)
       expo-router:
-        specifier: ~5.0.0
-        version: 5.0.7(956d523c9500889d0cf5e6d2553d1afa)
+        specifier: ~5.1.0
+        version: 5.1.0(956d523c9500889d0cf5e6d2553d1afa)
       expo-splash-screen:
         specifier: ~0.30.0
         version: 0.30.9(expo@53.0.11(@babel/core@7.27.4)(@expo/metro-runtime@5.0.4(react-native@0.73.11(@babel/core@7.27.4)(@babel/preset-env@7.27.2(@babel/core@7.27.4))(react@19.1.0)))(react-native@0.73.11(@babel/core@7.27.4)(@babel/preset-env@7.27.2(@babel/core@7.27.4))(react@19.1.0))(react@19.1.0))
@@ -3108,8 +3108,8 @@ packages:
   expo-modules-core@2.4.0:
     resolution: {integrity: sha512-Ko5eHBdvuMykjw9P9C9PF54/wBSsGOxaOjx92I5BwgKvEmUwN3UrXFV4CXzlLVbLfSYUQaLcB220xmPfgvT7Fg==}
 
-  expo-router@5.0.7:
-    resolution: {integrity: sha512-NlEgRXCKtseDuIHBp87UfkvqsuVrc0MYG+zg33dopaN6wik4RkrWWxUYdNPHub0s/7qMye6zZBY4ZCrXwd/xpA==}
+  expo-router@5.1.0:
+    resolution: {integrity: sha512-mnKpw35W6kKPpZm+ZxQei6HGUx2JO3znzqJZInzqrTZMgfAcHGgvP9AQFjg/Qi/Qy1CxunB9aQnqE9JPbSwbpw==}
     peerDependencies:
       '@react-navigation/drawer': ^7.3.9
       '@testing-library/jest-native': '*'
@@ -9048,7 +9048,7 @@ snapshots:
     dependencies:
       invariant: 2.2.4
 
-  expo-router@5.0.7(956d523c9500889d0cf5e6d2553d1afa):
+  expo-router@5.1.0(956d523c9500889d0cf5e6d2553d1afa):
     dependencies:
       '@expo/metro-runtime': 5.0.4(react-native@0.73.11(@babel/core@7.27.4)(@babel/preset-env@7.27.2(@babel/core@7.27.4))(react@19.1.0))
       '@expo/server': 0.6.2
