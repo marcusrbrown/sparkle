@@ -113,8 +113,8 @@ importers:
         specifier: ~5.0.0
         version: 5.0.8(expo@53.0.11(@babel/core@7.27.4)(@expo/metro-runtime@5.0.4(react-native@0.73.11(@babel/core@7.27.4)(@babel/preset-env@7.27.2(@babel/core@7.27.4))(react@19.1.0)))(react-native@0.73.11(@babel/core@7.27.4)(@babel/preset-env@7.27.2(@babel/core@7.27.4))(react@19.1.0))(react@19.1.0))(react-native-web@0.20.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-native@0.73.11(@babel/core@7.27.4)(@babel/preset-env@7.27.2(@babel/core@7.27.4))(react@19.1.0))
       expo-web-browser:
-        specifier: ~14.1.0
-        version: 14.1.6(expo@53.0.11(@babel/core@7.27.4)(@expo/metro-runtime@5.0.4(react-native@0.73.11(@babel/core@7.27.4)(@babel/preset-env@7.27.2(@babel/core@7.27.4))(react@19.1.0)))(react-native@0.73.11(@babel/core@7.27.4)(@babel/preset-env@7.27.2(@babel/core@7.27.4))(react@19.1.0))(react@19.1.0))(react-native@0.73.11(@babel/core@7.27.4)(@babel/preset-env@7.27.2(@babel/core@7.27.4))(react@19.1.0))
+        specifier: ~14.2.0
+        version: 14.2.0(expo@53.0.11(@babel/core@7.27.4)(@expo/metro-runtime@5.0.4(react-native@0.73.11(@babel/core@7.27.4)(@babel/preset-env@7.27.2(@babel/core@7.27.4))(react@19.1.0)))(react-native@0.73.11(@babel/core@7.27.4)(@babel/preset-env@7.27.2(@babel/core@7.27.4))(react@19.1.0))(react@19.1.0))(react-native@0.73.11(@babel/core@7.27.4)(@babel/preset-env@7.27.2(@babel/core@7.27.4))(react@19.1.0))
       react:
         specifier: 19.1.0
         version: 19.1.0
@@ -3157,8 +3157,8 @@ packages:
       react-native-web:
         optional: true
 
-  expo-web-browser@14.1.6:
-    resolution: {integrity: sha512-/4P8eWqRyfXIMZna3acg320LXNA+P2cwyEVbjDX8vHnWU+UnOtyRKWy3XaAIyMPQ9hVjBNUQTh4MPvtnPRzakw==}
+  expo-web-browser@14.2.0:
+    resolution: {integrity: sha512-6S51d8pVlDRDsgGAp8BPpwnxtyKiMWEFdezNz+5jVIyT+ctReW42uxnjRgtsdn5sXaqzhaX+Tzk/CWaKCyC0hw==}
     peerDependencies:
       expo: '*'
       react-native: '*'
@@ -9126,7 +9126,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  expo-web-browser@14.1.6(expo@53.0.11(@babel/core@7.27.4)(@expo/metro-runtime@5.0.4(react-native@0.73.11(@babel/core@7.27.4)(@babel/preset-env@7.27.2(@babel/core@7.27.4))(react@19.1.0)))(react-native@0.73.11(@babel/core@7.27.4)(@babel/preset-env@7.27.2(@babel/core@7.27.4))(react@19.1.0))(react@19.1.0))(react-native@0.73.11(@babel/core@7.27.4)(@babel/preset-env@7.27.2(@babel/core@7.27.4))(react@19.1.0)):
+  expo-web-browser@14.2.0(expo@53.0.11(@babel/core@7.27.4)(@expo/metro-runtime@5.0.4(react-native@0.73.11(@babel/core@7.27.4)(@babel/preset-env@7.27.2(@babel/core@7.27.4))(react@19.1.0)))(react-native@0.73.11(@babel/core@7.27.4)(@babel/preset-env@7.27.2(@babel/core@7.27.4))(react@19.1.0))(react@19.1.0))(react-native@0.73.11(@babel/core@7.27.4)(@babel/preset-env@7.27.2(@babel/core@7.27.4))(react@19.1.0)):
     dependencies:
       expo: 53.0.11(@babel/core@7.27.4)(@expo/metro-runtime@5.0.4(react-native@0.73.11(@babel/core@7.27.4)(@babel/preset-env@7.27.2(@babel/core@7.27.4))(react@19.1.0)))(react-native@0.73.11(@babel/core@7.27.4)(@babel/preset-env@7.27.2(@babel/core@7.27.4))(react@19.1.0))(react@19.1.0)
       react-native: 0.73.11(@babel/core@7.27.4)(@babel/preset-env@7.27.2(@babel/core@7.27.4))(react@19.1.0)
