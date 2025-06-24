@@ -12,8 +12,8 @@ importers:
         specifier: 0.15.5
         version: 0.15.5(prettier@3.5.3)
       '@bfra.me/tsconfig':
-        specifier: 0.9.7
-        version: 0.9.7
+        specifier: 0.10.0
+        version: 0.10.0
       '@changesets/cli':
         specifier: 2.29.5
         version: 2.29.5
@@ -1036,8 +1036,8 @@ packages:
     peerDependencies:
       prettier: ^3.0.0
 
-  '@bfra.me/tsconfig@0.9.7':
-    resolution: {integrity: sha512-B61KNTmHmR47crasbyAOgUkn/kxJogioFY9YAe0E7ExOSv3Y5BRvVItZBbhE8GaO2HxWgf3/d8SDQC39QBmKJw==}
+  '@bfra.me/tsconfig@0.10.0':
+    resolution: {integrity: sha512-dvWmv5y6ZrZh7baSH8o02NtdOqQIFcUKYW4dfVNb73cZ3ODCrTeto3Gn7H/B7VYrW5n7itypZC/GpTeT7gvArQ==}
 
   '@changesets/apply-release-plan@7.0.12':
     resolution: {integrity: sha512-EaET7As5CeuhTzvXTQCRZeBUcisoYPDDcXvgTE/2jmmypKp0RC7LxKj/yzqeh/1qFTZI7oDGFcL1PHRuQuketQ==}
@@ -6529,7 +6529,7 @@ snapshots:
     dependencies:
       prettier: 3.5.3
 
-  '@bfra.me/tsconfig@0.9.7': {}
+  '@bfra.me/tsconfig@0.10.0': {}
 
   '@changesets/apply-release-plan@7.0.12':
     dependencies:
