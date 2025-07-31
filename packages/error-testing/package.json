@@ -15,8 +15,8 @@
   "devDependencies": {
     "@types/node": "22.16.3",
     "@types/react": "~19.1.0",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
     "rimraf": "^6.0.0",
     "typescript": "5.8.3",
     "vitest": "^3.0.0"
