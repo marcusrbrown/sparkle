@@ -40,7 +40,7 @@
     "markdownlint": "0.38.0",
     "prettier": "3.6.2",
     "scripts": "workspace:*",
-    "turbo": "2.5.5",
+    "turbo": "2.5.6",
     "typescript": "5.8.3"
   },
   "packageManager": "pnpm@10.14.0",
