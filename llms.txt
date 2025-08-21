@@ -1,0 +1,37 @@
+# Sparkle
+
+> Sparkle is an experimental TypeScript playground focused on modern web and mobile development technologies, featuring a monorepo with packages for UI components, utilities, mobile applications, and development tools built with React, Vite, Expo, and React Native.
+
+This is a personal development playground that demonstrates modern monorepo architecture using pnpm workspaces and Turborepo. The repository includes a React Native mobile app (fro-jive), a comprehensive UI component library, shared utilities, and extensive development tooling with Storybook for component documentation.
+
+The project emphasizes TypeScript-first development, comprehensive testing, and maintainable code architecture. It serves as both a learning environment and a foundation for building production-ready applications using cutting-edge web and mobile technologies.
+
+## Documentation
+
+- [Main README](readme.md): Project overview and getting started guide
+- [Project Guide](docs/project-guide.md): Comprehensive guide to monorepo structure, technologies, and development workflows
+- [AI Development Prompts](.ai/docs/prompts.md): Cursor AI prompts and development assistance guidelines
+
+## Configuration
+
+- [Package Configuration](package.json): Root package configuration with scripts and workspace setup
+- [Workspace Configuration](pnpm-workspace.yaml): pnpm workspace package definitions
+- [Build Configuration](turbo.json): Turborepo pipeline configuration for builds and tasks
+- [TypeScript Configuration](tsconfig.json): Root TypeScript configuration and project references
+
+## Packages
+
+- [UI Component Library](packages/ui/README.md): Modern, accessible React component library with TypeScript and Tailwind CSS
+- [Storybook Documentation](packages/storybook/README.md): Component documentation and development environment setup
+- [fro-jive Mobile App](packages/fro-jive/package.json): Expo/React Native mobile application for real-time chat with Fro Bot
+
+## Development Tools
+
+- [Error Testing Package](packages/error-testing/src/index.ts): Utilities for error handling experimentation and testing
+- [Shared Types](packages/types/src/index.ts): Common TypeScript type definitions across packages
+- [Utility Functions](packages/utils/src/index.ts): Shared utility functions and React helpers
+
+## Optional
+
+- [Best Practices Guide](docs/best-practices-for-sparkle-development.md): Comprehensive development guidelines and standards for TypeScript, mobile development, and monorepo management
+- [License](license.md): MIT license information

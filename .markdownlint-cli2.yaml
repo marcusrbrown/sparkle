@@ -10,5 +10,7 @@ config:
 globs:
   - '**/*.md'
   - '!node_modules'
+  - '!.ai/**'
   - '!.cursorrules'
   - '!.cursor/rules/**/*.mdc'
+  - '!.github/copilot-instructions.md'
