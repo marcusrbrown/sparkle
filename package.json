@@ -41,7 +41,7 @@
     "prettier": "3.6.2",
     "scripts": "workspace:*",
     "turbo": "2.5.6",
-    "typescript": "5.8.3"
+    "typescript": "5.9.2"
   },
   "packageManager": "pnpm@10.14.0",
   "publishConfig": {
