@@ -145,7 +145,7 @@ importers:
         version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.1.7(@types/react@19.1.11))(@types/react@19.1.11)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       '@testing-library/react-native':
         specifier: ^13.0.0
-        version: 13.3.1(react-native@0.73.11(@babel/core@7.28.3)(@babel/preset-env@7.28.3(@babel/core@7.28.3))(react@19.1.1))(react-test-renderer@19.1.1(react@19.1.1))(react@19.1.1)
+        version: 13.3.2(react-native@0.73.11(@babel/core@7.28.3)(@babel/preset-env@7.28.3(@babel/core@7.28.3))(react@19.1.1))(react-test-renderer@19.1.1(react@19.1.1))(react@19.1.1)
       '@types/react':
         specifier: ~19.1.0
         version: 19.1.11
@@ -2140,8 +2140,8 @@ packages:
     resolution: {integrity: sha512-WgXcWzVM6idy5JaftTVC8Vs83NKRmGJz4Hqs4oyOuO2J4r/y79vvKZsb+CaGyCSEbUPI6OsewfPd0G1A0/TUZQ==}
     engines: {node: '>=14', npm: '>=6', yarn: '>=1'}
 
-  '@testing-library/react-native@13.3.1':
-    resolution: {integrity: sha512-o7aGggPVEl/Samx26ubACT0nuQn8/n+1VfDZ3lJ6SFrK9IYkEvaMY2M5hHg9kYcImNFlgsmqc3FgN1VaLAkjyA==}
+  '@testing-library/react-native@13.3.2':
+    resolution: {integrity: sha512-+vplu56J06CwfuBWpXcmKW8ACMgzTLUsjS0CTIHWr4AzrYZdYsZRCivPLW4IdVIH1z72nsCs0XgtV3jczHyPBw==}
     engines: {node: '>=18'}
     peerDependencies:
       jest: '>=29.0.0'
@@ -8038,7 +8038,7 @@ snapshots:
       picocolors: 1.1.1
       redent: 3.0.0
 
-  '@testing-library/react-native@13.3.1(react-native@0.73.11(@babel/core@7.28.3)(@babel/preset-env@7.28.3(@babel/core@7.28.3))(react@19.1.1))(react-test-renderer@19.1.1(react@19.1.1))(react@19.1.1)':
+  '@testing-library/react-native@13.3.2(react-native@0.73.11(@babel/core@7.28.3)(@babel/preset-env@7.28.3(@babel/core@7.28.3))(react@19.1.1))(react-test-renderer@19.1.1(react@19.1.1))(react@19.1.1)':
     dependencies:
       jest-matcher-utils: 30.0.5
       picocolors: 1.1.1
