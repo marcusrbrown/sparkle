@@ -1,4 +1,6 @@
 {
+    "markdown.validate.referenceLinks.enabled": "ignore",
+
     "typescript.enablePromptUseWorkspaceTsdk": true,
     "typescript.tsdk": "node_modules/typescript/lib"
 }
