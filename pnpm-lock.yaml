@@ -86,8 +86,8 @@ importers:
   packages/fro-jive:
     dependencies:
       '@expo/vector-icons':
-        specifier: ^14.0.0
-        version: 14.1.0(expo-font@13.3.2(expo@53.0.20(@babel/core@7.28.3)(@expo/metro-runtime@5.0.4(react-native@0.73.11(@babel/core@7.28.3)(@babel/preset-env@7.28.3(@babel/core@7.28.3))(react@19.1.1)))(react-native@0.73.11(@babel/core@7.28.3)(@babel/preset-env@7.28.3(@babel/core@7.28.3))(react@19.1.1))(react@19.1.1))(react@19.1.1))(react-native@0.73.11(@babel/core@7.28.3)(@babel/preset-env@7.28.3(@babel/core@7.28.3))(react@19.1.1))(react@19.1.1)
+        specifier: ^15.0.0
+        version: 15.0.2(expo-font@13.3.2(expo@53.0.20(@babel/core@7.28.3)(@expo/metro-runtime@5.0.4(react-native@0.73.11(@babel/core@7.28.3)(@babel/preset-env@7.28.3(@babel/core@7.28.3))(react@19.1.1)))(react-native@0.73.11(@babel/core@7.28.3)(@babel/preset-env@7.28.3(@babel/core@7.28.3))(react@19.1.1))(react@19.1.1))(react@19.1.1))(react-native@0.73.11(@babel/core@7.28.3)(@babel/preset-env@7.28.3(@babel/core@7.28.3))(react@19.1.1))(react@19.1.1)
       '@react-navigation/native':
         specifier: ^7.0.0
         version: 7.1.17(react-native@0.73.11(@babel/core@7.28.3)(@babel/preset-env@7.28.3(@babel/core@7.28.3))(react@19.1.1))(react@19.1.1)
@@ -1368,6 +1368,13 @@ packages:
     resolution: {integrity: sha512-7T09UE9h8QDTsUeMGymB4i+iqvtEeaO5VvUjryFB4tugDTG/bkzViWA74hm5pfjjDEhYMXWaX112mcvhccmIwQ==}
     peerDependencies:
       expo-font: '*'
+      react: '*'
+      react-native: '*'
+
+  '@expo/vector-icons@15.0.2':
+    resolution: {integrity: sha512-IiBjg7ZikueuHNf40wSGCf0zS73a3guJLdZzKnDUxsauB8VWPLMeWnRIupc+7cFhLUkqyvyo0jLNlcxG5xPOuQ==}
+    peerDependencies:
+      expo-font: '>=14.0.4'
       react: '*'
       react-native: '*'
 
@@ -7047,6 +7054,12 @@ snapshots:
   '@expo/sudo-prompt@9.3.2': {}
 
   '@expo/vector-icons@14.1.0(expo-font@13.3.2(expo@53.0.20(@babel/core@7.28.3)(@expo/metro-runtime@5.0.4(react-native@0.73.11(@babel/core@7.28.3)(@babel/preset-env@7.28.3(@babel/core@7.28.3))(react@19.1.1)))(react-native@0.73.11(@babel/core@7.28.3)(@babel/preset-env@7.28.3(@babel/core@7.28.3))(react@19.1.1))(react@19.1.1))(react@19.1.1))(react-native@0.73.11(@babel/core@7.28.3)(@babel/preset-env@7.28.3(@babel/core@7.28.3))(react@19.1.1))(react@19.1.1)':
+    dependencies:
+      expo-font: 13.3.2(expo@53.0.20(@babel/core@7.28.3)(@expo/metro-runtime@5.0.4(react-native@0.73.11(@babel/core@7.28.3)(@babel/preset-env@7.28.3(@babel/core@7.28.3))(react@19.1.1)))(react-native@0.73.11(@babel/core@7.28.3)(@babel/preset-env@7.28.3(@babel/core@7.28.3))(react@19.1.1))(react@19.1.1))(react@19.1.1)
+      react: 19.1.1
+      react-native: 0.73.11(@babel/core@7.28.3)(@babel/preset-env@7.28.3(@babel/core@7.28.3))(react@19.1.1)
+
+  '@expo/vector-icons@15.0.2(expo-font@13.3.2(expo@53.0.20(@babel/core@7.28.3)(@expo/metro-runtime@5.0.4(react-native@0.73.11(@babel/core@7.28.3)(@babel/preset-env@7.28.3(@babel/core@7.28.3))(react@19.1.1)))(react-native@0.73.11(@babel/core@7.28.3)(@babel/preset-env@7.28.3(@babel/core@7.28.3))(react@19.1.1))(react@19.1.1))(react@19.1.1))(react-native@0.73.11(@babel/core@7.28.3)(@babel/preset-env@7.28.3(@babel/core@7.28.3))(react@19.1.1))(react@19.1.1)':
     dependencies:
       expo-font: 13.3.2(expo@53.0.20(@babel/core@7.28.3)(@expo/metro-runtime@5.0.4(react-native@0.73.11(@babel/core@7.28.3)(@babel/preset-env@7.28.3(@babel/core@7.28.3))(react@19.1.1)))(react-native@0.73.11(@babel/core@7.28.3)(@babel/preset-env@7.28.3(@babel/core@7.28.3))(react@19.1.1))(react@19.1.1))(react@19.1.1)
       react: 19.1.1
