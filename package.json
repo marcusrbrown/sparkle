@@ -46,7 +46,7 @@
     "@changesets/cli": "2.29.6",
     "@manypkg/cli": "0.25.1",
     "@types/node": "22.18.0",
-    "eslint": "^9.34.0",
+    "eslint": "9.34.0",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-prettier": "5.5.4",
     "markdownlint": "0.38.0",
