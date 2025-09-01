@@ -8,10 +8,6 @@
   "license": "MIT",
   "author": "Marcus R. Brown <git@mrbro.dev>",
   "type": "module",
-  "engines": {
-    "node": ">=22.13.1",
-    "pnpm": ">=9.15.4"
-  },
   "scripts": {
     "bootstrap": "pnpm install --prefer-offline --loglevel warn",
     "build": "turbo run build",
@@ -24,11 +20,12 @@
     "clean": "turbo run clean && rm -rf node_modules",
     "dev": "turbo run dev --parallel",
     "fix": "pnpm fix:monorepo && pnpm fix:es",
-    "fix:monorepo": "manypkg fix",
     "fix:es": "eslint --fix",
+    "fix:monorepo": "manypkg fix",
+    "postinstall": "simple-git-hooks",
     "lint": "eslint",
-    "test": "turbo run test",
-    "start": "turbo run start --parallel"
+    "start": "turbo run start --parallel",
+    "test": "turbo run test"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm exec nano-staged"
@@ -61,6 +58,10 @@
     "typescript": "5.9.2"
   },
   "packageManager": "pnpm@10.15.0",
+  "engines": {
+    "node": ">=22.13.1",
+    "pnpm": ">=9.15.4"
+  },
   "publishConfig": {
     "linkDirectory": true
   }
