@@ -18,6 +18,14 @@ export interface FormSelectProps extends HTMLProperties<HTMLElement> {
    */
   placeholder?: string
   /**
+   * Whether the select is disabled
+   */
+  disabled?: boolean
+  /**
+   * Whether the select is required
+   */
+  required?: boolean
+  /**
    * Select children (SelectItem components)
    */
   children: React.ReactNode
@@ -27,14 +35,32 @@ export interface FormSelectProps extends HTMLProperties<HTMLElement> {
  * Form select component using Radix UI Select primitives
  */
 export const FormSelect = React.forwardRef<HTMLButtonElement, FormSelectProps>((props, ref) => {
-  const {className, size = 'md', validationState = 'default', placeholder, children, ...rest} = props
+  const {
+    className,
+    size = 'md',
+    validationState = 'default',
+    placeholder,
+    disabled = false,
+    required = false,
+    children,
+    ...rest
+  } = props
 
   return (
     <FormPrimitive.Control asChild>
-      <SelectPrimitive.Root>
+      <SelectPrimitive.Root disabled={disabled} required={required}>
         <SelectPrimitive.Trigger
           ref={ref}
-          className={cx('form-select', `form-select-${size}`, `form-select-${validationState}`, className)}
+          disabled={disabled}
+          aria-invalid={validationState === 'error'}
+          aria-required={required}
+          className={cx(
+            'form-select',
+            `form-select-${size}`,
+            `form-select-${validationState}`,
+            disabled && 'form-select-disabled',
+            className,
+          )}
           {...rest}
         >
           <SelectPrimitive.Value placeholder={placeholder} />

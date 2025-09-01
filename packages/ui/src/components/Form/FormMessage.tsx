@@ -22,16 +22,31 @@ export interface FormMessageProps extends HTMLProperties<HTMLSpanElement> {
    * Message children content
    */
   children: React.ReactNode
+  /**
+   * Whether to announce the message to screen readers
+   */
+  announce?: boolean
+  /**
+   * Type of message for styling
+   */
+  type?: 'error' | 'success' | 'info'
 }
 
 /**
  * Form message component for displaying validation feedback
  */
 export const FormMessage = React.forwardRef<HTMLSpanElement, FormMessageProps>((props, ref) => {
-  const {className, match, children, ...rest} = props
+  const {className, match, children, announce = true, type = 'error', ...rest} = props
 
   return (
-    <FormPrimitive.Message ref={ref} match={match} className={cx('form-message', className)} {...rest}>
+    <FormPrimitive.Message
+      ref={ref}
+      match={match}
+      className={cx('form-message', `form-message-${type}`, className)}
+      aria-live={announce ? 'polite' : undefined}
+      role={type === 'error' ? 'alert' : undefined}
+      {...rest}
+    >
       {children}
     </FormPrimitive.Message>
   )

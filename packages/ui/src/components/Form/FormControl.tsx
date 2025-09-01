@@ -16,19 +16,29 @@ export interface FormControlProps extends HTMLProperties<HTMLElement> {
    * Validation state for styling
    */
   validationState?: 'default' | 'error' | 'success'
+  /**
+   * Whether the control is disabled
+   */
+  disabled?: boolean
 }
 
 /**
  * Form control wrapper that handles input focus and validation
  */
 export const FormControl = React.forwardRef<HTMLInputElement, FormControlProps>((props, ref) => {
-  const {className, asChild, size = 'md', validationState = 'default', ...rest} = props
+  const {className, asChild, size = 'md', validationState = 'default', disabled = false, ...rest} = props
 
   return (
     <FormPrimitive.Control
       ref={ref}
       asChild={asChild}
-      className={cx('form-control', `form-control-${size}`, `form-control-${validationState}`, className)}
+      className={cx(
+        'form-control',
+        `form-control-${size}`,
+        `form-control-${validationState}`,
+        disabled && 'form-control-disabled',
+        className,
+      )}
       {...rest}
     />
   )
