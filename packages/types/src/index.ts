@@ -31,6 +31,51 @@ export interface FieldProps extends BaseProps {
 }
 
 /**
+ * Extended form field props for advanced form components
+ */
+export interface FormFieldProps extends FieldProps {
+  /**
+   * Field name for form submission and validation
+   */
+  name: string
+  /**
+   * Validation state of the field
+   */
+  validationState?: 'default' | 'error' | 'success'
+  /**
+   * Size variant for the field
+   */
+  size?: 'sm' | 'md' | 'lg'
+  /**
+   * Field type for input elements
+   */
+  type?: 'text' | 'email' | 'password' | 'textarea' | 'select'
+}
+
+/**
+ * Form validation message props
+ */
+export interface FormMessageProps extends BaseProps {
+  /**
+   * Custom validation function
+   */
+  match?: (value: string, formData: FormData) => boolean | Promise<boolean>
+  /**
+   * Built-in validation type
+   */
+  validationType?:
+    | 'valueMissing'
+    | 'typeMismatch'
+    | 'patternMismatch'
+    | 'tooLong'
+    | 'tooShort'
+    | 'rangeUnderflow'
+    | 'rangeOverflow'
+    | 'stepMismatch'
+    | 'badInput'
+}
+
+/**
  * Common API response types
  */
 export interface ApiResponse<T = unknown> {

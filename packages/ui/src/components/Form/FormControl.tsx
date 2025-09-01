@@ -1,0 +1,37 @@
+import React from 'react'
+import * as FormPrimitive from '@radix-ui/react-form'
+import {cx} from '../../utils'
+import type {HTMLProperties} from '../../types'
+
+export interface FormControlProps extends HTMLProperties<HTMLElement> {
+  /**
+   * Use the child component as the control element
+   */
+  asChild?: boolean
+  /**
+   * Size variant for the control
+   */
+  size?: 'sm' | 'md' | 'lg'
+  /**
+   * Validation state for styling
+   */
+  validationState?: 'default' | 'error' | 'success'
+}
+
+/**
+ * Form control wrapper that handles input focus and validation
+ */
+export const FormControl = React.forwardRef<HTMLInputElement, FormControlProps>((props, ref) => {
+  const {className, asChild, size = 'md', validationState = 'default', ...rest} = props
+
+  return (
+    <FormPrimitive.Control
+      ref={ref}
+      asChild={asChild}
+      className={cx('form-control', `form-control-${size}`, `form-control-${validationState}`, className)}
+      {...rest}
+    />
+  )
+})
+
+FormControl.displayName = 'FormControl'
