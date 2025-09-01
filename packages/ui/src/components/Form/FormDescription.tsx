@@ -20,11 +20,7 @@ export const FormDescription = React.forwardRef<HTMLParagraphElement, FormDescri
   const {className, children, disabled = false, ...rest} = props
 
   return (
-    <p
-      ref={ref}
-      className={cx('form-description', disabled && 'form-description-disabled', className)}
-      {...rest}
-    >
+    <p ref={ref} className={cx('form-description', disabled && 'form-description-disabled', className)} {...rest}>
       {children}
     </p>
   )

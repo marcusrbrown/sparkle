@@ -32,12 +32,7 @@ export const FormLabel = React.forwardRef<HTMLLabelElement, FormLabelProps>((pro
     <div className={cx('form-label-container')}>
       <FormPrimitive.Label
         ref={ref}
-        className={cx(
-          'form-label',
-          required && 'form-label-required',
-          disabled && 'form-label-disabled',
-          className,
-        )}
+        className={cx('form-label', required && 'form-label-required', disabled && 'form-label-disabled', className)}
         {...rest}
       >
         {children}
