@@ -1,16 +1,17 @@
 {
   "name": "@sparkle/storybook",
-  "private": true,
   "version": "0.0.0",
+  "private": true,
   "type": "module",
   "scripts": {
-    "dev": "storybook dev -p 6006",
     "build": "storybook build",
+    "clean": "rimraf .turbo node_modules dist storybook-static",
+    "dev": "storybook dev -p 6006",
     "lint": "eslint",
-    "preview": "serve storybook-static",
-    "clean": "rimraf .turbo node_modules dist storybook-static"
+    "preview": "serve storybook-static"
   },
   "dependencies": {
+    "@sparkle/ui": "workspace:*",
     "react": "19.1.1",
     "react-dom": "19.1.1"
   },
