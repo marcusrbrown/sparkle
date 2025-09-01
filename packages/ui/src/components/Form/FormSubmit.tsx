@@ -13,6 +13,10 @@ export interface FormSubmitProps extends HTMLProperties<HTMLButtonElement> {
    */
   variant?: 'primary' | 'secondary' | 'outline'
   /**
+   * Whether the submit button is disabled
+   */
+  disabled?: boolean
+  /**
    * Submit button children content
    */
   children: React.ReactNode
@@ -22,12 +26,19 @@ export interface FormSubmitProps extends HTMLProperties<HTMLButtonElement> {
  * Form submit button component with proper form association
  */
 export const FormSubmit = React.forwardRef<HTMLButtonElement, FormSubmitProps>((props, ref) => {
-  const {className, size = 'md', variant = 'primary', children, ...rest} = props
+  const {className, size = 'md', variant = 'primary', disabled = false, children, ...rest} = props
 
   return (
     <FormPrimitive.Submit
       ref={ref}
-      className={cx('form-submit', `form-submit-${size}`, `form-submit-${variant}`, className)}
+      disabled={disabled}
+      className={cx(
+        'form-submit',
+        `form-submit-${size}`,
+        `form-submit-${variant}`,
+        disabled && 'form-submit-disabled',
+        className,
+      )}
       {...rest}
     >
       {children}

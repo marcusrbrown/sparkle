@@ -16,19 +16,37 @@ export interface FormTextareaProps extends HTMLProperties<HTMLTextAreaElement> {
    * Textarea placeholder text
    */
   placeholder?: string
+  /**
+   * Whether the textarea is disabled
+   */
+  disabled?: boolean
+  /**
+   * Whether the textarea is required
+   */
+  required?: boolean
 }
 
 /**
  * Form textarea component for multi-line text input
  */
 export const FormTextarea = React.forwardRef<HTMLTextAreaElement, FormTextareaProps>((props, ref) => {
-  const {className, size = 'md', validationState = 'default', ...rest} = props
+  const {className, size = 'md', validationState = 'default', disabled = false, required = false, ...rest} = props
 
   return (
     <FormPrimitive.Control asChild>
       <textarea
         ref={ref}
-        className={cx('form-textarea', `form-textarea-${size}`, `form-textarea-${validationState}`, className)}
+        disabled={disabled}
+        required={required}
+        aria-invalid={validationState === 'error'}
+        aria-required={required}
+        className={cx(
+          'form-textarea',
+          `form-textarea-${size}`,
+          `form-textarea-${validationState}`,
+          disabled && 'form-textarea-disabled',
+          className,
+        )}
         {...rest}
       />
     </FormPrimitive.Control>
