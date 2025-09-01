@@ -30,7 +30,7 @@ importers:
         specifier: 22.18.0
         version: 22.18.0
       eslint:
-        specifier: ^9.34.0
+        specifier: 9.34.0
         version: 9.34.0(jiti@2.1.2)
       eslint-config-prettier:
         specifier: 10.1.8
