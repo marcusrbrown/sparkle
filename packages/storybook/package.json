@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "storybook dev -p 6006",
     "build": "storybook build",
+    "lint": "eslint",
     "preview": "serve storybook-static",
     "clean": "rimraf .turbo node_modules dist storybook-static"
   },

@@ -18,28 +18,45 @@
     "build:types": "turbo run build:types",
     "build:types:watch": "turbo run build:types:watch --parallel",
     "build:watch": "turbo run build:watch --parallel",
-    "check": "pnpm check:format && pnpm check:monorepo && pnpm check:types",
-    "check:format": "prettier --check .",
+    "check": "pnpm check:monorepo && pnpm check:types && pnpm lint",
     "check:monorepo": "manypkg check",
     "check:types": "tsc --noEmit",
     "clean": "turbo run clean && rm -rf node_modules",
     "dev": "turbo run dev --parallel",
-    "fix": "manypkg fix && pnpm bootstrap && pnpm format",
-    "format": "prettier --write .",
-    "lint": "turbo run lint",
+    "fix": "pnpm fix:monorepo && pnpm fix:es",
+    "fix:monorepo": "manypkg fix",
+    "fix:es": "eslint --fix",
+    "lint": "eslint",
     "test": "turbo run test",
     "start": "turbo run start --parallel"
   },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm exec nano-staged"
+  },
+  "nano-staged": {
+    "*.{ts,js,jsx,tsx,css,md,json,yaml,yml}": [
+      "eslint --fix"
+    ],
+    "**/package.json": [
+      "pnpx sort-package-json"
+    ]
+  },
   "prettier": "@bfra.me/prettier-config/120-proof",
   "devDependencies": {
+    "@bfra.me/eslint-config": "0.28.1",
     "@bfra.me/prettier-config": "0.16.1",
     "@bfra.me/tsconfig": "0.12.0",
     "@changesets/cli": "2.29.6",
     "@manypkg/cli": "0.25.1",
     "@types/node": "22.17.1",
+    "eslint": "^9.34.0",
+    "eslint-config-prettier": "10.1.8",
+    "eslint-plugin-prettier": "5.5.4",
     "markdownlint": "0.38.0",
+    "nano-staged": "0.8.0",
     "prettier": "3.6.2",
     "scripts": "workspace:*",
+    "simple-git-hooks": "2.13.1",
     "turbo": "2.5.6",
     "typescript": "5.9.2"
   },

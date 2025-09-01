@@ -1,4 +1,5 @@
 import type {Config} from 'tailwindcss'
+import forms from '@tailwindcss/forms'
 
 export const colors = {
   primary: {
@@ -34,7 +35,7 @@ export const tailwindConfig = {
       borderRadius,
     },
   },
-  plugins: [require('@tailwindcss/forms')],
+  plugins: [forms],
 } satisfies Config
 
 export default tailwindConfig

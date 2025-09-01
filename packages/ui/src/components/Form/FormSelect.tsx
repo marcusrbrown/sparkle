@@ -1,8 +1,8 @@
-import React from 'react'
+import type {HTMLProperties} from '../../types'
 import * as FormPrimitive from '@radix-ui/react-form'
 import * as SelectPrimitive from '@radix-ui/react-select'
+import React from 'react'
 import {cx} from '../../utils'
-import type {HTMLProperties} from '../../types'
 
 export interface FormSelectProps extends HTMLProperties<HTMLElement> {
   /**

@@ -1,28 +1,28 @@
 // Export all Form components for individual imports
-export * from './Form'
-export * from './FormField'
-export * from './FormLabel'
-export * from './FormControl'
-export * from './FormInput'
-export * from './FormPassword'
-export * from './FormMessage'
-export * from './FormDescription'
-export * from './FormTextarea'
-export * from './FormSelect'
-export * from './FormSubmit'
-
 // Import components for compound export
 import {Form as FormRoot} from './Form'
-import {FormField} from './FormField'
-import {FormLabel} from './FormLabel'
 import {FormControl} from './FormControl'
-import {FormInput} from './FormInput'
-import {FormPassword} from './FormPassword'
-import {FormMessage} from './FormMessage'
 import {FormDescription} from './FormDescription'
-import {FormTextarea} from './FormTextarea'
+import {FormField} from './FormField'
+import {FormInput} from './FormInput'
+import {FormLabel} from './FormLabel'
+import {FormMessage} from './FormMessage'
+import {FormPassword} from './FormPassword'
 import {FormSelect, FormSelectItem} from './FormSelect'
 import {FormSubmit} from './FormSubmit'
+import {FormTextarea} from './FormTextarea'
+
+export * from './Form'
+export * from './FormControl'
+export * from './FormDescription'
+export * from './FormField'
+export * from './FormInput'
+export * from './FormLabel'
+export * from './FormMessage'
+export * from './FormPassword'
+export * from './FormSelect'
+export * from './FormSubmit'
+export * from './FormTextarea'
 
 // Create compound component export following architectural pattern
 export const Form = Object.assign(FormRoot, {
@@ -42,15 +42,15 @@ export const Form = Object.assign(FormRoot, {
 
 // Individual component exports for backward compatibility
 export {
-  FormField,
-  FormLabel,
   FormControl,
-  FormInput,
-  FormPassword,
-  FormMessage,
   FormDescription,
-  FormTextarea,
+  FormField,
+  FormInput,
+  FormLabel,
+  FormMessage,
+  FormPassword,
   FormSelect,
   FormSelectItem,
   FormSubmit,
+  FormTextarea,
 }

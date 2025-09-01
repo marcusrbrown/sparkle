@@ -1,8 +1,8 @@
-import {describe, it, expect} from 'vitest'
+import {describe, expect, it} from 'vitest'
 import {TestScenarioBuilder, type TestContext} from '../src'
 
 class CustomError extends Error {
-  constructor(message: string = 'Custom error') {
+  constructor(message = 'Custom error') {
     super(message)
     this.name = 'CustomError'
   }

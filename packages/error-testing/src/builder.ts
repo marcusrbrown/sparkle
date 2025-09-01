@@ -1,4 +1,4 @@
-import type {TestContext, TestScenarioConfig, ErrorRecoveryStrategy, TestResult} from './types'
+import type {ErrorRecoveryStrategy, TestContext, TestResult, TestScenarioConfig} from './types'
 
 /**
  * A fluent builder for creating type-safe error test scenarios.
@@ -79,7 +79,7 @@ export class TestScenarioBuilder<TError extends Error = Error, TState = unknown>
    */
   async execute(context: TestContext<TState>): Promise<TestResult<TError>> {
     const config = this.build()
-    let result: TestResult<TError> = {
+    const result: TestResult<TError> = {
       success: false,
       recoveryAttempted: false,
     }
@@ -90,6 +90,7 @@ export class TestScenarioBuilder<TError extends Error = Error, TState = unknown>
       }
 
       // Here you would typically trigger the error condition
+      // eslint-disable-next-line new-cap
       throw new config.errorType()
     } catch (error) {
       if (error instanceof config.errorType) {
@@ -101,7 +102,7 @@ export class TestScenarioBuilder<TError extends Error = Error, TState = unknown>
             await config.recovery.handle(error, context)
             result.recoverySucceeded = true
             result.success = true
-          } catch (recoveryError) {
+          } catch {
             result.recoverySucceeded = false
           }
         }

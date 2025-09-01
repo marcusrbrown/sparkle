@@ -8,6 +8,7 @@
     "build:types": "tsc",
     "ios": "expo start --ios",
     "start": "expo start",
+    "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest",
     "web": "expo start --web"

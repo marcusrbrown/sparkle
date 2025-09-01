@@ -5,8 +5,8 @@
  */
 export function toKebabCase(str: string): string {
   return str
-    .replace(/([a-z])([A-Z])/g, '$1-$2')
-    .replace(/[\s_]+/g, '-')
+    .replaceAll(/([a-z])([A-Z])/g, '$1-$2')
+    .replaceAll(/[\s_]+/g, '-')
     .toLowerCase()
 }
 
@@ -18,7 +18,7 @@ export function toKebabCase(str: string): string {
  */
 export function truncate(str: string, maxLength: number): string {
   if (str.length <= maxLength) return str
-  return str.slice(0, maxLength - 3) + '...'
+  return `${str.slice(0, maxLength - 3)}...`
 }
 
 /**
@@ -30,9 +30,9 @@ export function slugify(str: string): string {
   return str
     .toLowerCase()
     .trim()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/[\s_-]+/g, '-')
-    .replace(/^-+|-+$/g, '')
+    .replaceAll(/[^\w\s-]/g, '')
+    .replaceAll(/[\s_-]+/g, '-')
+    .replaceAll(/^-+|-+$/g, '')
 }
 
 /**

@@ -124,5 +124,7 @@ storybook-static/
 # Turborepo
 .turbo
 
-# SpecStory explanation file
-.specstory/.what-is-this.md
+# SpecStory
+.specstory/
+
+.expo/

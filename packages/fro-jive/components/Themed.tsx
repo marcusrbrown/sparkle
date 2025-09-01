@@ -3,12 +3,12 @@
  * https://docs.expo.io/guides/color-schemes/
  */
 
-import {Text as DefaultText, View as DefaultView} from 'react-native'
-
 import Colors from '@/constants/Colors'
-import {useColorScheme} from './useColorScheme'
 
-type ThemeProps = {
+import {Text as DefaultText, View as DefaultView} from 'react-native'
+import {useColorScheme} from './use-color-scheme'
+
+interface ThemeProps {
   lightColor?: string
   darkColor?: string
 }

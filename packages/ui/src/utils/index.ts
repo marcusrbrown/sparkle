@@ -24,9 +24,9 @@ export const cx = (...args: (string | Record<string, boolean> | undefined | null
 export function createComponent<Props extends object, DefaultElement extends As>(
   render: (props: PropsWithAs<Props, DefaultElement>) => React.ReactElement | null,
   defaultElement: DefaultElement,
-) {
+): ((props: PropsWithAs<Props, DefaultElement>) => React.ReactElement | null) & {displayName?: string} {
   return Object.assign(
-    function Component(props: PropsWithAs<Props, DefaultElement>) {
+    (props: PropsWithAs<Props, DefaultElement>) => {
       const Element = (props.as ?? defaultElement) as DefaultElement
       return render({...props, as: Element})
     },

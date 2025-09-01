@@ -1,6 +1,6 @@
-import {describe, it, expect} from 'vitest'
 // TODO: Switch to @testing-library/react-native once RN testing is properly configured
 import {render, screen} from '@testing-library/react'
+import {describe, expect, it} from 'vitest'
 import {MonoText} from '../StyledText'
 
 describe('MonoText', () => {

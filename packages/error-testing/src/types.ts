@@ -13,7 +13,7 @@ export interface TestContext<TState = unknown> {
  */
 export interface ErrorBoundaryConfig<TError extends Error = Error> {
   readonly name: string
-  readonly errorTypes: ReadonlyArray<new (...args: any[]) => TError>
+  readonly errorTypes: readonly (new (...args: any[]) => TError)[]
   readonly fallback?: ComponentType<{error: TError}>
 }
 

@@ -1,7 +1,7 @@
-import React from 'react'
-import * as FormPrimitive from '@radix-ui/react-form'
-import {cx} from '../../utils'
 import type {HTMLProperties} from '../../types'
+import * as FormPrimitive from '@radix-ui/react-form'
+import React from 'react'
+import {cx} from '../../utils'
 
 export interface FormFieldProps extends HTMLProperties<HTMLDivElement> {
   /**

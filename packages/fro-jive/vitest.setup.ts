@@ -1,6 +1,6 @@
-import '@testing-library/jest-dom'
 import {cleanup} from '@testing-library/react-native'
 import {afterEach, vi} from 'vitest'
+import '@testing-library/jest-dom'
 
 // Mock React Native
 vi.mock('react-native', () => ({

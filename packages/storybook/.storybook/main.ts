@@ -1,6 +1,6 @@
+import type {StorybookConfig} from '@storybook/react-vite'
 import {createRequire} from 'node:module'
 import {dirname, join} from 'node:path'
-import type {StorybookConfig} from '@storybook/react-vite'
 import {mergeConfig} from 'vite'
 
 const require = createRequire(import.meta.url)
