@@ -4,7 +4,7 @@
 
 export type As<Props = any> = React.ElementType<Props>
 
-export type PropsWithAs<Props = {}, Type extends As = As> = Props & {
+export type PropsWithAs<Props extends object, Type extends As = As> = Props & {
   as?: Type
 } & Omit<React.ComponentProps<Type>, keyof Props | 'as'>
 

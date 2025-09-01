@@ -12,7 +12,7 @@ function App() {
   )
 }
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+ReactDOM.createRoot(document.querySelector('#root')!).render(
   <React.StrictMode>
     <App />
   </React.StrictMode>,

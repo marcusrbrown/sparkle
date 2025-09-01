@@ -22,7 +22,7 @@ export function useDebounce<T>(value: T, delay: number): T {
  * @param handler The callback to execute when clicking outside
  * @returns Ref to attach to the element
  */
-export function useClickOutside<T extends HTMLElement>(handler: () => void) {
+export function useClickOutside<T extends HTMLElement>(handler: () => void): React.RefObject<T | null> {
   const ref = useRef<T>(null)
 
   useEffect(() => {
@@ -62,9 +62,9 @@ export function useAsync<T extends (...args: any[]) => Promise<any>>(
         setLoading(true)
         setError(null)
         return await asyncFn(...args)
-      } catch (err) {
-        setError(err instanceof Error ? err : new Error(String(err)))
-        throw err
+      } catch (error_) {
+        setError(error_ instanceof Error ? error_ : new Error(String(error_)))
+        throw error_
       } finally {
         setLoading(false)
       }

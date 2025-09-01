@@ -69,7 +69,9 @@ TypeScript project references are crucial for maintaining clean dependencies bet
     "esModuleInterop": true
   }
 }
+```
 
+```json
 // Package tsconfig.json
 {
   "extends": "../../tsconfig.json",
@@ -115,9 +117,9 @@ Expo provides specialized support for monorepos starting from SDK 48, with autom
 3. Share UI components and business logic across different apps[^4].
 
 ```javascript
+const path = require("node:path")
 // metro.config.js in your Expo app
 const {getDefaultConfig} = require("expo/metro-config")
-const path = require("path")
 
 const projectRoot = __dirname
 const workspaceRoot = path.resolve(projectRoot, "../..")
@@ -390,7 +392,7 @@ export class APIError extends Error {
   constructor(
     message: string,
     public statusCode: number,
-    public context?: Record&lt;string, unknown&gt;
+    public context?: Record<string, unknown>
   ) {
     super(message);
     this.name = 'APIError';

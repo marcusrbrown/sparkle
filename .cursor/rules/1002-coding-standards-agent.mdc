@@ -98,12 +98,14 @@ Running all checks:
 pnpm check
 
 # Individual checks
-pnpm check:format   # Prettier
 pnpm check:monorepo # Manypkg
 pnpm check:types    # TypeScript
 
-# Fix formatting
-pnpm format
+# Fix all issues
+pnpm fix
+
+# Fix linter issues and formatting
+pnpm fix:es
 ```
 </example>
 

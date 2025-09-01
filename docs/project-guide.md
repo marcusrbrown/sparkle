@@ -60,9 +60,7 @@ Scripts are defined in the root `package.json` and primarily orchestrated by Tur
   - `pnpm build:watch`: Builds all packages in watch mode.
 - **Testing:** `pnpm test` (Runs tests, likely `vitest run`, across relevant packages)
 - **Linting:** `pnpm lint` (Runs linters across relevant packages)
-- **Formatting:**
-  - `pnpm format`: Formats code using Prettier.
-  - `pnpm check:format`: Checks formatting without writing changes.
+  - `pnpm fix:es`: Fixes ESLint issues.
 - **Type Checking:** `pnpm check:types` (Runs `tsc --noEmit`)
 - **Monorepo Checks:** `pnpm check:monorepo` (Runs `manypkg check`)
 - **All Checks:** `pnpm check` (Runs format check, monorepo check, and type check)

@@ -38,17 +38,19 @@ function App() {
 A versatile button component with multiple variants and sizes.
 
 ```tsx
-<Button variant="primary" size="md">
-  Primary Button
-</Button>
+<>
+  <Button variant="primary" size="md">
+    Primary Button
+  </Button>
 
-<Button variant="secondary" size="sm">
-  Secondary Button
-</Button>
+  <Button variant="secondary" size="sm">
+    Secondary Button
+  </Button>
 
-<Button variant="outline" size="lg">
-  Outline Button
-</Button>
+  <Button variant="outline" size="lg">
+    Outline Button
+  </Button>
+</>
 ```
 
 ## Development
