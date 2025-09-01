@@ -27,12 +27,7 @@ export const FormSubmit = React.forwardRef<HTMLButtonElement, FormSubmitProps>((
   return (
     <FormPrimitive.Submit
       ref={ref}
-      className={cx(
-        'form-submit',
-        `form-submit-${size}`,
-        `form-submit-${variant}`,
-        className,
-      )}
+      className={cx('form-submit', `form-submit-${size}`, `form-submit-${variant}`, className)}
       {...rest}
     >
       {children}
