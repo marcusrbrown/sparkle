@@ -2,10 +2,12 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "baseUrl": ".",
-    "jsx": "react-jsx",
-    "paths": {
-      "@sparkle/*": ["../*/src"]
-    }
+    "jsx": "react-jsx"
   },
-  "include": ["src", ".storybook/**/*"]
+  "include": ["src", ".storybook/**/*"],
+  "references": [
+    {
+      "path": "../ui"
+    }
+  ]
 }
