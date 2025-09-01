@@ -101,7 +101,8 @@ export const FormPassword = React.forwardRef<HTMLInputElement, FormPasswordProps
           type={isVisible ? 'text' : 'password'}
           disabled={disabled}
           required={required}
-          aria-invalid={validationState === 'error'}
+          autoComplete="current-password"
+          aria-invalid={validationState === 'error' ? true : undefined}
           aria-required={required}
           className={cx(
             'form-password',

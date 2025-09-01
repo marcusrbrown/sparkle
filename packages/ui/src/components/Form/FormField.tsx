@@ -32,6 +32,7 @@ export const FormField = React.forwardRef<HTMLDivElement, FormFieldProps>((props
     <FormPrimitive.Field
       ref={ref}
       name={name}
+      role="group"
       className={cx(
         'form-field',
         validationState && `form-field-${validationState}`,

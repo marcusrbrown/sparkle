@@ -26,6 +26,14 @@ export interface FormSelectProps extends HTMLProperties<HTMLElement> {
    */
   required?: boolean
   /**
+   * Select value
+   */
+  value?: string
+  /**
+   * Select change handler
+   */
+  onValueChange?: (value: string) => void
+  /**
    * Select children (SelectItem components)
    */
   children: React.ReactNode
@@ -42,18 +50,21 @@ export const FormSelect = React.forwardRef<HTMLButtonElement, FormSelectProps>((
     placeholder,
     disabled = false,
     required = false,
+    value,
+    onValueChange,
     children,
     ...rest
   } = props
 
   return (
     <FormPrimitive.Control asChild>
-      <SelectPrimitive.Root disabled={disabled} required={required}>
+      <SelectPrimitive.Root disabled={disabled} required={required} value={value} onValueChange={onValueChange}>
         <SelectPrimitive.Trigger
           ref={ref}
           disabled={disabled}
-          aria-invalid={validationState === 'error'}
+          aria-invalid={validationState === 'error' ? true : undefined}
           aria-required={required}
+          aria-placeholder={placeholder}
           className={cx(
             'form-select',
             `form-select-${size}`,
@@ -64,10 +75,10 @@ export const FormSelect = React.forwardRef<HTMLButtonElement, FormSelectProps>((
           {...rest}
         >
           <SelectPrimitive.Value placeholder={placeholder} />
-          <SelectPrimitive.Icon />
+          <SelectPrimitive.Icon aria-hidden="true">▼</SelectPrimitive.Icon>
         </SelectPrimitive.Trigger>
         <SelectPrimitive.Portal>
-          <SelectPrimitive.Content>
+          <SelectPrimitive.Content position="popper" sideOffset={4}>
             <SelectPrimitive.Viewport>{children}</SelectPrimitive.Viewport>
           </SelectPrimitive.Content>
         </SelectPrimitive.Portal>
@@ -81,11 +92,12 @@ FormSelect.displayName = 'FormSelect'
 // Export SelectItem for convenience
 export const FormSelectItem = React.forwardRef<HTMLDivElement, {value: string; children: React.ReactNode}>(
   (props, ref) => {
-    const {children, ...rest} = props
+    const {children, value, ...rest} = props
 
     return (
-      <SelectPrimitive.Item ref={ref} {...rest}>
+      <SelectPrimitive.Item ref={ref} value={value} className="form-select-item" {...rest}>
         <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
+        <SelectPrimitive.ItemIndicator className="form-select-item-indicator">✓</SelectPrimitive.ItemIndicator>
       </SelectPrimitive.Item>
     )
   },

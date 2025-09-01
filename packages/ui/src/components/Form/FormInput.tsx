@@ -87,7 +87,7 @@ export const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>((pro
         type={type}
         disabled={disabled}
         required={required}
-        aria-invalid={validationState === 'error'}
+        aria-invalid={validationState === 'error' ? true : undefined}
         aria-required={required}
         className={cx(
           'form-input',
