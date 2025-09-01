@@ -33,6 +33,9 @@ export const FormSubmit = React.forwardRef<HTMLButtonElement, FormSubmitProps>((
       ref={ref}
       disabled={disabled}
       className={cx(
+        'btn', // Base button class
+        `btn-${variant}`, // Variant class as expected by tests
+        `btn-${size}`, // Size class as expected by tests
         'form-submit',
         `form-submit-${size}`,
         `form-submit-${variant}`,

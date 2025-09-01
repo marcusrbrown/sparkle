@@ -47,6 +47,10 @@ export const Form = React.forwardRef<HTMLFormElement, FormProps>((props, ref) =>
   } = props
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    // Important: Radix UI Form.Root only calls onSubmit if client-side validation passes
+    // This means constraint validation (required, email format, etc.) has already succeeded
+    // We should only run our custom logic here
+
     if (preventDefaultSubmission) {
       event.preventDefault()
     }
@@ -54,7 +58,7 @@ export const Form = React.forwardRef<HTMLFormElement, FormProps>((props, ref) =>
     try {
       const formData = new FormData(event.currentTarget)
 
-      // Run validation if provided
+      // Run custom validation if provided (constraint validation already passed)
       if (onValidate) {
         const isValid = await onValidate(formData)
         if (!isValid) {
@@ -94,6 +98,7 @@ export const Form = React.forwardRef<HTMLFormElement, FormProps>((props, ref) =>
   return (
     <FormPrimitive.Root
       ref={ref}
+      role="form"
       className={cx('form', className)}
       onSubmit={handleSubmit}
       onKeyDown={handleKeyDown}

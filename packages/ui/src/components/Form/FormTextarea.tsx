@@ -38,7 +38,7 @@ export const FormTextarea = React.forwardRef<HTMLTextAreaElement, FormTextareaPr
         ref={ref}
         disabled={disabled}
         required={required}
-        aria-invalid={validationState === 'error'}
+        aria-invalid={validationState === 'error' ? true : undefined}
         aria-required={required}
         className={cx(
           'form-textarea',
