@@ -1,12 +1,84 @@
 import type {CSSProperties} from 'react'
 
 /**
- * Common theme configuration types
+ * Color scale definition for theme colors
+ * Supports both named colors and numeric scales (50, 100, 200, etc.)
+ */
+export interface ColorScale {
+  [key: string]: Record<string | number, string>
+}
+
+/**
+ * Typography scale with font families, sizes, weights, and line heights
+ */
+export interface TypographyScale {
+  fontFamily: Record<string, string>
+  fontSize: Record<string, string>
+  fontWeight: Record<string, string | number>
+  lineHeight: Record<string, string | number>
+  letterSpacing: Record<string, string>
+}
+
+/**
+ * Spacing scale for consistent spacing values
+ */
+export interface SpacingScale {
+  [key: string | number]: string
+}
+
+/**
+ * Shadow scale for box shadows and elevation
+ */
+export interface ShadowScale {
+  [key: string]: string
+}
+
+/**
+ * Border radius scale for consistent corner radius values
+ */
+export interface BorderRadiusScale {
+  [key: string]: string
+}
+
+/**
+ * Animation scale for durations, easing curves, and transitions
+ */
+export interface AnimationScale {
+  duration: Record<string, string>
+  easing: Record<string, string>
+  transition: Record<string, string>
+}
+
+/**
+ * Comprehensive theme configuration with design token system
+ * Compatible with both Tailwind CSS (web) and React Native StyleSheet (mobile)
  */
 export interface ThemeConfig {
-  colors: Record<string, Record<string | number, string>>
-  spacing: Record<string | number, string>
-  borderRadius: Record<string, string>
+  /**
+   * Color system with semantic and brand colors
+   * Supports nested scales (e.g., primary: { 50: '#...', 500: '#...' })
+   */
+  colors: ColorScale
+  /**
+   * Typography system with fonts, sizes, weights, and spacing
+   */
+  typography: TypographyScale
+  /**
+   * Spacing scale for margins, padding, gaps, and layout
+   */
+  spacing: SpacingScale
+  /**
+   * Shadow system for elevation and depth
+   */
+  shadows: ShadowScale
+  /**
+   * Border radius system for consistent corner treatments
+   */
+  borderRadius: BorderRadiusScale
+  /**
+   * Animation system for durations, easing, and transitions
+   */
+  animation: AnimationScale
 }
 
 /**

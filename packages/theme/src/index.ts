@@ -5,11 +5,44 @@
  * design token system compatible with Tailwind CSS and React Native StyleSheet.
  */
 
-// Export theme configuration types
-export type {ThemeConfig} from '@sparkle/types'
+/**
+ * Design tokens (Phase 2)
+ */
+export {baseTokens} from './tokens/base.js'
+export {darkTokens} from './tokens/dark.js'
+export {lightTokens} from './tokens/light.js'
 
-// Placeholder exports for theme system components
-// These will be implemented in subsequent phases
+/**
+ * Platform-specific exports (Phase 2 & 4)
+ */
+export {createNativeStyleUtils, generateNativeTheme, parseNumericValue, parseShadow} from './tokens/native.js'
+export type {NativeShadowStyle, NativeTheme} from './tokens/native.js'
+
+export {cssPropertiesToString, cssVar, generateCSSVariables, generateThemeCSS} from './tokens/web.js'
+export type {CSSCustomProperties} from './tokens/web.js'
+
+/**
+ * Cross-platform token transformation utilities (Phase 2)
+ */
+export {defaultTransformer, TokenTransformer, tokenUtils} from './utils/token-transformer.js'
+export type {Platform, TransformOptions, TransformResult} from './utils/token-transformer.js'
+
+/**
+ * Theme validation (Phase 2)
+ */
+export {isValidTheme, ThemeValidator, validateTheme} from './validators/theme-validator.js'
+export type {ValidationError, ValidationOptions, ValidationResult} from './validators/theme-validator.js'
+
+// Export theme configuration types
+export type {
+  AnimationScale,
+  BorderRadiusScale,
+  ColorScale,
+  ShadowScale,
+  SpacingScale,
+  ThemeConfig,
+  TypographyScale,
+} from '@sparkle/types'
 
 /**
  * Theme context and providers (Phase 3)
@@ -18,30 +51,11 @@ export type {ThemeConfig} from '@sparkle/types'
 // export {NativeThemeProvider} from './providers/NativeThemeProvider'
 
 /**
- * Design tokens (Phase 2)
- */
-// export {baseTokens} from './tokens/base'
-// export {lightTokens} from './tokens/light'
-// export {darkTokens} from './tokens/dark'
-
-/**
- * Platform-specific exports (Phase 2 & 4)
- */
-// export {webTokens} from './tokens/web'
-// export {nativeTokens} from './tokens/native'
-
-/**
  * Theme hooks (Phase 3)
  */
 // Re-export from @sparkle/utils when implemented
 // export {useTheme} from '@sparkle/utils/react'
 // export {useColorScheme} from '@sparkle/utils/react'
-
-/**
- * Utilities (Phase 2 & 6)
- */
-// export {validateTheme} from './validators/theme-validator'
-// export {transformTokens} from './utils/token-transformer'
 
 // For now, export a placeholder to ensure the package builds
 export const THEME_PACKAGE_VERSION = '0.1.0' as const
