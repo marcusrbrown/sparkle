@@ -40,7 +40,10 @@ export interface FormSelectProps extends HTMLProperties<HTMLElement> {
 }
 
 /**
- * Form select component using Radix UI Select primitives
+ * Form select component with theme-aware styling using Radix UI Select primitives
+ *
+ * Uses CSS custom properties from @sparkle/theme for consistent theming
+ * across light/dark modes and supports validation states with semantic colors.
  */
 export const FormSelect = React.forwardRef<HTMLButtonElement, FormSelectProps>((props, ref) => {
   const {
@@ -56,6 +59,67 @@ export const FormSelect = React.forwardRef<HTMLButtonElement, FormSelectProps>((
     ...rest
   } = props
 
+  // Base theme-aware classes for select trigger
+  const baseClasses = [
+    // Layout and appearance
+    'w-full',
+    'flex',
+    'items-center',
+    'justify-between',
+    'rounded-md',
+    'border',
+    // Typography
+    'font-medium',
+    'text-left',
+    // Transitions and focus
+    'theme-transition',
+    'focus:outline-none',
+    'focus:ring-2',
+    'focus:ring-offset-2',
+    // Disabled state
+    'disabled:opacity-50',
+    'disabled:cursor-not-allowed',
+    'disabled:bg-theme-surface-disabled',
+  ]
+
+  // Size-specific classes
+  const sizeClasses = {
+    sm: ['px-3', 'py-1.5', 'text-sm'],
+    md: ['px-4', 'py-2', 'text-sm'],
+    lg: ['px-4', 'py-3', 'text-base'],
+  }
+
+  // Validation state classes
+  const getValidationClasses = () => {
+    const validationClasses = {
+      default: [
+        'bg-theme-surface-primary',
+        'text-theme-text-primary',
+        'border-theme-border',
+        'focus:ring-theme-primary-500',
+        'focus:border-theme-primary-500',
+      ],
+      error: [
+        'bg-theme-surface-primary',
+        'text-theme-text-primary',
+        'border-theme-error-500',
+        'focus:ring-theme-error-500',
+        'focus:border-theme-error-500',
+      ],
+      success: [
+        'bg-theme-surface-primary',
+        'text-theme-text-primary',
+        'border-theme-success-500',
+        'focus:ring-theme-success-500',
+        'focus:border-theme-success-500',
+      ],
+    }
+
+    return validationClasses[validationState] || validationClasses.default
+  }
+
+  const triggerClasses = [...baseClasses, ...sizeClasses[size], ...getValidationClasses()]
+
   return (
     <FormPrimitive.Control asChild>
       <SelectPrimitive.Root disabled={disabled} required={required} value={value} onValueChange={onValueChange}>
@@ -65,21 +129,31 @@ export const FormSelect = React.forwardRef<HTMLButtonElement, FormSelectProps>((
           aria-invalid={validationState === 'error' ? true : undefined}
           aria-required={required}
           aria-placeholder={placeholder}
-          className={cx(
-            'form-select',
-            `form-select-${size}`,
-            `form-select-${validationState}`,
-            disabled && 'form-select-disabled',
-            className,
-          )}
+          className={cx(...triggerClasses, className)}
           {...rest}
         >
-          <SelectPrimitive.Value placeholder={placeholder} />
-          <SelectPrimitive.Icon aria-hidden="true">▼</SelectPrimitive.Icon>
+          <SelectPrimitive.Value placeholder={<span className="text-theme-text-secondary">{placeholder}</span>} />
+          <SelectPrimitive.Icon aria-hidden="true" className="text-theme-text-secondary">
+            ▼
+          </SelectPrimitive.Icon>
         </SelectPrimitive.Trigger>
         <SelectPrimitive.Portal>
-          <SelectPrimitive.Content position="popper" sideOffset={4}>
-            <SelectPrimitive.Viewport>{children}</SelectPrimitive.Viewport>
+          <SelectPrimitive.Content
+            position="popper"
+            sideOffset={4}
+            className={cx(
+              'bg-theme-surface-primary',
+              'border',
+              'border-theme-border',
+              'rounded-md',
+              'shadow-lg',
+              'z-50',
+              'max-h-60',
+              'overflow-auto',
+              'theme-transition',
+            )}
+          >
+            <SelectPrimitive.Viewport className="p-1">{children}</SelectPrimitive.Viewport>
           </SelectPrimitive.Content>
         </SelectPrimitive.Portal>
       </SelectPrimitive.Root>
@@ -89,15 +163,37 @@ export const FormSelect = React.forwardRef<HTMLButtonElement, FormSelectProps>((
 
 FormSelect.displayName = 'FormSelect'
 
-// Export SelectItem for convenience
+// Export SelectItem with theme-aware styling for convenience
 export const FormSelectItem = React.forwardRef<HTMLDivElement, {value: string; children: React.ReactNode}>(
   (props, ref) => {
     const {children, value, ...rest} = props
 
     return (
-      <SelectPrimitive.Item ref={ref} value={value} className="form-select-item" {...rest}>
+      <SelectPrimitive.Item
+        ref={ref}
+        value={value}
+        className={cx(
+          'flex',
+          'items-center',
+          'justify-between',
+          'px-3',
+          'py-2',
+          'text-sm',
+          'rounded-sm',
+          'cursor-pointer',
+          'theme-transition',
+          'text-theme-text-primary',
+          'hover:bg-theme-surface-secondary',
+          'focus:bg-theme-surface-secondary',
+          'focus:outline-none',
+          'data-[highlighted]:bg-theme-surface-secondary',
+        )}
+        {...rest}
+      >
         <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
-        <SelectPrimitive.ItemIndicator className="form-select-item-indicator">✓</SelectPrimitive.ItemIndicator>
+        <SelectPrimitive.ItemIndicator className={cx('text-theme-primary-500', 'ml-2', 'font-bold')}>
+          ✓
+        </SelectPrimitive.ItemIndicator>
       </SelectPrimitive.Item>
     )
   },

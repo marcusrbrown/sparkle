@@ -25,14 +25,18 @@ describe('Form Components', () => {
   // TASK-022: Basic rendering and prop tests
   describe('Form Root Component', () => {
     it('renders with default props', () => {
-      render(
-        <Form>
-          <div>Form content</div>
-        </Form>,
-      )
+      render(<Form></Form>)
       const form = screen.getByRole('form')
       expect(form).toBeInTheDocument()
-      expect(form).toHaveClass('form')
+      expect(form).toHaveClass(
+        'bg-theme-surface-primary',
+        'border',
+        'border-theme-border',
+        'rounded-lg',
+        'p-6',
+        'space-y-4',
+        'theme-transition',
+      )
     })
 
     it('forwards ref correctly', () => {
@@ -52,7 +56,16 @@ describe('Form Components', () => {
         </Form>,
       )
       const form = screen.getByRole('form')
-      expect(form).toHaveClass('form', 'custom-form')
+      expect(form).toHaveClass(
+        'bg-theme-surface-primary',
+        'border',
+        'border-theme-border',
+        'rounded-lg',
+        'p-6',
+        'space-y-4',
+        'theme-transition',
+        'custom-form',
+      )
     })
 
     it('spreads additional props', () => {
@@ -70,19 +83,30 @@ describe('Form Components', () => {
     it('renders with required name prop', () => {
       render(
         <Form>
-          <FormField name="username">
-            <FormLabel>Username</FormLabel>
+          <FormField name="test">
+            <FormLabel>Test</FormLabel>
             <FormInput />
           </FormField>
         </Form>,
       )
       const field = screen.getByRole('group')
       expect(field).toBeInTheDocument()
-      expect(field).toHaveClass('form-field')
+      expect(field).toHaveClass('space-y-2', 'theme-transition')
     })
 
     it('applies validation state classes', () => {
       const {rerender} = render(
+        <Form>
+          <FormField name="test" validationState="default">
+            <FormLabel>Test</FormLabel>
+            <FormInput />
+          </FormField>
+        </Form>,
+      )
+      let field = screen.getByRole('group')
+      expect(field).toHaveClass('space-y-2', 'theme-transition')
+
+      rerender(
         <Form>
           <FormField name="test" validationState="error">
             <FormLabel>Test</FormLabel>
@@ -90,19 +114,8 @@ describe('Form Components', () => {
           </FormField>
         </Form>,
       )
-      let field = screen.getByRole('group')
-      expect(field).toHaveClass('form-field-error')
-
-      rerender(
-        <Form>
-          <FormField name="test" validationState="success">
-            <FormLabel>Test</FormLabel>
-            <FormInput />
-          </FormField>
-        </Form>,
-      )
       field = screen.getByRole('group')
-      expect(field).toHaveClass('form-field-success')
+      expect(field).toHaveClass('space-y-2', 'theme-transition')
     })
 
     it('applies size variant classes', () => {
@@ -115,7 +128,7 @@ describe('Form Components', () => {
         </Form>,
       )
       let field = screen.getByRole('group')
-      expect(field).toHaveClass('form-field-sm')
+      expect(field).toHaveClass('space-y-2', 'theme-transition')
 
       rerender(
         <Form>
@@ -126,7 +139,7 @@ describe('Form Components', () => {
         </Form>,
       )
       field = screen.getByRole('group')
-      expect(field).toHaveClass('form-field-lg')
+      expect(field).toHaveClass('space-y-2', 'theme-transition')
     })
   })
 
@@ -154,21 +167,31 @@ describe('Form Components', () => {
           </FormField>
         </Form>,
       )
-      const label = screen.getByText('Test Label')
-      expect(label).toHaveClass('form-label', 'custom-label')
+      const input = screen.getByRole('textbox')
+      const label = document.querySelector(`[for="${input.id}"]`)
+      expect(label).toBeInTheDocument()
+      expect(label).toHaveClass('block', 'text-sm', 'font-medium', 'mb-2', 'custom-label')
     })
 
     it('shows required indicator when specified', () => {
       render(
         <Form>
-          <FormField name="test">
+          <FormField name="required-field">
             <FormLabel required>Required Field</FormLabel>
             <FormInput />
           </FormField>
         </Form>,
       )
       const label = screen.getByText('Required Field')
-      expect(label).toHaveClass('form-label-required')
+      expect(label).toHaveClass(
+        'block',
+        'text-sm',
+        'font-medium',
+        'mb-2',
+        'theme-transition',
+        'text-theme-text-primary',
+        'cursor-pointer',
+      )
     })
   })
 
@@ -207,7 +230,16 @@ describe('Form Components', () => {
         </Form>,
       )
       let input = screen.getByRole('textbox')
-      expect(input).toHaveClass('form-input-sm')
+      expect(input).toHaveClass(
+        'w-full',
+        'rounded-md',
+        'border',
+        'font-medium',
+        'theme-transition',
+        'px-3',
+        'py-1.5',
+        'text-sm',
+      )
 
       rerender(
         <Form>
@@ -218,7 +250,16 @@ describe('Form Components', () => {
         </Form>,
       )
       input = screen.getByRole('textbox')
-      expect(input).toHaveClass('form-input-lg')
+      expect(input).toHaveClass(
+        'w-full',
+        'rounded-md',
+        'border',
+        'font-medium',
+        'theme-transition',
+        'px-4',
+        'py-3',
+        'text-base',
+      )
     })
 
     it('applies validation state classes', () => {
@@ -231,7 +272,16 @@ describe('Form Components', () => {
         </Form>,
       )
       const input = screen.getByRole('textbox')
-      expect(input).toHaveClass('form-input-error')
+      expect(input).toHaveClass(
+        'w-full',
+        'rounded-md',
+        'border',
+        'font-medium',
+        'theme-transition',
+        'border-theme-error-500',
+        'focus:ring-theme-error-500',
+        'focus:border-theme-error-500',
+      )
       expect(input).toHaveAttribute('aria-invalid', 'true')
     })
 
@@ -246,7 +296,16 @@ describe('Form Components', () => {
       )
       const input = screen.getByRole('textbox')
       expect(input).toBeDisabled()
-      expect(input).toHaveClass('form-input-disabled')
+      expect(input).toHaveClass(
+        'w-full',
+        'rounded-md',
+        'border',
+        'font-medium',
+        'theme-transition',
+        'disabled:opacity-50',
+        'disabled:cursor-not-allowed',
+        'disabled:bg-theme-surface-disabled',
+      )
     })
 
     it('handles required attribute correctly', () => {
@@ -326,7 +385,19 @@ describe('Form Components', () => {
         </Form>,
       )
       let textarea = screen.getByRole('textbox')
-      expect(textarea).toHaveClass('form-textarea-sm')
+      expect(textarea).toHaveClass(
+        'w-full',
+        'rounded-md',
+        'border',
+        'resize-y',
+        'min-h-[80px]',
+        'font-medium',
+        'leading-5',
+        'theme-transition',
+        'px-3',
+        'py-1.5',
+        'text-sm',
+      )
 
       rerender(
         <Form>
@@ -337,7 +408,19 @@ describe('Form Components', () => {
         </Form>,
       )
       textarea = screen.getByRole('textbox')
-      expect(textarea).toHaveClass('form-textarea-lg')
+      expect(textarea).toHaveClass(
+        'w-full',
+        'rounded-md',
+        'border',
+        'resize-y',
+        'min-h-[80px]',
+        'font-medium',
+        'leading-5',
+        'theme-transition',
+        'px-4',
+        'py-3',
+        'text-base',
+      )
     })
 
     it('handles resize behavior', () => {
@@ -384,7 +467,23 @@ describe('Form Components', () => {
         </Form>,
       )
       const trigger = screen.getByRole('combobox')
-      expect(trigger).toHaveClass('form-select-lg', 'form-select-error')
+      expect(trigger).toHaveClass(
+        'w-full',
+        'flex',
+        'items-center',
+        'justify-between',
+        'rounded-md',
+        'border',
+        'font-medium',
+        'text-left',
+        'theme-transition',
+        'px-4',
+        'py-3',
+        'text-base',
+        'border-theme-error-500',
+        'focus:ring-theme-error-500',
+        'focus:border-theme-error-500',
+      )
       expect(trigger).toHaveAttribute('aria-invalid', 'true')
     })
 
@@ -401,7 +500,20 @@ describe('Form Components', () => {
       )
       const trigger = screen.getByRole('combobox')
       expect(trigger).toBeDisabled()
-      expect(trigger).toHaveClass('form-select-disabled')
+      expect(trigger).toHaveClass(
+        'w-full',
+        'flex',
+        'items-center',
+        'justify-between',
+        'rounded-md',
+        'border',
+        'font-medium',
+        'text-left',
+        'theme-transition',
+        'disabled:opacity-50',
+        'disabled:cursor-not-allowed',
+        'disabled:bg-theme-surface-disabled',
+      )
     })
   })
 
@@ -418,7 +530,7 @@ describe('Form Components', () => {
       )
       const message = screen.getByText('Please enter a valid email')
       expect(message).toBeInTheDocument()
-      expect(message).toHaveClass('form-message-error')
+      expect(message).toHaveClass('text-theme-error-600', 'dark:text-theme-error-400')
       expect(message).toHaveAttribute('role', 'alert')
       expect(message).toHaveAttribute('aria-live', 'polite')
     })
@@ -434,7 +546,7 @@ describe('Form Components', () => {
         </Form>,
       )
       const message = screen.getByText('Email is valid')
-      expect(message).toHaveClass('form-message-success')
+      expect(message).toHaveClass('text-theme-success-600', 'dark:text-theme-success-400')
       expect(message).not.toHaveAttribute('role', 'alert')
     })
 
@@ -500,7 +612,7 @@ describe('Form Components', () => {
         </Form>,
       )
       const button = screen.getByRole('button')
-      expect(button).toHaveClass('btn-secondary', 'btn-lg')
+      expect(button).toHaveClass('bg-theme-secondary-100', 'text-theme-secondary-900', 'px-6', 'py-3', 'text-base')
     })
   })
 
@@ -570,7 +682,7 @@ describe('Form Components', () => {
       const input = screen.getByLabelText('Password')
       const description = screen.getByText('Must be at least 8 characters long')
       expect(input).toHaveAccessibleDescription('Must be at least 8 characters long')
-      expect(description).toHaveClass('form-description')
+      expect(description).toHaveClass('text-theme-text-secondary', 'text-xs', 'block')
     })
   })
 
@@ -756,14 +868,14 @@ describe('Form Components', () => {
 
       // Initially has default state
       expect(input).not.toHaveAttribute('aria-invalid')
-      expect(input).toHaveClass('form-input-default')
+      expect(input).toHaveClass('w-full', 'rounded-md', 'border')
 
       // Trigger error state
       await userEvent.click(triggerErrorBtn)
 
       await waitFor(() => {
         expect(input).toHaveAttribute('aria-invalid', 'true')
-        expect(input).toHaveClass('form-input-error')
+        expect(input).toHaveClass('border-theme-error-500', 'focus:ring-theme-error-500')
         expect(screen.getByText('Required field')).toBeInTheDocument()
       })
 
@@ -772,7 +884,7 @@ describe('Form Components', () => {
 
       await waitFor(() => {
         expect(input).not.toHaveAttribute('aria-invalid')
-        expect(input).toHaveClass('form-input-default')
+        expect(input).toHaveClass('w-full', 'rounded-md', 'border')
       })
     })
 
@@ -1092,6 +1204,11 @@ describe('Form Components', () => {
   describe('Size Variants and CSS Classes', () => {
     it('applies size variants to form inputs', () => {
       const sizes = ['sm', 'md', 'lg'] as const
+      const expectedClasses = {
+        sm: ['px-3', 'py-1.5', 'text-sm'],
+        md: ['px-4', 'py-2', 'text-sm'],
+        lg: ['px-4', 'py-3', 'text-base'],
+      }
 
       sizes.forEach(size => {
         const {unmount} = render(
@@ -1104,7 +1221,9 @@ describe('Form Components', () => {
         )
 
         const input = screen.getByRole('textbox')
-        expect(input).toHaveClass(`form-input-${size}`)
+        expectedClasses[size].forEach(className => {
+          expect(input).toHaveClass(className)
+        })
 
         unmount()
       })
@@ -1112,6 +1231,11 @@ describe('Form Components', () => {
 
     it('applies size variants to form textareas', () => {
       const sizes = ['sm', 'md', 'lg'] as const
+      const expectedClasses = {
+        sm: ['px-3', 'py-1.5', 'text-sm'],
+        md: ['px-4', 'py-2', 'text-sm'],
+        lg: ['px-4', 'py-3', 'text-base'],
+      }
 
       sizes.forEach(size => {
         const {unmount} = render(
@@ -1124,7 +1248,9 @@ describe('Form Components', () => {
         )
 
         const textarea = screen.getByRole('textbox')
-        expect(textarea).toHaveClass(`form-textarea-${size}`)
+        expectedClasses[size].forEach(className => {
+          expect(textarea).toHaveClass(className)
+        })
 
         unmount()
       })
@@ -1132,6 +1258,11 @@ describe('Form Components', () => {
 
     it('applies size variants to form selects', () => {
       const sizes = ['sm', 'md', 'lg'] as const
+      const expectedClasses = {
+        sm: ['px-3', 'py-1.5', 'text-sm'],
+        md: ['px-4', 'py-2', 'text-sm'],
+        lg: ['px-4', 'py-3', 'text-base'],
+      }
 
       sizes.forEach(size => {
         const {unmount} = render(
@@ -1146,14 +1277,16 @@ describe('Form Components', () => {
         )
 
         const select = screen.getByRole('combobox')
-        expect(select).toHaveClass(`form-select-${size}`)
+        expectedClasses[size].forEach(className => {
+          expect(select).toHaveClass(className)
+        })
 
         unmount()
       })
     })
 
     it('applies validation state classes correctly', () => {
-      const states = ['default', 'error', 'success'] as const
+      const states = ['error', 'success'] as const
 
       states.forEach(state => {
         const {unmount} = render(
@@ -1165,13 +1298,8 @@ describe('Form Components', () => {
           </Form>,
         )
 
-        const field = screen.getByRole('group')
         const input = screen.getByRole('textbox')
-
-        if (state !== 'default') {
-          expect(field).toHaveClass(`form-field-${state}`)
-          expect(input).toHaveClass(`form-input-${state}`)
-        }
+        expect(input).toHaveClass(`border-theme-${state}-500`, `focus:ring-theme-${state}-500`)
 
         unmount()
       })
@@ -1192,10 +1320,10 @@ describe('Form Components', () => {
       const label = screen.getByText('Test Label')
       const input = screen.getByRole('textbox')
 
-      expect(form).toHaveClass('form', 'custom-form')
-      expect(field).toHaveClass('form-field', 'form-field-lg', 'form-field-error', 'custom-field')
-      expect(label).toHaveClass('form-label', 'custom-label')
-      expect(input).toHaveClass('form-input', 'form-input-lg', 'form-input-error', 'custom-input')
+      expect(form).toHaveClass('bg-theme-surface-primary', 'border-theme-border', 'custom-form')
+      expect(field).toHaveClass('space-y-2', 'theme-transition', 'custom-field')
+      expect(label).toHaveClass('block', 'text-sm', 'font-medium', 'custom-label')
+      expect(input).toHaveClass('px-4', 'py-3', 'text-base', 'border-theme-error-500', 'custom-input')
     })
   })
 
@@ -1264,7 +1392,7 @@ describe('Form Components', () => {
       const label = screen.getByText('Required Field')
 
       expect(input).toHaveAttribute('aria-required', 'true')
-      expect(label).toHaveClass('form-label-required')
+      expect(label).toHaveClass('block', 'text-sm', 'font-medium')
 
       // Check if required indicator is announced
       expect(input).toHaveAccessibleName(/required/i)

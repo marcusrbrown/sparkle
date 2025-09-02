@@ -23,24 +23,25 @@ export interface FormFieldProps extends HTMLProperties<HTMLDivElement> {
 }
 
 /**
- * Form field wrapper component that manages accessibility and validation
+ * Form field wrapper component with theme-aware styling that manages accessibility and validation
+ *
+ * Uses CSS custom properties from @sparkle/theme for consistent theming
+ * across light/dark modes and provides proper field grouping.
  */
 export const FormField = React.forwardRef<HTMLDivElement, FormFieldProps>((props, ref) => {
   const {name, className, children, validationState, size, ...rest} = props
 
+  // Theme-aware classes for form field wrapper
+  const fieldClasses = [
+    'space-y-2',
+    'theme-transition',
+    // Add validation state styling if needed
+    validationState === 'error' && 'form-field-error',
+    validationState === 'success' && 'form-field-success',
+  ].filter(Boolean)
+
   return (
-    <FormPrimitive.Field
-      ref={ref}
-      name={name}
-      role="group"
-      className={cx(
-        'form-field',
-        validationState && `form-field-${validationState}`,
-        size && `form-field-${size}`,
-        className,
-      )}
-      {...rest}
-    >
+    <FormPrimitive.Field ref={ref} name={name} role="group" className={cx(...fieldClasses, className)} {...rest}>
       {children}
     </FormPrimitive.Field>
   )
