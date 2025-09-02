@@ -33,16 +33,35 @@ export interface FormMessageProps extends HTMLProperties<HTMLSpanElement> {
 }
 
 /**
- * Form message component for displaying validation feedback
+ * Form message component with theme-aware styling for displaying validation feedback
+ *
+ * Uses CSS custom properties from @sparkle/theme for consistent theming
+ * across light/dark modes and supports semantic colors for different message types.
  */
 export const FormMessage = React.forwardRef<HTMLSpanElement, FormMessageProps>((props, ref) => {
   const {className, match, children, announce = true, type = 'error', ...rest} = props
+
+  // Base theme-aware classes for all messages
+  const baseClasses = ['block', 'text-xs', 'mt-1', 'font-medium', 'theme-transition']
+
+  // Type-specific classes using semantic colors
+  const getTypeClasses = () => {
+    const typeClasses = {
+      error: ['text-theme-error-600', 'dark:text-theme-error-400'],
+      success: ['text-theme-success-600', 'dark:text-theme-success-400'],
+      info: ['text-theme-primary-600', 'dark:text-theme-primary-400'],
+    }
+
+    return typeClasses[type] || typeClasses.error
+  }
+
+  const allClasses = [...baseClasses, ...getTypeClasses()]
 
   return (
     <FormPrimitive.Message
       ref={ref}
       match={match}
-      className={cx('form-message', `form-message-${type}`, className)}
+      className={cx(...allClasses, className)}
       aria-live={announce ? 'polite' : undefined}
       role={type === 'error' ? 'alert' : undefined}
       {...rest}

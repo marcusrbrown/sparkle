@@ -23,27 +23,56 @@ export interface FormLabelProps extends HTMLProperties<HTMLLabelElement> {
 }
 
 /**
- * Form label component with proper accessibility associations and required field indicators
+ * Form label component with theme-aware styling and proper accessibility associations and required field indicators
+ *
+ * Uses CSS custom properties from @sparkle/theme for consistent theming
+ * across light/dark modes and supports disabled states.
  */
 export const FormLabel = React.forwardRef<HTMLLabelElement, FormLabelProps>((props, ref) => {
   const {className, children, required = false, disabled = false, description, ...rest} = props
 
+  // Base theme-aware classes for labels
+  const baseClasses = ['block', 'text-sm', 'font-medium', 'mb-2', 'theme-transition']
+
+  // State-specific classes
+  const getStateClasses = () => {
+    if (disabled) {
+      return ['text-theme-text-disabled', 'cursor-not-allowed']
+    }
+    return ['text-theme-text-primary', 'cursor-pointer']
+  }
+
+  const labelClasses = [...baseClasses, ...getStateClasses()]
+
   return (
-    <div className={cx('form-label-container')}>
-      <FormPrimitive.Label
-        ref={ref}
-        className={cx('form-label', required && 'form-label-required', disabled && 'form-label-disabled', className)}
-        {...rest}
-      >
+    <div className="form-label-container">
+      <FormPrimitive.Label ref={ref} className={cx(...labelClasses, className)} {...rest}>
         {children}
         {required && (
-          <span className="form-label-required-indicator" aria-label="required">
+          <span
+            className={cx(
+              'ml-1',
+              'text-theme-error-500',
+              'text-sm',
+              'font-bold',
+              disabled && 'text-theme-text-disabled',
+            )}
+            aria-label="required"
+          >
             *
           </span>
         )}
       </FormPrimitive.Label>
       {description && (
-        <span className={cx('form-label-description', disabled && 'form-label-description-disabled')}>
+        <span
+          className={cx(
+            'block',
+            'text-xs',
+            'mt-1',
+            'theme-transition',
+            disabled ? 'text-theme-text-disabled' : 'text-theme-text-secondary',
+          )}
+        >
           {description}
         </span>
       )}

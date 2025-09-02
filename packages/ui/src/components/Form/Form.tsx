@@ -99,7 +99,17 @@ export const Form = React.forwardRef<HTMLFormElement, FormProps>((props, ref) =>
     <FormPrimitive.Root
       ref={ref}
       role="form"
-      className={cx('form', className)}
+      className={cx(
+        // Theme-aware form styling
+        'bg-theme-surface-primary',
+        'border',
+        'border-theme-border',
+        'rounded-lg',
+        'p-6',
+        'space-y-4',
+        'theme-transition',
+        className,
+      )}
       onSubmit={handleSubmit}
       onKeyDown={handleKeyDown}
       {...rest}

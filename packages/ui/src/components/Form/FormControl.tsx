@@ -23,25 +23,21 @@ export interface FormControlProps extends HTMLProperties<HTMLElement> {
 }
 
 /**
- * Form control wrapper that handles input focus and validation
+ * Form control wrapper component with theme-aware styling that handles input focus and validation
+ *
+ * Uses CSS custom properties from @sparkle/theme for consistent theming
+ * across light/dark modes. Primarily a pass-through wrapper for Radix Form.Control.
  */
 export const FormControl = React.forwardRef<HTMLInputElement, FormControlProps>((props, ref) => {
-  const {className, asChild, size = 'md', validationState = 'default', disabled = false, ...rest} = props
+  const {className, asChild, size, validationState, disabled, ...rest} = props
 
-  return (
-    <FormPrimitive.Control
-      ref={ref}
-      asChild={asChild}
-      className={cx(
-        'form-control',
-        `form-control-${size}`,
-        `form-control-${validationState}`,
-        disabled && 'form-control-disabled',
-        className,
-      )}
-      {...rest}
-    />
-  )
+  // Theme-aware classes for form control wrapper
+  const controlClasses = [
+    'theme-transition',
+    // Add any additional wrapper styling if needed
+  ]
+
+  return <FormPrimitive.Control ref={ref} asChild={asChild} className={cx(...controlClasses, className)} {...rest} />
 })
 
 FormControl.displayName = 'FormControl'
