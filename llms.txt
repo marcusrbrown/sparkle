@@ -11,6 +11,7 @@ The project emphasizes TypeScript-first development, comprehensive testing, and 
 - [Main README](readme.md): Project overview and getting started guide
 - [Project Guide](docs/project-guide.md): Comprehensive guide to monorepo structure, technologies, and development workflows
 - [AI Development Prompts](.ai/docs/prompts.md): Cursor AI prompts and development assistance guidelines
+- [GitHub Copilot Instructions](.github/copilot-instructions.md): Comprehensive development guide for AI agents including architecture overview, workflows, and conventions
 
 ## Configuration
 
@@ -23,7 +24,7 @@ The project emphasizes TypeScript-first development, comprehensive testing, and 
 
 - [UI Component Library](packages/ui/README.md): Modern, accessible React component library with TypeScript and Tailwind CSS
 - [Storybook Documentation](packages/storybook/README.md): Component documentation and development environment setup
-- [fro-jive Mobile App](packages/fro-jive/package.json): Expo/React Native mobile application for real-time chat with Fro Bot
+- [fro-jive Mobile App](packages/fro-jive/package.json): Expo/React Native mobile application for jiving with Fro Bot
 
 ## Development Tools
 
