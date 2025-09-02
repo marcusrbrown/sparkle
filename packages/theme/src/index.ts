@@ -17,6 +17,12 @@ export {ThemeContext} from './context/ThemeContext.js'
 export type {SystemColorScheme, ThemeCollection, ThemeContextValue, ThemeMode} from './context/ThemeContext.js'
 
 /**
+ * Theme examples and showcase components (Phase 5)
+ */
+export type {ThemeShowcaseProps} from './examples'
+export {ThemeShowcase} from './examples'
+
+/**
  * Theme hooks (Phase 3)
  */
 export {useColorScheme, useTheme} from './hooks'
