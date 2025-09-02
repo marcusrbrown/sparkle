@@ -5,10 +5,10 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
-    "test": "vitest run",
+    "build": "tsdown",
+    "clean": "rimraf dist",
     "lint": "eslint",
-    "clean": "rimraf dist"
+    "test": "vitest run"
   },
   "dependencies": {
     "type-fest": "^4.10.2"
