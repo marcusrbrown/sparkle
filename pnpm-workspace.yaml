@@ -7,6 +7,7 @@ ignoredBuiltDependencies:
 
 onlyBuiltDependencies:
   - '@swc/core'
+  - chromedriver
   - esbuild
   - simple-git-hooks
   - unrs-resolver
