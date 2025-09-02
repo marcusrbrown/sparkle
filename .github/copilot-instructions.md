@@ -18,6 +18,8 @@ pnpm bootstrap          # Install all workspace dependencies
 pnpm dev               # Start all dev servers (UI, Storybook, mobile)
 pnpm build:types:watch # Watch mode for TypeScript declarations
 pnpm check             # Run all quality checks (format, types, monorepo)
+pnpm check:monorepo    # Verify workspace consistency with manypkg
+pnpm fix               # Auto-fix monorepo and ESLint issues
 ```
 
 ### Package Development Pattern
@@ -34,6 +36,13 @@ pnpm check             # Run all quality checks (format, types, monorepo)
 - Integrates `@sparkle/ui` components (though platform differences may require adaptation)
 
 ## Project-Specific Conventions
+
+### Naming Conventions
+
+- **Types/Interfaces**: PascalCase (`ButtonProps`, `ThemeConfig`)
+- **Functions/Variables**: camelCase (`createButtonClassName`, `useDebounce`)
+- **Components**: PascalCase with explicit return types
+- **Files**: kebab-case for config files, PascalCase for components
 
 ### Component Architecture Pattern
 
@@ -59,6 +68,18 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
 - Dedicated `@sparkle/error-testing` package with fluent builder pattern
 - Use `TestScenarioBuilder.create()` for type-safe error scenario testing
 - Pattern: `TestScenarioBuilder.create<ErrorType, StateType>(description).withErrorType().build()`
+
+### Versioning & Changesets
+
+- Use Changesets for version management: `pnpm changeset` → `pnpm changeset version` → commit
+- Create changeset files for all significant changes with proper bump types (major/minor/patch)
+- Workspace dependencies use `workspace:*` protocol for internal packages
+
+### ESM Configuration
+
+- All packages use `"type": "module"` for ESM-only builds
+- Package exports configure both types and runtime: `"exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" } }`
+- CSS exports available for UI packages: `"./styles.css": "./dist/styles.css"`
 
 ### TypeScript Configuration
 
@@ -89,7 +110,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
 
 ### Development Tools Integration
 
-- Storybook configured for component development/documentation
+- Storybook configured for component development/documentation with accessibility testing via `@storybook/addon-a11y`
 - Vitest for testing (configured in `@sparkle/ui`)
 - Changesets for versioning workflow: `pnpm changeset` → `pnpm changeset version` → commit
-- Prettier + ESLint via Turborepo pipeline
+- Prettier + ESLint via Turborepo pipeline with `@bfra.me/prettier-config`
+- Manypkg ensures workspace consistency - run `pnpm check:monorepo` before commits
