@@ -103,7 +103,7 @@ This implementation plan outlines the creation of a comprehensive `@sparkle/them
 
 | Task | Description | Completed | Date |
 |------|-------------|-----------|------|
-| TASK-025 | Update `packages/ui/src/components/Button/Button.tsx` to use theme-aware className generation | | |
+| TASK-025 | Update `packages/ui/src/components/Button/Button.tsx` to use theme-aware className generation | ✅ | 2025-09-02 |
 | TASK-026 | Update `packages/ui/src/components/Form/Form.tsx` to implement theme-based styling | | |
 | TASK-027 | Create src/examples/ directory with ThemeShowcase.tsx component demonstrating all theme features | | |
 | TASK-028 | Update `packages/storybook/src/stories/Button.stories.tsx` with theme switching controls | | |
