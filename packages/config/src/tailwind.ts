@@ -1,6 +1,11 @@
 import type {Config} from 'tailwindcss'
+import {createThemePlugin, darkTokens, lightTokens} from '@sparkle/theme'
 import forms from '@tailwindcss/forms'
 
+/**
+ * Legacy colors for backward compatibility
+ * These will be phased out in favor of theme-aware colors
+ */
 export const colors = {
   primary: {
     50: '#f0f9ff',
@@ -28,14 +33,39 @@ export const borderRadius = {
   full: '9999px',
 } as const
 
-export const tailwindConfig = {
+/**
+ * Enhanced Tailwind configuration with theme integration
+ * Includes the @sparkle/theme plugin for dynamic theme support
+ */
+export const tailwindConfig: Config = {
+  darkMode: ['class', '[data-theme="dark"]'],
   theme: {
     extend: {
+      // Legacy colors (will be deprecated)
       colors,
-      borderRadius,
+      // Enhanced border radius with CSS custom properties
+      borderRadius: {
+        ...borderRadius,
+        // Override DEFAULT to use theme variable with fallback
+        DEFAULT: 'var(--theme-border-radius-base, 0.25rem)',
+      },
     },
   },
-  plugins: [forms],
-} satisfies Config
+  plugins: [
+    forms,
+    // Theme plugin with light and dark theme support
+    createThemePlugin(
+      {
+        light: lightTokens,
+        dark: darkTokens,
+      },
+      {
+        prefix: 'theme',
+        includeCSSVariables: true,
+        darkMode: true,
+      },
+    ),
+  ],
+}
 
 export default tailwindConfig

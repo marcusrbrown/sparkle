@@ -35,6 +35,7 @@
     "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-primitive": "^2.0.0",
     "@radix-ui/react-select": "^2.2.0",
+    "@sparkle/config": "workspace:*",
     "clsx": "^2.0.0"
   },
   "devDependencies": {

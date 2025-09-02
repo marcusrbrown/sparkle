@@ -32,11 +32,21 @@ export {
   webPersistence,
 } from './persistence/index.js'
 
+/**
+ * Theme providers (Phase 3)
+ */
 export {NativeThemeProvider} from './providers/NativeThemeProvider.js'
 export type {NativeThemeProviderProps} from './providers/NativeThemeProvider.js'
 
 export {ThemeProvider} from './providers/ThemeProvider.js'
 export type {ThemeProviderProps} from './providers/ThemeProvider.js'
+
+/**
+ * Tailwind CSS plugin (Phase 4)
+ */
+export {createThemePlugin} from './tailwind/theme-plugin.js'
+
+export type {ThemePluginOptions} from './tailwind/theme-plugin.js'
 /**
  * Design tokens (Phase 2)
  */
