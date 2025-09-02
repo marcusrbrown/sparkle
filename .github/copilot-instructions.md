@@ -93,6 +93,116 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
 - `dev` and `test` depend on `^build` (need built dependencies)
 - Use `persistent: true` for dev servers, `cache: false` for watch modes
 
+### TypeScript Best Practices & Patterns
+
+#### Build Tool Configuration (`tsdown`)
+
+- **Primary Build Tool**: Use `tsdown` for package builds - fast TypeScript-to-ESM transpiler
+- **Configuration Pattern**: Each package has `tsdown.config.ts` with `defineConfig({entry: ['./src/index.ts'], outDir: 'dist', dts: true})`
+- **Build Scripts**: Package.json uses `"build": "tsdown"` for consistent compilation
+- **Type Declarations**: `dts: true` generates TypeScript declaration files automatically
+
+#### Code Style Conventions
+
+- **Avoid ES6 Classes**: Use function declarations and object patterns instead of class syntax
+- **Utility Types**: Leverage built-in utility types extensively:
+  - `Pick<T, K>` for selecting specific properties
+  - `Omit<T, K>` for excluding properties
+  - `Partial<T>` for optional properties
+  - `Required<T>` for required properties
+  - `Record<K, V>` for key-value mappings
+- **Type Safety**: Prefer `unknown` over `any` when type is uncertain
+- **Const Assertions**: Use `as const` for immutable values and strict literal types
+
+```typescript
+// ✅ Good: Using utility types and const assertions
+export const buttonVariants = ['primary', 'secondary', 'outline'] as const
+export type ButtonVariant = typeof buttonVariants[number]
+
+export interface ButtonProps extends Pick<HTMLButtonElement, 'disabled' | 'type'> {
+  variant?: ButtonVariant
+  children: React.ReactNode
+}
+
+// ✅ Good: Explicit return types
+export function createButtonClassName(variant: ButtonVariant): string {
+  return `btn btn-${variant}`
+}
+```
+
+#### Documentation Standards
+
+- **JSDoc Required**: All public APIs must have JSDoc comments explaining purpose and usage
+- **Explain "Why" Not "What"**: Comments should explain reasoning, not implementation details
+- **Type Documentation**: Document complex types with examples and use cases
+
+```typescript
+/**
+ * Creates a type-safe form field with validation support.
+ *
+ * This hook manages form field state and integrates with the parent form's
+ * validation system to provide real-time feedback.
+ *
+ * @param name - Unique identifier for the field within the form
+ * @param initialValue - Starting value for the field
+ * @returns Object containing field value, validation state, and handlers
+ */
+export function useFormField<T>(name: string, initialValue: T): FormFieldState<T>
+```
+
+#### Error Handling & Logging
+
+- **Meaningful Errors**: Provide specific, actionable error messages
+- **Use `consola`**: Replace `console.*` with `consola` package for structured logging
+- **Type-Safe Errors**: Create specific error types rather than generic Error instances
+
+```typescript
+import {consola} from 'consola'
+
+// ✅ Good: Specific error types with meaningful messages
+export class ValidationError extends Error {
+  constructor(
+    public readonly field: string,
+    public readonly value: unknown,
+    message: string,
+  ) {
+    super(`Validation failed for field "${field}": ${message}`)
+    this.name = 'ValidationError'
+  }
+}
+
+// ✅ Good: Structured logging with consola
+export function validateField(field: string, value: unknown): ValidationResult {
+  if (!value) {
+    consola.warn(`Field "${field}" is empty, applying default validation`)
+    return {valid: false, error: new ValidationError(field, value, 'Field is required')}
+  }
+  consola.debug(`Field "${field}" validation passed`)
+  return {valid: true}
+}
+```
+
+#### Testing with Vitest Type-Checking
+
+- **Type-Safe Tests**: Enable Vitest's TypeScript checking in test files
+- **Test Type Utilities**: Use `expectTypeOf` for compile-time type assertions
+- **Mock Type Safety**: Ensure mocks maintain type safety with original implementations
+
+```typescript
+import {describe, expectTypeOf, it, vi} from 'vitest'
+
+describe('Button component', () => {
+  it('should accept valid button props', () => {
+    expectTypeOf<ButtonProps>().toMatchTypeOf<{variant?: ButtonVariant}>()
+  })
+
+  it('should handle click events with correct types', () => {
+    const handleClick = vi.fn<[React.MouseEvent<HTMLButtonElement>], void>()
+    // Test implementation maintains type safety
+  })
+})
+```
+
 ## Integration Points
 
 ### Package Boundaries
@@ -111,7 +221,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
 ### Development Tools Integration
 
 - Storybook configured for component development/documentation with accessibility testing via `@storybook/addon-a11y`
-- Vitest for testing (configured in `@sparkle/ui`)
+- Vitest for testing (configured in `@sparkle/ui`) with TypeScript type-checking enabled
 - Changesets for versioning workflow: `pnpm changeset` → `pnpm changeset version` → commit
 - Prettier + ESLint via Turborepo pipeline with `@bfra.me/prettier-config`
 - Manypkg ensures workspace consistency - run `pnpm check:monorepo` before commits
