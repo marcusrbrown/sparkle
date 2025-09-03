@@ -1,9 +1,6 @@
 import type {StorybookConfig} from '@storybook/react-vite'
-import {createRequire} from 'node:module'
 import {dirname, join} from 'node:path'
 import {mergeConfig} from 'vite'
-
-const require = createRequire(import.meta.url)
 
 const config: StorybookConfig = {
   stories: ['../src/**/*.stories.@(js|jsx|ts|tsx)'],
@@ -39,6 +36,11 @@ const config: StorybookConfig = {
 
 export default config
 
-function getAbsolutePath(value: string): any {
+/**
+ * Get absolute path to addon package directory
+ * @param value - Package name (e.g., '@storybook/addon-links')
+ * @returns Absolute path to the package directory
+ */
+function getAbsolutePath(value: string): string {
   return dirname(require.resolve(join(value, 'package.json')))
 }
