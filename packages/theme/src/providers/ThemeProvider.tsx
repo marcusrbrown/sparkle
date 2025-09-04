@@ -72,12 +72,17 @@ const DEFAULT_THEMES: ThemeCollection = {
  * @returns 'light' or 'dark' based on prefers-color-scheme media query
  */
 function detectSystemTheme(): SystemColorScheme {
-  if (typeof window === 'undefined') {
-    // SSR fallback
+  if (typeof window === 'undefined' || !window.matchMedia) {
+    // SSR fallback or unsupported browser
     return 'light'
   }
 
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  try {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  } catch {
+    // Fallback for environments where matchMedia throws
+    return 'light'
+  }
 }
 
 /**
@@ -234,25 +239,30 @@ export function ThemeProvider({
 
   // Set up system theme change listener
   useEffect(() => {
-    if (disableSystemTheme || typeof window === 'undefined') {
+    if (disableSystemTheme || typeof window === 'undefined' || !window.matchMedia) {
       return
     }
 
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    try {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
 
-    const handleChange = (event: MediaQueryListEvent) => {
-      setSystemTheme(event.matches ? 'dark' : 'light')
+      const handleChange = (event: MediaQueryListEvent) => {
+        setSystemTheme(event.matches ? 'dark' : 'light')
+      }
+
+      // Modern browsers
+      if (mediaQuery.addEventListener) {
+        mediaQuery.addEventListener('change', handleChange)
+        return () => mediaQuery.removeEventListener('change', handleChange)
+      }
+
+      // Legacy browsers
+      mediaQuery.addListener(handleChange)
+      return () => mediaQuery.removeListener(handleChange)
+    } catch {
+      // Gracefully handle any errors with matchMedia
+      return undefined
     }
-
-    // Modern browsers
-    if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener('change', handleChange)
-      return () => mediaQuery.removeEventListener('change', handleChange)
-    }
-
-    // Legacy browsers
-    mediaQuery.addListener(handleChange)
-    return () => mediaQuery.removeListener(handleChange)
   }, [disableSystemTheme])
 
   // Inject CSS variables when theme changes
