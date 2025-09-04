@@ -279,9 +279,21 @@ importers:
         specifier: ^4.0.6
         version: 4.1.12
     devDependencies:
+      '@testing-library/jest-dom':
+        specifier: ^6.4.2
+        version: 6.8.0
+      '@testing-library/react':
+        specifier: ^16.0.0
+        version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.1.9(@types/react@19.1.12))(@types/react@19.1.12)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+      '@testing-library/user-event':
+        specifier: ^14.5.2
+        version: 14.6.1(@testing-library/dom@10.4.1)
       '@types/react':
         specifier: ~19.1.0
         version: 19.1.12
+      happy-dom:
+        specifier: 18.0.1
+        version: 18.0.1
       react:
         specifier: 19.1.1
         version: 19.1.1
