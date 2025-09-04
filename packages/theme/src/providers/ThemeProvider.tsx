@@ -113,7 +113,12 @@ function saveTheme(storageKey: string, theme: ThemeMode): void {
   }
 
   try {
-    window.localStorage.setItem(storageKey, theme)
+    if (theme === 'system') {
+      // Remove stored preference for system theme - let it follow system
+      window.localStorage.removeItem(storageKey)
+    } else {
+      window.localStorage.setItem(storageKey, theme)
+    }
   } catch (error) {
     console.warn('Failed to save theme to localStorage:', error)
   }

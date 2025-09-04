@@ -120,6 +120,28 @@ export class ThemeValidator {
     const warnings: ValidationError[] = []
     let checkedProperties = 0
 
+    // Handle null/undefined theme
+    if (!theme || typeof theme !== 'object') {
+      errors.push({
+        message: 'Theme configuration must be a valid object',
+        path: 'root',
+        value: theme,
+        expected: 'object',
+        severity: 'error',
+      })
+
+      return {
+        isValid: false,
+        errors,
+        warnings,
+        summary: {
+          totalErrors: errors.length,
+          totalWarnings: warnings.length,
+          checkedProperties: 0,
+        },
+      }
+    }
+
     // Validate required structure
     this.validateStructure(theme, errors, warnings)
     checkedProperties += 6 // Main theme properties
@@ -212,6 +234,18 @@ export class ThemeValidator {
     const warnings: ValidationError[] = []
     let checkedCount = 0
 
+    // Handle null/undefined colors
+    if (!colors || typeof colors !== 'object') {
+      errors.push({
+        message: 'Colors configuration must be a valid object',
+        path: 'colors',
+        value: colors,
+        expected: 'object',
+        severity: 'error',
+      })
+      return {errors, warnings, checkedCount}
+    }
+
     const colorKeys = Object.keys(colors)
     for (const colorKey of colorKeys) {
       const colorScale = colors[colorKey]
@@ -234,7 +268,15 @@ export class ThemeValidator {
         checkedCount++
 
         // Validate color format
-        if (typeof colorValue === 'string' && !this.isValidColor(colorValue)) {
+        if (typeof colorValue !== 'string') {
+          errors.push({
+            message: `Color value for ${colorKey}.${scaleKey} must be a string`,
+            path: `colors.${colorKey}.${scaleKey}`,
+            value: colorValue,
+            expected: 'string color value (hex, rgb, rgba, hsl, etc.)',
+            severity: 'error',
+          })
+        } else if (!this.isValidColor(colorValue)) {
           errors.push({
             message: `Invalid color format: ${colorValue}`,
             path: `colors.${colorKey}.${scaleKey}`,
@@ -275,48 +317,93 @@ export class ThemeValidator {
     const warnings: ValidationError[] = []
     let checkedCount = 0
 
-    // Validate font families
-    const fontFamilies = Object.entries(typography.fontFamily)
-    for (const [key, value] of fontFamilies) {
-      checkedCount++
-      if (typeof value !== 'string' || value.trim() === '') {
-        errors.push({
-          message: `Font family ${key} must be a non-empty string`,
-          path: `typography.fontFamily.${key}`,
-          value,
-          expected: 'non-empty string',
-          severity: 'error',
-        })
+    // Handle null/undefined typography
+    if (!typography || typeof typography !== 'object') {
+      errors.push({
+        message: 'Typography configuration must be a valid object',
+        path: 'typography',
+        value: typography,
+        expected: 'object',
+        severity: 'error',
+      })
+      return {errors, warnings, checkedCount}
+    }
+
+    // Handle null/undefined fontFamily
+    if (!typography.fontFamily || typeof typography.fontFamily !== 'object') {
+      errors.push({
+        message: 'Typography fontFamily must be a valid object',
+        path: 'typography.fontFamily',
+        value: typography.fontFamily,
+        expected: 'object',
+        severity: 'error',
+      })
+    } else {
+      // Validate font families
+      const fontFamilies = Object.entries(typography.fontFamily)
+      for (const [key, value] of fontFamilies) {
+        checkedCount++
+        if (typeof value !== 'string' || value.trim() === '') {
+          errors.push({
+            message: `Font family ${key} must be a non-empty string`,
+            path: `typography.fontFamily.${key}`,
+            value,
+            expected: 'non-empty string',
+            severity: 'error',
+          })
+        }
       }
     }
 
-    // Validate font sizes
-    const fontSizes = Object.entries(typography.fontSize)
-    for (const [key, value] of fontSizes) {
-      checkedCount++
-      if (!this.isValidCSSUnit(value)) {
-        errors.push({
-          message: `Font size ${key} has invalid CSS unit`,
-          path: `typography.fontSize.${key}`,
-          value,
-          expected: 'valid CSS length unit (rem, px, em, etc.)',
-          severity: 'error',
-        })
+    // Handle null/undefined fontSize
+    if (!typography.fontSize || typeof typography.fontSize !== 'object') {
+      errors.push({
+        message: 'Typography fontSize must be a valid object',
+        path: 'typography.fontSize',
+        value: typography.fontSize,
+        expected: 'object',
+        severity: 'error',
+      })
+    } else {
+      // Validate font sizes
+      const fontSizes = Object.entries(typography.fontSize)
+      for (const [key, value] of fontSizes) {
+        checkedCount++
+        if (!this.isValidCSSUnit(value)) {
+          errors.push({
+            message: `Font size ${key} has invalid CSS unit`,
+            path: `typography.fontSize.${key}`,
+            value,
+            expected: 'valid CSS length unit (rem, px, em, etc.)',
+            severity: 'error',
+          })
+        }
       }
     }
 
-    // Validate font weights
-    const fontWeights = Object.entries(typography.fontWeight)
-    for (const [key, value] of fontWeights) {
-      checkedCount++
-      if (!this.isValidFontWeight(value)) {
-        errors.push({
-          message: `Font weight ${key} is invalid`,
-          path: `typography.fontWeight.${key}`,
-          value,
-          expected: 'number (100-900) or valid keyword',
-          severity: 'error',
-        })
+    // Handle null/undefined fontWeight
+    if (!typography.fontWeight || typeof typography.fontWeight !== 'object') {
+      errors.push({
+        message: 'Typography fontWeight must be a valid object',
+        path: 'typography.fontWeight',
+        value: typography.fontWeight,
+        expected: 'object',
+        severity: 'error',
+      })
+    } else {
+      // Validate font weights
+      const fontWeights = Object.entries(typography.fontWeight)
+      for (const [key, value] of fontWeights) {
+        checkedCount++
+        if (!this.isValidFontWeight(value)) {
+          errors.push({
+            message: `Font weight ${key} is invalid`,
+            path: `typography.fontWeight.${key}`,
+            value,
+            expected: 'number (100-900) or valid keyword',
+            severity: 'error',
+          })
+        }
       }
     }
 
@@ -333,6 +420,18 @@ export class ThemeValidator {
     const errors: ValidationError[] = []
     const warnings: ValidationError[] = []
     let checkedCount = 0
+
+    // Handle null/undefined spacing
+    if (!spacing || typeof spacing !== 'object') {
+      errors.push({
+        message: 'Spacing configuration must be a valid object',
+        path: 'spacing',
+        value: spacing,
+        expected: 'object',
+        severity: 'error',
+      })
+      return {errors, warnings, checkedCount}
+    }
 
     const spacingEntries = Object.entries(spacing)
     const numericValues: number[] = []
@@ -406,6 +505,18 @@ export class ThemeValidator {
     const warnings: ValidationError[] = []
     let checkedCount = 0
 
+    // Handle null/undefined shadows
+    if (!shadows || typeof shadows !== 'object') {
+      errors.push({
+        message: 'Shadows configuration must be a valid object',
+        path: 'shadows',
+        value: shadows,
+        expected: 'object with shadow definitions',
+        severity: 'error',
+      })
+      return {errors, warnings, checkedCount: 0}
+    }
+
     const shadowEntries = Object.entries(shadows)
     for (const [key, value] of shadowEntries) {
       checkedCount++
@@ -435,6 +546,18 @@ export class ThemeValidator {
     const errors: ValidationError[] = []
     const warnings: ValidationError[] = []
     let checkedCount = 0
+
+    // Handle null/undefined borderRadius
+    if (!borderRadius || typeof borderRadius !== 'object') {
+      errors.push({
+        message: 'Border radius configuration must be a valid object',
+        path: 'borderRadius',
+        value: borderRadius,
+        expected: 'object with border radius definitions',
+        severity: 'error',
+      })
+      return {errors, warnings, checkedCount: 0}
+    }
 
     const borderRadiusEntries = Object.entries(borderRadius)
     for (const [key, value] of borderRadiusEntries) {
@@ -466,33 +589,49 @@ export class ThemeValidator {
     const warnings: ValidationError[] = []
     let checkedCount = 0
 
+    // Handle null/undefined animation
+    if (!animation || typeof animation !== 'object') {
+      errors.push({
+        message: 'Animation configuration must be a valid object',
+        path: 'animation',
+        value: animation,
+        expected: 'object with animation definitions',
+        severity: 'error',
+      })
+      return {errors, warnings, checkedCount: 0}
+    }
+
     // Validate durations
-    const durations = Object.entries(animation.duration)
-    for (const [key, value] of durations) {
-      checkedCount++
-      if (!this.isValidDuration(value)) {
-        errors.push({
-          message: `Invalid animation duration for ${key}`,
-          path: `animation.duration.${key}`,
-          value,
-          expected: 'valid CSS time unit (ms, s)',
-          severity: 'error',
-        })
+    if (animation.duration && typeof animation.duration === 'object') {
+      const durations = Object.entries(animation.duration)
+      for (const [key, value] of durations) {
+        checkedCount++
+        if (!this.isValidDuration(value)) {
+          errors.push({
+            message: `Invalid animation duration for ${key}`,
+            path: `animation.duration.${key}`,
+            value,
+            expected: 'valid CSS time unit (ms, s)',
+            severity: 'error',
+          })
+        }
       }
     }
 
     // Validate easing functions
-    const easings = Object.entries(animation.easing)
-    for (const [key, value] of easings) {
-      checkedCount++
-      if (!this.isValidEasing(value)) {
-        errors.push({
-          message: `Invalid easing function for ${key}`,
-          path: `animation.easing.${key}`,
-          value,
-          expected: 'valid CSS easing function (ease, cubic-bezier, etc.)',
-          severity: 'error',
-        })
+    if (animation.easing && typeof animation.easing === 'object') {
+      const easings = Object.entries(animation.easing)
+      for (const [key, value] of easings) {
+        checkedCount++
+        if (!this.isValidEasing(value)) {
+          errors.push({
+            message: `Invalid easing function for ${key}`,
+            path: `animation.easing.${key}`,
+            value,
+            expected: 'valid CSS easing function (ease, cubic-bezier, etc.)',
+            severity: 'error',
+          })
+        }
       }
     }
 
