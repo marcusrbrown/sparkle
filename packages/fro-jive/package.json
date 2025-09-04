@@ -7,8 +7,8 @@
     "android": "expo start --android",
     "build:types": "tsc",
     "ios": "expo start --ios",
-    "start": "expo start",
     "lint": "eslint",
+    "start": "expo start",
     "test": "vitest run",
     "test:watch": "vitest",
     "web": "expo start --web"
@@ -16,6 +16,7 @@
   "dependencies": {
     "@expo/vector-icons": "^15.0.0",
     "@react-navigation/native": "^7.0.0",
+    "@sparkle/theme": "workspace:*",
     "expo": "~53.0.0",
     "expo-font": "~13.3.0",
     "expo-linking": "~7.1.0",
