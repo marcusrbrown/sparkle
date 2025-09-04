@@ -112,16 +112,16 @@ This implementation plan outlines the creation of a comprehensive `@sparkle/them
 
 ### Implementation Phase 6: Build Pipeline and Testing
 
-- GOAL-006: Integrate theme package with Turborepo build system and implement comprehensive testing
+- GOAL-006: Finalize the theme system with build optimizations, comprehensive testing, documentation, and production readiness
 
 | Task | Description | Completed | Date |
 |------|-------------|-----------|------|
-| TASK-031 | Update `turbo.json` to include `@sparkle/theme` in build dependencies and task configurations | | |
-| TASK-032 | Create test/theme.test.ts with Vitest tests for theme context and token transformations | | |
-| TASK-033 | Implement error testing scenarios using `@sparkle/error-testing` TestScenarioBuilder patterns | | |
-| TASK-034 | Add accessibility testing for theme contrast ratios and WCAG compliance | | |
-| TASK-035 | Create documentation examples in README.md with usage patterns and API reference | | |
-| TASK-036 | Validate cross-package imports and build order dependencies across all packages | | |
+| TASK-031 | Add comprehensive unit tests for all theme utilities and components using Vitest | | |
+| TASK-032 | Create integration tests for theme persistence and system detection | | |
+| TASK-033 | Implement visual regression tests for themed components in Storybook | | |
+| TASK-034 | Optimize Turborepo build pipeline for theme package dependencies | | |
+| TASK-035 | Create comprehensive documentation with examples and migration guide | | |
+| TASK-036 | Set up changesets and prepare package for initial release | | |
 
 ## 3. Alternatives
 
