@@ -1,5 +1,4 @@
 import type {ThemeConfig} from '@sparkle/types'
-import React from 'react'
 import {useTheme} from '../hooks'
 
 export interface ThemeShowcaseProps {
