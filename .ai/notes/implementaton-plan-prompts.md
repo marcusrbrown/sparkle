@@ -25,3 +25,16 @@ This document provides a set of prompts designed to guide AI coding agents in cr
 **Real-World Production Scalability Architecture**: Challenge the current experimental playground approach by designing a production-ready architecture that addresses enterprise concerns like micro-frontend integration, package versioning strategies for breaking changes, performance optimization at scale (code splitting, tree shaking, bundle analysis), security considerations for cross-package data flow, and CI/CD pipeline optimization for large teams, investigating whether the current Turborepo + pnpm workspace setup can handle hundreds of developers and thousands of components while maintaining the type safety and development experience standards established in the current codebase.
 
 **Advanced Cross-Platform State Management and Data Flow**: Investigate implementing a sophisticated state management solution that bridges React Native, web, and potentially future platforms (like Tauri desktop apps), exploring patterns like Redux Toolkit with RTK Query for data fetching, Zustand for client state, and React Query for server state synchronization, challenging current assumptions about package boundaries by designing a unified data layer that works across `@sparkle/ui`, fro-jive mobile app, and documentation site while maintaining type safety and supporting real-time features like collaborative editing, live chat, and synchronized theme changes across all platforms and applications.
+
+## Suggested Prompts for AI Development
+
+When working with the Sparkle monorepo, consider using these focused prompts to leverage the comprehensive architecture and tooling:
+
+### 🎨 Theme System Development
+"Create a new themed component following the Sparkle design system patterns. Use the TokenTransformer for cross-platform token conversion, implement proper theme context usage, and include comprehensive visual regression tests across light/dark themes and multiple viewports. Ensure the component works with both web and React Native platforms."
+
+### 🧪 Component Testing & Documentation
+"Implement a complete testing suite for a Sparkle UI component including unit tests with Vitest type-checking, Storybook stories with theme switching controls and accessibility documentation, and Playwright visual regression tests. Follow the established patterns in packages/storybook/test/visual-regression/ and ensure proper error scenario coverage using TestScenarioBuilder."
+
+### 🚀 Monorepo Integration & Optimization
+"Optimize the Sparkle monorepo build pipeline by analyzing Turborepo task dependencies, ensuring proper TypeScript project references between packages, and implementing efficient development workflows. Focus on cross-package type safety, build performance, and maintaining workspace consistency with manypkg validation."
