@@ -24,7 +24,7 @@ The project emphasizes TypeScript-first development, comprehensive testing, and 
 - [UI Component Library](packages/ui/README.md): Modern, accessible React component library with TypeScript and Tailwind CSS
 - [Theme System](packages/theme/README.md): Cross-platform theme management with design tokens, dark/light modes, and Tailwind integration
 - [Storybook Documentation](packages/storybook/README.md): Component documentation and development environment setup
-- [fro-jive Mobile App](packages/fro-jive/package.json): Expo/React Native mobile application for jiving with Fro Bot
+- [fro-jive Mobile App](apps/fro-jive/package.json): Expo/React Native mobile application for jiving with Fro Bot
 
 ## Theme System
 

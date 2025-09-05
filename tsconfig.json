@@ -12,13 +12,13 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["packages/fro-jive/*"],
-      "@/components/*": ["packages/fro-jive/components/*"],
-      "@/constants/*": ["packages/fro-jive/constants/*"],
-      "@/app/*": ["packages/fro-jive/app/*"]
+      "@/*": ["apps/fro-jive/*"],
+      "@/components/*": ["apps/fro-jive/components/*"],
+      "@/constants/*": ["apps/fro-jive/constants/*"],
+      "@/app/*": ["apps/fro-jive/app/*"]
     },
     "composite": true
   },
-  "include": ["packages/**/*.ts", "packages/**/*.tsx"],
-  "exclude": ["node_modules", "packages/**/dist"]
+  "include": ["packages/**/*.ts", "packages/**/*.tsx", "apps/**/*.ts", "apps/**/*.tsx"],
+  "exclude": ["node_modules", "packages/**/dist", "apps/**/dist"]
 }
