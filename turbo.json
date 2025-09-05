@@ -49,9 +49,20 @@
       "dependsOn": ["^build:types"],
       "inputs": ["src/**/*.{ts,tsx}", "tsconfig.json"]
     },
+    "test:visual": {
+      "dependsOn": ["@sparkle/storybook#build"],
+      "outputs": ["test-results/**"],
+      "inputs": [
+        "test/visual-regression/**/*.{ts,js}",
+        "playwright.config.{ts,js}",
+        "src/**/*.stories.{ts,tsx}",
+        "package.json"
+      ],
+      "cache": false
+    },
     "clean": {
       "cache": false,
-      "outputs": ["dist/**", ".turbo/**", "node_modules/**"]
+      "outputs": ["dist/**", ".turbo/**", "node_modules/**", "test-results/**"]
     }
   }
 }
