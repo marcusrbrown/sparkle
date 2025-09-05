@@ -13,7 +13,6 @@
     {
       matchSourceUrls: ['https://github.com/facebook/metro{/,}**'],
       groupName: 'Metro',
-      allowedVersions: '^0.80.0',
     },
     {
       matchPackageNames: [
@@ -36,12 +35,10 @@
         'react-native-windows',
       ],
       groupName: 'React Native',
-      allowedVersions: '^0.73.0',
     },
     {
       matchPackageNames: ['@react-native-community/cli{/,}**'],
       groupName: 'React Native CLI',
-      allowedVersions: '^12.0.0',
     },
     {
       matchFileNames: ['package.json'],
