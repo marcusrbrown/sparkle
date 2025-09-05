@@ -7,7 +7,20 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
       "default": "./dist/index.js"
+    },
+    "./tailwind": {
+      "types": "./dist/tailwind/index.d.ts",
+      "import": "./dist/tailwind/index.js",
+      "require": "./dist/tailwind/index.cjs",
+      "default": "./dist/tailwind/index.js"
+    },
+    "./react-native": {
+      "types": "./dist/react-native/index.d.ts",
+      "import": "./dist/react-native/index.js",
+      "require": "./dist/react-native/index.cjs",
+      "default": "./dist/react-native/index.js"
     },
     "./styles.css": "./dist/styles.css"
   },
@@ -16,10 +29,13 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsdown",
-    "clean": "rm -rf dist",
+    "build:analyze": "npm run build && npx size-limit",
+    "build:theme": "npm run build",
+    "clean": "rm -rf dist .turbo",
     "lint": "eslint",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
+    "test:theme": "npm run test",
     "test:watch": "vitest watch",
     "typecheck": "tsc --noEmit"
   },
