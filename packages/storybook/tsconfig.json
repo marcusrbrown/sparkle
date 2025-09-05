@@ -7,6 +7,12 @@
   "include": ["src", ".storybook/**/*"],
   "references": [
     {
+      "path": "../config"
+    },
+    {
+      "path": "../theme"
+    },
+    {
       "path": "../ui"
     }
   ]
