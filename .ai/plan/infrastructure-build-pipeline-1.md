@@ -41,10 +41,10 @@ This implementation plan focuses on optimizing the Sparkle monorepo build pipeli
 | Task | Description | Completed | Date |
 |------|-------------|-----------|------|
 | TASK-001 | Audit current TypeScript project references in all packages/*/tsconfig.json files to identify missing or incorrect references | ✅ | 2025-09-05 |
-| TASK-002 | Update packages/ui/tsconfig.json to include references to @sparkle/types, @sparkle/utils, and @sparkle/theme dependencies | | |
-| TASK-003 | Update packages/storybook/tsconfig.json to include references to @sparkle/ui and @sparkle/theme dependencies | | |
-| TASK-004 | Update packages/config/tsconfig.json to include references to @sparkle/types if needed | | |
-| TASK-005 | Update packages/error-testing/tsconfig.json to include references to @sparkle/types dependency | | |
+| TASK-002 | Update packages/ui/tsconfig.json to include references to @sparkle/types, @sparkle/utils, and @sparkle/theme dependencies | ✅ | 2025-09-05 |
+| TASK-003 | Update packages/storybook/tsconfig.json to include references to @sparkle/ui and @sparkle/theme dependencies | ✅ | 2025-09-05 |
+| TASK-004 | Update packages/config/tsconfig.json to include references to @sparkle/types if needed | ✅ | 2025-09-05 |
+| TASK-005 | Update packages/error-testing/tsconfig.json to include references to @sparkle/types dependency | ✅ | 2025-09-05 |
 | TASK-006 | Verify root tsconfig.json composite settings work correctly with all package references | | |
 | TASK-007 | Test incremental TypeScript compilation across package boundaries with tsc --build | | |
 
