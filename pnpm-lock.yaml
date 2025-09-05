@@ -287,12 +287,6 @@ importers:
       '@sparkle/utils':
         specifier: workspace:*
         version: link:../utils
-      react-dom:
-        specifier: '>=18.0.0'
-        version: 19.1.1(react@19.1.1)
-      tailwindcss:
-        specifier: ^4.0.6
-        version: 4.1.12
     devDependencies:
       '@testing-library/jest-dom':
         specifier: ^6.4.2
@@ -312,6 +306,12 @@ importers:
       react:
         specifier: 19.1.1
         version: 19.1.1
+      react-dom:
+        specifier: 19.1.1
+        version: 19.1.1(react@19.1.1)
+      tailwindcss:
+        specifier: ^4.0.6
+        version: 4.1.12
 
   packages/types:
     devDependencies:
@@ -12216,7 +12216,7 @@ snapshots:
     dependencies:
       ansi-align: 3.0.1
       camelcase: 7.0.1
-      chalk: 5.0.1
+      chalk: 5.6.0
       cli-boxes: 3.0.0
       string-width: 5.1.2
       type-fest: 2.19.0

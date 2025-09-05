@@ -64,8 +64,7 @@
   },
   "dependencies": {
     "@sparkle/types": "workspace:*",
-    "@sparkle/utils": "workspace:*",
-    "tailwindcss": "^4.0.6"
+    "@sparkle/utils": "workspace:*"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.4.2",
@@ -73,7 +72,9 @@
     "@testing-library/user-event": "^14.5.2",
     "@types/react": "~19.1.0",
     "happy-dom": "18.0.1",
-    "react": "19.1.1"
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
+    "tailwindcss": "^4.0.6"
   },
   "peerDependencies": {
     "react": ">=18.0.0",
