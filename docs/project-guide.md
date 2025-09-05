@@ -37,7 +37,7 @@ sparkle/
 - **Language:** [TypeScript](https://www.typescriptlang.org/) (v5.8.3)
 - **Testing Framework:** [Vitest](https://vitest.dev/) (v3.0.0) - Used in `@sparkle/ui`. Configuration is likely within package.json or default locations.
 - **UI Framework:** [React](https://react.dev/) (v18.2.0)
-- **Mobile Framework:** [Expo](https://expo.dev/) (in `packages/fro-jive`)
+- **Mobile Framework:** [Expo](https://expo.dev/) (in `apps/fro-jive`)
 - **Styling:** [Tailwind CSS](https://tailwindcss.com/) (v4.0.6) - Configured in `@sparkle/ui` and `@sparkle/storybook`.
 - **Component Primitives:** [Radix UI](https://www.radix-ui.com/) (used in `@sparkle/ui`)
 - **Component Playground:** [Storybook](https://storybook.js.org/) (in `packages/storybook`)

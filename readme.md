@@ -61,7 +61,7 @@ This will start:
 | Package                                      | Description                                         | Status    |
 | -------------------------------------------- | --------------------------------------------------- | --------- |
 | [`packages/storybook`](./packages/storybook) | Component documentation and development environment | ✅ Active |
-| [`packages/fro-jive`](./packages/fro-jive)   | Expo/React Native mobile application                | ✅ Active |
+| [`apps/fro-jive`](./apps/fro-jive)           | Expo/React Native mobile application                | ✅ Active |
 
 ### Development Tools
 

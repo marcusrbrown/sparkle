@@ -4,7 +4,7 @@
 
 Sparkle is a TypeScript monorepo playground using **pnpm workspaces** and **Turborepo**. Key architectural decisions:
 
-- **Package Strategy**: Shared libraries (`@sparkle/ui`, `@sparkle/types`, `@sparkle/utils`, `@sparkle/theme`) with consuming applications (`fro-jive` Expo app)
+- **Package Strategy**: Shared libraries (`@sparkle/ui`, `@sparkle/types`, `@sparkle/utils`, `@sparkle/theme`) with consuming applications (`fro-jive` Expo app in `apps/`)
 - **Build System**: Turborepo orchestrates builds with task dependencies (e.g., `build` → `^build` ensures dependencies build first)
 - **Type Safety**: Shared types via `@sparkle/types` + TypeScript project references for clean inter-package dependencies
 - **Component Architecture**: Radix UI primitives + Tailwind CSS + React forwardRef pattern for accessibility and customization
@@ -41,7 +41,7 @@ pnpm fix               # Auto-fix monorepo and ESLint issues
 
 ### Mobile Integration (fro-jive)
 
-- Expo app with file-based routing (`app/` directory)
+- Expo app with file-based routing (`app/` directory) in `apps/fro-jive/`
 - Uses `@/components/` alias for local components
 - Integrates `@sparkle/ui` components (though platform differences may require adaptation)
 
@@ -402,7 +402,7 @@ test.describe('Button Component', () => {
 ### Cross-Platform Considerations
 
 - Web components in `@sparkle/ui` use HTML props (`HTMLButtonElement`)
-- Mobile app (`fro-jive`) may need platform-specific adaptations
+- Mobile app (`fro-jive` in `apps/`) may need platform-specific adaptations
 - Storybook serves as universal component playground
 
 ### Development Tools Integration

@@ -108,7 +108,7 @@ This implementation plan outlines the creation of a comprehensive `@sparkle/them
 | TASK-027 | Create src/examples/ directory with ThemeShowcase.tsx component demonstrating all theme features | ✅ | 2025-09-02 |
 | TASK-028 | Update `packages/storybook/src/stories/Button.stories.tsx` with theme switching controls | ✅ | 2025-09-02 |
 | TASK-029 | Create `packages/storybook/src/stories/Theme.stories.tsx` with comprehensive theme documentation | ✅ | 2025-09-03 |
-| TASK-030 | Update `packages/fro-jive/app/_layout.tsx` to integrate NativeThemeProvider | ✅ | 2025-01-04 |
+| TASK-030 | Update `apps/fro-jive/app/_layout.tsx` to integrate NativeThemeProvider | ✅ | 2025-09-03 |
 
 ### Implementation Phase 6: Build Pipeline and Testing
 
