@@ -21,6 +21,14 @@
     },
     "composite": true
   },
-  "include": ["packages/**/*.ts", "packages/**/*.tsx", "apps/**/*.ts", "apps/**/*.tsx"],
-  "exclude": ["node_modules", "packages/**/dist", "apps/**/dist"]
+  "files": [],
+  "references": [
+    {"path": "packages/types"},
+    {"path": "packages/utils"},
+    {"path": "packages/theme"},
+    {"path": "packages/config"},
+    {"path": "packages/error-testing"},
+    {"path": "packages/ui"},
+    {"path": "packages/storybook"}
+  ]
 }
