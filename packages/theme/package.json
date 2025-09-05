@@ -1,7 +1,30 @@
 {
   "name": "@sparkle/theme",
-  "version": "0.1.0",
-  "private": true,
+  "version": "0.0.0",
+  "description": "Comprehensive theme management for Sparkle Design System with cross-platform design tokens, React Context-based theme providers, and seamless Tailwind CSS integration",
+  "keywords": [
+    "theme",
+    "design-system",
+    "design-tokens",
+    "react",
+    "react-native",
+    "tailwind",
+    "tailwindcss",
+    "typescript",
+    "cross-platform",
+    "sparkle"
+  ],
+  "homepage": "https://github.com/marcusrbrown/sparkle/tree/main/packages/theme",
+  "bugs": {
+    "url": "https://github.com/marcusrbrown/sparkle/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/marcusrbrown/sparkle.git",
+    "directory": "packages/theme"
+  },
+  "license": "MIT",
+  "author": "Marcus R. Brown <git@mrbro.dev>",
   "type": "module",
   "exports": {
     ".": {
@@ -41,8 +64,7 @@
   },
   "dependencies": {
     "@sparkle/types": "workspace:*",
-    "@sparkle/utils": "workspace:*",
-    "tailwindcss": "^4.0.6"
+    "@sparkle/utils": "workspace:*"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.4.2",
@@ -50,9 +72,28 @@
     "@testing-library/user-event": "^14.5.2",
     "@types/react": "~19.1.0",
     "happy-dom": "18.0.1",
-    "react": "19.1.1"
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
+    "tailwindcss": "^4.0.6"
   },
   "peerDependencies": {
-    "react": "^19.0.0"
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0",
+    "tailwindcss": ">=4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react-dom": {
+      "optional": true
+    },
+    "tailwindcss": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }
