@@ -10,6 +10,8 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["apps/fro-jive/*"],
