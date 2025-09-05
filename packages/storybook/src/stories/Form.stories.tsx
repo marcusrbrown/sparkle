@@ -295,7 +295,7 @@ export const ValidationStates: Story = {
               type="email"
               placeholder="Change validation state"
               validationState={emailState}
-              onChange={e => {
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 const value = e.target.value
                 if (!value) {
                   setEmailState('default')
@@ -576,7 +576,7 @@ export const KeyboardNavigation: Story = {
 
       <Form
         className="space-y-4"
-        onSubmit={e => {
+        onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
           e.preventDefault()
           // Form submitted successfully with keyboard navigation preserved
         }}
@@ -703,7 +703,7 @@ export const ComplexForm: Story = {
           <FormSelect
             placeholder="Select account type"
             value={formData.accountType}
-            onValueChange={value => updateField('accountType', value)}
+            onValueChange={(value: string) => updateField('accountType', value)}
           >
             <FormSelectItem value="personal">Personal</FormSelectItem>
             <FormSelectItem value="business">Business</FormSelectItem>
@@ -717,7 +717,7 @@ export const ComplexForm: Story = {
             <FormInput
               placeholder="Enter your company name"
               value={formData.companyName}
-              onChange={e => updateField('companyName', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateField('companyName', e.target.value)}
               validationState={errors.companyName ? 'error' : 'default'}
             />
             {errors.companyName && <FormMessage type="error">{errors.companyName}</FormMessage>}
@@ -730,7 +730,7 @@ export const ComplexForm: Story = {
             <FormInput
               placeholder="First name"
               value={formData.firstName}
-              onChange={e => updateField('firstName', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateField('firstName', e.target.value)}
               validationState={errors.firstName ? 'error' : 'default'}
             />
             {errors.firstName && <FormMessage type="error">{errors.firstName}</FormMessage>}
@@ -741,7 +741,7 @@ export const ComplexForm: Story = {
             <FormInput
               placeholder="Last name"
               value={formData.lastName}
-              onChange={e => updateField('lastName', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateField('lastName', e.target.value)}
               validationState={errors.lastName ? 'error' : 'default'}
             />
             {errors.lastName && <FormMessage type="error">{errors.lastName}</FormMessage>}
@@ -754,7 +754,7 @@ export const ComplexForm: Story = {
             type="email"
             placeholder="you@example.com"
             value={formData.email}
-            onChange={e => updateField('email', e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateField('email', e.target.value)}
             validationState={errors.email ? 'error' : 'default'}
           />
           {errors.email && <FormMessage type="error">{errors.email}</FormMessage>}
@@ -765,7 +765,7 @@ export const ComplexForm: Story = {
           <FormPassword
             placeholder="Create a strong password"
             value={formData.password}
-            onChange={e => updateField('password', e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateField('password', e.target.value)}
             showToggle
             validationState={errors.password ? 'error' : 'default'}
           />
@@ -778,7 +778,7 @@ export const ComplexForm: Story = {
           <FormPassword
             placeholder="Confirm your password"
             value={formData.confirmPassword}
-            onChange={e => updateField('confirmPassword', e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateField('confirmPassword', e.target.value)}
             validationState={errors.confirmPassword ? 'error' : 'default'}
           />
           {errors.confirmPassword && <FormMessage type="error">{errors.confirmPassword}</FormMessage>}
@@ -790,7 +790,7 @@ export const ComplexForm: Story = {
             type="tel"
             placeholder="+1 (555) 000-0000"
             value={formData.phone}
-            onChange={e => updateField('phone', e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateField('phone', e.target.value)}
           />
           <FormDescription>Optional - for account recovery</FormDescription>
         </FormField>
@@ -802,7 +802,7 @@ export const ComplexForm: Story = {
               type="url"
               placeholder="https://yourcompany.com"
               value={formData.website}
-              onChange={e => updateField('website', e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateField('website', e.target.value)}
             />
           </FormField>
         )}
@@ -812,7 +812,7 @@ export const ComplexForm: Story = {
           <FormSelect
             placeholder="Select your country"
             value={formData.country}
-            onValueChange={value => updateField('country', value)}
+            onValueChange={(value: string) => updateField('country', value)}
           >
             <FormSelectItem value="us">United States</FormSelectItem>
             <FormSelectItem value="ca">Canada</FormSelectItem>
