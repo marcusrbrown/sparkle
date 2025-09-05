@@ -4,10 +4,11 @@
 
 Sparkle is a TypeScript monorepo playground using **pnpm workspaces** and **Turborepo**. Key architectural decisions:
 
-- **Package Strategy**: Shared libraries (`@sparkle/ui`, `@sparkle/types`, `@sparkle/utils`) with consuming applications (`fro-jive` Expo app)
+- **Package Strategy**: Shared libraries (`@sparkle/ui`, `@sparkle/types`, `@sparkle/utils`, `@sparkle/theme`) with consuming applications (`fro-jive` Expo app)
 - **Build System**: Turborepo orchestrates builds with task dependencies (e.g., `build` → `^build` ensures dependencies build first)
 - **Type Safety**: Shared types via `@sparkle/types` + TypeScript project references for clean inter-package dependencies
 - **Component Architecture**: Radix UI primitives + Tailwind CSS + React forwardRef pattern for accessibility and customization
+- **Theme System**: Cross-platform design token management with `@sparkle/theme` supporting web (CSS custom properties) and native (StyleSheet) platforms
 
 ## Critical Workflows
 
@@ -28,6 +29,15 @@ pnpm fix               # Auto-fix monorepo and ESLint issues
 2. Export via `packages/ui/src/components/index.ts` → `packages/ui/src/index.ts`
 3. Test in Storybook (`packages/storybook/`) before integration
 4. Use `@sparkle/types` for shared interfaces, `@sparkle/utils` for shared logic
+5. Apply themes via `@sparkle/theme` for cross-platform consistency
+
+### Theme System Development
+
+1. Define design tokens in `packages/theme/src/tokens/` (base, light, dark themes)
+2. Use `TokenTransformer` for converting tokens between web and native formats
+3. Import theme providers: `ThemeProvider` (web) or `NativeThemeProvider` (React Native)
+4. Test theme variants in Storybook with theme switching controls
+5. Run visual regression tests to ensure theme consistency across components
 
 ### Mobile Integration (fro-jive)
 
@@ -203,14 +213,191 @@ describe('Button component', () => {
 })
 ```
 
+## Theme System Architecture
+
+### Core Components
+
+The `@sparkle/theme` package provides cross-platform design token management with the following key components:
+
+#### TokenTransformer Class
+
+Converts design tokens between web and React Native formats:
+
+```typescript
+// Web format (CSS custom properties)
+const webTokens = TokenTransformer.toWeb(baseTokens)
+// Output: { '--color-primary': '#3b82f6', '--spacing-md': '1rem' }
+
+// React Native format (StyleSheet values)
+const nativeTokens = TokenTransformer.toNative(baseTokens)
+// Output: { colorPrimary: '#3b82f6', spacingMd: 16 }
+```
+
+#### Design Token Structure
+
+Tokens are organized in a hierarchical structure:
+
+```typescript
+// packages/theme/src/tokens/base.ts
+export const baseTokens = {
+  color: {
+    primary: { value: '#3b82f6', type: 'color' },
+    secondary: { value: '#6b7280', type: 'color' }
+  },
+  spacing: {
+    sm: { value: '0.5rem', type: 'dimension' },
+    md: { value: '1rem', type: 'dimension' }
+  }
+}
+```
+
+#### Theme Providers
+
+Platform-specific providers manage theme context:
+
+```typescript
+// Web usage
+import {ThemeProvider} from '@sparkle/theme'
+<ThemeProvider theme="light">{children}</ThemeProvider>
+
+// React Native usage
+import {NativeThemeProvider} from '@sparkle/theme'
+<NativeThemeProvider theme="dark">{children}</NativeThemeProvider>
+```
+
+### Theme-Aware Component Development
+
+#### Component Pattern
+
+Components should accept theme-aware props and use theme context:
+
+```typescript
+export interface ButtonProps extends HTMLButtonElement {
+  variant?: 'primary' | 'secondary'
+  themeMode?: 'light' | 'dark' | 'system'
+}
+
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
+  const {variant = 'primary', className, ...rest} = props
+  const {theme} = useTheme()
+
+  return (
+    <button
+      ref={ref}
+      className={cx('btn', `btn-${variant}`, `theme-${theme}`, className)}
+      {...rest}
+    />
+  )
+})
+```
+
+#### Tailwind Integration
+
+Theme tokens automatically generate Tailwind CSS custom properties:
+
+```css
+/* Generated in packages/theme/dist/styles.css */
+:root {
+  --color-primary: #3b82f6;
+  --color-secondary: #6b7280;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+}
+
+[data-theme="dark"] {
+  --color-primary: #60a5fa;
+  --color-secondary: #9ca3af;
+}
+```
+
+### Cross-Platform Development Patterns
+
+#### Platform-Specific Token Usage
+
+```typescript
+// Web component
+import {useTheme} from '@sparkle/theme'
+const {tokens} = useTheme() // CSS custom properties format
+
+// React Native component
+import {useNativeTheme} from '@sparkle/theme'
+const {tokens} = useNativeTheme() // StyleSheet values format
+```
+
+#### Responsive Theme Testing
+
+Test components across themes and viewports in Storybook:
+
+```typescript
+// Component.stories.tsx
+export default {
+  title: 'Components/Button',
+  component: Button,
+  parameters: {
+    themes: {
+      themeOverride: 'light', // or 'dark', 'system'
+      list: [
+        {name: 'Light', class: '', color: '#ffffff'},
+        {name: 'Dark', class: 'dark', color: '#000000'}
+      ]
+    }
+  }
+}
+```
+
+### Visual Regression Testing
+
+Comprehensive visual testing ensures theme consistency:
+
+#### Test Structure
+
+- **Files**: `packages/storybook/test/visual-regression/*.visual.test.ts`
+- **Coverage**: All themes (light/dark), browsers (Chrome/Firefox/Safari), viewports (mobile/tablet/desktop)
+- **Scope**: Component variants, interaction states, cross-component integration
+
+#### Running Visual Tests
+
+```bash
+# Run all visual regression tests
+pnpm test:visual
+
+# Test specific components with theme variants
+pnpm test:visual -- --grep "Button.*light theme"
+
+# Update baselines after intentional theme changes
+pnpm test:visual:update
+```
+
+#### Test Patterns
+
+```typescript
+// button.visual.test.ts
+test.describe('Button Component', () => {
+  for (const theme of ['light', 'dark']) {
+    for (const viewport of VIEWPORTS) {
+      test(`${theme} theme - ${viewport.name}`, async ({page}) => {
+        await setTheme(page, theme)
+        await setViewport(page, viewport)
+        await navigateToStory(page, 'components-button--primary', '[data-testid="button"]')
+        await expect(page.locator('[data-testid="button"]')).toHaveScreenshot(
+          `button-primary-${theme}-${viewport.name}.png`
+        )
+      })
+    }
+  }
+})
+```
+
 ## Integration Points
 
 ### Package Boundaries
 
 - `@sparkle/types`: Shared TypeScript definitions (ThemeConfig, BaseProps, HTMLProperties)
 - `@sparkle/utils`: React hooks (useDebounce, etc.) and utility functions
-- `@sparkle/ui`: Component library consuming types/utils
-- `@sparkle/config`: Shared configurations (Tailwind, TypeScript)
+- `@sparkle/theme`: Cross-platform design token system with TokenTransformer and theme providers
+- `@sparkle/ui`: Component library consuming types/utils/theme for consistent design
+- `@sparkle/config`: Shared configurations (Tailwind, TypeScript, ESLint)
+- `@sparkle/storybook`: Centralized component documentation and visual regression testing
 
 ### Cross-Platform Considerations
 
@@ -220,8 +407,10 @@ describe('Button component', () => {
 
 ### Development Tools Integration
 
-- Storybook configured for component development/documentation with accessibility testing via `@storybook/addon-a11y`
-- Vitest for testing (configured in `@sparkle/ui`) with TypeScript type-checking enabled
-- Changesets for versioning workflow: `pnpm changeset` → `pnpm changeset version` → commit
-- Prettier + ESLint via Turborepo pipeline with `@bfra.me/prettier-config`
-- Manypkg ensures workspace consistency - run `pnpm check:monorepo` before commits
+- **Storybook**: Component development/documentation with theme switching controls and accessibility testing via `@storybook/addon-a11y`
+- **Visual Regression**: Playwright-based testing across themes, browsers, and viewports (`packages/storybook/test/visual-regression/`)
+- **Testing**: Vitest for unit/integration tests with TypeScript type-checking enabled
+- **Build Pipeline**: Turborepo orchestrates theme package dependencies and cross-platform builds
+- **Versioning**: Changesets workflow: `pnpm changeset` → `pnpm changeset version` → commit
+- **Code Quality**: Prettier + ESLint via Turborepo pipeline with `@bfra.me/prettier-config`
+- **Workspace Consistency**: Manypkg ensures workspace integrity - run `pnpm check:monorepo` before commits
