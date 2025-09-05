@@ -49,4 +49,5 @@
     commands: ['pnpm bootstrap', 'pnpm build', 'pnpm fix'],
     executionMode: 'branch',
   },
+  prCreation: 'immediate',
 }
