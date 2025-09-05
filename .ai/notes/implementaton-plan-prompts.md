@@ -36,5 +36,5 @@ When working with the Sparkle monorepo, consider using these focused prompts to 
 ### 🧪 Component Testing & Documentation
 "Implement a complete testing suite for a Sparkle UI component including unit tests with Vitest type-checking, Storybook stories with theme switching controls and accessibility documentation, and Playwright visual regression tests. Follow the established patterns in packages/storybook/test/visual-regression/ and ensure proper error scenario coverage using TestScenarioBuilder."
 
-### 🚀 Monorepo Integration & Optimization
+### [🚀 Monorepo Integration & Optimization](../plan/infrastructure-build-pipeline-1.md)
 "Optimize the Sparkle monorepo build pipeline by analyzing Turborepo task dependencies, ensuring proper TypeScript project references between packages, and implementing efficient development workflows. Focus on cross-package type safety, build performance, and maintaining workspace consistency with manypkg validation."
