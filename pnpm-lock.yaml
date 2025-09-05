@@ -287,6 +287,9 @@ importers:
       '@sparkle/utils':
         specifier: workspace:*
         version: link:../utils
+      react-dom:
+        specifier: '>=18.0.0'
+        version: 19.1.1(react@19.1.1)
       tailwindcss:
         specifier: ^4.0.6
         version: 4.1.12

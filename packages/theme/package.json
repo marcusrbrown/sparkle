@@ -1,6 +1,6 @@
 {
   "name": "@sparkle/theme",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "Comprehensive theme management for Sparkle Design System with cross-platform design tokens, React Context-based theme providers, and seamless Tailwind CSS integration",
   "keywords": [
     "theme",
