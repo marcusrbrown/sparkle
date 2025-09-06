@@ -23,7 +23,7 @@
       ]
     },
     "build:types": {
-      "dependsOn": [],
+      "dependsOn": ["^build:types", "^build:utils", "^build:theme"],
       "outputs": ["dist/**/*.d.ts"],
       "inputs": ["src/**/*.ts", "package.json", "tsconfig.json"],
       "cache": true
