@@ -44,12 +44,14 @@
       "import": "./dist/react-native/index.js",
       "require": "./dist/react-native/index.cjs",
       "default": "./dist/react-native/index.js"
-    },
-    "./styles.css": "./dist/styles.css"
+    }
   },
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsdown",
     "build:analyze": "npm run build && npx size-limit",

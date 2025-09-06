@@ -13,16 +13,14 @@
       "types": "./dist/tailwind.d.ts",
       "import": "./dist/tailwind.js",
       "default": "./dist/tailwind.js"
-    },
-    "./eslint": {
-      "types": "./dist/eslint.d.ts",
-      "import": "./dist/eslint.js",
-      "default": "./dist/eslint.js"
     }
   },
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsdown",
     "clean": "rm -rf dist",
