@@ -57,8 +57,8 @@ This implementation plan focuses on optimizing the Sparkle monorepo build pipeli
 | TASK-008 | Analyze current turbo.json task dependencies and identify opportunities for better parallelization | ✅ | 2025-09-05 |
 | TASK-009 | Create package-specific build tasks (e.g., build:ui, build:theme) to enable granular dependency management | ✅ | 2025-09-05 |
 | TASK-010 | Optimize cache strategies by adding specific inputs/outputs for each package type (UI components, theme tokens, utilities) | ✅ | 2025-09-05 |
-| TASK-011 | Implement proper dependency chains: types -> utils -> theme -> ui -> storybook | ✅ | 2025-01-28 |
-| TASK-012 | Add environment variables to relevant tasks (NODE_ENV, STORYBOOK_ENV) for proper cache invalidation | ✅ | 2025-01-28 |
+| TASK-011 | Implement proper dependency chains: types -> utils -> theme -> ui -> storybook | ✅ | 2025-09-05 |
+| TASK-012 | Add environment variables to relevant tasks (NODE_ENV, STORYBOOK_ENV) for proper cache invalidation | ✅ | 2025-09-05 |
 | TASK-013 | Configure persistent tasks (dev, build:watch) with proper cache: false settings | ✅ | 2025-09-05 |
 | TASK-014 | Add turbo.json validation to ensure task definitions remain consistent | ✅ | 2025-09-05 |
 
@@ -68,9 +68,9 @@ This implementation plan focuses on optimizing the Sparkle monorepo build pipeli
 
 | Task | Description | Completed | Date |
 |------|-------------|-----------|------|
-| TASK-015 | Evaluate current tsdown vs Vite+tsc approach for packages/ui and determine optimal strategy | | |
-| TASK-016 | Standardize tsdown.config.ts configurations across all packages with consistent external dependencies | | |
-| TASK-017 | Optimize packages/ui build process to use either pure tsdown or optimized Vite+tsdown hybrid | | |
+| TASK-015 | Evaluate current tsdown vs Vite+tsc approach for packages/ui and determine optimal strategy | ✅ | 2025-09-05 |
+| TASK-016 | Standardize tsdown.config.ts configurations across all packages with consistent external dependencies | ✅ | 2025-09-05 |
+| TASK-017 | Optimize packages/ui build process to use either pure tsdown or optimized Vite+tsdown hybrid | ✅ | 2025-09-05 |
 | TASK-018 | Ensure all packages generate proper TypeScript declaration files with consistent declarationMap settings | | |
 | TASK-019 | Verify package.json exports field accuracy across all packages for both types and runtime imports | | |
 | TASK-020 | Add build validation scripts to ensure output consistency and package integrity | | |
