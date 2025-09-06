@@ -58,7 +58,7 @@ This implementation plan focuses on optimizing the Sparkle monorepo build pipeli
 | TASK-009 | Create package-specific build tasks (e.g., build:ui, build:theme) to enable granular dependency management | ✅ | 2025-09-05 |
 | TASK-010 | Optimize cache strategies by adding specific inputs/outputs for each package type (UI components, theme tokens, utilities) | ✅ | 2025-09-05 |
 | TASK-011 | Implement proper dependency chains: types -> utils -> theme -> ui -> storybook | ✅ | 2025-01-28 |
-| TASK-012 | Add environment variables to relevant tasks (NODE_ENV, STORYBOOK_ENV) for proper cache invalidation | | |
+| TASK-012 | Add environment variables to relevant tasks (NODE_ENV, STORYBOOK_ENV) for proper cache invalidation | ✅ | 2025-01-28 |
 | TASK-013 | Configure persistent tasks (dev, build:watch) with proper cache: false settings | | |
 | TASK-014 | Add turbo.json validation to ensure task definitions remain consistent | | |
 
