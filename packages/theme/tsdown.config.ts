@@ -4,7 +4,9 @@ export default defineConfig({
   entry: ['./src/index.ts', './src/tailwind/index.ts', './src/react-native/index.ts'],
   outDir: 'dist',
   format: ['esm', 'cjs'],
-  dts: true,
+  dts: {
+    sourcemap: true,
+  },
   sourcemap: true,
   clean: true,
   external: [

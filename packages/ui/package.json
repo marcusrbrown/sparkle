@@ -19,10 +19,12 @@
     "src"
   ],
   "scripts": {
-    "build": "vite build && tsc -p tsconfig.build.json",
-    "build:types": "tsc -p tsconfig.build.json --emitDeclarationOnly",
-    "build:types:watch": "tsc -p tsconfig.build.json --emitDeclarationOnly --watch",
-    "build:watch": "tsc -p tsconfig.build.json --watch",
+    "build": "pnpm build:js && pnpm build:css",
+    "build:css": "vite build --mode=css-only",
+    "build:js": "tsdown",
+    "build:types": "tsdown --dts-only",
+    "build:types:watch": "tsdown --dts-only --watch",
+    "build:watch": "tsdown --watch",
     "dev": "vite",
     "lint": "eslint",
     "preview": "vite preview",
