@@ -20,6 +20,68 @@
       "inputs": ["src/**/*.ts", "package.json", "tsconfig.json"],
       "cache": true
     },
+    "build:utils": {
+      "dependsOn": ["@sparkle/types#build:types"],
+      "outputs": ["dist/**"],
+      "inputs": ["src/**/*.{ts,tsx}", "package.json", "tsconfig.json", "tsdown.config.ts"],
+      "cache": true
+    },
+    "build:error-testing": {
+      "dependsOn": [],
+      "outputs": ["dist/**"],
+      "inputs": ["src/**/*.ts", "package.json", "tsconfig.json", "tsdown.config.ts"],
+      "cache": true
+    },
+    "build:theme": {
+      "dependsOn": ["@sparkle/types#build:types", "@sparkle/utils#build:utils"],
+      "outputs": ["dist/**", "tailwind/**"],
+      "inputs": [
+        "src/**/*.{ts,tsx}",
+        "src/tokens/**/*",
+        "src/themes/**/*",
+        "package.json",
+        "tsconfig.json",
+        "tsdown.config.ts",
+        "vite.config.ts"
+      ],
+      "env": ["NODE_ENV"],
+      "cache": true
+    },
+    "build:config": {
+      "dependsOn": ["@sparkle/theme#build:theme"],
+      "outputs": ["dist/**"],
+      "inputs": ["src/**/*.ts", "package.json", "tsconfig.json", "tsdown.config.ts"],
+      "cache": true
+    },
+    "build:ui": {
+      "dependsOn": ["@sparkle/config#build:config"],
+      "outputs": ["dist/**", "coverage/**"],
+      "inputs": [
+        "src/**/*.{ts,tsx}",
+        "src/**/*.css",
+        "package.json",
+        "tsconfig.json",
+        "tsconfig.build.json",
+        "vite.config.ts",
+        "tailwind.config.ts"
+      ],
+      "env": ["NODE_ENV"],
+      "cache": true
+    },
+    "build:storybook": {
+      "dependsOn": ["@sparkle/ui#build:ui", "@sparkle/theme#build:theme"],
+      "outputs": ["storybook-static/**", "test-results/**"],
+      "inputs": [
+        "src/**/*",
+        ".storybook/**/*",
+        "package.json",
+        "tsconfig.json",
+        "vite.config.ts",
+        "tailwind.config.ts"
+      ],
+      "env": ["NODE_ENV", "STORYBOOK_ENV"],
+      "cache": true
+    },
     "build:types:watch": {
       "dependsOn": ["^build"],
       "persistent": true,
@@ -44,7 +106,16 @@
     "test": {
       "dependsOn": ["^build:types", "^build:utils", "^build:theme", "^build:config", "^build:ui"],
       "outputs": ["coverage/**"],
-      "inputs": ["src/**/*.{ts,tsx}", "test/**/*.{ts,tsx}", "package.json", "tsconfig.json", "vitest.config.{ts,js}"]
+      "inputs": [
+        "src/**/*.{ts,tsx}",
+        "test/**/*.{ts,tsx}",
+        "package.json",
+        "tsconfig.json",
+        "vitest.config.{ts,js}",
+        "vite.config.ts"
+      ],
+      "env": ["NODE_ENV"],
+      "cache": true
     },
     "test:theme": {
       "dependsOn": ["@sparkle/theme#build:theme"],
@@ -61,7 +132,8 @@
     },
     "typecheck": {
       "dependsOn": ["^build:types"],
-      "inputs": ["src/**/*.{ts,tsx}", "tsconfig.json"]
+      "inputs": ["src/**/*.{ts,tsx}", "tsconfig.json", "package.json"],
+      "cache": true
     },
     "test:visual": {
       "dependsOn": ["@sparkle/storybook#build:storybook"],
@@ -77,7 +149,15 @@
     },
     "clean": {
       "cache": false,
-      "outputs": ["dist/**", ".turbo/**", "node_modules/**", "test-results/**"]
+      "outputs": [
+        "dist/**",
+        ".turbo/**",
+        "node_modules/**",
+        "test-results/**",
+        "coverage/**",
+        "storybook-static/**",
+        "tailwind/**"
+      ]
     }
   }
 }
