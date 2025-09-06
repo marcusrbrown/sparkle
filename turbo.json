@@ -12,7 +12,8 @@
         "tsconfig.json",
         "next.config.{js,ts,mjs,cjs}",
         ".storybook/**/*"
-      ]
+      ],
+      "env": ["NODE_ENV"]
     },
     "build:types": {
       "dependsOn": [],
@@ -51,6 +52,7 @@
       "dependsOn": ["@sparkle/theme#build:theme"],
       "outputs": ["dist/**"],
       "inputs": ["src/**/*.ts", "package.json", "tsconfig.json", "tsdown.config.ts"],
+      "env": ["NODE_ENV"],
       "cache": true
     },
     "build:ui": {
@@ -128,6 +130,7 @@
         "vitest.config.{ts,js}",
         "vite.config.ts"
       ],
+      "env": ["NODE_ENV"],
       "cache": true
     },
     "typecheck": {
