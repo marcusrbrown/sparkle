@@ -8,19 +8,24 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
-      name: 'SparkleUI',
       formats: ['es'],
       fileName: 'index',
     },
+    cssCodeSplit: false,
     rollupOptions: {
-      external: ['react', 'react-dom'],
+      external: ['react', 'react-dom', '@sparkle/types', '@sparkle/utils', '@sparkle/theme', '@sparkle/config'],
       output: {
-        globals: {
-          react: 'React',
-          'react-dom': 'ReactDOM',
+        assetFileNames: assetInfo => {
+          if (assetInfo.name?.endsWith('.css')) {
+            return 'styles.css'
+          }
+          return '[name].[ext]'
         },
       },
     },
+  },
+  css: {
+    postcss: {},
   },
   test: {
     environment: 'happy-dom',

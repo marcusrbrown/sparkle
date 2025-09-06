@@ -1,9 +1,9 @@
 import {defineConfig} from 'tsdown'
 
 export default defineConfig({
-  entry: ['./src/index.ts', './src/tailwind/index.ts', './src/react-native/index.ts'],
+  entry: ['./src/index.ts'],
   outDir: 'dist',
-  format: ['esm', 'cjs'],
+  format: ['esm'],
   dts: true,
   sourcemap: true,
   clean: true,
@@ -12,9 +12,12 @@ export default defineConfig({
     'react',
     'react-dom',
     'react-native',
-    // Third-party dependencies
-    'tailwindcss',
-    '@react-native-async-storage/async-storage',
+    // Third-party UI dependencies
+    '@radix-ui/react-form',
+    '@radix-ui/react-label',
+    '@radix-ui/react-primitive',
+    '@radix-ui/react-select',
+    'clsx',
     // Internal Sparkle packages
     '@sparkle/types',
     '@sparkle/utils',
@@ -23,12 +26,6 @@ export default defineConfig({
     '@sparkle/ui',
     '@sparkle/error-testing',
     '@sparkle/storybook',
-    // Externalize Node.js specific modules for browser compatibility
-    'node:module',
-    'node:path',
-    'node:fs',
-    'node:url',
   ],
-  platform: 'browser',
   target: 'es2020',
 })
