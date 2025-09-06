@@ -16,6 +16,7 @@ export default defineConfig(({mode}) => {
         },
         cssCodeSplit: true, // Allow CSS splitting for CSS-only build
         emptyOutDir: false, // Don't empty out dir to preserve tsdown outputs
+        sourcemap: true, // Enable source maps for CSS debugging
         rollupOptions: {
           output: {
             assetFileNames: assetInfo => {
@@ -40,6 +41,7 @@ export default defineConfig(({mode}) => {
         fileName: 'index',
       },
       cssCodeSplit: false,
+      sourcemap: true, // Enable source maps for debugging
       rollupOptions: {
         external: ['react', 'react-dom', '@sparkle/types', '@sparkle/utils', '@sparkle/theme', '@sparkle/config'],
         output: {
