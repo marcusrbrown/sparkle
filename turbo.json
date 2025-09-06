@@ -1,10 +1,18 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env.*local"],
-  "globalEnv": ["NODE_ENV"],
+  "globalEnv": ["NODE_ENV", "STORYBOOK_ENV"],
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": [
+        "build:types",
+        "build:utils",
+        "build:error-testing",
+        "build:theme",
+        "build:config",
+        "build:ui",
+        "build:storybook"
+      ],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**", "storybook-static/**"],
       "inputs": [
         "src/**/*.{ts,tsx,js,jsx}",
@@ -14,17 +22,50 @@
         ".storybook/**/*"
       ]
     },
+    "build:types": {
+      "dependsOn": [],
+      "outputs": ["dist/**/*.d.ts"],
+      "inputs": ["src/**/*.ts", "package.json", "tsconfig.json"],
+      "cache": true
+    },
+    "build:utils": {
+      "dependsOn": ["@sparkle/types#build:types"],
+      "outputs": ["dist/**"],
+      "inputs": ["src/**/*.ts", "package.json", "tsconfig.json", "tsdown.config.ts"],
+      "cache": true
+    },
+    "build:error-testing": {
+      "dependsOn": [],
+      "outputs": ["dist/**"],
+      "inputs": ["src/**/*.ts", "package.json", "tsconfig.json", "tsdown.config.ts"],
+      "cache": true
+    },
     "build:theme": {
-      "dependsOn": ["@sparkle/types#build"],
+      "dependsOn": ["@sparkle/types#build:types", "@sparkle/utils#build:utils"],
       "outputs": ["dist/**", "tailwind/**"],
-      "inputs": ["src/**/*.{ts,tsx}", "package.json", "tsconfig.json", "tsdown.config.ts"],
+      "inputs": ["src/**/*.{ts,tsx}", "src/tokens/**", "package.json", "tsconfig.json", "tsdown.config.ts"],
       "cache": true,
       "env": ["NODE_ENV"]
     },
-    "build:types": {
-      "dependsOn": ["^build:types"],
-      "outputs": ["dist/**/*.d.ts"],
-      "inputs": ["src/**/*.{ts,tsx}", "tsconfig.json"]
+    "build:config": {
+      "dependsOn": ["@sparkle/theme#build:theme"],
+      "outputs": ["dist/**"],
+      "inputs": ["src/**/*.ts", "package.json", "tsconfig.json", "tsdown.config.ts"],
+      "cache": true
+    },
+    "build:ui": {
+      "dependsOn": ["@sparkle/config#build:config"],
+      "outputs": ["dist/**", "coverage/**"],
+      "inputs": ["src/**/*.{ts,tsx}", "package.json", "tsconfig.json", "tailwind.config.ts"],
+      "cache": true,
+      "env": ["NODE_ENV"]
+    },
+    "build:storybook": {
+      "dependsOn": ["@sparkle/ui#build:ui", "@sparkle/theme#build:theme"],
+      "outputs": ["storybook-static/**", "test-results/**"],
+      "inputs": ["src/**", ".storybook/**", "package.json"],
+      "cache": true,
+      "env": ["NODE_ENV", "STORYBOOK_ENV"]
     },
     "build:types:watch": {
       "dependsOn": ["^build:types"],
@@ -32,28 +73,28 @@
       "cache": false
     },
     "build:watch": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build:types", "^build:utils", "^build:theme", "^build:config"],
       "persistent": true,
       "cache": false
     },
     "dev": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build:types", "^build:utils", "^build:theme", "^build:config"],
       "persistent": true,
       "cache": false,
       "inputs": ["src/**/*.{ts,tsx,js,jsx}", "package.json", "tsconfig.json", ".env.*local"]
     },
     "start": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build:types", "^build:utils", "^build:theme", "^build:config"],
       "persistent": true,
       "cache": false
     },
     "test": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build:types", "^build:utils", "^build:theme", "^build:config", "^build:ui"],
       "outputs": ["coverage/**"],
       "inputs": ["src/**/*.{ts,tsx}", "test/**/*.{ts,tsx}", "package.json", "tsconfig.json", "vitest.config.{ts,js}"]
     },
     "test:theme": {
-      "dependsOn": ["build:theme"],
+      "dependsOn": ["@sparkle/theme#build:theme"],
       "outputs": ["coverage/**"],
       "inputs": [
         "src/**/*.{ts,tsx}",
@@ -70,7 +111,7 @@
       "inputs": ["src/**/*.{ts,tsx}", "tsconfig.json"]
     },
     "test:visual": {
-      "dependsOn": ["@sparkle/storybook#build"],
+      "dependsOn": ["@sparkle/storybook#build:storybook"],
       "outputs": ["test-results/**"],
       "inputs": [
         "test/visual-regression/**/*.{ts,js}",
