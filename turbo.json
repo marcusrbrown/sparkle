@@ -4,15 +4,7 @@
   "globalEnv": ["NODE_ENV", "STORYBOOK_ENV"],
   "tasks": {
     "build": {
-      "dependsOn": [
-        "build:types",
-        "build:utils",
-        "build:error-testing",
-        "build:theme",
-        "build:config",
-        "build:ui",
-        "build:storybook"
-      ],
+      "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**", "storybook-static/**"],
       "inputs": [
         "src/**/*.{ts,tsx,js,jsx}",
@@ -23,68 +15,29 @@
       ]
     },
     "build:types": {
-      "dependsOn": ["^build:types", "^build:utils", "^build:theme"],
+      "dependsOn": ["^build"],
       "outputs": ["dist/**/*.d.ts"],
       "inputs": ["src/**/*.ts", "package.json", "tsconfig.json"],
       "cache": true
     },
-    "build:utils": {
-      "dependsOn": ["@sparkle/types#build:types"],
-      "outputs": ["dist/**"],
-      "inputs": ["src/**/*.ts", "package.json", "tsconfig.json", "tsdown.config.ts"],
-      "cache": true
-    },
-    "build:error-testing": {
-      "dependsOn": [],
-      "outputs": ["dist/**"],
-      "inputs": ["src/**/*.ts", "package.json", "tsconfig.json", "tsdown.config.ts"],
-      "cache": true
-    },
-    "build:theme": {
-      "dependsOn": ["@sparkle/types#build:types", "@sparkle/utils#build:utils"],
-      "outputs": ["dist/**", "tailwind/**"],
-      "inputs": ["src/**/*.{ts,tsx}", "src/tokens/**", "package.json", "tsconfig.json", "tsdown.config.ts"],
-      "cache": true,
-      "env": ["NODE_ENV"]
-    },
-    "build:config": {
-      "dependsOn": ["@sparkle/theme#build:theme"],
-      "outputs": ["dist/**"],
-      "inputs": ["src/**/*.ts", "package.json", "tsconfig.json", "tsdown.config.ts"],
-      "cache": true
-    },
-    "build:ui": {
-      "dependsOn": ["@sparkle/config#build:config"],
-      "outputs": ["dist/**", "coverage/**"],
-      "inputs": ["src/**/*.{ts,tsx}", "package.json", "tsconfig.json", "tailwind.config.ts"],
-      "cache": true,
-      "env": ["NODE_ENV"]
-    },
-    "build:storybook": {
-      "dependsOn": ["@sparkle/ui#build:ui", "@sparkle/theme#build:theme"],
-      "outputs": ["storybook-static/**", "test-results/**"],
-      "inputs": ["src/**", ".storybook/**", "package.json"],
-      "cache": true,
-      "env": ["NODE_ENV", "STORYBOOK_ENV"]
-    },
     "build:types:watch": {
-      "dependsOn": ["^build:types"],
+      "dependsOn": ["^build"],
       "persistent": true,
       "cache": false
     },
     "build:watch": {
-      "dependsOn": ["^build:types", "^build:utils", "^build:theme", "^build:config"],
+      "dependsOn": ["^build"],
       "persistent": true,
       "cache": false
     },
     "dev": {
-      "dependsOn": ["^build:types", "^build:utils", "^build:theme", "^build:config"],
+      "dependsOn": ["^build"],
       "persistent": true,
       "cache": false,
       "inputs": ["src/**/*.{ts,tsx,js,jsx}", "package.json", "tsconfig.json", ".env.*local"]
     },
     "start": {
-      "dependsOn": ["^build:types", "^build:utils", "^build:theme", "^build:config"],
+      "dependsOn": ["^build"],
       "persistent": true,
       "cache": false
     },
