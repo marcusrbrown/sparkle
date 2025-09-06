@@ -25,7 +25,8 @@
     "postinstall": "simple-git-hooks",
     "lint": "eslint",
     "start": "turbo run start --parallel",
-    "test": "turbo run test"
+    "test": "turbo run test",
+    "test:watch": "turbo run test:watch --parallel"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm exec nano-staged"

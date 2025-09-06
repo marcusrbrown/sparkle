@@ -85,29 +85,40 @@
       "cache": true
     },
     "build:types:watch": {
-      "dependsOn": ["^build"],
-      "persistent": true,
-      "cache": false
-    },
-    "build:watch": {
-      "dependsOn": ["^build"],
-      "persistent": true,
-      "cache": false
-    },
-    "dev": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build:types"],
       "persistent": true,
       "cache": false,
-      "inputs": ["src/**/*.{ts,tsx,js,jsx}", "package.json", "tsconfig.json", ".env.*local"]
+      "inputs": ["src/**/*.ts", "package.json", "tsconfig.json"]
+    },
+    "build:watch": {
+      "dependsOn": ["^build:types", "^build:utils", "^build:theme", "^build:config", "^build:ui"],
+      "persistent": true,
+      "cache": false,
+      "inputs": ["src/**/*.{ts,tsx}", "package.json", "tsconfig.json", "tsdown.config.ts", "vite.config.ts"]
+    },
+    "dev": {
+      "dependsOn": ["^build:types", "^build:utils", "^build:theme", "^build:config", "^build:ui"],
+      "persistent": true,
+      "cache": false,
+      "inputs": [
+        "src/**/*.{ts,tsx,js,jsx}",
+        "package.json",
+        "tsconfig.json",
+        ".env.*local",
+        "vite.config.ts",
+        "next.config.{js,ts,mjs,cjs}"
+      ],
+      "env": ["NODE_ENV", "STORYBOOK_ENV"]
     },
     "start": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build:types", "^build:utils", "^build:theme", "^build:config", "^build:ui"],
       "persistent": true,
-      "cache": false
+      "cache": false,
+      "inputs": ["package.json", "next.config.{js,ts,mjs,cjs}", ".env.*local"],
+      "env": ["NODE_ENV"]
     },
     "test": {
       "dependsOn": ["^build:types", "^build:utils", "^build:theme", "^build:config", "^build:ui"],
-      "outputs": ["coverage/**"],
       "inputs": [
         "src/**/*.{ts,tsx}",
         "test/**/*.{ts,tsx}",
@@ -121,6 +132,19 @@
     },
     "test:theme": {
       "dependsOn": ["@sparkle/theme#build:theme"],
+      "inputs": [
+        "src/**/*.{ts,tsx}",
+        "test/**/*.{ts,tsx}",
+        "package.json",
+        "tsconfig.json",
+        "vitest.config.{ts,js}",
+        "vite.config.ts"
+      ],
+      "env": ["NODE_ENV"],
+      "cache": true
+    },
+    "test:coverage": {
+      "dependsOn": ["^build:types", "^build:utils", "^build:theme", "^build:config", "^build:ui"],
       "outputs": ["coverage/**"],
       "inputs": [
         "src/**/*.{ts,tsx}",
@@ -149,6 +173,20 @@
         "package.json"
       ],
       "cache": false
+    },
+    "test:watch": {
+      "dependsOn": ["^build:types", "^build:utils", "^build:theme", "^build:config", "^build:ui"],
+      "persistent": true,
+      "cache": false,
+      "inputs": [
+        "src/**/*.{ts,tsx}",
+        "test/**/*.{ts,tsx}",
+        "package.json",
+        "tsconfig.json",
+        "vitest.config.{ts,js}",
+        "vite.config.ts"
+      ],
+      "env": ["NODE_ENV"]
     },
     "clean": {
       "cache": false,
