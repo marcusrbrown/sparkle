@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+  <!-- Sparkle Design System Logo - Placeholder -->
+  <circle cx="16" cy="16" r="14" fill="#3b82f6" stroke="#1e40af" stroke-width="2"/>
+  <path d="M16 6L18 14L16 22L14 14Z" fill="white"/>
+  <path d="M6 16L14 14L22 16L14 18Z" fill="white"/>
+  <circle cx="16" cy="16" r="2" fill="white"/>
+  <!-- Sparkles around the main design -->
+  <circle cx="8" cy="8" r="1" fill="#60a5fa"/>
+  <circle cx="24" cy="8" r="1" fill="#60a5fa"/>
+  <circle cx="8" cy="24" r="1" fill="#60a5fa"/>
+  <circle cx="24" cy="24" r="1" fill="#60a5fa"/>
+</svg>
