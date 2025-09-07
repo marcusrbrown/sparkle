@@ -1,36 +1,88 @@
 ---
-title: Welcome to Starlight
-description: Get started building your docs site with Starlight.
+title: Welcome to Sparkle Design System
+description: A comprehensive TypeScript-first design system with cross-platform design tokens, interactive components, and automated testing tools.
 template: splash
 hero:
-  tagline: Congrats on setting up a new Starlight project!
+  tagline: Build beautiful, accessible, and consistent user interfaces with confidence
   image:
-    file: ../../assets/houston.webp
+    file: ../../assets/sparkle-logo.svg
   actions:
-    - text: Example Guide
-      link: /guides/example/
+    - text: Get Started
+      link: /getting-started/introduction/
       icon: right-arrow
-    - text: Read the Starlight docs
-      link: https://starlight.astro.build
+      variant: primary
+    - text: View Components
+      link: /components/overview/
       icon: external
-      variant: minimal
+    - text: Browse GitHub
+      link: https://github.com/marcusrbrown/sparkle
+      icon: github
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
 
-## Next steps
+## What is Sparkle?
+
+Sparkle is a modern TypeScript-first design system that provides:
 
 <CardGrid stagger>
-	<Card title="Update content" icon="pencil">
-		Edit `src/content/docs/index.mdx` to see this page change.
-	</Card>
-	<Card title="Add new content" icon="add-document">
-		Add Markdown or MDX files to `src/content/docs` to create new pages.
-	</Card>
-	<Card title="Configure your site" icon="setting">
-		Edit your `sidebar` and other config in `astro.config.mjs`.
-	</Card>
-	<Card title="Read the docs" icon="open-book">
-		Learn more in [the Starlight Docs](https://starlight.astro.build/).
-	</Card>
+  <Card title="🎨 Design Tokens" icon="palette">
+    Cross-platform design tokens with automated Tailwind CSS integration and React Native support.
+  </Card>
+  <Card title="⚛️ React Components" icon="react">
+    Accessible, customizable UI components built with Radix UI primitives and TypeScript.
+  </Card>
+  <Card title="🧪 Error Testing" icon="test-tube">
+    Fluent builder pattern for type-safe error scenario testing and validation.
+  </Card>
+  <Card title="📱 Cross-Platform" icon="device">
+    Unified theme system supporting both web and React Native applications.
+  </Card>
+  <Card title="🔧 Developer Tools" icon="wrench">
+    Comprehensive build tools, Storybook integration, and automated documentation.
+  </Card>
+  <Card title="♿ Accessibility First" icon="accessibility">
+    WCAG 2.1 AA compliant components with screen reader support and keyboard navigation.
+  </Card>
 </CardGrid>
+
+## Quick Start
+
+```bash
+# Install Sparkle packages
+pnpm add @sparkle/ui @sparkle/theme @sparkle/types
+
+# Start using components
+import { Button } from '@sparkle/ui'
+import { ThemeProvider } from '@sparkle/theme'
+
+function App() {
+  return (
+    <ThemeProvider theme="light">
+      <Button variant="primary">Get Started</Button>
+    </ThemeProvider>
+  )
+}
+```
+
+## Package Architecture
+
+Sparkle is organized as a monorepo with focused packages:
+
+- **[@sparkle/ui](/components/overview/)** - React component library
+- **[@sparkle/theme](/theme/overview/)** - Design tokens and theme providers
+- **[@sparkle/types](/types/overview/)** - Shared TypeScript definitions
+- **[@sparkle/utils](/utils/overview/)** - Utility functions and React hooks
+- **[@sparkle/error-testing](/error-testing/overview/)** - Error testing framework
+
+## Development Workflow
+
+The Sparkle monorepo uses modern tooling for an optimal developer experience:
+
+- **pnpm workspaces** for efficient dependency management
+- **Turborepo** for fast, cached builds
+- **Storybook** for component development and testing
+- **Vitest** for unit and integration testing
+- **Playwright** for visual regression testing
+
+Ready to start building? Check out our [Installation Guide](/getting-started/installation/) or explore our [Component Library](/components/overview/).
