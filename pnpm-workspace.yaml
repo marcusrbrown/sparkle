@@ -1,6 +1,7 @@
 packages:
   - packages/*
   - apps/*
+  - docs
   - scripts
 
 ignoredBuiltDependencies:
@@ -10,6 +11,7 @@ onlyBuiltDependencies:
   - '@swc/core'
   - chromedriver
   - esbuild
+  - sharp
   - simple-git-hooks
   - unrs-resolver
 
