@@ -59,8 +59,8 @@ This implementation plan outlines the creation of a comprehensive documentation 
 |------|-------------|-----------|------|
 | TASK-001 | Move existing `docs/` content to `docs-legacy/` and create new `docs/` directory | ✅ | 2025-09-07 |
 | TASK-002 | Initialize `@sparkle/docs` package with Astro Starlight using `pnpm create astro@latest docs -- --template starlight` | ✅ | 2025-09-07 |
-| TASK-003 | Configure `docs/package.json` with proper workspace dependencies and scripts | | |
-| TASK-004 | Update `pnpm-workspace.yaml` to include new docs package structure | | |
+| TASK-003 | Configure `docs/package.json` with proper workspace dependencies and scripts | ✅ | 2025-09-07 |
+| TASK-004 | Update `pnpm-workspace.yaml` to include new docs package structure | ✅ | 2025-09-07 |
 | TASK-005 | Configure Astro Starlight in `docs/astro.config.mjs` with Sparkle branding and navigation | | |
 | TASK-006 | Set up TypeScript configuration in `docs/tsconfig.json` extending root config | | |
 | TASK-007 | Create initial Starlight configuration with sidebar navigation mirroring package structure | | |
