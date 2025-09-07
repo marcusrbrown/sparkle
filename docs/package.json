@@ -28,7 +28,9 @@
     "dev": "astro dev",
     "docs:api": "typedoc --options typedoc.json",
     "docs:api:watch": "typedoc --options typedoc.json --watch",
-    "docs:generate": "pnpm docs:api",
+    "docs:extract": "tsx scripts/extract-jsdoc.ts",
+    "docs:generate": "tsx scripts/generate-docs.ts",
+    "docs:markdown": "tsx scripts/generate-markdown.ts",
     "lint": "eslint",
     "preview": "astro preview",
     "start": "astro dev"
@@ -43,7 +45,11 @@
     "sharp": "^0.34.2"
   },
   "devDependencies": {
+    "@microsoft/api-extractor": "7.52.11",
     "@types/node": "22.18.0",
+    "doctrine": "3.0.0",
+    "ts-morph": "26.0.0",
+    "tsx": "4.20.5",
     "typedoc": "0.28.12",
     "typedoc-plugin-frontmatter": "1.3.0",
     "typedoc-plugin-markdown": "4.8.1",
