@@ -1,0 +1,17 @@
+{
+  "name": "@sparkle/docs",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "astro": "astro",
+    "build": "astro build",
+    "dev": "astro dev",
+    "preview": "astro preview",
+    "start": "astro dev"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "^0.35.2",
+    "astro": "^5.6.1",
+    "sharp": "^0.34.2"
+  }
+}
