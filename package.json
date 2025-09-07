@@ -70,5 +70,13 @@
   },
   "publishConfig": {
     "linkDirectory": true
+  },
+  "manypkg": {
+    "ignoredRules": [],
+    "workspaceProtocol": "require",
+    "rootPackageNamesInDependencies": false,
+    "requiresPublishConfig": false,
+    "requiresLicense": true,
+    "defaultBranch": "main"
   }
 }
