@@ -10,6 +10,9 @@ The project emphasizes TypeScript-first development, comprehensive testing, and 
 
 - [Main README](readme.md): Project overview and getting started guide
 - [Project Guide](docs/project-guide.md): Comprehensive guide to monorepo structure, technologies, and development workflows
+- [Development Workflows](docs/development-workflows.md): Optimized development workflows with enhanced developer experience and validation
+- [Troubleshooting Guide](docs/troubleshooting-guide.md): Solutions to common development issues with diagnostic tools and error reporting
+- [Best Practices Guide](docs/best-practices-for-sparkle-development.md): Comprehensive development guidelines and standards for TypeScript, mobile development, and monorepo management
 - [GitHub Copilot Instructions](.github/copilot-instructions.md): Comprehensive development guide for AI agents including architecture overview, workflows, and conventions
 
 ## Configuration
@@ -45,5 +48,4 @@ The project emphasizes TypeScript-first development, comprehensive testing, and 
 
 ## Optional
 
-- [Best Practices Guide](docs/best-practices-for-sparkle-development.md): Comprehensive development guidelines and standards for TypeScript, mobile development, and monorepo management
 - [License](license.md): MIT license information

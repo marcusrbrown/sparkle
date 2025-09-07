@@ -20,7 +20,28 @@ pnpm dev               # Start all dev servers (UI, Storybook, mobile)
 pnpm build:types:watch # Watch mode for TypeScript declarations
 pnpm check             # Run all quality checks (format, types, monorepo)
 pnpm check:monorepo    # Verify workspace consistency with manypkg
+pnpm health-check      # Comprehensive environment validation and diagnostics
 pnpm fix               # Auto-fix monorepo and ESLint issues
+```
+
+### Error Reporting & Diagnostics
+
+The project includes sophisticated error reporting and validation tools:
+
+- **Health Check System**: Validates workspace, dependencies, TypeScript setup, and environment
+- **Build Validation**: Comprehensive artifact validation and performance monitoring
+
+#### Key Diagnostic Commands
+
+```bash
+# Start any development session with environment validation
+pnpm health-check
+
+# Use enhanced error reporting for better debugging
+pnpm check
+
+# Performance and build integrity validation
+pnpm test:build-pipeline
 ```
 
 ### Package Development Pattern
@@ -78,6 +99,30 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
 - Dedicated `@sparkle/error-testing` package with fluent builder pattern
 - Use `TestScenarioBuilder.create()` for type-safe error scenario testing
 - Pattern: `TestScenarioBuilder.create<ErrorType, StateType>(description).withErrorType().build()`
+
+### Development Workflow Best Practices
+
+#### Recommended Startup Sequence
+```bash
+# Terminal 1: Environment validation
+pnpm health-check
+
+# Terminal 2: TypeScript watch mode for fast incremental builds
+pnpm build:types:watch
+
+# Terminal 3: Development servers
+pnpm dev
+```
+
+#### Pre-commit Routine
+```bash
+# Validate workspace and fix issues
+pnpm check
+pnpm fix:monorepo
+
+# Run focused tests for changed packages
+turbo run test --filter=...[origin/main]
+```
 
 ### Versioning & Changesets
 
@@ -411,6 +456,8 @@ test.describe('Button Component', () => {
 - **Visual Regression**: Playwright-based testing across themes, browsers, and viewports (`packages/storybook/test/visual-regression/`)
 - **Testing**: Vitest for unit/integration tests with TypeScript type-checking enabled
 - **Build Pipeline**: Turborepo orchestrates theme package dependencies and cross-platform builds
+- **Health Monitoring**: Comprehensive environment validation with `pnpm health-check`
+- **Build Validation**: Artifact integrity and performance monitoring (`scripts/validate-build.ts`)
 - **Versioning**: Changesets workflow: `pnpm changeset` → `pnpm changeset version` → commit
 - **Code Quality**: Prettier + ESLint via Turborepo pipeline with `@bfra.me/prettier-config`
 - **Workspace Consistency**: Manypkg ensures workspace integrity - run `pnpm check:monorepo` before commits
