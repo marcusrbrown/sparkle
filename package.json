@@ -30,7 +30,14 @@
     "lint": "eslint",
     "start": "turbo run start --parallel",
     "test": "turbo run test",
-    "test:watch": "turbo run test:watch --parallel"
+    "test:artifacts": "vitest run test/build-artifacts-and-cache.test.ts",
+    "test:build-pipeline": "vitest run test/build-pipeline-performance.test.ts",
+    "test:cross-package": "vitest run test/cross-package-types.test.ts",
+    "test:dev-workflow": "vitest run test/development-workflow.test.ts",
+    "test:incremental": "vitest run test/incremental-build.test.ts",
+    "test:pipeline": "run-s test:build-pipeline test:cross-package test:incremental test:workspace test:artifacts",
+    "test:watch": "turbo run test:watch --parallel",
+    "test:workspace": "vitest run test/workspace-consistency.test.ts"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm exec nano-staged"
@@ -58,6 +65,7 @@
     "eslint-plugin-prettier": "5.5.4",
     "markdownlint": "0.38.0",
     "nano-staged": "0.8.0",
+    "npm-run-all2": "7.0.2",
     "prettier": "3.6.2",
     "scripts": "workspace:*",
     "simple-git-hooks": "2.13.1",
