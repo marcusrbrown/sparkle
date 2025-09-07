@@ -1,17 +1,46 @@
 {
   "name": "@sparkle/docs",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "description": "Comprehensive Astro Starlight documentation site for Sparkle Design System with automated component documentation and interactive playground",
+  "keywords": [
+    "astro",
+    "starlight",
+    "documentation",
+    "design-system",
+    "components",
+    "sparkle"
+  ],
+  "homepage": "https://sparkle.mrbro.dev",
+  "bugs": {
+    "url": "https://github.com/marcusrbrown/sparkle/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/marcusrbrown/sparkle.git",
+    "directory": "docs"
+  },
+  "license": "MIT",
+  "author": "Marcus R. Brown <git@mrbro.dev>",
   "type": "module",
   "scripts": {
     "astro": "astro",
     "build": "astro build",
     "dev": "astro dev",
+    "lint": "eslint",
     "preview": "astro preview",
     "start": "astro dev"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.35.2",
+    "@sparkle/theme": "workspace:*",
+    "@sparkle/types": "workspace:*",
+    "@sparkle/ui": "workspace:*",
+    "@sparkle/utils": "workspace:*",
     "astro": "^5.6.1",
     "sharp": "^0.34.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.18.0",
+    "typescript": "5.9.2"
   }
 }
