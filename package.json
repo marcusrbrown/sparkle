@@ -12,7 +12,7 @@
     "bootstrap": "pnpm install --prefer-offline --loglevel warn",
     "build": "turbo run build",
     "build:types": "turbo run build:types",
-    "build:types:watch": "turbo run build:types:watch --parallel",
+    "build:types:watch": "tsc --build --watch --preserveWatchOutput",
     "build:watch": "turbo run build:watch --parallel",
     "check": "pnpm check:monorepo && pnpm check:types && pnpm check:turbo && pnpm lint",
     "check:monorepo": "manypkg check",

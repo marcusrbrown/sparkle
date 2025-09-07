@@ -3,7 +3,9 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "incremental": true,
+    "composite": true
   },
   "include": ["src/**/*"],
   "references": [{"path": "../types"}, {"path": "../utils"}]
