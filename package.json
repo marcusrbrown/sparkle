@@ -24,6 +24,7 @@
     "fix": "pnpm fix:monorepo && pnpm fix:es",
     "fix:es": "eslint --fix",
     "fix:monorepo": "manypkg fix",
+    "health-check": "tsx scripts/health-check.ts",
     "postinstall": "simple-git-hooks",
     "lint": "eslint",
     "start": "turbo run start --parallel",
