@@ -85,10 +85,12 @@
       "cache": true
     },
     "build:types:watch": {
-      "dependsOn": ["^build:types"],
+      "dependsOn": ["^build"],
       "persistent": true,
       "cache": false,
-      "inputs": ["src/**/*.ts", "package.json", "tsconfig.json"]
+      "env": ["NODE_ENV"],
+      "inputs": ["src/**/*.{ts,tsx}", "tsconfig.json", "tsconfig.build.json", "package.json"],
+      "outputs": ["**/*.tsbuildinfo"]
     },
     "build:watch": {
       "dependsOn": ["^build:types", "^build:utils", "^build:theme", "^build:config", "^build:ui"],

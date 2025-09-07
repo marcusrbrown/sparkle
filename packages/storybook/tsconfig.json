@@ -2,7 +2,9 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "baseUrl": ".",
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "incremental": true,
+    "composite": true
   },
   "include": ["src", ".storybook/**/*"],
   "references": [

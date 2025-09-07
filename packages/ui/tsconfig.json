@@ -9,6 +9,8 @@
     "sourceMap": true,
     "jsx": "react-jsx",
     "types": ["vitest/globals", "node"],
+    "incremental": true,
+    "composite": true,
     "paths": {
       "@/*": ["./src/*"]
     }

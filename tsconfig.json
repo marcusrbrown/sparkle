@@ -12,6 +12,7 @@
     "incremental": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "assumeChangesOnlyAffectDirectDependencies": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["apps/fro-jive/*"],
@@ -20,6 +21,10 @@
       "@/app/*": ["apps/fro-jive/app/*"]
     },
     "composite": true
+  },
+  "watchOptions": {
+    "excludeDirectories": ["node_modules", "dist", ".turbo", "coverage", "storybook-static"],
+    "excludeFiles": ["**/*.test.ts", "**/*.spec.ts", "**/*.test.tsx", "**/*.spec.tsx"]
   },
   "files": [],
   "references": [
