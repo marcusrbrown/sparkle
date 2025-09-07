@@ -57,12 +57,12 @@ This implementation plan outlines the creation of a comprehensive documentation 
 
 | Task | Description | Completed | Date |
 |------|-------------|-----------|------|
-| TASK-001 | Move existing `docs/` content to `docs-legacy/` and create new `packages/docs/` directory | | |
-| TASK-002 | Initialize `@sparkle/docs` package with Astro Starlight using `pnpm create astro@latest packages/docs -- --template starlight` | | |
-| TASK-003 | Configure `packages/docs/package.json` with proper workspace dependencies and scripts | | |
+| TASK-001 | Move existing `docs/` content to `docs-legacy/` and create new `docs/` directory | | |
+| TASK-002 | Initialize `@sparkle/docs` package with Astro Starlight using `pnpm create astro@latest docs -- --template starlight` | | |
+| TASK-003 | Configure `docs/package.json` with proper workspace dependencies and scripts | | |
 | TASK-004 | Update `pnpm-workspace.yaml` to include new docs package structure | | |
-| TASK-005 | Configure Astro Starlight in `packages/docs/astro.config.mjs` with Sparkle branding and navigation | | |
-| TASK-006 | Set up TypeScript configuration in `packages/docs/tsconfig.json` extending root config | | |
+| TASK-005 | Configure Astro Starlight in `docs/astro.config.mjs` with Sparkle branding and navigation | | |
+| TASK-006 | Set up TypeScript configuration in `docs/tsconfig.json` extending root config | | |
 | TASK-007 | Create initial Starlight configuration with sidebar navigation mirroring package structure | | |
 | TASK-008 | Update Turborepo `turbo.json` with docs build, dev, and deployment tasks | | |
 
@@ -75,8 +75,8 @@ This implementation plan outlines the creation of a comprehensive documentation 
 | TASK-009 | Install and configure TypeDoc for API reference generation from TypeScript interfaces | | |
 | TASK-010 | Create JSDoc extraction script using `@microsoft/api-extractor` or similar for component documentation | | |
 | TASK-011 | Implement automated markdown generation from JSDoc comments in `@sparkle/ui` components | | |
-| TASK-012 | Set up content collection schemas in `packages/docs/src/content/config.ts` for components, API references, and guides | | |
-| TASK-013 | Create automation scripts in `packages/docs/scripts/` for documentation generation | | |
+| TASK-012 | Set up content collection schemas in `docs/src/content/config.ts` for components, API references, and guides | | |
+| TASK-013 | Create automation scripts in `docs/scripts/` for documentation generation | | |
 | TASK-014 | Configure Astro to use generated documentation content in build process | | |
 | TASK-015 | Implement cross-reference system linking documentation to actual package source code | | |
 | TASK-016 | Set up development workflow for automatic documentation regeneration on source changes | | |
@@ -163,18 +163,18 @@ This implementation plan outlines the creation of a comprehensive documentation 
 
 ## 5. Files
 
-- **FILE-001**: `packages/docs/package.json` - Package configuration with dependencies and scripts
-- **FILE-002**: `packages/docs/astro.config.mjs` - Astro and Starlight configuration
-- **FILE-003**: `packages/docs/tsconfig.json` - TypeScript configuration for docs package
-- **FILE-004**: `packages/docs/src/content/config.ts` - Content collection schemas
-- **FILE-005**: `packages/docs/scripts/generate-docs.ts` - Automated documentation generation scripts
-- **FILE-006**: `packages/docs/src/components/` - Custom Astro and React components for documentation
-- **FILE-007**: `packages/docs/src/content/docs/` - Documentation content in Markdown format
+- **FILE-001**: `docs/package.json` - Package configuration with dependencies and scripts
+- **FILE-002**: `docs/astro.config.mjs` - Astro and Starlight configuration
+- **FILE-003**: `docs/tsconfig.json` - TypeScript configuration for docs package
+- **FILE-004**: `docs/src/content/config.ts` - Content collection schemas
+- **FILE-005**: `docs/scripts/generate-docs.ts` - Automated documentation generation scripts
+- **FILE-006**: `docs/src/components/` - Custom Astro and React components for documentation
+- **FILE-007**: `docs/src/content/docs/` - Documentation content in Markdown format
 - **FILE-008**: `.github/workflows/deploy-docs.yml` - GitHub Actions deployment workflow
-- **FILE-009**: `packages/docs/src/styles/` - Custom CSS for Starlight theme customization
+- **FILE-009**: `docs/src/styles/` - Custom CSS for Starlight theme customization
 - **FILE-010**: `turbo.json` - Updated Turborepo configuration with docs tasks
 - **FILE-011**: `pnpm-workspace.yaml` - Updated workspace configuration
-- **FILE-012**: `packages/docs/public/` - Static assets for documentation site
+- **FILE-012**: `docs/public/` - Static assets for documentation site
 
 ## 6. Testing
 
