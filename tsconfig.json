@@ -34,6 +34,7 @@
     {"path": "packages/config"},
     {"path": "packages/error-testing"},
     {"path": "packages/ui"},
-    {"path": "packages/storybook"}
+    {"path": "packages/storybook"},
+    {"path": "docs"}
   ]
 }

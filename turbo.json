@@ -84,6 +84,18 @@
       "env": ["NODE_ENV", "STORYBOOK_ENV"],
       "cache": true
     },
+    "build:docs": {
+      "dependsOn": [
+        "@sparkle/ui#build:ui",
+        "@sparkle/theme#build:theme",
+        "@sparkle/types#build:types",
+        "@sparkle/utils#build:utils"
+      ],
+      "outputs": ["dist/**"],
+      "inputs": ["src/**/*", "astro.config.mjs", "package.json", "tsconfig.json"],
+      "env": ["NODE_ENV"],
+      "cache": true
+    },
     "build:types:watch": {
       "dependsOn": ["^build"],
       "persistent": true,
@@ -108,7 +120,8 @@
         "tsconfig.json",
         ".env.*local",
         "vite.config.ts",
-        "next.config.{js,ts,mjs,cjs}"
+        "next.config.{js,ts,mjs,cjs}",
+        "astro.config.mjs"
       ],
       "env": ["NODE_ENV", "STORYBOOK_ENV"]
     },
@@ -189,6 +202,18 @@
         "vite.config.ts"
       ],
       "env": ["NODE_ENV"]
+    },
+    "preview:docs": {
+      "dependsOn": ["@sparkle/docs#build:docs"],
+      "cache": false,
+      "inputs": ["dist/**"],
+      "env": ["NODE_ENV"]
+    },
+    "deploy:docs": {
+      "dependsOn": ["@sparkle/docs#build:docs"],
+      "cache": false,
+      "inputs": ["dist/**", ".github/workflows/**"],
+      "env": ["NODE_ENV", "GITHUB_TOKEN"]
     },
     "clean": {
       "cache": false,

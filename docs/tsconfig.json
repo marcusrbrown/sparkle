@@ -1,5 +1,36 @@
 {
-  "extends": "astro/tsconfigs/strict",
-  "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist"]
+  "extends": ["astro/tsconfigs/strict", "../tsconfig.json"],
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "module": "ESNext",
+    "target": "ES2022",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "jsx": "preserve",
+    "types": ["astro/client", "node"],
+    "incremental": true,
+    "composite": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/content/*": ["./src/content/*"],
+      "@/styles/*": ["./src/styles/*"]
+    }
+  },
+  "include": [".astro/types.d.ts", "src/**/*", "astro.config.mjs"],
+  "exclude": ["node_modules", "dist", ".astro"],
+  "references": [
+    {
+      "path": "../packages/types"
+    },
+    {
+      "path": "../packages/utils"
+    },
+    {
+      "path": "../packages/theme"
+    },
+    {
+      "path": "../packages/ui"
+    }
+  ]
 }
