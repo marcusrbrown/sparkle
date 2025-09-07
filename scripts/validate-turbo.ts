@@ -132,6 +132,7 @@ class TurboValidator {
           'packages/ui',
           'packages/utils',
           'apps/fro-jive',
+          'docs',
         ]
 
         for (const pkgPath of knownPackages) {
