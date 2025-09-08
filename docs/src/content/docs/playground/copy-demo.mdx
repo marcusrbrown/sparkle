@@ -1,0 +1,248 @@
+---
+title: Code Editor with Copy
+description: Interactive Monaco Editor with copy-to-clipboard functionality and visual feedback.
+sidebar:
+  label: Copy Feature Demo
+  order: 4
+---
+
+import CodeEditorAstro from '../../../components/interactive/CodeEditorAstro.astro'
+
+# Code Editor with Copy Functionality
+
+Explore the enhanced Monaco Editor with integrated copy-to-clipboard functionality. This demonstrates TASK-020 implementation with visual feedback and multiple positioning options.
+
+## Basic Copy Button (Top Right)
+
+The copy button appears in the top-right corner by default when enabled.
+
+<CodeEditorAstro
+  defaultValue={`// Click the copy button in the top-right corner!
+const message: string = 'Hello, Sparkle!'
+const features: string[] = [
+  'TypeScript Support',
+  'Copy to Clipboard',
+  'Visual Feedback',
+  'Multiple Positions'
+]
+
+function displayFeatures(features: string[]): void {
+  console.log('Sparkle Features:')
+  features.forEach((feature, index) => {
+    console.log(\`\${index + 1}. \${feature}\`)
+  })
+}
+
+displayFeatures(features)
+console.log(message)`}
+  language="typescript"
+  height={300}
+  showCopyButton={true}
+  copyButtonPosition="top-right"
+  copyButtonVariant="outline"
+  copyButtonSize="sm"
+/>
+
+## Header with Copy Button
+
+When using a header, the copy button integrates seamlessly with the title bar.
+
+<CodeEditorAstro
+  defaultValue={`// React component example with copy functionality
+import React, { useState } from 'react'
+
+interface CounterProps {
+  initialValue?: number
+  step?: number
+}
+
+export const Counter: React.FC<CounterProps> = ({
+  initialValue = 0,
+  step = 1
+}) => {
+  const [count, setCount] = useState(initialValue)
+
+  const increment = () => setCount(prev => prev + step)
+  const decrement = () => setCount(prev => prev - step)
+  const reset = () => setCount(initialValue)
+
+  return (
+    <div className="counter">
+      <p>Count: {count}</p>
+      <button onClick={increment}>+{step}</button>
+      <button onClick={decrement}>-{step}</button>
+      <button onClick={reset}>Reset</button>
+    </div>
+  )
+}`}
+  language="tsx"
+  height={400}
+  title="React Counter Component"
+  showHeader={true}
+  showCopyButton={true}
+  copyButtonVariant="default"
+  copyButtonSize="sm"
+/>
+
+## Bottom Right Position
+
+Copy button positioned at the bottom-right corner.
+
+<CodeEditorAstro
+  defaultValue={`// Utility functions with TypeScript
+export const StringUtils = {
+  capitalize: (str: string): string =>
+    str.charAt(0).toUpperCase() + str.slice(1).toLowerCase(),
+
+  truncate: (str: string, maxLength: number): string =>
+    str.length > maxLength ? str.slice(0, maxLength) + '...' : str,
+
+  slugify: (str: string): string =>
+    str.toLowerCase()
+       .replace(/[^a-z0-9 -]/g, '')
+       .replace(/\s+/g, '-')
+       .replace(/-+/g, '-'),
+
+  isEmail: (str: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(str)
+  }
+}
+
+// Usage examples
+console.log(StringUtils.capitalize('hello world'))
+console.log(StringUtils.truncate('This is a long text', 10))
+console.log(StringUtils.slugify('Hello World 123!'))
+console.log(StringUtils.isEmail('user@example.com'))`}
+  language="typescript"
+  height={350}
+  showCopyButton={true}
+  copyButtonPosition="bottom-right"
+  copyButtonVariant="ghost"
+  copyButtonSize="md"
+/>
+
+## Bottom Left Position
+
+Copy button positioned at the bottom-left corner.
+
+<CodeEditorAstro
+  defaultValue={`// API client with error handling
+class ApiClient {
+  private baseUrl: string
+  private defaultHeaders: Record<string, string>
+
+  constructor(baseUrl: string, apiKey?: string) {
+    this.baseUrl = baseUrl.replace(/\/$/, '')
+    this.defaultHeaders = {
+      'Content-Type': 'application/json',
+      ...(apiKey && { 'Authorization': \`Bearer \${apiKey}\` })
+    }
+  }
+
+  async get<T>(endpoint: string): Promise<T> {
+    return this.request<T>('GET', endpoint)
+  }
+
+  async post<T>(endpoint: string, data?: unknown): Promise<T> {
+    return this.request<T>('POST', endpoint, data)
+  }
+
+  private async request<T>(
+    method: string,
+    endpoint: string,
+    data?: unknown
+  ): Promise<T> {
+    const url = \`\${this.baseUrl}\${endpoint}\`
+
+    try {
+      const response = await fetch(url, {
+        method,
+        headers: this.defaultHeaders,
+        ...(data && { body: JSON.stringify(data) })
+      })
+
+      if (!response.ok) {
+        throw new Error(\`HTTP \${response.status}: \${response.statusText}\`)
+      }
+
+      return await response.json()
+    } catch (error) {
+      console.error('API request failed:', error)
+      throw error
+    }
+  }
+}`}
+  language="typescript"
+  height={400}
+  showCopyButton={true}
+  copyButtonPosition="bottom-left"
+  copyButtonVariant="minimal"
+  copyButtonSize="sm"
+/>
+
+## Multiple Copy Button Variants
+
+Different styling options for the copy button:
+
+### Default Variant
+<CodeEditorAstro
+  defaultValue={`const example = 'Default button style with solid background'`}
+  language="typescript"
+  height={100}
+  showCopyButton={true}
+  copyButtonVariant="default"
+  copyButtonSize="md"
+/>
+
+### Outline Variant
+<CodeEditorAstro
+  defaultValue={`const example = 'Outline button style with border'`}
+  language="typescript"
+  height={100}
+  showCopyButton={true}
+  copyButtonVariant="outline"
+  copyButtonSize="md"
+/>
+
+### Ghost Variant
+<CodeEditorAstro
+  defaultValue={`const example = 'Ghost button style with subtle background'`}
+  language="typescript"
+  height={100}
+  showCopyButton={true}
+  copyButtonVariant="ghost"
+  copyButtonSize="md"
+/>
+
+### Minimal Variant
+<CodeEditorAstro
+  defaultValue={`const example = 'Minimal button style, very subtle'`}
+  language="typescript"
+  height={100}
+  showCopyButton={true}
+  copyButtonVariant="minimal"
+  copyButtonSize="sm"
+/>
+
+## Features Demonstrated
+
+✅ **Copy to Clipboard**: Click any copy button to copy the code content
+✅ **Visual Feedback**: Button states change to show copy progress (copying → copied → back to idle)
+✅ **Error Handling**: Graceful fallback for older browsers
+✅ **Flexible Positioning**: Top/bottom, left/right corner options
+✅ **Style Variants**: Default, outline, ghost, and minimal button styles
+✅ **Size Options**: Small, medium, and large button sizes
+✅ **Header Integration**: Copy button can be integrated into a title header
+✅ **Accessibility**: Proper ARIA labels and keyboard support
+
+## Implementation Notes
+
+This copy functionality is implemented as part of TASK-020 in the Astro Starlight documentation site. The implementation includes:
+
+- **useCopyToClipboard Hook**: Manages clipboard operations with fallback support
+- **CopyButton Component**: Reusable button with visual feedback states
+- **Enhanced CodeEditor**: Monaco Editor with integrated copy functionality
+- **Astro Integration**: Seamless integration with Astro Starlight
+
+The copy functionality uses the modern Clipboard API when available and falls back to the legacy `execCommand` method for broader browser support.
