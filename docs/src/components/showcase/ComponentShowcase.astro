@@ -1,0 +1,301 @@
+---
+import type {ComponentDocumentation, ExampleConfig} from './ComponentShowcase'
+
+export interface Props {
+  /** Component name to load documentation for */
+  componentName: string
+  /** Live examples configuration */
+  examples: ExampleConfig[]
+  /** Optional Storybook story ID */
+  storybookId?: string
+  /** Additional CSS classes */
+  className?: string
+}
+
+const {componentName, examples, storybookId, className} = Astro.props
+
+// Load component documentation from generated JSON
+let documentation: ComponentDocumentation | null = null
+
+try {
+  const componentDocsModule = await import('../../generated/component-docs.json')
+  const allDocs = componentDocsModule.default as ComponentDocumentation[]
+  documentation = allDocs.find(doc => doc.name === componentName) || null
+} catch (error) {
+  console.warn(`Failed to load documentation for ${componentName}:`, error)
+}
+
+// If no documentation found, create a minimal structure
+if (!documentation) {
+  documentation = {
+    name: componentName,
+    filePath: `components/${componentName}/${componentName}.tsx`,
+    description: `Documentation for ${componentName} component`,
+    props: [],
+    examples: [],
+    isDefault: false,
+  }
+}
+---
+
+<div class="component-showcase-wrapper">
+  <!-- Use Astro's client:load directive for React component -->
+  <div
+    id={`showcase-${componentName.toLowerCase()}`}
+    data-component-name={componentName}
+    data-documentation={JSON.stringify(documentation)}
+    data-examples={JSON.stringify(examples)}
+    data-storybook-id={storybookId}
+    data-class-name={className}
+  >
+    <!-- This will be replaced by React component via client-side script -->
+    <div class="showcase-loading">
+      <p>Loading {componentName} showcase...</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  import React from 'react'
+  import {createRoot} from 'react-dom/client'
+  import {ComponentShowcase} from './ComponentShowcase'
+
+  // Initialize showcase on page load
+  document.addEventListener('DOMContentLoaded', () => {
+    const showcaseElements = document.querySelectorAll('[data-component-name]')
+
+    showcaseElements.forEach((element) => {
+      const componentName = element.getAttribute('data-component-name')
+      const documentationData = element.getAttribute('data-documentation')
+      const examplesData = element.getAttribute('data-examples')
+      const storybookId = element.getAttribute('data-storybook-id')
+      const className = element.getAttribute('data-class-name')
+
+      if (componentName && documentationData && examplesData) {
+        try {
+          const documentation = JSON.parse(documentationData)
+          const examples = JSON.parse(examplesData)
+
+          const root = createRoot(element)
+          root.render(
+            React.createElement(ComponentShowcase, {
+              documentation,
+              examples,
+              storybookId: storybookId || undefined,
+              className: className || undefined
+            })
+          )
+        } catch (error) {
+          console.error(`Failed to render showcase for ${componentName}:`, error)
+          element.innerHTML = `<p class="error">Failed to load ${componentName} showcase</p>`
+        }
+      }
+    })
+  })
+</script>
+
+<style>
+  .component-showcase-wrapper {
+    @apply w-full;
+  }
+
+  /* Component Showcase Styles */
+  :global(.component-showcase) {
+    @apply space-y-8;
+  }
+
+  /* Header Styles */
+  :global(.showcase-header) {
+    @apply border-b border-gray-200 pb-6 dark:border-gray-700;
+  }
+
+  :global(.component-title) {
+    @apply text-3xl font-bold text-gray-900 dark:text-white mb-2;
+  }
+
+  :global(.component-description) {
+    @apply text-lg text-gray-600 dark:text-gray-300 mb-4 leading-relaxed;
+  }
+
+  :global(.component-meta) {
+    @apply flex items-center gap-3 text-sm;
+  }
+
+  :global(.file-path) {
+    @apply font-mono text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded;
+  }
+
+  :global(.default-export-badge) {
+    @apply bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 px-2 py-1 rounded text-xs font-medium;
+  }
+
+  /* Examples Section */
+  :global(.examples-section) {
+    @apply space-y-4;
+  }
+
+  :global(.section-header) {
+    @apply flex items-center justify-between mb-4;
+  }
+
+  :global(.section-header h2) {
+    @apply text-2xl font-semibold text-gray-900 dark:text-white;
+  }
+
+  :global(.example-tabs) {
+    @apply flex space-x-1 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg;
+  }
+
+  :global(.example-tab) {
+    @apply px-4 py-2 rounded-md text-sm font-medium transition-colors;
+    @apply text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white;
+  }
+
+  :global(.example-tab.active) {
+    @apply bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm;
+  }
+
+  :global(.example-content) {
+    @apply space-y-4;
+  }
+
+  :global(.example-header) {
+    @apply flex items-start justify-between;
+  }
+
+  :global(.example-header h3) {
+    @apply text-xl font-semibold text-gray-900 dark:text-white;
+  }
+
+  :global(.example-description) {
+    @apply text-gray-600 dark:text-gray-300 mt-1;
+  }
+
+  :global(.example-controls) {
+    @apply flex items-center gap-2;
+  }
+
+  :global(.toggle-code-btn) {
+    @apply px-3 py-1 text-sm font-medium rounded-md border transition-colors;
+    @apply border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700;
+  }
+
+  :global(.toggle-code-btn.active) {
+    @apply bg-blue-50 border-blue-300 text-blue-700 dark:bg-blue-900 dark:border-blue-600 dark:text-blue-200;
+  }
+
+  /* Demo Container */
+  :global(.example-demo) {
+    @apply space-y-4;
+  }
+
+  :global(.demo-container) {
+    @apply p-6 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg;
+    @apply shadow-sm;
+  }
+
+  /* Code Container */
+  :global(.code-container) {
+    @apply border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden;
+  }
+
+  :global(.code-header) {
+    @apply flex items-center justify-between px-4 py-2 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700;
+  }
+
+  :global(.code-label) {
+    @apply text-sm font-medium text-gray-700 dark:text-gray-300;
+  }
+
+  :global(.copy-code-btn) {
+    @apply px-2 py-1 text-xs font-medium rounded border transition-colors;
+    @apply border-gray-300 text-gray-600 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-gray-700;
+  }
+
+  :global(.code-block) {
+    @apply p-4 bg-gray-900 text-gray-100 overflow-x-auto text-sm;
+    @apply font-mono leading-relaxed;
+  }
+
+  /* Storybook Section */
+  :global(.storybook-section) {
+    @apply space-y-4;
+  }
+
+  :global(.storybook-section h2) {
+    @apply text-2xl font-semibold text-gray-900 dark:text-white;
+  }
+
+  :global(.storybook-description) {
+    @apply text-gray-600 dark:text-gray-300;
+  }
+
+  :global(.storybook-container) {
+    @apply border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden;
+    @apply h-96;
+  }
+
+  :global(.storybook-iframe) {
+    @apply w-full h-full border-0;
+  }
+
+  :global(.storybook-links) {
+    @apply flex justify-center;
+  }
+
+  :global(.storybook-link) {
+    @apply inline-flex items-center px-4 py-2 text-sm font-medium rounded-md;
+    @apply bg-blue-600 text-white hover:bg-blue-700 transition-colors;
+    @apply no-underline;
+  }
+
+  /* Props Section */
+  :global(.props-section) {
+    @apply space-y-4;
+  }
+
+  /* JSDoc Examples */
+  :global(.jsdoc-examples-section) {
+    @apply space-y-4;
+  }
+
+  :global(.jsdoc-examples-section h2) {
+    @apply text-2xl font-semibold text-gray-900 dark:text-white;
+  }
+
+  :global(.jsdoc-examples-description) {
+    @apply text-gray-600 dark:text-gray-300;
+  }
+
+  :global(.jsdoc-example) {
+    @apply space-y-2;
+  }
+
+  :global(.jsdoc-example h4) {
+    @apply text-lg font-medium text-gray-900 dark:text-white;
+  }
+
+  :global(.example-code) {
+    @apply p-4 bg-gray-900 text-gray-100 rounded-lg overflow-x-auto text-sm;
+    @apply font-mono;
+  }
+
+  /* Source Section */
+  :global(.source-section) {
+    @apply space-y-4 pt-6 border-t border-gray-200 dark:border-gray-700;
+  }
+
+  :global(.source-section h2) {
+    @apply text-2xl font-semibold text-gray-900 dark:text-white;
+  }
+
+  :global(.source-links) {
+    @apply flex flex-wrap gap-3;
+  }
+
+  :global(.source-link) {
+    @apply inline-flex items-center px-4 py-2 text-sm font-medium rounded-md;
+    @apply bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700;
+    @apply transition-colors no-underline;
+  }
+</style>
