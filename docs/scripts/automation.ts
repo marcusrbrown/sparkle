@@ -4,6 +4,7 @@ import {dirname, join} from 'node:path'
 import process from 'node:process'
 import {fileURLToPath} from 'node:url'
 
+import {CrossReferenceGenerator} from './cross-reference.js'
 import {JSDocExtractor} from './extract-jsdoc.js'
 import {MarkdownGenerator} from './generate-markdown.js'
 
@@ -292,10 +293,17 @@ export class DocumentationAutomator {
   private async generateCrossReferences(): Promise<void> {
     this.log('Generating cross-references...')
 
-    // This is a placeholder for future cross-reference generation
-    // Will implement in later phases when we have more content to link
+    try {
+      const crossRefGenerator = new CrossReferenceGenerator({
+        verbose: this.options.verbose,
+      })
+      await crossRefGenerator.generateAll()
 
-    this.log('Cross-reference generation completed (placeholder)')
+      this.generatedFiles.push('Cross-reference links and related components')
+      this.log('Cross-reference generation completed')
+    } catch (error) {
+      throw new Error(`Cross-reference generation failed: ${error}`)
+    }
   }
 
   /**
