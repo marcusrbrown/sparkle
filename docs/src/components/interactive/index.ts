@@ -2,6 +2,9 @@
 export {CodeEditor} from './CodeEditor.tsx'
 export type {CodeEditorProps} from './CodeEditor.tsx'
 
+export {CopyButton} from './CopyButton.tsx'
+export type {CopyButtonProps} from './CopyButton.tsx'
+
 export {StorybookEmbed} from './StorybookEmbed.tsx'
 export type {StorybookEmbedProps} from './StorybookEmbed.tsx'
 

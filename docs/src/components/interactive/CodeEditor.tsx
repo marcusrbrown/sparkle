@@ -1,7 +1,9 @@
 import type * as monaco from 'monaco-editor'
 
 import Editor, {type BeforeMount, type Monaco, type OnMount} from '@monaco-editor/react'
-import {useCallback, useRef} from 'react'
+import {useCallback, useRef, useState} from 'react'
+
+import {CopyButton} from './CopyButton'
 
 /**
  * Props for the CodeEditor component
@@ -55,23 +57,54 @@ export interface CodeEditorProps {
   compilerOptions?: monaco.languages.typescript.CompilerOptions
   /** Extra TypeScript type definitions */
   extraLibs?: {content: string; filePath: string}[]
+  /** Whether to show the copy button */
+  showCopyButton?: boolean
+  /** Position of the copy button */
+  copyButtonPosition?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'
+  /** Copy button size */
+  copyButtonSize?: 'sm' | 'md' | 'lg'
+  /** Copy button variant */
+  copyButtonVariant?: 'default' | 'outline' | 'ghost' | 'minimal'
+  /** Custom title for the editor container */
+  title?: string
+  /** Whether to show a header with title and copy button */
+  showHeader?: boolean
+  /** Callback when code is copied */
+  onCopy?: (success: boolean, error?: string | null) => void
 }
 
 /**
- * A powerful code editor component built on Monaco Editor with TypeScript support.
+ * A powerful code editor component built on Monaco Editor with TypeScript support and copy functionality.
  *
  * This component provides a fully-featured code editing experience with syntax highlighting,
- * IntelliSense, error checking, and TypeScript language services. It's designed for use
- * in documentation sites where users need to edit and interact with code examples.
+ * IntelliSense, error checking, TypeScript language services, and integrated copy-to-clipboard
+ * functionality. It's designed for use in documentation sites where users need to edit and
+ * interact with code examples.
  *
  * @example
  * ```tsx
- * // Basic TypeScript editor
+ * // Basic TypeScript editor with copy button
  * <CodeEditor
  *   defaultValue="const greeting: string = 'Hello, World!';\nconsole.log(greeting);"
  *   language="typescript"
  *   height={300}
  *   enableTypeScript={true}
+ *   showCopyButton={true}
+ *   copyButtonPosition="top-right"
+ * />
+ *
+ * // Editor with header and custom copy behavior
+ * <CodeEditor
+ *   defaultValue={complexCode}
+ *   language="tsx"
+ *   title="React Component Example"
+ *   showHeader={true}
+ *   copyButtonVariant="outline"
+ *   onCopy={(success, error) => {
+ *     if (success) {
+ *       showToast('Code copied to clipboard!')
+ *     }
+ *   }}
  * />
  *
  * // React component editor with custom types
@@ -95,6 +128,8 @@ export interface CodeEditorProps {
  *     }
  *   ]}
  *   onChange={(code) => console.log('Code changed:', code)}
+ *   showCopyButton={true}
+ *   copyButtonPosition="bottom-right"
  * />
  * ```
  */
@@ -123,9 +158,17 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
   enableTypeScript = true,
   compilerOptions = {},
   extraLibs = [],
+  showCopyButton = false,
+  copyButtonPosition = 'top-right',
+  copyButtonSize = 'sm',
+  copyButtonVariant = 'outline',
+  title,
+  showHeader = false,
+  onCopy,
 }) => {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null)
   const monacoRef = useRef<Monaco | null>(null)
+  const [currentValue, setCurrentValue] = useState(value || defaultValue)
 
   const handleEditorWillMount: BeforeMount = useCallback(
     monacoInstance => {
@@ -278,6 +321,7 @@ declare module 'react' {
 
   const handleChange = useCallback(
     (newValue: string | undefined, event: monaco.editor.IModelContentChangedEvent) => {
+      setCurrentValue(newValue || '')
       onChange?.(newValue, event)
     },
     [onChange],
@@ -290,26 +334,92 @@ declare module 'react' {
     [onValidate],
   )
 
+  const handleCopy = (success: boolean, error?: string | null) => {
+    onCopy?.(success, error)
+  }
+
+  // Get position classes for the copy button
+  const getCopyButtonClasses = () => {
+    const baseClasses = 'absolute z-10'
+
+    switch (copyButtonPosition) {
+      case 'top-left':
+        return `${baseClasses} top-2 left-2`
+      case 'top-right':
+        return `${baseClasses} top-2 right-2`
+      case 'bottom-left':
+        return `${baseClasses} bottom-2 left-2`
+      case 'bottom-right':
+        return `${baseClasses} bottom-2 right-2`
+      default:
+        return `${baseClasses} top-2 right-2`
+    }
+  }
+
+  const containerClasses = [
+    'code-editor-container',
+    'relative',
+    'border',
+    'border-gray-200',
+    'dark:border-gray-700',
+    'rounded-lg',
+    'overflow-hidden',
+    'bg-white',
+    'dark:bg-gray-900',
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ')
+
   return (
-    <div className={`code-editor-container ${className || ''}`}>
-      <Editor
-        height={height}
-        width={width}
-        defaultLanguage={language}
-        defaultValue={defaultValue}
-        value={value}
-        theme={theme}
-        loading={loading}
-        beforeMount={handleEditorWillMount}
-        onMount={handleEditorDidMount}
-        onChange={handleChange}
-        onValidate={handleValidate}
-        options={{
-          automaticLayout: true,
-          contextmenu: true,
-          copyWithSyntaxHighlighting: true,
-        }}
-      />
+    <div className={containerClasses}>
+      {showHeader && (title || showCopyButton) && (
+        <div className="flex items-center justify-between px-4 py-2 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+          {title && <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">{title}</h3>}
+          {showCopyButton && (
+            <CopyButton
+              textToCopy={currentValue}
+              size={copyButtonSize}
+              variant={copyButtonVariant}
+              onCopy={handleCopy}
+              ariaLabel={`Copy ${title || 'code'} to clipboard`}
+            />
+          )}
+        </div>
+      )}
+
+      <div className="relative">
+        <Editor
+          height={height}
+          width={width}
+          defaultLanguage={language}
+          defaultValue={defaultValue}
+          value={value}
+          theme={theme}
+          loading={loading}
+          beforeMount={handleEditorWillMount}
+          onMount={handleEditorDidMount}
+          onChange={handleChange}
+          onValidate={handleValidate}
+          options={{
+            automaticLayout: true,
+            contextmenu: true,
+            copyWithSyntaxHighlighting: true,
+          }}
+        />
+
+        {showCopyButton && !showHeader && (
+          <div className={getCopyButtonClasses()}>
+            <CopyButton
+              textToCopy={currentValue}
+              size={copyButtonSize}
+              variant={copyButtonVariant}
+              onCopy={handleCopy}
+              ariaLabel="Copy code to clipboard"
+            />
+          </div>
+        )}
+      </div>
     </div>
   )
 }
