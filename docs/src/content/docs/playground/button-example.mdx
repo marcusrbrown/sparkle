@@ -1,0 +1,44 @@
+---
+title: Button Component
+description: Comprehensive button component with theme-aware styling and accessibility features
+---
+
+import StorybookEmbedAstro from '../../../components/interactive/StorybookEmbedAstro.astro'
+
+# Button Component
+
+The Button component provides a flexible, accessible button implementation with full theme integration and multiple style variants.
+
+## Interactive Demo
+
+<StorybookEmbedAstro
+  storyId="components-button--primary"
+  title="Primary Button Demo"
+  height={300}
+/>
+
+## Features
+
+- **Theme Integration**: Fully integrated with the Sparkle theme system
+- **Accessibility**: WCAG 2.1 AA compliant with proper focus management
+- **Multiple Variants**: Primary, secondary, outline, and ghost styles
+- **Size Options**: Small, medium, and large sizes
+- **Interactive States**: Hover, focus, active, and disabled states
+
+## Component API
+
+The Button component accepts all standard HTML button props plus additional styling props.
+
+## Usage
+
+```tsx
+import {Button} from '@sparkle/ui'
+
+export function MyComponent() {
+  return (
+    <Button variant="primary" size="md">
+      Click me
+    </Button>
+  )
+}
+```
