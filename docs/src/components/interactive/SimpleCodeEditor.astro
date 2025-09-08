@@ -1,0 +1,208 @@
+---
+export interface Props {
+  /** Initial code content for the editor */
+  defaultValue?: string
+  /** Programming language for syntax highlighting */
+  language?: string
+  /** Editor theme - supports 'light', 'vs-dark' */
+  theme?: 'light' | 'vs-dark'
+  /** Height of the editor in pixels */
+  height?: number
+  /** Whether the editor is read-only */
+  readOnly?: boolean
+}
+
+const {
+  defaultValue = '',
+  language = 'typescript',
+  theme = 'light',
+  height = 400,
+  readOnly = false,
+} = Astro.props
+
+const editorId = `monaco-editor-${Math.random().toString(36).substr(2, 9)}`
+---
+
+<div class="simple-code-editor-wrapper">
+  <div class="loading-state" data-testid="editor-loading">
+    <div class="loading-spinner"></div>
+    <p>Loading Monaco Editor...</p>
+  </div>
+
+  <div
+    id={editorId}
+    class="editor-container"
+    data-default-value={defaultValue}
+    data-language={language}
+    data-theme={theme}
+    data-height={height}
+    data-readonly={readOnly}
+    style={`height: ${height}px;`}
+  >
+    <!-- Fallback for no-JS -->
+    <noscript>
+      <div class="no-js-fallback">
+        <h4>Code Editor (JavaScript Required)</h4>
+        <pre><code>{defaultValue}</code></pre>
+      </div>
+    </noscript>
+  </div>
+</div>
+
+<script type="module">
+  // Wait for DOM to be ready
+  document.addEventListener('DOMContentLoaded', async () => {
+    try {
+      // Dynamic import of Monaco Editor
+      const monaco = await import('monaco-editor')
+
+      // Find all editor containers
+      const containers = document.querySelectorAll('.editor-container')
+
+      containers.forEach(async (container) => {
+        const props = {
+          defaultValue: container.dataset.defaultValue || '',
+          language: container.dataset.language || 'typescript',
+          theme: container.dataset.theme || 'light',
+          height: parseInt(container.dataset.height) || 400,
+          readOnly: container.dataset.readonly === 'true'
+        }
+
+        // Hide loading state
+        const loadingState = container.parentElement?.querySelector('.loading-state')
+        if (loadingState) {
+          loadingState.style.display = 'none'
+        }
+
+        // Create Monaco editor directly
+        const editor = monaco.editor.create(container, {
+          value: props.defaultValue,
+          language: props.language,
+          theme: props.theme === 'vs-dark' ? 'vs-dark' : 'vs',
+          readOnly: props.readOnly,
+          automaticLayout: true,
+          minimap: { enabled: false },
+          scrollBeyondLastLine: false,
+          fontSize: 14,
+          lineNumbers: 'on',
+          wordWrap: 'on',
+        })
+
+        // Configure TypeScript if needed
+        if (props.language === 'typescript' || props.language === 'javascript') {
+          monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+            target: monaco.languages.typescript.ScriptTarget.ES2020,
+            allowNonTsExtensions: true,
+            moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
+            module: monaco.languages.typescript.ModuleKind.ESNext,
+            noEmit: true,
+            typeRoots: ['node_modules/@types'],
+            strict: true,
+            skipLibCheck: true,
+          })
+        }
+      })
+
+    } catch (error) {
+      console.error('Failed to load Monaco Editor:', error)
+
+      // Show error fallback
+      const containers = document.querySelectorAll('.editor-container')
+      containers.forEach(container => {
+        const loadingState = container.parentElement?.querySelector('.loading-state')
+        if (loadingState) {
+          loadingState.innerHTML = `
+            <div class="error-state">
+              <p>⚠️ Failed to load code editor</p>
+              <details>
+                <summary>View code</summary>
+                <pre><code>${container.dataset.defaultValue || ''}</code></pre>
+              </details>
+            </div>
+          `
+        }
+      })
+    }
+  })
+</script>
+
+<style>
+  .simple-code-editor-wrapper {
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--sl-color-bg);
+  }
+
+  .loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    color: var(--sl-color-text-accent);
+  }
+
+  .loading-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--sl-color-gray-3);
+    border-top: 2px solid var(--sl-color-accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .editor-container {
+    width: 100%;
+    border: none;
+  }
+
+  .no-js-fallback {
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .no-js-fallback h4 {
+    margin: 0 0 1rem;
+    color: var(--sl-color-text);
+  }
+
+  .no-js-fallback pre {
+    background: var(--sl-color-bg-nav);
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 4px;
+    padding: 1rem;
+    text-align: left;
+    overflow-x: auto;
+    max-width: 100%;
+  }
+
+  .error-state {
+    text-align: center;
+    color: var(--sl-color-text-accent);
+  }
+
+  .error-state details {
+    margin-top: 1rem;
+  }
+
+  .error-state summary {
+    cursor: pointer;
+    color: var(--sl-color-accent);
+  }
+
+  .error-state pre {
+    background: var(--sl-color-bg-nav);
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 4px;
+    padding: 1rem;
+    text-align: left;
+    overflow-x: auto;
+    margin-top: 0.5rem;
+  }
+</style>

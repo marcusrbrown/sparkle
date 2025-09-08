@@ -50,6 +50,15 @@ export default defineConfig({
           items: [{label: 'Overview', slug: 'components/overview'}],
         },
         {
+          label: 'Interactive Playground',
+          badge: 'Demo',
+          items: [
+            {label: 'Interactive Demos', slug: 'playground/interactive-demos'},
+            {label: 'Button Example', slug: 'playground/button-example'},
+            {label: 'Live Code Editor', slug: 'playground/live-code-editor'},
+          ],
+        },
+        {
           label: 'Theme System',
           badge: 'Core',
           items: [{label: 'Overview', slug: 'theme/overview'}],
@@ -80,4 +89,16 @@ export default defineConfig({
       ],
     }),
   ],
+  vite: {
+    optimizeDeps: {
+      include: ['@monaco-editor/react', 'monaco-editor'],
+    },
+    worker: {
+      format: 'es',
+    },
+    define: {
+      // Monaco Editor environment variables
+      global: 'globalThis',
+    },
+  },
 })

@@ -1,0 +1,188 @@
+---
+import {CodeEditor} from './CodeEditor.tsx'
+import type {CodeEditorProps} from './CodeEditor.tsx'
+
+export interface Props extends Omit<CodeEditorProps, 'onChange' | 'onValidate' | 'onReady'> {
+  /** Title for accessibility and documentation */
+  title?: string
+}
+
+const {
+  defaultValue = '',
+  value,
+  language = 'typescript',
+  theme = 'light',
+  height = 400,
+  width = '100%',
+  readOnly = false,
+  lineNumbers = 'on',
+  wordWrap = 'on',
+  fontSize = 14,
+  minimap = false,
+  folding = true,
+  autoClosingBrackets = 'languageDefined',
+  autoIndent = 'advanced',
+  tabSize = 2,
+  insertSpaces = true,
+  className = '',
+  loading = 'Loading editor...',
+  enableTypeScript = true,
+  compilerOptions = {},
+  extraLibs = [],
+  title,
+} = Astro.props
+---
+
+<div class={`code-editor-wrapper ${className}`}>
+  {title && (
+    <div class="code-editor-title">
+      <h4>{title}</h4>
+    </div>
+  )}
+
+  <!-- React component with client:load directive for immediate hydration -->
+  <div class="code-editor-container">
+    <!-- Fallback content for when JavaScript is disabled -->
+    <noscript>
+      <div class="code-editor-fallback">
+        <p>JavaScript is required to use the interactive code editor.</p>
+        <pre><code>{defaultValue || value || '// Code editor would appear here'}</code></pre>
+      </div>
+    </noscript>
+
+    <!-- The React component with client:only to avoid SSR -->
+    <CodeEditor
+      defaultValue={defaultValue}
+      value={value}
+      language={language}
+      theme={theme}
+      height={height}
+      width={width}
+      readOnly={readOnly}
+      lineNumbers={lineNumbers}
+      wordWrap={wordWrap}
+      fontSize={fontSize}
+      minimap={minimap}
+      folding={folding}
+      autoClosingBrackets={autoClosingBrackets}
+      autoIndent={autoIndent}
+      tabSize={tabSize}
+      insertSpaces={insertSpaces}
+      className={className}
+      loading={loading}
+      enableTypeScript={enableTypeScript}
+      compilerOptions={compilerOptions}
+      extraLibs={extraLibs}
+      client:only="react"
+    />
+  </div>
+</div>
+
+<style>
+  .code-editor-wrapper {
+    /* Main wrapper that integrates with Starlight theme */
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background: var(--sl-color-bg);
+    margin: 1.5rem 0;
+    box-shadow: var(--sl-shadow-sm);
+  }
+
+  .code-editor-title {
+    /* Title bar styling */
+    background: var(--sl-color-bg-nav);
+    border-bottom: 1px solid var(--sl-color-gray-5);
+    padding: 0.75rem 1rem;
+  }
+
+  .code-editor-title h4 {
+    /* Title text styling */
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--sl-color-text);
+    font-family: var(--sl-font-system);
+  }
+
+  .code-editor-container {
+    /* Container for the editor */
+    position: relative;
+    background: var(--sl-color-bg);
+  }
+
+  .code-editor-fallback {
+    /* No-JavaScript fallback */
+    padding: 1.5rem;
+    background: var(--sl-color-bg-sidebar);
+    border: 1px solid var(--sl-color-gray-4);
+    border-radius: 0.25rem;
+    margin: 1rem;
+  }
+
+  .code-editor-fallback p {
+    /* Fallback message */
+    margin: 0 0 1rem 0;
+    color: var(--sl-color-text-accent);
+    font-size: 0.875rem;
+  }
+
+  .code-editor-fallback pre {
+    /* Fallback code display */
+    margin: 0;
+    padding: 1rem;
+    background: var(--sl-color-bg);
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.25rem;
+    font-family: var(--sl-font-mono);
+    font-size: 0.875rem;
+    overflow-x: auto;
+  }
+
+  .code-editor-fallback code {
+    /* Fallback code styling */
+    color: var(--sl-color-text);
+  }
+
+  /* Dark theme support */
+  [data-theme='dark'] .code-editor-wrapper {
+    border-color: var(--sl-color-gray-6);
+    background: var(--sl-color-bg);
+  }
+
+  [data-theme='dark'] .code-editor-title {
+    background: var(--sl-color-bg-nav);
+    border-bottom-color: var(--sl-color-gray-6);
+  }
+
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .code-editor-wrapper {
+      margin: 1rem 0;
+      border-radius: 0.25rem;
+    }
+
+    .code-editor-title {
+      padding: 0.5rem 0.75rem;
+    }
+
+    .code-editor-title h4 {
+      font-size: 0.8125rem;
+    }
+  }
+
+  /* Focus and accessibility */
+  .code-editor-container:focus-within {
+    outline: 2px solid var(--sl-color-accent);
+    outline-offset: -2px;
+  }
+
+  /* Content integration */
+  .code-editor-wrapper:first-child {
+    margin-top: 0;
+  }
+
+  .code-editor-wrapper:last-child {
+    margin-bottom: 0;
+  }
+</style>

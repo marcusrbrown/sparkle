@@ -1,0 +1,228 @@
+---
+title: Live Code Editor
+description: Interactive Monaco Editor with TypeScript support for live code editing and experimentation.
+sidebar:
+  label: Live Code Editor
+  order: 3
+---
+
+import CodeEditorAstro from '../../../components/interactive/CodeEditorAstro.astro'
+
+# Live Code Editor
+
+Experience the power of VS Code's Monaco Editor integrated directly into our documentation. This interactive code editor provides full TypeScript support, IntelliSense, error checking, and syntax highlighting.
+
+## Basic TypeScript Example
+
+<CodeEditorAstro
+  defaultValue={`// Welcome to the live TypeScript editor!
+const greeting: string = 'Hello, Sparkle!'
+const isAwesome: boolean = true
+
+interface Developer {
+  name: string
+  skills: string[]
+  lovesTypeScript: boolean
+}
+
+const developer: Developer = {
+  name: 'You',
+  skills: ['TypeScript', 'React', 'Astro'],
+  lovesTypeScript: true
+}
+
+function createWelcomeMessage(dev: Developer): string {
+  return \`Welcome \${dev.name}! Your skills: \${dev.skills.join(', ')}\`
+}
+
+console.log(createWelcomeMessage(developer))
+console.log('TypeScript errors will show up automatically!')`}
+  language="typescript"
+  height={400}
+/>
+
+## React Component Example
+
+<CodeEditorAstro
+  defaultValue={`// React component with TypeScript
+interface ButtonProps {
+  label: string
+  onClick: () => void
+  variant?: 'primary' | 'secondary'
+  disabled?: boolean
+}
+
+const Button: React.FC<ButtonProps> = ({
+  label,
+  onClick,
+  variant = 'primary',
+  disabled = false
+}) => {
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className={\`btn btn-\${variant}\`}
+    >
+      {label}
+    </button>
+  )
+}
+
+// Usage example
+const App = () => {
+  const handleClick = () => {
+    console.log('Button clicked!')
+  }
+
+  return (
+    <div>
+      <Button
+        label="Click Me"
+        onClick={handleClick}
+        variant="primary"
+      />
+    </div>
+  )
+}
+
+export default App`}
+  language="typescript"
+  height={450}
+/>
+
+## Dark Theme Example
+
+<CodeEditorAstro
+  defaultValue={`// Dark theme for comfortable coding
+type Theme = 'light' | 'dark' | 'auto'
+
+interface AppConfig {
+  theme: Theme
+  language: string
+  autoSave: boolean
+}
+
+const config: AppConfig = {
+  theme: 'dark',
+  language: 'typescript',
+  autoSave: true
+}
+
+// Utility function with generics
+function updateConfig<T extends keyof AppConfig>(
+  key: T,
+  value: AppConfig[T]
+): AppConfig {
+  return {
+    ...config,
+    [key]: value
+  }
+}
+
+const newConfig = updateConfig('theme', 'light')
+console.log('Updated config:', newConfig)`}
+  language="typescript"
+  theme="vs-dark"
+  height={350}
+/>
+
+## Read-Only Code View
+
+<CodeEditorAstro
+  defaultValue={`// This editor is read-only for documentation purposes
+const sparkleComponents = [
+  'Button',
+  'Form',
+  'Input',
+  'Select',
+  'Textarea'
+] as const
+
+type SparkleComponent = typeof sparkleComponents[number]
+
+interface ComponentMetadata {
+  name: SparkleComponent
+  category: 'input' | 'action' | 'display'
+  accessibility: boolean
+}
+
+const buttonMetadata: ComponentMetadata = {
+  name: 'Button',
+  category: 'action',
+  accessibility: true
+}
+
+console.log('Sparkle Design System Components:', sparkleComponents)`}
+  language="typescript"
+  readOnly={true}
+  height={300}
+/>
+
+## Features
+
+### 🎯 TypeScript Support
+- Full TypeScript language service
+- Real-time error checking and IntelliSense
+- Auto-completion and parameter hints
+- Type checking with immediate feedback
+
+### 🎨 Themes
+- Light theme (default)
+- Dark theme (`vs-dark`)
+- Matches your documentation site theme
+
+### ⚡ Performance
+- Lazy-loaded for optimal page performance
+- Client-side hydration only when needed
+- Graceful fallback for no-JavaScript environments
+
+### 🔧 Customization
+- Configurable height and read-only mode
+- Multiple programming languages supported
+- Custom compiler options for advanced use cases
+
+## Usage
+
+```astro
+---
+import CodeEditorAstro from '../../../components/interactive/CodeEditorAstro.astro'
+---
+
+<CodeEditorAstro
+  defaultValue="const example = 'Hello World!'"
+  language="typescript"
+  height={300}
+  theme="vs-dark"
+  readOnly={false}
+/>
+```
+
+## Props Reference
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `defaultValue` | `string` | `''` | Initial code content |
+| `language` | `string` | `'typescript'` | Programming language |
+| `theme` | `'light' \| 'vs-dark' \| string` | `'light'` | Editor theme |
+| `height` | `number \| string` | `400` | Editor height in pixels or CSS string |
+| `width` | `number \| string` | `'100%'` | Editor width in pixels or CSS string |
+| `readOnly` | `boolean` | `false` | Whether editor is read-only |
+| `lineNumbers` | `'on' \| 'off' \| 'relative' \| 'interval'` | `'on'` | Whether to show line numbers |
+| `wordWrap` | `'on' \| 'off' \| 'wordWrapColumn' \| 'bounded'` | `'on'` | Whether to enable word wrap |
+| `fontSize` | `number` | `14` | Font size in pixels |
+| `minimap` | `boolean` | `false` | Whether to show the minimap |
+| `folding` | `boolean` | `true` | Whether to show folding controls |
+| `tabSize` | `number` | `2` | Tab size in spaces |
+| `insertSpaces` | `boolean` | `true` | Whether to use spaces for indentation |
+| `enableTypeScript` | `boolean` | `true` | Whether to enable TypeScript language service |
+| `title` | `string` | - | Optional title for accessibility |
+
+## Accessibility
+
+The live code editor includes:
+- Keyboard navigation support
+- Screen reader compatibility
+- High contrast theme support
+- Focus management and ARIA labels
+- Graceful degradation without JavaScript
