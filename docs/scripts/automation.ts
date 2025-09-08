@@ -112,6 +112,12 @@ export class DocumentationAutomator {
           execute: () => this.validateOutput(),
           required: true,
         },
+        {
+          name: 'format-output',
+          description: 'Format generated documentation files',
+          execute: () => this.formatOutput(),
+          required: true,
+        },
       ]
 
       // Execute steps sequentially
@@ -320,6 +326,26 @@ export class DocumentationAutomator {
     }
 
     this.log('Output validation completed - all expected files present')
+  }
+
+  /**
+   * Format generated documentation files
+   */
+  private async formatOutput(): Promise<void> {
+    this.log('Formatting generated documentation...')
+
+    try {
+      const command = 'pnpm docs:format'
+      execSync(command, {
+        cwd: join(scriptDir, '..'),
+        stdio: this.options.verbose ? 'inherit' : 'pipe',
+        encoding: 'utf8',
+      })
+
+      this.log('Generated documentation formatted successfully')
+    } catch (error) {
+      throw new Error(`Documentation formatting failed: ${error}`)
+    }
   }
 
   /**

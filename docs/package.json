@@ -33,6 +33,7 @@
     "docs:automation:dev": "tsx scripts/automation.ts --dev",
     "docs:automation:force": "tsx scripts/automation.ts --force",
     "docs:extract": "tsx scripts/extract-jsdoc.ts",
+    "docs:format": "eslint --fix",
     "docs:generate": "tsx scripts/generate-docs.ts",
     "docs:markdown": "tsx scripts/generate-markdown.ts",
     "lint": "eslint",
