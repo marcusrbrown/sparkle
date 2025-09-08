@@ -76,8 +76,8 @@ This implementation plan outlines the creation of a comprehensive documentation 
 | TASK-010 | Create JSDoc extraction script using `@microsoft/api-extractor` or similar for component documentation | ✅ | 2025-09-07 |
 | TASK-011 | Implement automated markdown generation from JSDoc comments in `@sparkle/ui` components | ✅ | 2025-09-07 |
 | TASK-012 | Set up content collection schemas in `docs/src/content/config.ts` for components, API references, and guides | ✅ | 2025-09-07 |
-| TASK-013 | Create automation scripts in `docs/scripts/` for documentation generation | | |
-| TASK-014 | Configure Astro to use generated documentation content in build process | | |
+| TASK-013 | Create automation scripts in `docs/scripts/` for documentation generation | ✅ | 2025-09-07 |
+| TASK-014 | Configure Astro to use generated documentation content in build process | ✅ | 2025-09-07 |
 | TASK-015 | Implement cross-reference system linking documentation to actual package source code | | |
 | TASK-016 | Set up development workflow for automatic documentation regeneration on source changes | | |
 

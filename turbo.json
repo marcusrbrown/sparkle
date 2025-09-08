@@ -86,15 +86,42 @@
     },
     "build:docs": {
       "dependsOn": [
+        "@sparkle/docs#docs:automation",
         "@sparkle/ui#build:ui",
         "@sparkle/theme#build:theme",
         "@sparkle/types#build:types",
         "@sparkle/utils#build:utils"
       ],
       "outputs": ["dist/**"],
-      "inputs": ["src/**/*", "astro.config.mjs", "package.json", "tsconfig.json"],
+      "inputs": ["src/**/*", "scripts/**/*.ts", "astro.config.mjs", "package.json", "tsconfig.json", "typedoc.json"],
       "env": ["NODE_ENV"],
       "cache": true
+    },
+    "docs:automation": {
+      "dependsOn": [
+        "@sparkle/ui#build:ui",
+        "@sparkle/theme#build:theme",
+        "@sparkle/types#build:types",
+        "@sparkle/utils#build:utils",
+        "@sparkle/error-testing#build:error-testing"
+      ],
+      "outputs": ["src/content/docs/api/**", "src/content/docs/components/**", "src/generated/**"],
+      "inputs": ["scripts/**/*.ts", "../../packages/*/src/**/*.{ts,tsx}", "package.json", "typedoc.json"],
+      "env": ["NODE_ENV"],
+      "cache": true
+    },
+    "docs:automation:force": {
+      "dependsOn": [
+        "@sparkle/ui#build:ui",
+        "@sparkle/theme#build:theme",
+        "@sparkle/types#build:types",
+        "@sparkle/utils#build:utils",
+        "@sparkle/error-testing#build:error-testing"
+      ],
+      "outputs": ["src/content/docs/api/**", "src/content/docs/components/**", "src/generated/**"],
+      "inputs": ["scripts/**/*.ts", "../../packages/*/src/**/*.{ts,tsx}", "package.json", "typedoc.json"],
+      "env": ["NODE_ENV"],
+      "cache": false
     },
     "build:types:watch": {
       "dependsOn": ["^build"],
