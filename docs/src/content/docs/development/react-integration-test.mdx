@@ -1,0 +1,59 @@
+---
+title: React Integration Test
+description: Test page for verifying Astro Islands React integration with Sparkle components
+---
+
+import ReactIntegrationDemo from '../../../components/ReactIntegrationDemo.astro'
+
+This page demonstrates that Astro Islands React integration is working correctly with Sparkle UI components.
+
+## Interactive Button Demo
+
+<ReactIntegrationDemo />
+
+## Features Demonstrated
+
+- ✅ **Astro Islands**: React components render on the client side
+- ✅ **@sparkle/ui Integration**: Sparkle Button components work within Astro
+- ✅ **Interactive State**: React state management and event handling
+- ✅ **TypeScript Support**: Full type safety for React components
+- ✅ **Styling Integration**: Components render with proper styling
+
+## Technical Details
+
+This integration enables:
+
+1. **Client-side Hydration**: React components are hydrated on the client
+2. **Selective Interactivity**: Only components marked with `client:load` are interactive
+3. **Optimal Performance**: Static content remains static, interactive islands are hydrated as needed
+4. **Component Reusability**: Sparkle components work seamlessly in both Astro and React contexts
+
+## Configuration
+
+The React integration is configured in `astro.config.mjs`:
+
+```js
+import react from '@astrojs/react'
+import starlight from '@astrojs/starlight'
+
+export default defineConfig({
+  integrations: [
+    react(),
+    starlight({
+      // Starlight configuration
+    })
+  ]
+})
+```
+
+## Component Usage
+
+React components can be used in Astro with hydration directives:
+
+```tsx
+// Import the React component
+import { ButtonDemo } from './components/demos/ButtonDemo'
+
+// Use with client-side hydration
+<ButtonDemo client:load />
+```

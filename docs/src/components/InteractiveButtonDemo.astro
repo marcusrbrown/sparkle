@@ -1,0 +1,14 @@
+---
+import {ButtonDemo} from './demos/ButtonDemo.tsx'
+---
+
+<div class="not-content">
+  <ButtonDemo client:load />
+</div>
+
+<style>
+  .not-content {
+    /* Ensure the component renders outside of content styling */
+    margin: 0;
+  }
+</style>

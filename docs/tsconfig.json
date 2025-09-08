@@ -7,7 +7,7 @@
     "target": "ES2022",
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "jsx": "preserve",
-    "types": ["astro/client", "node"],
+    "types": ["astro/client", "node", "@types/react", "@types/react-dom"],
     "incremental": true,
     "composite": true,
     "paths": {
