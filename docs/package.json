@@ -36,6 +36,8 @@
     "docs:format": "eslint --fix",
     "docs:generate": "tsx scripts/generate-docs.ts",
     "docs:markdown": "tsx scripts/generate-markdown.ts",
+    "docs:watch": "tsx scripts/watch-docs.ts",
+    "docs:watch:verbose": "tsx scripts/watch-docs.ts --verbose",
     "lint": "eslint",
     "preview": "astro preview",
     "start": "astro dev"
@@ -53,6 +55,7 @@
   "devDependencies": {
     "@microsoft/api-extractor": "7.52.11",
     "@types/node": "22.18.0",
+    "chokidar": "4.0.3",
     "doctrine": "3.0.0",
     "ts-morph": "26.0.0",
     "tsx": "4.20.5",

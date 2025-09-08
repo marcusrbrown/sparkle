@@ -123,6 +123,19 @@
       "env": ["NODE_ENV"],
       "cache": false
     },
+    "docs:watch": {
+      "dependsOn": [
+        "@sparkle/ui#build:ui",
+        "@sparkle/theme#build:theme",
+        "@sparkle/types#build:types",
+        "@sparkle/utils#build:utils",
+        "@sparkle/error-testing#build:error-testing"
+      ],
+      "inputs": ["scripts/**/*.ts", "../../packages/*/src/**/*.{ts,tsx}", "package.json"],
+      "env": ["NODE_ENV"],
+      "persistent": true,
+      "cache": false
+    },
     "build:types:watch": {
       "dependsOn": ["^build"],
       "persistent": true,
