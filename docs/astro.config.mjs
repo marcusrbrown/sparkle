@@ -1,4 +1,5 @@
 // @ts-check
+import react from '@astrojs/react'
 import starlight from '@astrojs/starlight'
 import {defineConfig} from 'astro/config'
 
@@ -6,6 +7,7 @@ import {defineConfig} from 'astro/config'
 export default defineConfig({
   site: 'https://sparkle.mrbro.dev',
   integrations: [
+    react(),
     starlight({
       title: 'Sparkle Design System',
       description:
@@ -66,7 +68,10 @@ export default defineConfig({
         },
         {
           label: 'Development',
-          items: [{label: 'Contributing', slug: 'development/contributing'}],
+          items: [
+            {label: 'Contributing', slug: 'development/contributing'},
+            {label: 'React Integration Test', slug: 'development/react-integration-test'},
+          ],
         },
         {
           label: 'API Reference',

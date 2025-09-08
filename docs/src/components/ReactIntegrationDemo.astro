@@ -1,0 +1,97 @@
+---
+import {ButtonDemo} from './demos/ButtonDemo'
+---
+
+<div class='react-demo-container'>
+  <div class='demo-header'>
+    <h3>Simple React Component Test</h3>
+    <p>Testing if a simple React component causes the sidebar layout issue:</p>
+  </div>
+
+  <div class='demo-wrapper'>
+    <ButtonDemo client:visible />
+  </div>
+</div>
+
+<details class='demo-info'>
+  <summary>Implementation Details</summary>
+  <div class='demo-details'>
+    <p><strong>Component Location:</strong> <code>docs/src/components/demos/ButtonDemo.tsx</code></p>
+    <p><strong>Astro Directive:</strong> <code>client:load</code> - Hydrates immediately on page load</p>
+    <p><strong>Integration:</strong> React component using @sparkle/ui Button with interactive state</p>
+  </div>
+</details>
+
+<style>
+  .react-demo-container {
+    margin: 2rem 0;
+    border: 1px solid var(--sl-color-gray-3);
+    border-radius: 0.5rem;
+    /* Removed overflow: hidden to prevent layout issues */
+  }
+
+  .demo-header {
+    padding: 1.5rem;
+    background: var(--sl-color-gray-1);
+    border-bottom: 1px solid var(--sl-color-gray-3);
+  }
+
+  .demo-header h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--sl-color-text);
+  }
+
+  .demo-header p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--sl-color-text-invert);
+  }
+
+  .demo-wrapper {
+    padding: 2rem;
+    background: var(--sl-color-bg);
+    /* Ensure the component doesn't affect page layout */
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .demo-info {
+    margin: 0;
+    border-top: 1px solid var(--sl-color-gray-3);
+  }
+
+  .demo-info summary {
+    padding: 1rem 1.5rem;
+    background: var(--sl-color-gray-1);
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--sl-color-text);
+  }
+
+  .demo-info summary:hover {
+    background: var(--sl-color-gray-2);
+  }
+
+  .demo-details {
+    padding: 1.5rem;
+    background: var(--sl-color-bg);
+  }
+
+  .demo-details p {
+    margin: 0.5rem 0;
+    font-size: 0.875rem;
+    color: var(--sl-color-text);
+  }
+
+  .demo-details code {
+    background: var(--sl-color-gray-1);
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    font-family: var(--sl-font-mono);
+    color: var(--sl-color-text);
+  }
+</style>
