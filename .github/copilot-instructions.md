@@ -4,8 +4,9 @@
 
 Sparkle is a TypeScript monorepo playground using **pnpm workspaces** and **Turborepo**. Key architectural decisions:
 
-- **Package Strategy**: Shared libraries (`@sparkle/ui`, `@sparkle/types`, `@sparkle/utils`, `@sparkle/theme`) with consuming applications (`fro-jive` Expo app in `apps/`)
+- **Package Strategy**: Shared libraries (`@sparkle/ui`, `@sparkle/types`, `@sparkle/utils`, `@sparkle/theme`) with consuming applications (`fro-jive` Expo app in `apps/`) and documentation site (`@sparkle/docs` in `docs/`)
 - **Build System**: Turborepo orchestrates builds with task dependencies (e.g., `build` → `^build` ensures dependencies build first)
+- **Documentation Architecture**: Astro Starlight site with automated JSDoc extraction, interactive component playground, and GitHub Pages deployment to https://sparkle.mrbro.dev
 - **Type Safety**: Shared types via `@sparkle/types` + TypeScript project references for clean inter-package dependencies
 - **Component Architecture**: Radix UI primitives + Tailwind CSS + React forwardRef pattern for accessibility and customization
 - **Theme System**: Cross-platform design token management with `@sparkle/theme` supporting web (CSS custom properties) and native (StyleSheet) platforms
@@ -16,12 +17,36 @@ Sparkle is a TypeScript monorepo playground using **pnpm workspaces** and **Turb
 
 ```bash
 pnpm bootstrap          # Install all workspace dependencies
-pnpm dev               # Start all dev servers (UI, Storybook, mobile)
+pnpm dev               # Start all dev servers (UI, Storybook, mobile, docs)
 pnpm build:types:watch # Watch mode for TypeScript declarations
 pnpm check             # Run all quality checks (format, types, monorepo)
 pnpm check:monorepo    # Verify workspace consistency with manypkg
 pnpm health-check      # Comprehensive environment validation and diagnostics
 pnpm fix               # Auto-fix monorepo and ESLint issues
+```
+
+### Documentation System
+
+The project includes a comprehensive Astro Starlight documentation site with automated generation:
+
+- **Documentation Site**: Astro Starlight at `docs/` with automated JSDoc extraction and GitHub Pages deployment
+- **Automated Generation**: `docs/scripts/generate-docs.ts` extracts component documentation and generates Markdown
+- **Interactive Playground**: Component demos through Storybook integration and live code examples
+
+#### Key Documentation Commands
+
+```bash
+# Start documentation development
+pnpm --filter @sparkle/docs dev
+
+# Build documentation site
+pnpm --filter @sparkle/docs build
+
+# Generate documentation from JSDoc
+pnpm --filter @sparkle/docs docs:automation
+
+# Force regenerate all documentation
+pnpm --filter @sparkle/docs build:force
 ```
 
 ### Error Reporting & Diagnostics
@@ -51,6 +76,16 @@ pnpm test:build-pipeline
 3. Test in Storybook (`packages/storybook/`) before integration
 4. Use `@sparkle/types` for shared interfaces, `@sparkle/utils` for shared logic
 5. Apply themes via `@sparkle/theme` for cross-platform consistency
+6. Document with JSDoc comments for automated documentation generation
+
+### Documentation Development Pattern
+
+1. Add JSDoc comments to components in `packages/ui/src/components/`
+2. Run `pnpm --filter @sparkle/docs docs:automation` to extract documentation
+3. Generated Markdown appears in `docs/src/content/docs/api/`
+4. Create getting started guides in `docs/src/content/docs/`
+5. Test documentation site with `pnpm --filter @sparkle/docs dev`
+6. Documentation deploys automatically to https://sparkle.mrbro.dev
 
 ### Theme System Development
 
@@ -443,6 +478,7 @@ test.describe('Button Component', () => {
 - `@sparkle/ui`: Component library consuming types/utils/theme for consistent design
 - `@sparkle/config`: Shared configurations (Tailwind, TypeScript, ESLint)
 - `@sparkle/storybook`: Centralized component documentation and visual regression testing
+- `@sparkle/docs`: Astro Starlight documentation site with automated JSDoc extraction and interactive playground
 
 ### Cross-Platform Considerations
 
@@ -453,6 +489,7 @@ test.describe('Button Component', () => {
 ### Development Tools Integration
 
 - **Storybook**: Component development/documentation with theme switching controls and accessibility testing via `@storybook/addon-a11y`
+- **Astro Starlight**: Documentation site with automated JSDoc extraction, interactive playground, and GitHub Pages deployment
 - **Visual Regression**: Playwright-based testing across themes, browsers, and viewports (`packages/storybook/test/visual-regression/`)
 - **Testing**: Vitest for unit/integration tests with TypeScript type-checking enabled
 - **Build Pipeline**: Turborepo orchestrates theme package dependencies and cross-platform builds
