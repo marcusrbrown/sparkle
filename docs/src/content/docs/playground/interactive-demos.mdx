@@ -1,0 +1,94 @@
+---
+title: Interactive Component Demos
+description: Live interactive demonstrations of Sparkle components embedded from Storybook
+---
+
+import StorybookEmbedAstro from '../../../components/interactive/StorybookEmbedAstro.astro'
+
+# Interactive Component Demos
+
+This page demonstrates the Storybook iframe embed component for displaying live, interactive component demos within the documentation site.
+
+## Button Component Demo
+
+Here's a live Button component from our Storybook:
+
+<StorybookEmbedAstro
+  storyId="components-button--primary"
+  title="Primary Button Interactive Demo"
+  height={350}
+/>
+
+### Button with Controls Panel
+
+The same Button component with the Storybook controls panel enabled:
+
+<StorybookEmbedAstro
+  storyId="components-button--primary"
+  title="Primary Button with Controls"
+  height={500}
+  showPanel={true}
+  showToolbar={true}
+/>
+
+## Form Component Demo
+
+Interactive form component demonstration:
+
+<StorybookEmbedAstro
+  storyId="components-form--default"
+  title="Form Component Demo"
+  height={400}
+/>
+
+## Theme Demo
+
+Theme switching demonstration:
+
+<StorybookEmbedAstro
+  storyId="theme--light-theme"
+  title="Theme System Demo"
+  height={300}
+/>
+
+## Features
+
+The Storybook embed component provides:
+
+- **Live Interaction**: Full interactive functionality of components
+- **Responsive Design**: Adapts to different screen sizes
+- **Loading States**: Shows loading placeholder while iframe loads
+- **Error Handling**: Graceful fallback when Storybook is unavailable
+- **Accessibility**: Proper ARIA labels and keyboard navigation
+- **Customizable**: Configurable height, width, toolbar, and panel visibility
+- **No JavaScript Fallback**: Links directly to Storybook when JS is disabled
+
+## Usage
+
+Import the Astro component and use it in your documentation:
+
+```astro
+---
+import StorybookEmbedAstro from '../components/interactive/StorybookEmbedAstro.astro'
+---
+
+<StorybookEmbedAstro
+  storyId="components-button--primary"
+  title="Button Demo"
+  height={350}
+  showPanel={true}
+/>
+```
+
+## Configuration Options
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `storyId` | `string` | **required** | Storybook story ID (e.g., 'components-button--primary') |
+| `storybookUrl` | `string` | `'http://localhost:6006'` | Base URL for Storybook instance |
+| `height` | `number` | `400` | Height of iframe in pixels |
+| `width` | `string \| number` | `'100%'` | Width of iframe |
+| `showToolbar` | `boolean` | `false` | Show Storybook toolbar |
+| `showPanel` | `boolean` | `false` | Show controls/docs panel |
+| `title` | `string` | *auto-generated* | Accessibility title |
+| `class` | `string` | `''` | Additional CSS classes |

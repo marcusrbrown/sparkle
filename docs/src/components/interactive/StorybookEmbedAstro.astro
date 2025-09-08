@@ -1,0 +1,78 @@
+---
+import {StorybookEmbed} from './StorybookEmbed.tsx'
+import type {StorybookEmbedProps} from './StorybookEmbed.tsx'
+
+interface Props extends Omit<StorybookEmbedProps, 'className'> {
+  /**
+   * CSS class names to apply to the container
+   */
+  class?: string
+}
+
+const {
+  storyId,
+  storybookUrl,
+  height = 400,
+  width = '100%',
+  showToolbar = false,
+  showPanel = false,
+  title,
+  class: className = '',
+} = Astro.props
+---
+
+<div class={`storybook-embed-wrapper ${className}`}>
+  <StorybookEmbed
+    client:load
+    storyId={storyId}
+    storybookUrl={storybookUrl}
+    height={height}
+    width={width}
+    showToolbar={showToolbar}
+    showPanel={showPanel}
+    title={title}
+  />
+
+  <!-- Fallback content for when JavaScript is disabled -->
+  <noscript>
+    <div class="storybook-fallback">
+      <p>Interactive Storybook demo requires JavaScript.</p>
+      <a href={storybookUrl || 'http://localhost:6006'} target="_blank" rel="noopener noreferrer">
+        View story: {storyId} in Storybook →
+      </a>
+    </div>
+  </noscript>
+</div>
+
+<style>
+  .storybook-embed-wrapper {
+    margin: 1rem 0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .storybook-fallback {
+    padding: 2rem;
+    text-align: center;
+    background-color: var(--sl-color-bg-sidebar);
+    border: 1px solid var(--sl-color-hairline-shade);
+    border-radius: 8px;
+  }
+
+  .storybook-fallback a {
+    color: var(--sl-color-text-accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .storybook-fallback a:hover {
+    text-decoration: underline;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .storybook-embed-wrapper {
+      margin: 0.5rem 0;
+    }
+  }
+</style>
