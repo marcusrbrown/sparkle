@@ -1,0 +1,178 @@
+---
+title: 'Button Component'
+description: 'Interactive Button component showcase with live examples and API documentation'
+---
+
+import {Button} from '@sparkle/ui'
+import ComponentShowcase from '../../../components/showcase/ComponentShowcase.astro'
+import PropsTable from '../../../components/showcase/PropsTable.astro'
+
+<ComponentShowcase
+  componentName="Button"
+  examples={[]}
+  storybookId="components-button--primary"
+  className="button-showcase"
+/>
+
+## Live Examples
+
+### Basic Variants
+
+The four main button variants available in the design system:
+
+<div style="display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0; padding: 1rem; border: 1px solid #e5e7eb; border-radius: 0.5rem;">
+  <Button variant="primary">Primary</Button>
+  <Button variant="secondary">Secondary</Button>
+  <Button variant="outline">Outline</Button>
+  <Button variant="ghost">Ghost</Button>
+</div>
+
+```jsx
+<Button variant="primary">Primary</Button>
+<Button variant="secondary">Secondary</Button>
+<Button variant="outline">Outline</Button>
+<Button variant="ghost">Ghost</Button>
+```
+
+### Sizes
+
+Three sizes available: small, medium (default), and large:
+
+<div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; margin: 1rem 0; padding: 1rem; border: 1px solid #e5e7eb; border-radius: 0.5rem;">
+  <Button size="sm">Small</Button>
+  <Button size="md">Medium</Button>
+  <Button size="lg">Large</Button>
+</div>
+
+```jsx
+<Button size="sm">Small</Button>
+<Button size="md">Medium</Button>
+<Button size="lg">Large</Button>
+```
+
+### Semantic Colors
+
+Semantic color variants for contextual actions:
+
+<div style="display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0; padding: 1rem; border: 1px solid #e5e7eb; border-radius: 0.5rem;">
+  <Button semantic="default">Default</Button>
+  <Button semantic="success">Success</Button>
+  <Button semantic="warning">Warning</Button>
+  <Button semantic="error">Error</Button>
+</div>
+
+```jsx
+<Button semantic="default">Default</Button>
+<Button semantic="success">Success</Button>
+<Button semantic="warning">Warning</Button>
+<Button semantic="error">Error</Button>
+```
+
+### Interactive States
+
+Different interactive states including disabled:
+
+<div style="display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0; padding: 1rem; border: 1px solid #e5e7eb; border-radius: 0.5rem;">
+  <Button>Normal</Button>
+  <Button disabled>Disabled</Button>
+</div>
+
+```jsx
+<Button>Normal</Button>
+<Button disabled>Disabled</Button>
+<Button onClick={() => alert('Clicked!')}>Clickable</Button>
+```
+
+### Advanced Combinations
+
+Complex combinations of variants, sizes, and semantic colors:
+
+<div style="margin: 1rem 0; padding: 1rem; border: 1px solid #e5e7eb; border-radius: 0.5rem;">
+  <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;">
+    <Button variant="primary" size="lg" semantic="success">
+      ✅ Save Changes
+    </Button>
+    <Button variant="outline" size="lg" semantic="error">
+      ❌ Cancel
+    </Button>
+  </div>
+  <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+    <Button variant="ghost" size="sm">
+      📝 Edit
+    </Button>
+    <Button variant="ghost" size="sm" semantic="error">
+      🗑️ Delete
+    </Button>
+  </div>
+</div>
+
+```jsx
+<Button variant="primary" size="lg" semantic="success">
+  ✅ Save Changes
+</Button>
+<Button variant="outline" size="lg" semantic="error">
+  ❌ Cancel
+</Button>
+<Button variant="ghost" size="sm">
+  📝 Edit
+</Button>
+<Button variant="ghost" size="sm" semantic="error">
+  🗑️ Delete
+</Button>
+```
+
+## API Reference
+
+<PropsTable componentName="Button" />
+
+## Storybook Playground
+
+Explore all Button variations in our interactive Storybook:
+
+<div style="border: 1px solid #e5e7eb; border-radius: 0.5rem; overflow: hidden; height: 400px; margin: 1rem 0;">
+  <iframe
+    src="/storybook/iframe.html?id=components-button--primary&viewMode=story"
+    style="width: 100%; height: 100%; border: 0;"
+    title="Button Storybook"
+    loading="lazy"
+  />
+</div>
+
+<div style="text-align: center; margin: 1rem 0;">
+  <a
+    href="/storybook/?path=/story/components-button--primary"
+    target="_blank"
+    rel="noopener noreferrer"
+    style="display: inline-flex; align-items: center; padding: 0.5rem 1rem; background: #3b82f6; color: white; text-decoration: none; border-radius: 0.375rem;"
+  >
+    🚀 Open in Storybook
+  </a>
+</div>
+
+## Usage Guidelines
+
+### When to Use
+
+- **Primary actions**: Use the primary variant for the main action on a page
+- **Secondary actions**: Use secondary or outline variants for supporting actions
+- **Destructive actions**: Use the error semantic variant for delete/remove actions
+- **Success confirmations**: Use the success semantic variant for save/confirm actions
+
+### Accessibility
+
+The Button component includes:
+
+- Proper ARIA attributes for screen readers
+- Keyboard navigation support (Tab, Enter, Space)
+- Focus indicators that meet WCAG contrast requirements
+- Disabled state handling that prevents interaction
+
+### Theme Integration
+
+Buttons automatically adapt to light and dark themes using CSS custom properties from `@sparkle/theme`. The semantic color variants maintain proper contrast ratios across all theme modes.
+
+## Related Components
+
+- **IconButton**: For icon-only actions
+- **ButtonGroup**: For related button collections
+- **ToggleButton**: For on/off state toggles
