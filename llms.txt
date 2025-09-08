@@ -6,13 +6,17 @@ This is a personal development playground that demonstrates modern monorepo arch
 
 The project emphasizes TypeScript-first development, comprehensive testing, and maintainable code architecture. It serves as both a learning environment and a foundation for building production-ready applications using cutting-edge web and mobile technologies. The theme system provides design tokens, light/dark mode support, and seamless cross-platform theming capabilities.
 
+## Documentation Site
+
+- [Introduction to Sparkle](docs/src/content/docs/getting-started/introduction.md): Complete design system philosophy, goals, and core principles
+- [Installation Guide](docs/src/content/docs/getting-started/installation.md): Step-by-step setup instructions for different use cases
+- [Quick Start Guide](docs/src/content/docs/getting-started/quick-start.md): Build your first component with Sparkle in minutes
+- [Project Structure Guide](docs/src/content/docs/getting-started/project-structure.md): Understanding the monorepo architecture and package organization
+- [Contributing Guide](docs/src/content/docs/development/contributing.md): Guidelines for contributing to the Sparkle Design System
+
 ## Documentation
 
 - [Main README](readme.md): Project overview and getting started guide
-- [Project Guide](docs/project-guide.md): Comprehensive guide to monorepo structure, technologies, and development workflows
-- [Development Workflows](docs/development-workflows.md): Optimized development workflows with enhanced developer experience and validation
-- [Troubleshooting Guide](docs/troubleshooting-guide.md): Solutions to common development issues with diagnostic tools and error reporting
-- [Best Practices Guide](docs/best-practices-for-sparkle-development.md): Comprehensive development guidelines and standards for TypeScript, mobile development, and monorepo management
 - [GitHub Copilot Instructions](.github/copilot-instructions.md): Comprehensive development guide for AI agents including architecture overview, workflows, and conventions
 
 ## Configuration
@@ -21,6 +25,13 @@ The project emphasizes TypeScript-first development, comprehensive testing, and 
 - [Workspace Configuration](pnpm-workspace.yaml): pnpm workspace package definitions
 - [Build Configuration](turbo.json): Turborepo pipeline configuration for builds and tasks
 - [TypeScript Configuration](tsconfig.json): Root TypeScript configuration and project references
+
+## Specifications & Planning
+
+- [Astro Starlight Documentation Plan](.ai/plan/feature-astro-starlight-docs-1.md): Implementation plan for comprehensive documentation site with automated component documentation
+- [Theme Management Package Plan](.ai/plan/feature-theme-management-package-1.md): Architecture and implementation plan for cross-platform theme system
+- [AI Development Prompts](.ai/docs/prompts.md): Cursor AI prompts and development assistance guidelines
+- [Build Pipeline Infrastructure](.ai/plan/infrastructure-build-pipeline-1.md): Comprehensive build system architecture and optimization plans
 
 ## Packages
 
@@ -44,8 +55,10 @@ The project emphasizes TypeScript-first development, comprehensive testing, and 
 - [Utility Functions](packages/utils/src/index.ts): Shared utility functions and React helpers
 - [Visual Regression Testing](packages/storybook/test/visual-regression/README.md): Automated visual testing setup for theme system and components
 - [Changesets Configuration](.changeset/config.json): Version management and changelog generation workflow
-- [AI Development Prompts](.ai/docs/prompts.md): Cursor AI prompts and development assistance guidelines
+- [Documentation Generation Scripts](docs/scripts/generate-docs.ts): Automated JSDoc extraction and Markdown generation for component documentation
 
 ## Optional
 
+- [Legacy Documentation](docs-legacy/best-practices-for-sparkle-development.md): Previous development guidelines and standards (superseded by new docs site)
+- [Legacy Project Guide](docs-legacy/project-guide.md): Previous comprehensive development guide (superseded by new docs site)
 - [License](license.md): MIT license information
