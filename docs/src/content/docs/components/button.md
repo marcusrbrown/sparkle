@@ -48,3 +48,15 @@ Supports keyboard navigation, focus management, and screen reader announcements.
 ## Related Components
 
 No directly related components found.
+
+## Source Code
+
+View the source code for this component on GitHub:
+
+- [components/Button/Button.tsx](https://github.com/marcusrbrown/sparkle/blob/main/packages/ui/src/components/Button/Button.tsx)
+
+## API Reference
+
+For detailed TypeScript definitions and additional API information, see:
+
+- [API Documentation](/api/ui/src#button)

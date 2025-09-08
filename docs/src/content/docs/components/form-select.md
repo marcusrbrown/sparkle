@@ -63,3 +63,15 @@ This component follows accessibility best practices with proper ARIA attributes 
 - [FormSelectItem](./form-select-item)
 - [FormSubmit](./form-submit)
 - [FormTextarea](./form-textarea)
+
+## Source Code
+
+View the source code for this component on GitHub:
+
+- [components/Form/FormSelect.tsx](https://github.com/marcusrbrown/sparkle/blob/main/packages/ui/src/components/Form/FormSelect.tsx)
+
+## API Reference
+
+For detailed TypeScript definitions and additional API information, see:
+
+- [API Documentation](/api/ui/src#formselect)
