@@ -47,7 +47,13 @@ export default defineConfig({
         {
           label: 'UI Components',
           badge: 'New',
-          items: [{label: 'Overview', slug: 'components/overview'}],
+          items: [
+            {label: 'Overview', slug: 'components/overview'},
+            {label: 'Architecture', slug: 'components/architecture'},
+            {label: 'Component Reference', slug: 'components/reference'},
+            {label: 'Button', slug: 'components/button'},
+            {label: 'Form', slug: 'components/form'},
+          ],
         },
         {
           label: 'Interactive Playground',
@@ -61,19 +67,36 @@ export default defineConfig({
         {
           label: 'Theme System',
           badge: 'Core',
-          items: [{label: 'Overview', slug: 'theme/overview'}],
+          items: [
+            {label: 'Overview', slug: 'theme/overview'},
+            {label: 'Design Tokens', slug: 'theme/design-tokens'},
+            {label: 'Customization', slug: 'theme/customization'},
+            {label: 'Cross-Platform', slug: 'theme/cross-platform'},
+          ],
         },
         {
           label: 'TypeScript Types',
-          items: [{label: 'Overview', slug: 'types/overview'}],
+          items: [
+            {label: 'Overview', slug: 'types/overview'},
+            {label: 'Interfaces', slug: 'types/interfaces'},
+            {label: 'Type Patterns', slug: 'types/patterns'},
+          ],
         },
         {
           label: 'Utilities',
-          items: [{label: 'Overview', slug: 'utils/overview'}],
+          items: [
+            {label: 'Overview', slug: 'utils/overview'},
+            {label: 'React Hooks', slug: 'utils/react-hooks'},
+            {label: 'String Utilities', slug: 'utils/string-utilities'},
+          ],
         },
         {
           label: 'Error Testing',
-          items: [{label: 'Overview', slug: 'error-testing/overview'}],
+          items: [
+            {label: 'Overview', slug: 'error-testing/overview'},
+            {label: 'Test Builder', slug: 'error-testing/test-builder'},
+            {label: 'Testing Strategies', slug: 'error-testing/testing-strategies'},
+          ],
         },
         {
           label: 'Development',
