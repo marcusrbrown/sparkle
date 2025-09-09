@@ -26,7 +26,7 @@
   },
   "devDependencies": {
     "@playwright/test": "1.55.0",
-    "@storybook/addon-a11y": "9.1.4",
+    "@storybook/addon-a11y": "9.1.5",
     "@storybook/addon-docs": "^9.0.0",
     "@storybook/addon-links": "^9.0.0",
     "@storybook/addon-onboarding": "^9.0.0",
