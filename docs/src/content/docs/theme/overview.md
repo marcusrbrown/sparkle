@@ -195,6 +195,19 @@ module.exports = {
 
 ## Next Steps
 
-- Learn about [Design Tokens](/theme/design-tokens/)
-- Explore [Theme Providers](/theme/providers/)
-- See [Customization Guide](/theme/customization/)
+### Getting Started
+
+- Learn about [Design Tokens](./design-tokens) for token definition patterns
+- Explore [Theme Providers](./providers) for setup and configuration
+- Follow the [Complete Workflow](./workflow) for end-to-end implementation
+
+### Advanced Usage
+
+- Read [Token Transformation](./token-transformation) for cross-platform conversion
+- Check [Advanced Customization](./advanced) for enterprise patterns
+- Review [Troubleshooting](./troubleshooting) for common issues and best practices
+
+### Platform-Specific
+
+- See [Customization Guide](./customization) for basic theming
+- Explore [Cross-Platform](./cross-platform) support details

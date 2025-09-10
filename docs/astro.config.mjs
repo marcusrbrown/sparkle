@@ -58,6 +58,11 @@ export default defineConfig({
               items: [
                 {label: 'Overview', slug: 'theme/overview'},
                 {label: 'Design Tokens', slug: 'theme/design-tokens'},
+                {label: 'Token Transformation', slug: 'theme/token-transformation'},
+                {label: 'Theme Providers', slug: 'theme/providers'},
+                {label: 'Complete Workflow', slug: 'theme/workflow'},
+                {label: 'Advanced Customization', slug: 'theme/advanced'},
+                {label: 'Troubleshooting', slug: 'theme/troubleshooting'},
                 {label: 'Customization', slug: 'theme/customization'},
                 {label: 'Cross-Platform', slug: 'theme/cross-platform'},
               ],
