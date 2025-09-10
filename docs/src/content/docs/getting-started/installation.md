@@ -5,35 +5,64 @@ description: Step-by-step guide to installing and configuring Sparkle in your pr
 
 ## Prerequisites
 
-Before installing Sparkle, ensure you have:
+Before installing Sparkle, ensure your development environment meets these requirements:
 
-- **Node.js** 18 or later
-- **pnpm** (recommended) or npm
+- **Node.js** 18.0.0 or later ([Download here](https://nodejs.org/))
+- **pnpm** 8.0.0 or later (recommended) or npm 8.0.0+
 - **TypeScript** 4.8 or later
-- **React** 18 or later
+- **React** 18.0.0 or later
 
-## Package Installation
+<!-- prettier-ignore-start -->
+:::tip[Why pnpm?]
+Sparkle is developed with pnpm and optimized for pnpm workspaces. While npm and yarn work, **pnpm provides faster installs** and better dependency resolution for monorepo projects.
 
-Sparkle is distributed as individual packages allowing you to install only what you need:
+Install pnpm: `npm install -g pnpm@latest`
+:::
+<!-- prettier-ignore-end -->
 
-### Core Packages
+## Installation Options
+
+Choose the installation approach that fits your project:
+
+### Option 1: Full Design System (Recommended)
+
+Install all core packages for complete design system functionality:
 
 ```bash
-# Install UI components and theme system
-pnpm add @sparkle/ui @sparkle/theme
-
-# Install TypeScript types (usually automatic)
-pnpm add @sparkle/types
+pnpm add @sparkle/ui @sparkle/theme @sparkle/types
 ```
 
-### Additional Packages
+This gives you:
+
+- ✅ **Complete component library** (`@sparkle/ui`)
+- ✅ **Cross-platform design tokens** (`@sparkle/theme`)
+- ✅ **TypeScript definitions** (`@sparkle/types`)
+
+### Option 2: Minimal Setup
+
+Install only what you need for a lightweight setup:
 
 ```bash
-# Utility functions and React hooks
+# Just design tokens for custom components
+pnpm add @sparkle/theme @sparkle/types
+
+# Add utilities for React hooks
 pnpm add @sparkle/utils
 
-# Error testing framework (development)
-pnpm add -D @sparkle/error-testing
+# Add UI components when ready
+pnpm add @sparkle/ui
+```
+
+### Option 3: Development Setup
+
+For contributing to Sparkle or advanced debugging:
+
+```bash
+# Install development tools
+pnpm add -D @sparkle/error-testing @sparkle/config
+
+# Core packages
+pnpm add @sparkle/ui @sparkle/theme @sparkle/types @sparkle/utils
 ```
 
 ## Configuration
@@ -152,12 +181,12 @@ CRA requires additional configuration for TypeScript paths and CSS imports. Cons
 
 - Check our [GitHub Issues](https://github.com/marcusrbrown/sparkle/issues)
 - Join discussions in [GitHub Discussions](https://github.com/marcusrbrown/sparkle/discussions)
-- Review our [troubleshooting guide](/development/contributing/)
+- Review our [development guide](/development/contributing)
 
 ## Next Steps
 
 Now that Sparkle is installed:
 
-- Explore [UI Components](/components/overview/)
-- Learn about [Design Tokens](/theme/overview/)
-- Follow the [Quick Start Guide](/getting-started/quick-start/)
+- Explore [UI Components](/components/overview)
+- Learn about [Design Tokens](/theme/design-tokens)
+- Follow the [Quick Start Guide](quick-start)
