@@ -35,6 +35,7 @@ export default defineConfig({
         maxHeadingLevel: 4,
       },
       sidebar: [
+        // Getting Started Section - Foundational information
         {
           label: 'Getting Started',
           items: [
@@ -44,70 +45,159 @@ export default defineConfig({
             {label: 'Project Structure', slug: 'getting-started/project-structure'},
           ],
         },
+
+        // Core System Documentation
         {
-          label: 'UI Components',
-          badge: 'New',
+          label: 'Design System',
+          collapsed: false,
           items: [
+            // Theme System - Core foundation
+            {
+              label: 'Theme System',
+              badge: 'Core',
+              items: [
+                {label: 'Overview', slug: 'theme/overview'},
+                {label: 'Design Tokens', slug: 'theme/design-tokens'},
+                {label: 'Customization', slug: 'theme/customization'},
+                {label: 'Cross-Platform', slug: 'theme/cross-platform'},
+              ],
+            },
+            // TypeScript Types - Type definitions
+            {
+              label: 'TypeScript Types',
+              badge: 'Types',
+              items: [
+                {label: 'Overview', slug: 'types/overview'},
+                {label: 'Interfaces', slug: 'types/interfaces'},
+                {label: 'Type Patterns', slug: 'types/patterns'},
+              ],
+            },
+          ],
+        },
+
+        // Component Library Section
+        {
+          label: 'Component Library',
+          collapsed: false,
+          items: [
+            // Component Overview and Architecture
             {label: 'Overview', slug: 'components/overview'},
             {label: 'Architecture', slug: 'components/architecture'},
-            {label: 'Component Reference', slug: 'components/reference'},
-            {label: 'Button', slug: 'components/button'},
-            {label: 'Form', slug: 'components/form'},
+
+            // Core Components
+            {
+              label: 'Core Components',
+              items: [{label: 'Button', slug: 'components/button'}],
+            },
+
+            // Form Components - Grouped for better organization
+            {
+              label: 'Form Components',
+              collapsed: true,
+              items: [
+                {label: 'Form Container', slug: 'components/form'},
+                {label: 'Form Control', slug: 'components/form-control'},
+                {label: 'Form Field', slug: 'components/form-field'},
+                {label: 'Form Input', slug: 'components/form-input'},
+                {label: 'Form Label', slug: 'components/form-label'},
+                {label: 'Form Message', slug: 'components/form-message'},
+                {label: 'Form Password', slug: 'components/form-password'},
+                {label: 'Form Select', slug: 'components/form-select'},
+                {label: 'Form Textarea', slug: 'components/form-textarea'},
+                {label: 'Form Submit', slug: 'components/form-submit'},
+                {label: 'Form Description', slug: 'components/form-description'},
+              ],
+            },
+
+            // Complete Component Reference
+            {label: 'Complete Reference', slug: 'components/reference'},
           ],
         },
+
+        // Utilities and Tools
         {
-          label: 'Interactive Playground',
+          label: 'Utilities & Tools',
+          collapsed: true,
+          items: [
+            // React Utilities
+            {
+              label: 'React Utilities',
+              items: [
+                {label: 'Overview', slug: 'utils/overview'},
+                {label: 'React Hooks', slug: 'utils/react-hooks'},
+                {label: 'String Utilities', slug: 'utils/string-utilities'},
+              ],
+            },
+            // Testing Tools
+            {
+              label: 'Testing Framework',
+              badge: 'Testing',
+              items: [
+                {label: 'Overview', slug: 'error-testing/overview'},
+                {label: 'Test Builder', slug: 'error-testing/test-builder'},
+                {label: 'Testing Strategies', slug: 'error-testing/testing-strategies'},
+              ],
+            },
+          ],
+        },
+
+        // Interactive Features
+        {
+          label: 'Interactive Features',
           badge: 'Demo',
+          collapsed: true,
           items: [
             {label: 'Interactive Demos', slug: 'playground/interactive-demos'},
-            {label: 'Button Example', slug: 'playground/button-example'},
+            {label: 'Component Examples', slug: 'playground/button-example'},
             {label: 'Live Code Editor', slug: 'playground/live-code-editor'},
+            {label: 'Copy Demo', slug: 'playground/copy-demo'},
           ],
         },
-        {
-          label: 'Theme System',
-          badge: 'Core',
-          items: [
-            {label: 'Overview', slug: 'theme/overview'},
-            {label: 'Design Tokens', slug: 'theme/design-tokens'},
-            {label: 'Customization', slug: 'theme/customization'},
-            {label: 'Cross-Platform', slug: 'theme/cross-platform'},
-          ],
-        },
-        {
-          label: 'TypeScript Types',
-          items: [
-            {label: 'Overview', slug: 'types/overview'},
-            {label: 'Interfaces', slug: 'types/interfaces'},
-            {label: 'Type Patterns', slug: 'types/patterns'},
-          ],
-        },
-        {
-          label: 'Utilities',
-          items: [
-            {label: 'Overview', slug: 'utils/overview'},
-            {label: 'React Hooks', slug: 'utils/react-hooks'},
-            {label: 'String Utilities', slug: 'utils/string-utilities'},
-          ],
-        },
-        {
-          label: 'Error Testing',
-          items: [
-            {label: 'Overview', slug: 'error-testing/overview'},
-            {label: 'Test Builder', slug: 'error-testing/test-builder'},
-            {label: 'Testing Strategies', slug: 'error-testing/testing-strategies'},
-          ],
-        },
-        {
-          label: 'Development',
-          items: [
-            {label: 'Contributing', slug: 'development/contributing'},
-            {label: 'React Integration Test', slug: 'development/react-integration-test'},
-          ],
-        },
+
+        // API Documentation
         {
           label: 'API Reference',
-          autogenerate: {directory: 'reference'},
+          badge: 'API',
+          collapsed: true,
+          items: [
+            {label: 'API Overview', slug: 'api/readme'},
+            {
+              label: 'Package APIs',
+              items: [
+                {
+                  label: 'UI Components',
+                  autogenerate: {directory: 'api/ui'},
+                },
+                {
+                  label: 'Theme System',
+                  autogenerate: {directory: 'api/theme'},
+                },
+                {
+                  label: 'Types',
+                  autogenerate: {directory: 'api/types'},
+                },
+                {
+                  label: 'Utilities',
+                  autogenerate: {directory: 'api/utils'},
+                },
+                {
+                  label: 'Error Testing',
+                  autogenerate: {directory: 'api/error-testing'},
+                },
+              ],
+            },
+          ],
+        },
+
+        // Development and Contributing
+        {
+          label: 'Development',
+          badge: 'Dev',
+          collapsed: true,
+          items: [
+            {label: 'Contributing Guide', slug: 'development/contributing'},
+            {label: 'React Integration Test', slug: 'development/react-integration-test'},
+          ],
         },
       ],
     }),
