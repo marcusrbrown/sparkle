@@ -1,11 +1,24 @@
 ---
 title: 'Button Component'
-description: 'Interactive Button component showcase with live examples and API documentation'
+description: 'Comprehensive Button component documentation with interactive examples, accessibility guidelines, and complete API reference'
 ---
 
 import {Button} from '@sparkle/ui'
 import ComponentShowcase from '../../../components/showcase/ComponentShowcase.astro'
 import PropsTable from '../../../components/showcase/PropsTable.astro'
+
+# Button Component
+
+A versatile, accessible button component with theme-aware styling, semantic color variants, and comprehensive interaction states. Built on modern web standards with full TypeScript support and cross-platform design token integration.
+
+## Features
+
+- **🎨 Theme-Aware**: Automatic light/dark mode support via CSS custom properties
+- **🎯 Semantic Variants**: Contextual colors for success, warning, and error states
+- **♿ Accessible**: Full keyboard navigation, focus management, and ARIA compliance
+- **🔧 Flexible**: Multiple sizes, variants, and customization options
+- **⚡ Performance**: Lightweight with minimal JavaScript footprint
+- **📱 Responsive**: Adapts to different screen sizes and touch targets
 
 <ComponentShowcase
   componentName="Button"
@@ -18,21 +31,354 @@ import PropsTable from '../../../components/showcase/PropsTable.astro'
 
 ### Basic Variants
 
-The four main button variants available in the design system:
+The four core button variants provide different visual hierarchies for your interface:
 
-<div style="display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0; padding: 1rem; border: 1px solid #e5e7eb; border-radius: 0.5rem;">
-  <Button variant="primary">Primary</Button>
-  <Button variant="secondary">Secondary</Button>
-  <Button variant="outline">Outline</Button>
-  <Button variant="ghost">Ghost</Button>
+```jsx
+// Primary: Main call-to-action, highest emphasis
+<Button variant="primary">Get Started</Button>
+
+// Secondary: Supporting actions, medium emphasis
+<Button variant="secondary">Learn More</Button>
+
+// Outline: Low emphasis, maintains presence
+<Button variant="outline">Cancel</Button>
+
+// Ghost: Minimal emphasis, subtle interactions
+<Button variant="ghost">Skip</Button>
+```
+
+**Usage Guidelines:**
+- **Primary**: Use for the most important action on a page (typically 1 per view)
+- **Secondary**: For secondary actions that support the primary goal
+- **Outline**: For actions that need visual presence without strong emphasis
+- **Ghost**: For tertiary actions, navigation, or when space is constrained
+
+### Button Sizes
+
+Three carefully designed sizes to fit different contexts and hierarchies:
+
+<div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; margin: 1rem 0; padding: 1rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; background: #fafafa;">
+  <Button size="sm" variant="primary">Small</Button>
+  <Button size="md" variant="primary">Medium</Button>
+  <Button size="lg" variant="primary">Large</Button>
 </div>
 
 ```jsx
-<Button variant="primary">Primary</Button>
-<Button variant="secondary">Secondary</Button>
-<Button variant="outline">Outline</Button>
-<Button variant="ghost">Ghost</Button>
+// Small: Compact spaces, toolbars, inline actions
+<Button size="sm">Save</Button>
+
+// Medium: Default size, most common use case
+<Button size="md">Submit Form</Button>
+
+// Large: Hero sections, prominent CTAs
+<Button size="lg">Get Started Now</Button>
 ```
+
+**Size Guidelines:**
+- **Small (sm)**: 44px min height, ideal for toolbars and dense layouts
+- **Medium (md)**: Default 48px height, optimal for most interfaces
+- **Large (lg)**: 56px height, perfect for landing pages and CTAs
+
+### Semantic Color Variants
+
+Semantic variants provide contextual meaning and immediate visual feedback:
+
+<div style="display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0; padding: 1rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; background: #fafafa;">
+  <Button semantic="default" variant="primary">Default</Button>
+  <Button semantic="success" variant="primary">Success</Button>
+  <Button semantic="warning" variant="primary">Warning</Button>
+  <Button semantic="error" variant="primary">Error</Button>
+</div>
+
+```jsx
+// Success: Confirmations, completions
+<Button semantic="success">Save Changes</Button>
+
+// Warning: Caution required, reversible actions
+<Button semantic="warning">Archive Item</Button>
+
+// Error: Destructive actions, permanent changes
+<Button semantic="error">Delete Account</Button>
+```
+
+### Interactive States
+
+All buttons include comprehensive interaction states for better user feedback:
+
+<div style="display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0; padding: 1rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; background: #fafafa;">
+  <Button variant="primary">Normal</Button>
+  <Button variant="primary" disabled>Disabled</Button>
+</div>
+
+```jsx
+// Disabled state
+<Button disabled>Processing...</Button>
+
+// With loading state (custom implementation)
+<Button disabled>
+  Loading...
+</Button>
+```
+
+### Complete Example: Form Actions
+
+Real-world example showing button variants working together in a form context:
+
+<div style="margin: 1rem 0; padding: 1.5rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; background: #fafafa;">
+  <div style="display: flex; gap: 1rem; justify-content: flex-end; flex-wrap: wrap;">
+    <Button variant="ghost">Cancel</Button>
+    <Button variant="outline">Save Draft</Button>
+    <Button variant="primary">Publish Article</Button>
+  </div>
+</div>
+
+```jsx
+<form onSubmit={handleSubmit}>
+  {/* Form fields */}
+
+  <div className="form-actions">
+    <Button
+      type="button"
+      variant="ghost"
+      onClick={() => router.back()}
+    >
+      Cancel
+    </Button>
+
+    <Button
+      type="button"
+      variant="outline"
+      onClick={saveDraft}
+    >
+      Save Draft
+    </Button>
+
+    <Button
+      type="submit"
+      variant="primary"
+    >
+      Publish Article
+    </Button>
+  </div>
+</form>
+```
+
+## API Reference
+
+### Props
+
+<PropsTable componentName="Button" />
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `variant` | `'primary' \| 'secondary' \| 'outline' \| 'ghost'` | `'primary'` | Visual style variant |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Button size |
+| `semantic` | `'default' \| 'success' \| 'warning' \| 'error'` | `'default'` | Semantic color variant |
+| `disabled` | `boolean` | `false` | Disables button interaction |
+| `type` | `'button' \| 'submit' \| 'reset'` | `'button'` | HTML button type |
+| `onClick` | `(event: MouseEvent) => void` | - | Click event handler |
+| `children` | `React.ReactNode` | - | Button content |
+| `className` | `string` | - | Additional CSS classes |
+
+### HTML Attributes
+
+The Button component extends `HTMLButtonElement` and accepts all standard button attributes:
+
+- `aria-label`, `aria-describedby` for accessibility
+- `data-*` attributes for testing and analytics
+- `id`, `name` for form integration
+- `tabIndex` for custom focus management
+
+## Design Tokens
+
+The Button component uses the following design tokens from `@sparkle/theme`:
+
+### Colors
+```css
+/* Primary colors */
+--theme-primary-50 to --theme-primary-900
+
+/* Semantic colors */
+--theme-success-50 to --theme-success-900
+--theme-warning-50 to --theme-warning-900
+--theme-error-50 to --theme-error-900
+
+/* Secondary colors */
+--theme-secondary-50 to --theme-secondary-900
+```
+
+### Spacing & Typography
+```css
+/* Button padding */
+--spacing-sm: 0.5rem
+--spacing-md: 1rem
+--spacing-lg: 1.5rem
+
+/* Typography */
+--font-weight-medium: 500
+--border-radius-md: 0.375rem
+```
+
+## Accessibility
+
+The Button component is built with accessibility as a priority:
+
+### Keyboard Navigation
+- **Space/Enter**: Activates the button
+- **Tab**: Moves focus to/from the button
+- **Escape**: Can be used to cancel actions (custom implementation)
+
+### Screen Reader Support
+- Proper semantic `<button>` element
+- Support for `aria-label` and `aria-describedby`
+- Clear focus indicators with high contrast
+- Disabled state properly communicated
+
+### Best Practices
+```jsx
+// ✅ Good: Clear, descriptive text
+<Button>Save Document</Button>
+
+// ✅ Good: Descriptive aria-label for icon buttons
+<Button aria-label="Close dialog">×</Button>
+
+// ✅ Good: Disabled state with loading indicator
+<Button disabled aria-label="Saving document...">
+  Saving...
+</Button>
+
+// ❌ Avoid: Vague or unclear text
+<Button>Click Here</Button>
+
+// ❌ Avoid: Missing labels for icon-only buttons
+<Button>×</Button>
+```
+
+### Focus Management
+- Visible focus ring with 2px offset
+- High contrast focus indicators
+- Respects `prefers-reduced-motion`
+- Focus trapping in modal contexts (when applicable)
+
+## Styling & Customization
+
+### CSS Classes
+
+The Button component generates semantic CSS classes that can be targeted for customization:
+
+```css
+/* Component styles */
+.theme-transition { /* Base transition styles */ }
+
+/* Size variants */
+.btn-sm { /* Small button styles */ }
+.btn-md { /* Medium button styles */ }
+.btn-lg { /* Large button styles */ }
+
+/* Variant styles applied via Tailwind utilities */
+```
+
+### Custom Styling
+
+```jsx
+// Custom CSS classes
+<Button className="my-custom-button">
+  Custom Button
+</Button>
+
+// Styled with CSS-in-JS
+const StyledButton = styled(Button)`
+  background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+`;
+```
+
+### Theme Customization
+
+Modify button appearance by updating theme tokens:
+
+```typescript
+// tailwind.config.js
+module.exports = {
+  theme: {
+    extend: {
+      colors: {
+        'theme-primary': {
+          500: '#your-brand-color',
+          600: '#your-brand-hover',
+        }
+      }
+    }
+  }
+}
+```
+
+## Common Patterns
+
+### Loading States
+
+```jsx
+const [loading, setLoading] = useState(false);
+
+<Button
+  disabled={loading}
+  onClick={async () => {
+    setLoading(true);
+    await saveData();
+    setLoading(false);
+  }}
+>
+  {loading ? 'Saving...' : 'Save'}
+</Button>
+```
+
+### Conditional Variants
+
+```jsx
+<Button
+  variant={isDestructive ? 'primary' : 'outline'}
+  semantic={isDestructive ? 'error' : 'default'}
+>
+  {isDestructive ? 'Delete' : 'Archive'}
+</Button>
+```
+
+### Icon Integration
+
+```jsx
+import { SaveIcon } from '@heroicons/react/24/outline';
+
+<Button>
+  <SaveIcon className="w-4 h-4 mr-2" />
+  Save Document
+</Button>
+```
+
+## Related Components
+
+- **[Form](/components/form)** - For form submission buttons
+- **[FormSubmit](/components/form-submit)** - Specialized submit button with validation
+- **Link Button** - For navigation actions (coming soon)
+
+## Source Code
+
+View the source code for this component:
+
+- [Button.tsx](https://github.com/marcusrbrown/sparkle/blob/main/packages/ui/src/components/Button/Button.tsx) - Main component implementation
+- [Button Stories](https://github.com/marcusrbrown/sparkle/blob/main/packages/storybook/src/stories/Button.stories.tsx) - Storybook examples
+
+## Changelog
+
+- **v1.0.0**: Initial button component with variants and semantic colors
+- **v1.1.0**: Added size variants and improved accessibility
+- **v1.2.0**: Enhanced theme integration and design tokens
+
+---
+
+*For detailed TypeScript definitions and additional API information, see the [API Documentation](/api/ui/src#button).*
 
 ### Sizes
 

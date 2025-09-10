@@ -1,161 +1,589 @@
 ---
 title: 'Form Component'
-description: 'Interactive Form component showcase with live examples and API documentation'
+description: 'Comprehensive Form component documentation with accessible validation, submission handling, and complete API reference'
 ---
 
-import {Form} from '@sparkle/ui'
+import {Form, FormField, FormInput, FormLabel, FormMessage, FormSubmit} from '@sparkle/ui'
 import PropsTable from '../../../components/showcase/PropsTable.astro'
+
+# Form Component
+
+A robust, accessible form component built on Radix UI primitives with comprehensive validation, error handling, and submission management. Designed for complex forms with real-time validation and seamless user experience.
+
+## Features
+
+- **♿ Accessibility First**: Built on Radix UI Form primitives with ARIA compliance
+- **🔍 Real-time Validation**: Client-side validation with immediate feedback
+- **🚀 Advanced Submission**: Custom handlers for validation, success, and error states
+- **🎯 Type Safety**: Full TypeScript support with form data typing
+- **🔧 Flexible**: Works with any form fields and validation libraries
+- **⚡ Performance**: Optimized for large forms with efficient re-renders
+- **🌐 Progressive Enhancement**: Works without JavaScript as fallback
 
 ## Live Examples
 
-### Basic Form
+### Basic Contact Form
 
-A simple form with accessible validation and submission handling:
+A simple contact form demonstrating core functionality:
 
-<div style="margin: 1rem 0; padding: 1rem; border: 1px solid #e5e7eb; border-radius: 0.5rem;">
-  <Form onSubmit={(e) => { e.preventDefault(); alert('Form submitted!'); }}>
+<div style="margin: 1rem 0; padding: 1.5rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; background: #fafafa;">
+  <Form onSubmit={(e) => { e.preventDefault(); alert('Form submitted successfully!'); }}>
     <div style="margin-bottom: 1rem;">
-      <label htmlFor="email" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">
+      <label htmlFor="basic-email" style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #374151;">
+        Email Address
+      </label>
+      <input
+        type="email"
+        id="basic-email"
+        name="email"
+        required
+        placeholder="Enter your email"
+        style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 0.875rem;"
+      />
+    </div>
+    <div style="margin-bottom: 1.5rem;">
+      <label htmlFor="basic-message" style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #374151;">
+        Message
+      </label>
+      <textarea
+        id="basic-message"
+        name="message"
+        required
+        rows="4"
+        placeholder="Tell us about your project..."
+        style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 0.875rem; resize: vertical;"
+      />
+    </div>
+    <button
+      type="submit"
+      style="background: #3b82f6; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 0.375rem; font-weight: 500; cursor: pointer;"
+    >
+      Send Message
+    </button>
+  </Form>
+</div>
+
+```jsx
+<Form onSubmit={(e) => { 
+  e.preventDefault(); 
+  console.log('Form submitted!'); 
+}}>
+  <div>
+    <label htmlFor="email">Email Address</label>
+    <input 
+      type="email" 
+      id="email" 
+      name="email" 
+      required 
+      placeholder="Enter your email"
+    />
+  </div>
+  
+  <div>
+    <label htmlFor="message">Message</label>
+    <textarea 
+      id="message" 
+      name="message" 
+      required
+      rows="4"
+      placeholder="Tell us about your project..."
+    />
+  </div>
+  
+  <button type="submit">Send Message</button>
+</Form>
+```
+
+### Advanced Form with Validation
+
+Example showing custom validation, error handling, and success states:
+
+<div style="margin: 1rem 0; padding: 1.5rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; background: #fafafa;">
+  <Form 
+    onValidate={(formData) => {
+      // Custom validation logic
+      const email = formData.get('email');
+      const password = formData.get('password');
+      
+      if (!email || !email.includes('@')) {
+        return false;
+      }
+      
+      if (!password || password.length < 8) {
+        return false;
+      }
+      
+      return true;
+    }}
+    onFormSuccess={(formData) => {
+      alert('Account created successfully!');
+    }}
+    onFormError={(error) => {
+      alert('Registration failed: ' + error.message);
+    }}
+  >
+    <div style="margin-bottom: 1rem;">
+      <label htmlFor="reg-email" style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #374151;">
         Email
       </label>
       <input
         type="email"
-        id="email"
+        id="reg-email"
         name="email"
         required
-        style="width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.375rem;"
+        placeholder="you@example.com"
+        style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem;"
       />
     </div>
+    
     <div style="margin-bottom: 1rem;">
-      <label htmlFor="message" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">
-        Message
+      <label htmlFor="reg-password" style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #374151;">
+        Password
       </label>
-      <textarea
-        id="message"
-        name="message"
-        rows="3"
-        style="width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.375rem;"
+      <input
+        type="password"
+        id="reg-password"
+        name="password"
+        required
+        minLength="8"
+        placeholder="At least 8 characters"
+        style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem;"
       />
     </div>
+    
+    <div style="margin-bottom: 1.5rem;">
+      <label style="display: flex; align-items: center; font-size: 0.875rem; color: #374151;">
+        <input
+          type="checkbox"
+          name="terms"
+          required
+          style="margin-right: 0.5rem;"
+        />
+        I agree to the Terms of Service
+      </label>
+    </div>
+    
     <button
       type="submit"
-      style="background: #3b82f6; color: white; padding: 0.5rem 1rem; border: none; border-radius: 0.375rem; cursor: pointer;"
+      style="background: #059669; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 0.375rem; font-weight: 500; cursor: pointer; width: 100%;"
     >
-      Submit
+      Create Account
     </button>
   </Form>
 </div>
 
 ```jsx
-<Form onSubmit={(e) => { e.preventDefault(); console.log('Form submitted!'); }}>
-  <div>
-    <label htmlFor="email">Email</label>
-    <input type="email" id="email" name="email" required />
-  </div>
-  <div>
-    <label htmlFor="message">Message</label>
-    <textarea id="message" name="message" rows="3" />
-  </div>
-  <button type="submit">Submit</button>
+const handleRegistration = async (formData) => {
+  try {
+    const response = await fetch('/api/register', {
+      method: 'POST',
+      body: formData
+    });
+    
+    if (!response.ok) {
+      throw new Error('Registration failed');
+    }
+    
+    return await response.json();
+  } catch (error) {
+    throw error;
+  }
+};
+
+<Form 
+  onValidate={(formData) => {
+    const email = formData.get('email');
+    const password = formData.get('password');
+    
+    // Client-side validation
+    if (!email?.includes('@')) return false;
+    if (!password || password.length < 8) return false;
+    
+    return true;
+  }}
+  onFormSuccess={(formData) => {
+    console.log('Registration successful:', formData);
+    router.push('/welcome');
+  }}
+  onFormError={(error) => {
+    console.error('Registration error:', error);
+    setErrorMessage(error.message);
+  }}
+>
+  {/* Form fields */}
 </Form>
 ```
 
-### Form with Clear on Submit
+### Form with Loading States
 
-A form that clears fields after successful submission:
-
-<div style="margin: 1rem 0; padding: 1rem; border: 1px solid #e5e7eb; border-radius: 0.5rem;">
-  <Form clearOnSubmit={true} onSubmit={(e) => { e.preventDefault(); alert('Form submitted and cleared!'); }}>
-    <div style="margin-bottom: 1rem;">
-      <label htmlFor="name" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">
-        Name
-      </label>
-      <input
-        type="text"
-        id="name"
-        name="name"
-        style="width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.375rem;"
-      />
-    </div>
-    <button
-      type="submit"
-      style="background: #10b981; color: white; padding: 0.5rem 1rem; border: none; border-radius: 0.375rem; cursor: pointer;"
-    >
-      Submit & Clear
-    </button>
-  </Form>
-</div>
+Demonstrating loading states and disabled form management:
 
 ```jsx
-<Form clearOnSubmit={true} onSubmit={handleSubmit}>
-  <div>
-    <label htmlFor="name">Name</label>
-    <input type="text" id="name" name="name" />
-  </div>
-  <button type="submit">Submit & Clear</button>
+const [isSubmitting, setIsSubmitting] = useState(false);
+
+<Form 
+  onSubmit={async (event) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+    
+    try {
+      const formData = new FormData(event.currentTarget);
+      await submitForm(formData);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }}
+>
+  {/* Form fields */}
+  
+  <button 
+    type="submit" 
+    disabled={isSubmitting}
+  >
+    {isSubmitting ? 'Saving...' : 'Save Changes'}
+  </button>
 </Form>
 ```
 
 ## API Reference
 
+### Form Props
+
 <PropsTable componentName="Form" />
 
-## Storybook Playground
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `onSubmit` | `(event: FormEvent) => void` | - | Standard form submission handler |
+| `onValidate` | `(formData: FormData) => boolean \| Promise<boolean>` | - | Custom validation function |
+| `onFormSuccess` | `(formData: FormData) => void` | - | Called on successful form submission |
+| `onFormError` | `(error: Error) => void` | - | Called when form submission fails |
+| `clearOnSubmit` | `boolean` | `false` | Clear form after successful submission |
+| `preventDefaultSubmission` | `boolean` | `false` | Prevent default form submission behavior |
+| `children` | `React.ReactNode` | - | Form content and fields |
+| `className` | `string` | - | Additional CSS classes |
 
-Explore all Form variations in our interactive Storybook:
+### Form Data Handling
 
-<div style="border: 1px solid #e5e7eb; border-radius: 0.5rem; overflow: hidden; height: 400px; margin: 1rem 0;">
-  <iframe
-    src="/storybook/iframe.html?id=components-form--default&viewMode=story"
-    style="width: 100%; height: 100%; border: 0;"
-    title="Form Storybook"
-    loading="lazy"
-  />
-</div>
+The Form component provides several ways to handle form data:
 
-<div style="text-align: center; margin: 1rem 0;">
-  <a
-    href="/storybook/?path=/story/components-form--default"
-    target="_blank"
-    rel="noopener noreferrer"
-    style="display: inline-flex; align-items: center; padding: 0.5rem 1rem; background: #3b82f6; color: white; text-decoration: none; border-radius: 0.375rem;"
-  >
-    🚀 Open in Storybook
-  </a>
-</div>
+#### FormData API
+```jsx
+<Form onValidate={(formData) => {
+  const email = formData.get('email') as string;
+  const age = Number(formData.get('age'));
+  
+  return email.includes('@') && age >= 18;
+}}>
+  {/* Form fields */}
+</Form>
+```
 
-## Usage Guidelines
+#### Object Conversion
+```jsx
+const formDataToObject = (formData) => {
+  return Object.fromEntries(formData.entries());
+};
 
-### When to Use
+<Form onFormSuccess={(formData) => {
+  const data = formDataToObject(formData);
+  console.log(data); // { email: 'user@example.com', name: 'John' }
+}}>
+  {/* Form fields */}
+</Form>
+```
 
-- **Data Collection**: Use for gathering user input and data submission
-- **Settings**: Use for configuration and preference forms
-- **Contact**: Use for contact and feedback forms
-- **Registration**: Use for user registration and onboarding flows
+## Validation Patterns
 
-### Accessibility
+### Client-Side Validation
 
-The Form component includes:
+```jsx
+const validateForm = (formData) => {
+  const email = formData.get('email');
+  const password = formData.get('password');
+  const confirmPassword = formData.get('confirmPassword');
+  
+  // Email validation
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return false;
+  }
+  
+  // Password validation
+  if (!password || password.length < 8) {
+    return false;
+  }
+  
+  // Password confirmation
+  if (password !== confirmPassword) {
+    return false;
+  }
+  
+  return true;
+};
 
-- Proper form structure and semantic HTML
-- Label association with form controls
-- Error handling and validation feedback
-- Keyboard navigation support
-- Screen reader compatibility
+<Form onValidate={validateForm}>
+  {/* Form fields */}
+</Form>
+```
 
-### Form Validation
+### Async Validation
 
-The Form component supports:
+```jsx
+const validateAsync = async (formData) => {
+  const username = formData.get('username');
+  
+  // Check username availability
+  try {
+    const response = await fetch(`/api/check-username/${username}`);
+    const { available } = await response.json();
+    return available;
+  } catch (error) {
+    console.error('Validation error:', error);
+    return false;
+  }
+};
 
-- HTML5 validation attributes (`required`, `pattern`, etc.)
-- Custom validation via JavaScript
-- Real-time validation feedback
-- Accessible error messaging
+<Form onValidate={validateAsync}>
+  {/* Form fields */}
+</Form>
+```
+
+### Integration with Validation Libraries
+
+```jsx
+import { z } from 'zod';
+
+const schema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+  age: z.number().min(18)
+});
+
+const validateWithZod = (formData) => {
+  try {
+    const data = {
+      email: formData.get('email'),
+      password: formData.get('password'),
+      age: Number(formData.get('age'))
+    };
+    
+    schema.parse(data);
+    return true;
+  } catch (error) {
+    console.error('Validation errors:', error.errors);
+    return false;
+  }
+};
+
+<Form onValidate={validateWithZod}>
+  {/* Form fields */}
+</Form>
+```
+
+## Error Handling
+
+### Error Types
+
+The Form component handles various error scenarios:
+
+```jsx
+<Form 
+  onFormError={(error) => {
+    if (error.name === 'ValidationError') {
+      setValidationErrors(error.details);
+    } else if (error.name === 'NetworkError') {
+      setNetworkError('Please check your connection');
+    } else {
+      setGeneralError('Something went wrong');
+    }
+  }}
+>
+  {/* Form fields */}
+</Form>
+```
+
+### Error Recovery
+
+```jsx
+const [submitAttempts, setSubmitAttempts] = useState(0);
+const maxAttempts = 3;
+
+<Form 
+  onFormError={(error) => {
+    setSubmitAttempts(prev => prev + 1);
+    
+    if (submitAttempts < maxAttempts) {
+      // Show retry option
+      setShowRetry(true);
+    } else {
+      // Disable form after max attempts
+      setFormDisabled(true);
+    }
+  }}
+>
+  {/* Form fields */}
+</Form>
+```
+
+## Accessibility
+
+The Form component prioritizes accessibility and follows ARIA best practices:
+
+### Screen Reader Support
+
+- Proper form landmarks and structure
+- Field labels associated with inputs
+- Error messages announced to screen readers
+- Success confirmations communicated
+
+### Keyboard Navigation
+
+- Tab order respects visual layout
+- Enter key submits forms appropriately
+- Escape key can cancel submissions (custom)
+- Arrow keys for radio/checkbox groups
+
+### Focus Management
+
+```jsx
+const formRef = useRef(null);
+
+<Form 
+  ref={formRef}
+  onFormError={(error) => {
+    // Focus first invalid field
+    const firstInvalid = formRef.current?.querySelector(':invalid');
+    firstInvalid?.focus();
+  }}
+>
+  {/* Form fields */}
+</Form>
+```
+
+### Accessibility Best Practices
+
+```jsx
+// ✅ Good: Clear labels and structure
+<Form>
+  <fieldset>
+    <legend>Contact Information</legend>
+    
+    <div>
+      <label htmlFor="name">Full Name *</label>
+      <input 
+        id="name" 
+        name="name" 
+        required 
+        aria-describedby="name-help"
+      />
+      <div id="name-help">Enter your full legal name</div>
+    </div>
+  </fieldset>
+</Form>
+
+// ❌ Avoid: Missing labels and unclear structure
+<Form>
+  <input placeholder="Name" />
+  <input placeholder="Email" />
+</Form>
+```
+
+## Performance Optimization
+
+### Large Forms
+
+For forms with many fields, consider performance optimizations:
+
+```jsx
+import { memo } from 'react';
+
+const FormField = memo(({ label, name, type }) => (
+  <div>
+    <label htmlFor={name}>{label}</label>
+    <input id={name} name={name} type={type} />
+  </div>
+));
+
+<Form>
+  {fields.map(field => (
+    <FormField key={field.name} {...field} />
+  ))}
+</Form>
+```
+
+### Debounced Validation
+
+```jsx
+import { useDebouncedCallback } from 'use-debounce';
+
+const debouncedValidation = useDebouncedCallback(
+  (formData) => validateForm(formData),
+  300
+);
+
+<Form onValidate={debouncedValidation}>
+  {/* Form fields */}
+</Form>
+```
+
+## Integration Examples
+
+### With React Hook Form
+
+```jsx
+import { useForm } from 'react-hook-form';
+
+const MyForm = () => {
+  const { register, handleSubmit, formState: { errors } } = useForm();
+  
+  return (
+    <Form onSubmit={handleSubmit(onSubmit)}>
+      <input {...register('email', { required: true })} />
+      {errors.email && <span>Email is required</span>}
+    </Form>
+  );
+};
+```
+
+### With Formik
+
+```jsx
+import { Formik } from 'formik';
+
+<Formik
+  initialValues={{ email: '', password: '' }}
+  onSubmit={handleSubmit}
+>
+  {({ handleSubmit: formikSubmit }) => (
+    <Form onSubmit={formikSubmit}>
+      {/* Form fields */}
+    </Form>
+  )}
+</Formik>
+```
 
 ## Related Components
 
-- **Input**: For text input fields
-- **TextArea**: For multi-line text input
-- **Select**: For dropdown selections
-- **Checkbox**: For boolean choices
-- **RadioGroup**: For single selection from multiple options
+- **[FormField](/components/form-field)** - Individual form field wrapper
+- **[FormInput](/components/form-input)** - Enhanced input component
+- **[FormLabel](/components/form-label)** - Accessible form labels
+- **[FormMessage](/components/form-message)** - Validation messages
+- **[FormSubmit](/components/form-submit)** - Form submission button
+- **[Button](/components/button)** - For form actions
+
+## Source Code
+
+View the source code for this component:
+
+- [Form.tsx](https://github.com/marcusrbrown/sparkle/blob/main/packages/ui/src/components/Form/Form.tsx) - Main component implementation
+- [Form Stories](https://github.com/marcusrbrown/sparkle/blob/main/packages/storybook/src/stories/Form.stories.tsx) - Storybook examples
+
+## Changelog
+
+- **v1.0.0**: Initial form component with Radix UI integration
+- **v1.1.0**: Added validation handlers and error management
+- **v1.2.0**: Enhanced accessibility and TypeScript support
+- **v1.3.0**: Added success/error callbacks and performance optimizations
+
+---
+
+*For detailed TypeScript definitions and additional API information, see the [API Documentation](/api/ui/src#form).*
