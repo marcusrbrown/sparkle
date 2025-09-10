@@ -131,6 +131,8 @@ export default defineConfig({
                 {label: 'Overview', slug: 'utils/overview'},
                 {label: 'React Hooks', slug: 'utils/react-hooks'},
                 {label: 'String Utilities', slug: 'utils/string-utilities'},
+                {label: 'API Reference', slug: 'utils/reference', badge: 'API'},
+                {label: 'Advanced Patterns', slug: 'utils/advanced-patterns', badge: 'Advanced'},
               ],
             },
             // Testing Tools
