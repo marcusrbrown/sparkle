@@ -1,6 +1,9 @@
 ---
 title: Introduction to Sparkle
 description: Learn about the Sparkle Design System's philosophy, goals, and core principles.
+next:
+  link: /getting-started/installation/
+  label: Get Started with Installation
 ---
 
 Welcome to **Sparkle**, a comprehensive TypeScript-first design system built for modern web and mobile applications. Sparkle provides a unified approach to building beautiful, accessible, and consistent user interfaces across platforms.
@@ -89,31 +92,24 @@ This architecture means you can:
 
 Ready to start building with Sparkle? Here's your path to success:
 
-### 🚀 **Quick Start (5 minutes)**
+### 🚀 Next Steps
 
-Jump right in with our streamlined setup guide:
+Ready to get started? Here's your roadmap:
 
-- **[Installation →](installation)** - Add Sparkle to your project
-- **[Quick Start →](quick-start)** - Build your first component
-
-### 📚 **Deep Dive**
-
-Master Sparkle's capabilities:
-
-- **[Project Structure →](project-structure)** - Understand the monorepo
-- **[UI Components →](/components/overview)** - Explore the component library
-- **[Theme System →](/theme/design-tokens)** - Learn about design tokens
-- **[Development Guide →](/development/contributing)** - Contribute to Sparkle
+- **[Installation →](../installation)** - Set up Sparkle in your project
+- **[UI Components →](../../components/overview)** - Explore the component library
+- **[Theme System →](../../theme/design-tokens)** - Learn about design tokens
+- **[Development Guide →](../../development/contributing)** - Contribute to Sparkle
 
 ### 🎯 **Common Use Cases**
 
 Find guides for your specific needs:
 
-- Building a **new React app** → Start with [Installation](installation) + [Quick Start](quick-start)
-- Adding to **existing project** → Check [Installation](installation) for framework-specific setup
-- **Cross-platform development** → Explore [Theme System](/theme/cross-platform)
-- **Custom components** → Learn [Component Architecture](/components/architecture)
-- **Contributing** → Read [Development Guide](/development/contributing)
+- Building a **new React app** → Start with [Installation](../installation) + [Quick Start](../quick-start)
+- Adding to **existing project** → Check [Installation](../installation) for framework-specific setup
+- **Cross-platform development** → Explore [Theme System](../../theme/cross-platform)
+- **Custom components** → Learn [Component Architecture](../../components/architecture)
+- **Contributing** → Read [Development Guide](../../development/contributing)
 
 <!-- prettier-ignore-start -->
 :::tip[Need Help?]

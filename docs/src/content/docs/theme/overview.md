@@ -1,6 +1,9 @@
 ---
 title: Theme System Overview
 description: Learn about Sparkle's design token system and cross-platform theming capabilities.
+next:
+  link: /theme/design-tokens/
+  label: Design Tokens Deep Dive
 ---
 
 ## Design Token Architecture
