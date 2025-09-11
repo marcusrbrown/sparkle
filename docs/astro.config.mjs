@@ -32,6 +32,25 @@ export default defineConfig({
             content: 'https://sparkle.mrbro.dev/sparkle-og-image.png',
           },
         },
+        // Accessibility enhancements
+        {
+          tag: 'meta',
+          attrs: {
+            name: 'viewport',
+            content: 'width=device-width, initial-scale=1.0, viewport-fit=cover',
+          },
+        },
+        // Preload critical resources for better performance
+        {
+          tag: 'link',
+          attrs: {
+            rel: 'preload',
+            href: '/fonts/system-ui.woff2',
+            as: 'font',
+            type: 'font/woff2',
+            crossorigin: 'anonymous',
+          },
+        },
       ],
       social: [
         {

@@ -391,11 +391,62 @@
   }
 }
 
-/* Accessibility enhancements */
+/* === ACCESSIBILITY ENHANCEMENTS === */
+/* Comprehensive WCAG 2.1 AA compliance features */
+
+/* Enhanced focus styles for better visibility */
 :focus-visible {
   outline: 2px solid var(--sl-color-accent);
   outline-offset: 2px;
   border-radius: var(--sparkle-border-radius-sm);
+}
+
+/* Skip link for screen readers and keyboard users */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--sl-color-accent);
+  color: white;
+  padding: 8px;
+  border-radius: var(--sparkle-border-radius-sm);
+  text-decoration: none;
+  z-index: 1000;
+  font-weight: 600;
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
+/* Enhanced focus styles for interactive elements */
+a:focus-visible,
+button:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--sl-color-accent);
+  outline-offset: 2px;
+  border-radius: var(--sparkle-border-radius-sm);
+}
+
+/* Ensure sufficient color contrast for text */
+.sl-markdown-content {
+  color: var(--sl-color-text);
+}
+
+/* Status indicators that don't rely solely on color */
+.status-badge--stable::before {
+  content: "✓ ";
+  font-weight: bold;
+}
+
+.status-badge--beta::before {
+  content: "β ";
+  font-weight: bold;
+}
+
+.status-badge--experimental::before {
+  content: "⚠ ";
+  font-weight: bold;
 }
 
 /* High contrast support */
@@ -404,15 +455,39 @@
     background: none;
     -webkit-text-fill-color: initial;
     color: var(--sl-color-text);
+    text-shadow: none;
   }
 
   .sl-sidebar-item[data-current-page] > a {
     background: var(--sl-color-accent);
+    border: 2px solid var(--sl-color-text);
+  }
+
+  /* Enhanced focus styles for high contrast */
+  :focus-visible {
+    outline: 3px solid var(--sl-color-accent);
+    outline-offset: 3px;
+    box-shadow: 0 0 0 1px var(--sl-color-text);
+  }
+
+  /* Ensure all text has proper contrast */
+  * {
+    text-shadow: none;
+    background-image: none;
   }
 }
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
   .sl-link-button,
   .sl-button,
   .pagefind-ui__search-input {
@@ -610,3 +685,4 @@
     text-align: center;
   }
 }
+
