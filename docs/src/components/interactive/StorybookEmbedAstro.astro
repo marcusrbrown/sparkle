@@ -69,10 +69,31 @@ const {
     text-decoration: underline;
   }
 
-  /* Responsive adjustments */
+  /* Responsive adjustments with Sparkle design tokens */
   @media (max-width: 768px) {
     .storybook-embed-wrapper {
-      margin: 0.5rem 0;
+      margin: var(--sparkle-spacing-sm) 0;
+      border-radius: var(--sparkle-border-radius-sm);
+    }
+
+    .storybook-fallback {
+      padding: var(--sparkle-spacing-md);
+      font-size: var(--sparkle-font-size-sm);
+    }
+  }
+
+  /* Tablet adjustments */
+  @media (min-width: 768px) and (max-width: 1024px) {
+    .storybook-embed-wrapper {
+      margin: var(--sparkle-spacing-md) 0;
+    }
+  }
+
+  /* Large screen optimizations */
+  @media (min-width: 1280px) {
+    .storybook-embed-wrapper {
+      margin: var(--sparkle-spacing-lg) 0;
+      border-radius: var(--sparkle-border-radius-lg);
     }
   }
 </style>
