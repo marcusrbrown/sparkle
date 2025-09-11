@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react'
+import {useResponsive} from '../../hooks/use-responsive'
 
 /**
  * Props for the StorybookEmbed component
@@ -62,6 +63,18 @@ export function StorybookEmbed({
 }: StorybookEmbedProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
+  const {isMobile, isTablet} = useResponsive()
+
+  // Adjust height for mobile devices to ensure better UX
+  const responsiveHeight = React.useMemo(() => {
+    if (isMobile) {
+      return Math.min(height, 300) // Limit height on mobile
+    }
+    if (isTablet) {
+      return Math.min(height, 400) // Slightly larger on tablet
+    }
+    return height
+  }, [height, isMobile, isTablet])
 
   // Construct the iframe URL with proper parameters
   const iframeUrl = React.useMemo(() => {
@@ -155,7 +168,8 @@ export function StorybookEmbed({
       style={{
         position: 'relative',
         width: typeof width === 'number' ? `${width}px` : width,
-        height: `${height}px`,
+        height: `${responsiveHeight}px`,
+        maxWidth: '100%',
       }}
       className={className}
     >
@@ -169,8 +183,8 @@ export function StorybookEmbed({
       {/* Storybook iframe */}
       <iframe
         src={iframeUrl}
-        width={width}
-        height={height}
+        width="100%"
+        height={responsiveHeight}
         title={accessibleTitle}
         style={{
           border: '1px solid #e0e0e0',
@@ -178,6 +192,8 @@ export function StorybookEmbed({
           backgroundColor: '#ffffff',
           opacity: isLoading ? 0 : 1,
           transition: 'opacity 0.2s ease-in-out',
+          display: 'block',
+          maxWidth: '100%',
         }}
         onLoad={handleLoad}
         onError={handleError}

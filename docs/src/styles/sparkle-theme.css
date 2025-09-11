@@ -116,20 +116,50 @@
   border-radius: var(--sparkle-border-radius-md);
   background: var(--sl-color-gray-1);
   box-shadow: var(--sparkle-shadow-sm);
+  overflow-x: auto;
+  font-size: var(--sparkle-font-size-sm);
 }
 
+/* Enhanced code blocks with responsive behavior */
 .sl-markdown-content code {
   font-family: var(--sparkle-font-family-mono);
   background: var(--sl-color-gray-2);
   border-radius: var(--sparkle-border-radius-sm);
   padding: 0.125rem 0.25rem;
+  font-size: 0.9em;
+  word-break: break-word;
 }
 
-/* Component showcase styling with Sparkle design tokens */
+/* Mobile: better inline code wrapping */
+@media (max-width: 768px) {
+  .sl-markdown-content code {
+    font-size: 0.85em;
+    word-break: break-all;
+  }
+}
+
+/* Mobile: smaller code blocks with better scrolling */
+@media (max-width: 768px) {
+  .sl-markdown-content pre {
+    margin-left: calc(-1 * var(--sparkle-responsive-padding));
+    margin-right: calc(-1 * var(--sparkle-responsive-padding));
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    font-size: var(--sparkle-font-size-xs);
+  }
+
+  .sl-markdown-content pre code {
+    padding: var(--sparkle-spacing-md);
+    display: block;
+  }
+}
+
+/* Component showcase styling with responsive design */
 .component-showcase {
   border: 1px solid var(--sl-color-gray-3);
   border-radius: var(--sparkle-border-radius-lg);
-  padding: var(--sparkle-spacing-lg);
+  padding: var(--sparkle-responsive-padding);
   margin: var(--sparkle-spacing-md) 0;
   background: var(--sl-color-white);
   box-shadow: var(--sparkle-shadow-md);
@@ -137,28 +167,48 @@
 
 .component-showcase-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: var(--sparkle-spacing-sm);
   margin-bottom: var(--sparkle-spacing-md);
   padding-bottom: var(--sparkle-spacing-sm);
   border-bottom: 1px solid var(--sl-color-gray-3);
 }
 
-/* Interactive playground styles with Sparkle spacing */
-.playground-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--sparkle-spacing-md);
-  margin: var(--sparkle-spacing-md) 0;
-}
-
-@media (max-width: 768px) {
-  .playground-container {
-    grid-template-columns: 1fr;
+/* Tablet and up: horizontal layout for showcase header */
+@media (min-width: 768px) {
+  .component-showcase-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--sparkle-spacing-md);
   }
 }
 
-/* Badge styling with Sparkle colors and design tokens */
+/* Interactive playground styles with mobile-first responsive design */
+.playground-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--sparkle-spacing-sm);
+  margin: var(--sparkle-spacing-md) 0;
+  padding: var(--sparkle-responsive-padding);
+}
+
+/* Tablet and up: side-by-side layout */
+@media (min-width: 768px) {
+  .playground-container {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--sparkle-spacing-md);
+  }
+}
+
+/* Large desktop: more generous spacing */
+@media (min-width: 1280px) {
+  .playground-container {
+    gap: var(--sparkle-spacing-lg);
+  }
+}
+
+/* Badge styling with responsive design */
 .status-badge {
   padding: var(--sparkle-spacing-xs) var(--sparkle-spacing-sm);
   border-radius: var(--sparkle-border-radius-sm);
@@ -166,6 +216,15 @@
   font-weight: 600;
   font-family: var(--sparkle-font-family-sans);
   text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Mobile: smaller badges */
+@media (max-width: 768px) {
+  .status-badge {
+    font-size: calc(var(--sparkle-font-size-xs) * 0.9);
+    padding: calc(var(--sparkle-spacing-xs) * 0.75) var(--sparkle-spacing-xs);
+  }
 }
 
 .status-badge--stable {
@@ -183,7 +242,7 @@
   color: white;
 }
 
-/* Navigation enhancements with Sparkle brand colors */
+/* Navigation enhancements with responsive design and Sparkle brand colors */
 .sl-sidebar-item[data-current-page] > a {
   background: linear-gradient(135deg, var(--sl-color-accent-low), var(--sl-color-accent));
   color: white;
@@ -191,12 +250,28 @@
   border-radius: var(--sparkle-border-radius-sm);
 }
 
-/* Search enhancements with Sparkle focus styles */
+/* Mobile: better touch targets for navigation */
+@media (max-width: 768px) {
+  .sl-sidebar-item > a {
+    padding: var(--sparkle-spacing-sm) var(--sparkle-spacing-md);
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+
+  .sl-sidebar-item[data-current-page] > a {
+    margin: var(--sparkle-spacing-xs) 0;
+  }
+}
+
+/* Search enhancements with responsive behavior and Sparkle focus styles */
 .pagefind-ui__search-input {
   border: 2px solid var(--sl-color-gray-3);
   border-radius: var(--sparkle-border-radius-sm);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   font-family: var(--sparkle-font-family-sans);
+  min-height: 44px;
+  font-size: var(--sparkle-font-size-base);
 }
 
 .pagefind-ui__search-input:focus {
@@ -205,7 +280,21 @@
   box-shadow: 0 0 0 3px rgb(from var(--sl-color-accent) r g b / 0.1);
 }
 
-/* Button styling with Sparkle design patterns */
+/* Mobile: full-width search with larger touch target */
+@media (max-width: 768px) {
+  .pagefind-ui__search-input {
+    width: 100%;
+    min-height: 48px;
+    font-size: var(--sparkle-font-size-lg);
+    padding: var(--sparkle-spacing-md);
+  }
+
+  .pagefind-ui {
+    width: 100%;
+  }
+}
+
+/* Button styling with responsive design and Sparkle design patterns */
 .sl-link-button,
 .sl-button {
   background: var(--sl-color-accent);
@@ -216,6 +305,11 @@
   font-weight: 500;
   transition: all 0.2s ease;
   box-shadow: var(--sparkle-shadow-sm);
+  font-size: var(--sparkle-font-size-base);
+  min-height: 44px; /* iOS touch target minimum */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .sl-link-button:hover,
@@ -225,12 +319,54 @@
   box-shadow: var(--sparkle-shadow-md);
 }
 
-/* Table styling with Sparkle design tokens */
+/* Mobile: larger touch targets and better spacing */
+@media (max-width: 768px) {
+  .sl-link-button,
+  .sl-button {
+    min-height: 48px; /* Larger touch target for mobile */
+    padding: var(--sparkle-spacing-md) var(--sparkle-spacing-lg);
+    font-size: var(--sparkle-font-size-base);
+    width: 100%; /* Full width buttons on mobile when appropriate */
+  }
+
+  /* Don't make inline buttons full width */
+  .sl-markdown-content .sl-link-button,
+  .sl-markdown-content .sl-button {
+    width: auto;
+    display: inline-flex;
+  }
+}
+
+/* Table styling with mobile-first responsive behavior */
 .sl-markdown-content table {
   border-radius: var(--sparkle-border-radius-md);
   overflow: hidden;
   box-shadow: var(--sparkle-shadow-sm);
   border: 1px solid var(--sl-color-gray-3);
+  width: 100%;
+  font-size: var(--sparkle-font-size-sm);
+}
+
+/* Mobile: horizontal scroll for tables */
+@media (max-width: 768px) {
+  .sl-markdown-content table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    border-radius: 0;
+    margin-left: calc(-1 * var(--sparkle-responsive-padding));
+    margin-right: calc(-1 * var(--sparkle-responsive-padding));
+    border-left: none;
+    border-right: none;
+  }
+
+  .sl-markdown-content thead,
+  .sl-markdown-content tbody,
+  .sl-markdown-content tr {
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+  }
 }
 
 .sl-markdown-content th {
@@ -238,11 +374,21 @@
   font-family: var(--sparkle-font-family-sans);
   font-weight: 600;
   padding: var(--sparkle-spacing-sm) var(--sparkle-spacing-md);
+  text-align: left;
 }
 
 .sl-markdown-content td {
   padding: var(--sparkle-spacing-sm) var(--sparkle-spacing-md);
   border-top: 1px solid var(--sl-color-gray-3);
+}
+
+/* Mobile: smaller table padding */
+@media (max-width: 768px) {
+  .sl-markdown-content th,
+  .sl-markdown-content td {
+    padding: var(--sparkle-spacing-xs) var(--sparkle-spacing-sm);
+    font-size: var(--sparkle-font-size-xs);
+  }
 }
 
 /* Accessibility enhancements */
@@ -279,3 +425,188 @@
   }
 }
 
+/* === RESPONSIVE BREAKPOINTS === */
+/* Mobile-first approach with Sparkle design tokens */
+
+/* Small mobile (320px and up) */
+@media (min-width: 320px) {
+  :root {
+    --sparkle-responsive-padding: var(--sparkle-spacing-sm);
+    --sparkle-responsive-font-scale: 0.9;
+  }
+}
+
+/* Large mobile (480px and up) */
+@media (min-width: 480px) {
+  :root {
+    --sparkle-responsive-padding: var(--sparkle-spacing-md);
+    --sparkle-responsive-font-scale: 0.95;
+  }
+}
+
+/* Tablet (768px and up) */
+@media (min-width: 768px) {
+  :root {
+    --sparkle-responsive-padding: var(--sparkle-spacing-lg);
+    --sparkle-responsive-font-scale: 1;
+  }
+}
+
+/* Desktop (1024px and up) */
+@media (min-width: 1024px) {
+  :root {
+    --sparkle-responsive-padding: var(--sparkle-spacing-xl);
+    --sparkle-responsive-font-scale: 1;
+  }
+}
+
+/* Large desktop (1280px and up) */
+@media (min-width: 1280px) {
+  :root {
+    --sparkle-responsive-padding: var(--sparkle-spacing-xl);
+    --sparkle-responsive-font-scale: 1.05;
+  }
+}
+
+/* === RESPONSIVE TYPOGRAPHY === */
+/* Scale typography based on screen size */
+.sl-markdown-content h1 {
+  font-size: calc(var(--sparkle-font-size-3xl) * var(--sparkle-responsive-font-scale, 1));
+}
+
+.sl-markdown-content h2 {
+  font-size: calc(var(--sparkle-font-size-2xl) * var(--sparkle-responsive-font-scale, 1));
+}
+
+.sl-markdown-content h3 {
+  font-size: calc(var(--sparkle-font-size-xl) * var(--sparkle-responsive-font-scale, 1));
+}
+
+.sl-markdown-content h4 {
+  font-size: calc(var(--sparkle-font-size-lg) * var(--sparkle-responsive-font-scale, 1));
+}
+
+/* === RESPONSIVE LAYOUT UTILITIES === */
+/* Content width constraints for better readability */
+.sl-markdown-content {
+  max-width: 100%;
+}
+
+/* Responsive images and media */
+.sl-markdown-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--sparkle-border-radius-md);
+}
+
+/* Responsive video embeds */
+.sl-markdown-content iframe {
+  max-width: 100%;
+  border-radius: var(--sparkle-border-radius-md);
+}
+
+/* Mobile: full-bleed content for better space usage */
+@media (max-width: 768px) {
+  .sl-markdown-content img,
+  .sl-markdown-content iframe {
+    width: 100%;
+    margin-left: calc(-1 * var(--sparkle-responsive-padding));
+    margin-right: calc(-1 * var(--sparkle-responsive-padding));
+    border-radius: 0;
+  }
+}
+
+/* === RESPONSIVE STORYBOOK EMBEDS === */
+/* Enhanced responsive behavior for Storybook iframe embeds */
+.storybook-embed-wrapper {
+  width: 100%;
+  margin: var(--sparkle-spacing-md) 0;
+  border-radius: var(--sparkle-border-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--sparkle-shadow-md);
+  border: 1px solid var(--sl-color-gray-3);
+}
+
+.storybook-embed-wrapper iframe {
+  width: 100%;
+  border: none;
+  display: block;
+}
+
+/* Mobile: smaller margins and full-width */
+@media (max-width: 768px) {
+  .storybook-embed-wrapper {
+    margin: var(--sparkle-spacing-sm) calc(-1 * var(--sparkle-responsive-padding));
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+}
+
+/* Tablet: restore some margins */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .storybook-embed-wrapper {
+    margin: var(--sparkle-spacing-md) calc(-1 * var(--sparkle-spacing-sm));
+  }
+}
+
+/* === RESPONSIVE CONTENT SPACING === */
+/* Adjust content spacing based on screen size */
+.sl-markdown-content > * + * {
+  margin-top: var(--sparkle-spacing-md);
+}
+
+@media (max-width: 768px) {
+  .sl-markdown-content > * + * {
+    margin-top: var(--sparkle-spacing-sm);
+  }
+
+  .sl-markdown-content h1 + *,
+  .sl-markdown-content h2 + *,
+  .sl-markdown-content h3 + * {
+    margin-top: var(--sparkle-spacing-md);
+  }
+}
+
+/* === RESPONSIVE UTILITY CLASSES === */
+/* Utility classes for responsive behavior */
+.mobile-hidden {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .mobile-hidden {
+    display: none;
+  }
+}
+
+.mobile-only {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-only {
+    display: block;
+  }
+}
+
+.tablet-hidden {
+  display: block;
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .tablet-hidden {
+    display: none;
+  }
+}
+
+/* Responsive text alignment */
+.text-center-mobile {
+  text-align: left;
+}
+
+@media (max-width: 768px) {
+  .text-center-mobile {
+    text-align: center;
+  }
+}
