@@ -16,6 +16,23 @@ export default defineConfig({
         src: './src/assets/sparkle-logo.svg',
         replacesTitle: false,
       },
+      favicon: '/favicon.svg',
+      head: [
+        {
+          tag: 'meta',
+          attrs: {
+            name: 'theme-color',
+            content: '#3b82f6', // Sparkle primary brand color
+          },
+        },
+        {
+          tag: 'meta',
+          attrs: {
+            property: 'og:image',
+            content: 'https://sparkle.mrbro.dev/sparkle-og-image.png',
+          },
+        },
+      ],
       social: [
         {
           icon: 'github',
@@ -27,8 +44,8 @@ export default defineConfig({
         baseUrl: 'https://github.com/marcusrbrown/sparkle/edit/main/docs/',
       },
       customCss: [
-        // Path to custom CSS file for Sparkle theme customization
-        './src/styles/custom.css',
+        // Path to Sparkle Design System theme CSS generated from tokens
+        './src/styles/sparkle-theme.css',
       ],
       tableOfContents: {
         minHeadingLevel: 2,
