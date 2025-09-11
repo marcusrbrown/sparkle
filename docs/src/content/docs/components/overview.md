@@ -1,6 +1,9 @@
 ---
 title: Components Overview
 description: Explore Sparkle's comprehensive collection of accessible React components.
+next:
+  link: /components/architecture/
+  label: Component Architecture
 ---
 
 ## Component Library

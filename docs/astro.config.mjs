@@ -34,6 +34,8 @@ export default defineConfig({
         minHeadingLevel: 2,
         maxHeadingLevel: 4,
       },
+      pagination: true, // Enable prev/next navigation links
+      lastUpdated: true, // Enable last updated timestamps
       sidebar: [
         // Getting Started Section - Foundational information
         {
@@ -60,11 +62,11 @@ export default defineConfig({
                 {label: 'Design Tokens', slug: 'theme/design-tokens'},
                 {label: 'Token Transformation', slug: 'theme/token-transformation'},
                 {label: 'Theme Providers', slug: 'theme/providers'},
+                {label: 'Cross-Platform', slug: 'theme/cross-platform'},
+                {label: 'Customization', slug: 'theme/customization'},
                 {label: 'Complete Workflow', slug: 'theme/workflow'},
                 {label: 'Advanced Customization', slug: 'theme/advanced'},
                 {label: 'Troubleshooting', slug: 'theme/troubleshooting'},
-                {label: 'Customization', slug: 'theme/customization'},
-                {label: 'Cross-Platform', slug: 'theme/cross-platform'},
               ],
             },
             // TypeScript Types - Type definitions
@@ -80,22 +82,22 @@ export default defineConfig({
           ],
         },
 
-        // Component Library Section
+        // Component Library Section - Logical progression through components
         {
           label: 'Component Library',
           collapsed: false,
           items: [
-            // Component Overview and Architecture
+            // Component Overview and Architecture - Start here
             {label: 'Overview', slug: 'components/overview'},
             {label: 'Architecture', slug: 'components/architecture'},
 
-            // Core Components
+            // Core Components - Essential building blocks
             {
               label: 'Core Components',
               items: [{label: 'Button', slug: 'components/button'}],
             },
 
-            // Form Components - Grouped for better organization
+            // Form Components - Grouped for better organization and logical flow
             {
               label: 'Form Components',
               collapsed: true,
@@ -103,39 +105,39 @@ export default defineConfig({
                 {label: 'Form Container', slug: 'components/form'},
                 {label: 'Form Control', slug: 'components/form-control'},
                 {label: 'Form Field', slug: 'components/form-field'},
-                {label: 'Form Input', slug: 'components/form-input'},
                 {label: 'Form Label', slug: 'components/form-label'},
-                {label: 'Form Message', slug: 'components/form-message'},
-                {label: 'Form Password', slug: 'components/form-password'},
-                {label: 'Form Select', slug: 'components/form-select'},
+                {label: 'Form Input', slug: 'components/form-input'},
                 {label: 'Form Textarea', slug: 'components/form-textarea'},
-                {label: 'Form Submit', slug: 'components/form-submit'},
+                {label: 'Form Select', slug: 'components/form-select'},
+                {label: 'Form Password', slug: 'components/form-password'},
+                {label: 'Form Message', slug: 'components/form-message'},
                 {label: 'Form Description', slug: 'components/form-description'},
+                {label: 'Form Submit', slug: 'components/form-submit'},
               ],
             },
 
-            // Complete Component Reference
+            // Complete Component Reference - Final stop for comprehensive info
             {label: 'Complete Reference', slug: 'components/reference'},
           ],
         },
 
-        // Utilities and Tools
+        // Utilities and Tools - Logical progression from basic to advanced
         {
           label: 'Utilities & Tools',
           collapsed: true,
           items: [
-            // React Utilities
+            // React Utilities - Ordered from basic to advanced
             {
               label: 'React Utilities',
               items: [
                 {label: 'Overview', slug: 'utils/overview'},
-                {label: 'React Hooks', slug: 'utils/react-hooks'},
                 {label: 'String Utilities', slug: 'utils/string-utilities'},
-                {label: 'API Reference', slug: 'utils/reference', badge: 'API'},
+                {label: 'React Hooks', slug: 'utils/react-hooks'},
                 {label: 'Advanced Patterns', slug: 'utils/advanced-patterns', badge: 'Advanced'},
+                {label: 'API Reference', slug: 'utils/reference', badge: 'API'},
               ],
             },
-            // Testing Tools
+            // Testing Tools - Ordered from basic to advanced
             {
               label: 'Testing Framework',
               badge: 'Testing',
@@ -148,7 +150,7 @@ export default defineConfig({
           ],
         },
 
-        // Interactive Features
+        // Interactive Features - Demo and playground content
         {
           label: 'Interactive Features',
           badge: 'Demo',
@@ -161,7 +163,7 @@ export default defineConfig({
           ],
         },
 
-        // API Documentation
+        // API Documentation - Technical reference
         {
           label: 'API Reference',
           badge: 'API',
@@ -196,7 +198,7 @@ export default defineConfig({
           ],
         },
 
-        // Development and Contributing
+        // Development and Contributing - Final section for contributors
         {
           label: 'Development',
           badge: 'Dev',

@@ -1,6 +1,12 @@
 ---
 title: Project Structure
 description: Understanding the Sparkle monorepo organization and architecture.
+prev:
+  link: /getting-started/quick-start/
+  label: Quick Start Guide
+next:
+  link: /components/overview/
+  label: Explore Components
 ---
 
 Sparkle is organized as a TypeScript monorepo with focused packages and clear separation of concerns.
@@ -291,7 +297,3 @@ Now that you understand the structure:
 Understanding this structure is key to effective contribution. Each package has clear responsibilities, making it easier to know where to add features or fix bugs.
 :::
 <!-- prettier-ignore-end -->
-
-```
-
-```
