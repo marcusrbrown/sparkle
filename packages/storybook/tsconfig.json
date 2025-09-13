@@ -1,12 +1,11 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "baseUrl": ".",
-    "jsx": "react-jsx",
     "incremental": true,
-    "composite": true
+    "composite": true,
+    "jsx": "react-jsx",
+    "baseUrl": "."
   },
-  "include": ["src", ".storybook/**/*"],
   "references": [
     {
       "path": "../config"
@@ -17,5 +16,6 @@
     {
       "path": "../ui"
     }
-  ]
+  ],
+  "include": ["src", ".storybook/**/*"]
 }

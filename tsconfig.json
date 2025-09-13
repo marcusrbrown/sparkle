@@ -2,31 +2,30 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "@bfra.me/tsconfig",
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "ESNext",
-    "lib": ["ESNext", "DOM", "DOM.Iterable"],
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
     "incremental": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "assumeChangesOnlyAffectDirectDependencies": true,
+    "composite": true,
+    "target": "ES2022",
+    "jsx": "preserve",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "baseUrl": ".",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "paths": {
       "@/*": ["apps/fro-jive/*"],
       "@/components/*": ["apps/fro-jive/components/*"],
       "@/constants/*": ["apps/fro-jive/constants/*"],
       "@/app/*": ["apps/fro-jive/app/*"]
     },
-    "composite": true
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "assumeChangesOnlyAffectDirectDependencies": true
   },
   "watchOptions": {
     "excludeDirectories": ["node_modules", "dist", ".turbo", "coverage", "storybook-static"],
     "excludeFiles": ["**/*.test.ts", "**/*.spec.ts", "**/*.test.tsx", "**/*.spec.tsx"]
   },
-  "files": [],
   "references": [
     {"path": "packages/types"},
     {"path": "packages/utils"},
@@ -36,5 +35,6 @@
     {"path": "packages/ui"},
     {"path": "packages/storybook"},
     {"path": "docs"}
-  ]
+  ],
+  "files": []
 }

@@ -1,12 +1,12 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "jsx": "react-jsx",
     "incremental": true,
-    "composite": true
+    "composite": true,
+    "jsx": "react-jsx",
+    "rootDir": "./src",
+    "outDir": "./dist"
   },
-  "include": ["src/**/*"],
-  "references": [{"path": "../types"}, {"path": "../utils"}]
+  "references": [{"path": "../types"}, {"path": "../utils"}],
+  "include": ["src/**/*"]
 }
