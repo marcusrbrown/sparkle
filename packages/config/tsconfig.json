@@ -1,15 +1,15 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": "./src",
     "incremental": true,
-    "composite": true
+    "composite": true,
+    "rootDir": "./src",
+    "outDir": "./dist"
   },
-  "include": ["src/**/*"],
   "references": [
     {
       "path": "../theme"
     }
-  ]
+  ],
+  "include": ["src/**/*"]
 }

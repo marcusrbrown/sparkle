@@ -1,10 +1,10 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
     "composite": true,
     "module": "ESNext",
-    "moduleResolution": "bundler"
+    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true
   },
   "include": ["*.config.*", ".eslintrc.*"]
 }

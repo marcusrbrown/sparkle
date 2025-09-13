@@ -1,24 +1,22 @@
 {
   "extends": ["astro/tsconfigs/strict", "../tsconfig.json"],
   "compilerOptions": {
-    "outDir": "dist",
-    "rootDir": "src",
-    "module": "ESNext",
-    "target": "ES2022",
-    "lib": ["ESNext", "DOM", "DOM.Iterable"],
-    "jsx": "preserve",
-    "types": ["astro/client", "node", "@types/react", "@types/react-dom"],
     "incremental": true,
     "composite": true,
+    "target": "ES2022",
+    "jsx": "preserve",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "rootDir": "src",
+    "module": "ESNext",
     "paths": {
       "@/*": ["./src/*"],
       "@/components/*": ["./src/components/*"],
       "@/content/*": ["./src/content/*"],
       "@/styles/*": ["./src/styles/*"]
-    }
+    },
+    "types": ["astro/client", "node", "@types/react", "@types/react-dom"],
+    "outDir": "dist"
   },
-  "include": [".astro/types.d.ts", "src/**/*", "astro.config.mjs"],
-  "exclude": ["node_modules", "dist", ".astro"],
   "references": [
     {
       "path": "../packages/types"
@@ -32,5 +30,7 @@
     {
       "path": "../packages/ui"
     }
-  ]
+  ],
+  "include": [".astro/types.d.ts", "src/**/*", "astro.config.mjs"],
+  "exclude": ["node_modules", "dist", ".astro"]
 }
