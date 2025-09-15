@@ -52,7 +52,7 @@
     "@changesets/cli": "2.29.7",
     "@lhci/cli": "0.15.1",
     "@manypkg/cli": "0.25.1",
-    "@types/node": "22.18.0",
+    "@types/node": "22.18.1",
     "eslint": "9.35.0",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-prettier": "5.5.4",
