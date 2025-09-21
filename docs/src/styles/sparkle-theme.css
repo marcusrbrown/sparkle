@@ -428,6 +428,127 @@ button:focus-visible,
   border-radius: var(--sparkle-border-radius-sm);
 }
 
+/* Focus styles for specific interactive elements */
+.sl-sidebar a:focus-visible {
+  outline: 2px solid var(--sl-color-accent);
+  outline-offset: 1px;
+  background-color: var(--sl-color-accent-low);
+}
+
+.sl-nav a:focus-visible {
+  outline: 2px solid var(--sl-color-accent);
+  outline-offset: 2px;
+}
+
+/* Enhanced keyboard navigation for code blocks */
+.code-editor-container:focus-within {
+  outline: 2px solid var(--sl-color-accent);
+  outline-offset: 2px;
+  border-radius: var(--sparkle-border-radius-md);
+}
+
+/* Focus trapping for modal-like elements */
+.modal:focus-within {
+  outline: none;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  background: var(--sl-color-white);
+  border-radius: var(--sparkle-border-radius-lg);
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: auto;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  outline: none;
+}
+
+/* Roving tabindex support */
+[data-roving-tabindex] {
+  outline: none;
+}
+
+[data-roving-tabindex]:focus {
+  outline: 2px solid var(--sl-color-accent);
+  outline-offset: 2px;
+  background-color: var(--sl-color-accent-low);
+}
+
+/* Keyboard navigation instructions */
+.keyboard-instructions {
+  margin: var(--sparkle-spacing-md) 0;
+  border: 1px solid var(--sl-color-gray-3);
+  border-radius: var(--sparkle-border-radius-md);
+  background: var(--sl-color-gray-1);
+}
+
+.keyboard-instructions__toggle {
+  width: 100%;
+  padding: var(--sparkle-spacing-sm) var(--sparkle-spacing-md);
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--sl-color-text);
+}
+
+.keyboard-instructions__toggle:focus-visible {
+  outline: 2px solid var(--sl-color-accent);
+  outline-offset: 2px;
+}
+
+.keyboard-instructions__content {
+  padding: var(--sparkle-spacing-md);
+  border-top: 1px solid var(--sl-color-gray-3);
+}
+
+.keyboard-instructions__list {
+  display: grid;
+  gap: var(--sparkle-spacing-sm);
+  margin: 0;
+}
+
+.keyboard-instructions__item {
+  display: flex;
+  align-items: center;
+  gap: var(--sparkle-spacing-md);
+}
+
+.keyboard-instructions__key {
+  margin: 0;
+  min-width: 120px;
+}
+
+.keyboard-instructions__key kbd {
+  display: inline-block;
+  padding: 2px 6px;
+  background: var(--sl-color-gray-2);
+  border: 1px solid var(--sl-color-gray-4);
+  border-radius: var(--sparkle-border-radius-sm);
+  font-family: var(--sparkle-font-family-mono);
+  font-size: var(--sparkle-font-size-sm);
+  font-weight: normal;
+}
+
+.keyboard-instructions__description {
+  margin: 0;
+  flex: 1;
+  color: var(--sl-color-text);
+}
+
 /* Ensure sufficient color contrast for text */
 .sl-markdown-content {
   color: var(--sl-color-text);
@@ -685,4 +806,3 @@ button:focus-visible,
     text-align: center;
   }
 }
-

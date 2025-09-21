@@ -171,9 +171,15 @@ export const CopyButton: React.FC<CopyButtonProps> = ({
   }
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
+    // Handle Enter and Space keys for activation
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault()
       handleCopy()
+    }
+    // Handle Escape key to dismiss feedback
+    else if (event.key === 'Escape' && (state === 'copied' || state === 'error')) {
+      // Reset state on Escape key
+      event.preventDefault()
     }
   }
 

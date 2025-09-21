@@ -299,7 +299,31 @@ declare module 'react' {
         roundedSelection: false,
         cursorStyle: 'line',
         smoothScrolling: true,
+        // Enhanced keyboard accessibility
+        accessibilitySupport: 'on',
+        accessibilityPageSize: 10,
       })
+
+      // Add keyboard navigation enhancements
+      editor.addCommand(monacoInstance.KeyMod.CtrlCmd | monacoInstance.KeyCode.KeyA, () => {
+        // Ctrl/Cmd+A: Select all
+        editor.setSelection(editor.getModel()?.getFullModelRange() || new monacoInstance.Range(1, 1, 1, 1))
+      })
+
+      editor.addCommand(monacoInstance.KeyCode.Escape, () => {
+        // Escape: Clear selection and move focus to editor
+        editor.setSelection(new monacoInstance.Selection(1, 1, 1, 1))
+        editor.focus()
+      })
+
+      // Add aria-label for better screen reader support
+      const editorElement = editor.getDomNode()
+      if (editorElement) {
+        editorElement.setAttribute('aria-label', title || `Code editor for ${language || 'text'}`)
+        editorElement.setAttribute('role', 'textbox')
+        editorElement.setAttribute('aria-multiline', 'true')
+        editorElement.setAttribute('aria-describedby', 'editor-instructions')
+      }
 
       // Call onReady callback if provided
       onReady?.(editor, monacoInstance)
@@ -316,6 +340,8 @@ declare module 'react' {
       tabSize,
       insertSpaces,
       onReady,
+      title,
+      language,
     ],
   )
 
@@ -389,6 +415,12 @@ declare module 'react' {
       )}
 
       <div className="relative">
+        {/* Screen reader instructions for keyboard navigation */}
+        <div id="editor-instructions" className="sr-only">
+          Use Tab to focus the editor. Press Escape to exit editor and clear selection. Use Ctrl+A or Cmd+A to select
+          all text. Standard editing shortcuts apply.
+        </div>
+
         <Editor
           height={height}
           width={width}

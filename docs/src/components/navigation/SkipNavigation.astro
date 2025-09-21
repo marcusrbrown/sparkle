@@ -1,0 +1,124 @@
+---
+// Skip Navigation component for site-wide keyboard accessibility
+// This component should be placed at the very beginning of the page layout
+---
+
+<nav aria-label="Skip navigation" class="skip-navigation">
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <a href="#sidebar" class="skip-link">Skip to navigation</a>
+  <a href="#search" class="skip-link">Skip to search</a>
+  <a href="#page-toc" class="skip-link">Skip to page outline</a>
+</nav>
+
+<style>
+  .skip-navigation {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+  }
+
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: var(--sl-color-accent);
+    color: white;
+    padding: 8px 12px;
+    border-radius: var(--sparkle-border-radius-sm, 4px);
+    text-decoration: none;
+    z-index: 1001;
+    font-weight: 600;
+    font-size: 14px;
+    white-space: nowrap;
+    transition: top 0.3s ease;
+  }
+
+  .skip-link:focus {
+    top: 6px;
+    outline: 2px solid var(--sl-color-accent-high);
+    outline-offset: 2px;
+  }
+
+  .skip-link:hover:focus {
+    background: var(--sl-color-accent-high);
+  }
+
+  /* Ensure skip links work in high contrast mode */
+  @media (prefers-contrast: high) {
+    .skip-link {
+      border: 2px solid white;
+    }
+
+    .skip-link:focus {
+      outline: 3px solid var(--sl-color-accent-high);
+      outline-offset: 3px;
+      box-shadow: 0 0 0 1px white;
+    }
+  }
+</style>
+
+<script>
+  // Enhanced skip navigation with proper focus management
+  document.addEventListener('DOMContentLoaded', () => {
+    const skipLinks = document.querySelectorAll('.skip-link');
+
+    skipLinks.forEach(link => {
+      link.addEventListener('click', (event) => {
+        event.preventDefault();
+
+        const targetId = link.getAttribute('href')?.substring(1);
+        if (!targetId) return;
+
+        // Find the target element
+        let target = document.getElementById(targetId);
+
+        // Fallback targets for common navigation elements
+        if (!target) {
+          switch (targetId) {
+            case 'main-content':
+              target = document.querySelector('main') ||
+                      document.querySelector('[role="main"]') ||
+                      document.querySelector('.sl-container');
+              break;
+            case 'sidebar':
+              target = document.querySelector('.sidebar') ||
+                      document.querySelector('[aria-label*="Sidebar"]') ||
+                      document.querySelector('nav:first-of-type');
+              break;
+            case 'search':
+              target = document.querySelector('[data-pagefind-ui]') ||
+                      document.querySelector('input[type="search"]') ||
+                      document.querySelector('.pagefind-ui__search-input');
+              break;
+            case 'page-toc':
+              target = document.querySelector('.right-sidebar') ||
+                      document.querySelector('[aria-labelledby*="overview"]') ||
+                      document.querySelector('.toc');
+              break;
+          }
+        }
+
+        if (target) {
+          // Make the target focusable if it isn't already
+          if (target.tabIndex < 0) {
+            target.tabIndex = -1;
+          }
+
+          // Focus the target
+          target.focus();
+
+          // Scroll to the target
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+          // Remove tabindex after a short delay to restore normal behavior
+          setTimeout(() => {
+            if (target.tabIndex === -1) {
+              target.removeAttribute('tabindex');
+            }
+          }, 100);
+        }
+      });
+    });
+  });
+</script>

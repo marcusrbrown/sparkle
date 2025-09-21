@@ -5,7 +5,6 @@ interface AccessibleCodeBlockProps {
   language: string
   title?: string
   description?: string
-  _showLineNumbers?: boolean
 }
 
 /**
@@ -18,13 +17,7 @@ interface AccessibleCodeBlockProps {
  * - Keyboard navigation support
  * - High contrast support
  */
-export function AccessibleCodeBlock({
-  code,
-  language,
-  title,
-  description,
-  _showLineNumbers = false,
-}: AccessibleCodeBlockProps): React.JSX.Element {
+export function AccessibleCodeBlock({code, language, title, description}: AccessibleCodeBlockProps): React.JSX.Element {
   const [copied, setCopied] = React.useState(false)
   const codeRef = React.useRef<HTMLElement>(null)
   const announcementRef = React.useRef<HTMLDivElement>(null)
