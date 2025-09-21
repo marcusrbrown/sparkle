@@ -1,0 +1,54 @@
+---
+/**
+ * Semantic section component for organizing content within documentation pages.
+ *
+ * Provides proper sectioning for accessibility and helps organize content
+ * into logical, semantic sections with optional headings.
+ */
+
+export interface Props {
+  /**
+   * Accessible label for the section
+   */
+  ariaLabel?: string;
+  /**
+   * ID for the section, useful for skip links
+   */
+  id?: string;
+  /**
+   * Additional CSS classes
+   */
+  class?: string;
+}
+
+const { ariaLabel, id, class: className } = Astro.props;
+---
+
+<section
+  {id}
+  class:list={["content-section", className]}
+  {...(ariaLabel && { 'aria-label': ariaLabel })}
+>
+  <slot />
+</section>
+
+<style>
+  .content-section {
+    /* Provide proper spacing between sections */
+    margin-block: 2rem;
+  }
+
+  .content-section:first-child {
+    margin-block-start: 0;
+  }
+
+  .content-section:last-child {
+    margin-block-end: 0;
+  }
+
+  /* Improve readability with proper section separation */
+  .content-section + .content-section {
+    border-top: 1px solid var(--sl-color-gray-6);
+    padding-top: 2rem;
+  }
+</style>

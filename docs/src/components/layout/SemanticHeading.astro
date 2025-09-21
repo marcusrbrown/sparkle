@@ -1,0 +1,110 @@
+---
+/**
+ * Semantic heading component that enforces proper heading hierarchy
+ * and provides consistent styling for documentation pages.
+ *
+ * This component ensures proper heading levels are used and provides
+ * accessibility features like skip links and proper ARIA labeling.
+ */
+
+export interface Props {
+  /**
+   * Heading level (2-6). Level 1 is reserved for page titles.
+   */
+  level: 2 | 3 | 4 | 5 | 6;
+  /**
+   * Optional ID for linking and skip navigation
+   */
+  id?: string;
+  /**
+   * Additional CSS classes
+   */
+  class?: string;
+  /**
+   * Whether to include a permalink anchor
+   */
+  permalink?: boolean;
+}
+
+const { level, id, class: className, permalink = true } = Astro.props;
+
+// Create the heading element dynamically
+const HeadingTag = `h${level}` as const;
+---
+
+<HeadingTag
+  {id}
+  class:list={["semantic-heading", `heading-${level}`, className]}
+>
+  <slot />
+  {permalink && id && (
+    <a
+      href={`#${id}`}
+      class="heading-link"
+      aria-label={`Link to section: ${id}`}
+      title="Link to this section"
+    >
+      #
+    </a>
+  )}
+</HeadingTag>
+
+<style>
+  .semantic-heading {
+    position: relative;
+    scroll-margin-top: 2rem; /* Account for fixed headers */
+  }
+
+  .heading-link {
+    position: absolute;
+    left: -1.5rem;
+    opacity: 0;
+    font-weight: normal;
+    text-decoration: none;
+    color: var(--sl-color-gray-3);
+    transition: opacity 0.2s ease;
+    font-size: 0.8em;
+  }
+
+  .semantic-heading:hover .heading-link,
+  .heading-link:focus {
+    opacity: 1;
+  }
+
+  .heading-link:hover {
+    color: var(--sl-color-accent);
+  }
+
+  /* Ensure proper hierarchy spacing */
+  .heading-2 {
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  .heading-3 {
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .heading-4 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .heading-5 {
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .heading-6 {
+    margin-top: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* First heading in a section should have less top margin */
+  .content-section > .heading-2:first-child,
+  .content-section > .heading-3:first-child,
+  .content-section > .heading-4:first-child {
+    margin-top: 0;
+  }
+</style>

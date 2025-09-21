@@ -1,0 +1,94 @@
+---
+/**
+ * Semantic navigation component for documentation navigation elements.
+ *
+ * Provides proper navigation semantics and accessibility features
+ * for various types of navigation elements within documentation.
+ */
+
+export interface Props {
+  /**
+   * Accessible label for the navigation
+   */
+  ariaLabel: string;
+  /**
+   * ID for the navigation element
+   */
+  id?: string;
+  /**
+   * Additional CSS classes
+   */
+  class?: string;
+  /**
+   * Navigation type for semantic context
+   */
+  type?: 'primary' | 'secondary' | 'breadcrumb' | 'pagination' | 'toc';
+}
+
+const { ariaLabel, id, class: className, type = 'secondary' } = Astro.props;
+---
+
+<nav
+  {id}
+  class:list={["content-nav", `nav-${type}`, className]}
+  aria-label={ariaLabel}
+  role="navigation"
+>
+  <slot />
+</nav>
+
+<style>
+  .content-nav {
+    /* Base navigation styling */
+  }
+
+  .nav-breadcrumb {
+    margin-bottom: 1rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--sl-color-gray-6);
+  }
+
+  .nav-pagination {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--sl-color-gray-6);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .nav-toc {
+    /* Table of contents specific styling */
+    position: sticky;
+    top: 2rem;
+    max-height: calc(100vh - 4rem);
+    overflow-y: auto;
+  }
+
+  .nav-primary {
+    /* Primary navigation styling */
+    margin-bottom: 1rem;
+  }
+
+  .nav-secondary {
+    /* Secondary navigation styling */
+    font-size: 0.9rem;
+  }
+
+  /* Improve accessibility for navigation links */
+  .content-nav :global(a) {
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+  }
+
+  .content-nav :global(a:hover),
+  .content-nav :global(a:focus) {
+    background-color: var(--sl-color-gray-6);
+  }
+
+  .content-nav :global(a:focus) {
+    outline: 2px solid var(--sl-color-accent);
+    outline-offset: 2px;
+  }
+</style>

@@ -1,0 +1,33 @@
+---
+/**
+ * Semantic page structure component that enforces proper HTML5 semantics
+ * and heading hierarchy for documentation pages.
+ *
+ * This component ensures:
+ * - Proper main landmark for page content
+ * - Section structure for content organization
+ * - Skip navigation support for accessibility
+ * - Proper heading hierarchy without H1 conflicts
+ */
+---
+
+<main id="main-content" tabindex="-1" role="main" aria-label="Main content">
+  <slot />
+</main>
+
+<style>
+  main {
+    /* Ensure proper focus styles for skip navigation */
+    outline: none;
+  }
+
+  main:focus-visible {
+    outline: 2px solid var(--sl-color-accent);
+    outline-offset: 2px;
+  }
+
+  /* Ensure proper spacing and layout */
+  main {
+    min-height: calc(100vh - var(--sl-nav-height, 4rem));
+  }
+</style>

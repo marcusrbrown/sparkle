@@ -1,0 +1,75 @@
+---
+/**
+ * Semantic article wrapper for standalone content pieces.
+ *
+ * Use this for self-contained content that could be syndicated
+ * or distributed independently, such as tutorials, guides, or
+ * component documentation pages.
+ */
+
+export interface Props {
+  /**
+   * Accessible label for the article
+   */
+  ariaLabel?: string;
+  /**
+   * ID for the article
+   */
+  id?: string;
+  /**
+   * Additional CSS classes
+   */
+  class?: string;
+}
+
+const { ariaLabel, id, class: className } = Astro.props;
+---
+
+<article
+  {id}
+  class:list={["content-article", className]}
+  {...(ariaLabel && { 'aria-label': ariaLabel })}
+>
+  <slot />
+</article>
+
+<style>
+  .content-article {
+    /* Provide proper article spacing */
+    margin-block: 1.5rem;
+  }
+
+  /* Improve typography within articles */
+  .content-article :global(h2) {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .content-article :global(h3) {
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .content-article :global(p) {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+  }
+
+  .content-article :global(ul, ol) {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+  }
+
+  .content-article :global(li) {
+    margin-bottom: 0.5rem;
+  }
+
+  /* Improve code block spacing within articles */
+  .content-article :global(pre) {
+    margin: 1.5rem 0;
+  }
+
+  .content-article :global(code) {
+    font-size: 0.9em;
+  }
+</style>

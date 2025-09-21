@@ -234,6 +234,16 @@ export default defineConfig({
           ],
         },
 
+        // Guides - Best practices and patterns
+        {
+          label: 'Guides',
+          collapsed: true,
+          items: [
+            {label: 'Accessibility Guide', slug: 'guides/accessibility'},
+            {label: 'Heading Hierarchy', slug: 'guides/heading-hierarchy'},
+          ],
+        },
+
         // Development and Contributing - Final section for contributors
         {
           label: 'Development',

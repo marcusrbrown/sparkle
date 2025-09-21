@@ -1,0 +1,49 @@
+---
+/**
+ * Skip navigation component for improved accessibility.
+ *
+ * Provides keyboard users a way to skip to main content,
+ * bypassing navigation elements.
+ */
+
+export interface Props {
+  /**
+   * Target element ID to skip to (default: "main-content")
+   */
+  target?: string;
+  /**
+   * Label for the skip link
+   */
+  label?: string;
+}
+
+const { target = "main-content", label = "Skip to main content" } = Astro.props;
+---
+
+<a href={`#${target}`} class="skip-link">
+  {label}
+</a>
+
+<style>
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: var(--sl-color-accent);
+    color: var(--sl-color-white);
+    padding: 8px;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;
+    z-index: 1000;
+    transition: top 0.3s ease;
+  }
+
+  .skip-link:focus {
+    top: 6px;
+  }
+
+  .skip-link:hover {
+    background: var(--sl-color-accent-high);
+  }
+</style>

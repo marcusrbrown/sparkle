@@ -1,0 +1,93 @@
+---
+/**
+ * API documentation layout that enforces proper heading hierarchy
+ * for auto-generated API documentation pages.
+ *
+ * This layout addresses the common issue where API docs use H1 headings
+ * in content, which conflicts with page titles.
+ */
+
+export interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+  </head>
+  <body>
+    <main id="main-content" tabindex="-1" role="main" aria-label="API Documentation">
+      <header class="api-header">
+        <h1>{title}</h1>
+        {description && <p class="api-description">{description}</p>}
+      </header>
+
+      <div class="api-content">
+        <slot />
+      </div>
+    </main>
+  </body>
+</html>
+
+<style>
+  .api-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--sl-color-gray-6);
+  }
+
+  .api-header h1 {
+    margin: 0 0 0.5rem 0;
+    color: var(--sl-color-text);
+  }
+
+  .api-description {
+    margin: 0;
+    color: var(--sl-color-gray-2);
+    font-size: 1.1rem;
+  }
+
+  .api-content {
+    /* Transform H1 in content to H2 for proper hierarchy */
+  }
+
+  .api-content :global(h1) {
+    font-size: var(--sl-text-h2);
+    font-weight: var(--sl-font-weight-heading);
+    line-height: var(--sl-line-height-heading);
+    margin: 2rem 0 1rem 0;
+  }
+
+  .api-content :global(h2) {
+    font-size: var(--sl-text-h3);
+    margin: 1.5rem 0 0.75rem 0;
+  }
+
+  .api-content :global(h3) {
+    font-size: var(--sl-text-h4);
+    margin: 1.25rem 0 0.5rem 0;
+  }
+
+  .api-content :global(h4) {
+    font-size: var(--sl-text-h5);
+    margin: 1rem 0 0.5rem 0;
+  }
+
+  .api-content :global(h5) {
+    font-size: var(--sl-text-h6);
+    margin: 0.75rem 0 0.5rem 0;
+  }
+
+  .api-content :global(h6) {
+    font-size: var(--sl-text-body);
+    font-weight: var(--sl-font-weight-semibold);
+    margin: 0.5rem 0 0.25rem 0;
+  }
+</style>
