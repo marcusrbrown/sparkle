@@ -1,0 +1,316 @@
+---
+title: Heading Hierarchy and Semantic HTML Guidelines
+description: Guidelines for maintaining proper heading hierarchy and semantic HTML structure in the Sparkle Design System documentation.
+---
+
+# Heading Hierarchy and Semantic HTML Guidelines
+
+This document provides guidelines for maintaining proper heading hierarchy and semantic HTML structure in the Sparkle Design System documentation.
+
+## Heading Hierarchy Rules
+
+### 1. Page Title = H1 (Automatic)
+
+- **Rule**: Never use `# H1` in markdown content
+- **Reason**: Astro Starlight automatically creates H1 from the frontmatter `title`
+- **Correct**: Use frontmatter `title: "Page Title"`
+- **Incorrect**: `# Page Title` in content
+
+### 2. Content Starts with H2
+
+- **Rule**: First heading in content should be `## H2`
+- **Example**:
+
+  ```markdown
+  ---
+  title: Component Overview
+  ---
+
+  ## Introduction
+  Content about the component...
+
+  ## Usage Examples
+  How to use the component...
+  ```
+
+### 3. No Skipping Levels
+
+- **Rule**: Progress logically H2 → H3 → H4 → H5 → H6
+- **Correct**: H2 → H3 → H4
+- **Incorrect**: H2 → H4 (skipping H3)
+
+### 4. Proper Nesting
+
+- **Rule**: Subsections should be nested under parent sections
+- **Example**:
+
+  ```markdown
+  ## Main Topic (H2)
+  Content about main topic...
+
+  ### Subtopic A (H3)
+  Content about subtopic A...
+
+  #### Implementation Details (H4)
+  Specific implementation info...
+
+  ### Subtopic B (H3)
+  Content about subtopic B...
+
+  ## Another Main Topic (H2)
+  ```
+
+### 5. API Documentation Exception
+
+- **Rule**: Auto-generated API docs use a special layout that handles H1 conflicts
+- **Implementation**: Use `layout: ~/layouts/api.astro` in frontmatter
+- **Note**: This layout visually adjusts heading levels for proper hierarchy
+
+## Semantic HTML Components
+
+### PageMain
+Use for main content wrapper:
+```astro
+import PageMain from '~/components/layout/PageMain.astro'
+
+<PageMain>
+  <!-- Main page content -->
+</PageMain>
+```
+
+### ContentSection
+Use for logical content sections:
+```astro
+import ContentSection from '~/components/layout/ContentSection.astro'
+
+<ContentSection ariaLabel="Getting Started" id="getting-started">
+  ## Getting Started
+  Content...
+</ContentSection>
+```
+
+### ContentArticle
+Use for self-contained content pieces:
+```astro
+import ContentArticle from '~/components/layout/ContentArticle.astro'
+
+<ContentArticle ariaLabel="Button Component Guide">
+  ## Button Component
+  Complete guide to using buttons...
+</ContentArticle>
+```
+
+### SemanticHeading
+Use when you need programmatic heading control:
+```astro
+import SemanticHeading from '~/components/layout/SemanticHeading.astro'
+
+<SemanticHeading level={2} id="section-intro">
+  Section Introduction
+</SemanticHeading>
+```
+
+### ContentNavigation
+Use for navigation elements:
+```astro
+import ContentNavigation from '~/components/layout/ContentNavigation.astro'
+
+<ContentNavigation ariaLabel="Page navigation" type="pagination">
+  <!-- Navigation links -->
+</ContentNavigation>
+```
+
+### ContentAside
+Use for supplementary content:
+```astro
+import ContentAside from '~/components/layout/ContentAside.astro'
+
+<ContentAside type="callout" ariaLabel="Important note">
+  **Note**: This is important information.
+</ContentAside>
+```
+
+## Page Structure Templates
+
+### Standard Documentation Page
+```markdown
+---
+title: Page Title
+description: Page description for SEO and navigation
+---
+
+import ContentSection from '~/components/layout/ContentSection.astro'
+import ContentAside from '~/components/layout/ContentAside.astro'
+
+## Overview
+Brief introduction to the topic...
+
+<ContentSection ariaLabel="Main concepts" id="concepts">
+
+## Key Concepts
+Explanation of key concepts...
+
+### Concept A
+Details about concept A...
+
+### Concept B
+Details about concept B...
+
+</ContentSection>
+
+<ContentAside type="note" ariaLabel="Usage tip">
+**Tip**: Remember to follow these best practices...
+</ContentAside>
+
+<ContentSection ariaLabel="Examples" id="examples">
+
+## Examples
+Practical examples...
+
+### Basic Example
+Simple example...
+
+### Advanced Example
+Complex example...
+
+</ContentSection>
+```
+
+### Component Documentation Page
+```markdown
+---
+title: Component Name
+description: Component description and purpose
+category: form
+componentName: ComponentName
+---
+
+import ComponentShowcase from '~/components/showcase/ComponentShowcase.astro'
+import ContentSection from '~/components/layout/ContentSection.astro'
+
+## Overview
+What this component does...
+
+<ContentSection ariaLabel="Usage guide" id="usage">
+
+## Usage
+How to use this component...
+
+### Basic Usage
+Simple usage example...
+
+### Advanced Usage
+Complex usage patterns...
+
+</ContentSection>
+
+<ContentSection ariaLabel="API reference" id="api">
+
+## API Reference
+Component props and methods...
+
+### Props
+List of component props...
+
+### Methods
+Available methods...
+
+</ContentSection>
+```
+
+### API Reference Page
+```markdown
+---
+title: Module API Reference
+description: API reference for the module
+layout: ~/layouts/api.astro
+---
+
+## Module Overview
+Brief description of the module...
+
+## Classes
+Available classes...
+
+## Functions
+Available functions...
+
+## Type Definitions
+Available types and interfaces...
+```
+
+## Accessibility Considerations
+
+### 1. Skip Navigation
+- All pages should include skip navigation for keyboard users
+- Use `<SkipNavigation />` component at the beginning of pages
+
+### 2. Landmark Roles
+- Use semantic HTML elements with proper roles
+- Main content in `<main>` (handled by PageMain)
+- Navigation in `<nav>` (handled by ContentNavigation)
+- Complementary content in `<aside>` (handled by ContentAside)
+
+### 3. Heading Landmarks
+- Screen readers use headings for navigation
+- Proper hierarchy allows users to understand content structure
+- Each section should have a meaningful heading
+
+### 4. ARIA Labels
+- Provide `ariaLabel` for complex sections
+- Use descriptive labels that explain the content purpose
+- Avoid redundant labels (don't repeat visible text)
+
+## Validation Tools
+
+### 1. Browser DevTools
+- Use Accessibility tab in DevTools
+- Check heading structure in Elements panel
+- Verify landmark roles and ARIA labels
+
+### 2. Screen Reader Testing
+- Test with VoiceOver (macOS) or NVDA (Windows)
+- Navigate by headings (H key in screen readers)
+- Verify logical content flow
+
+### 3. Automated Testing
+- Use axe-core for automated accessibility testing
+- Include in CI/CD pipeline for continuous validation
+- Focus on heading hierarchy and landmark structure
+
+## Common Mistakes to Avoid
+
+### 1. Multiple H1 Elements
+- **Problem**: Using `# Heading` in content when page already has H1 from title
+- **Solution**: Start content with `## Heading`
+
+### 2. Skipping Heading Levels
+- **Problem**: Going from H2 directly to H4
+- **Solution**: Use logical progression H2 → H3 → H4
+
+### 3. Decorative Headings
+- **Problem**: Using headings for visual styling instead of structure
+- **Solution**: Use CSS classes for styling, headings for structure
+
+### 4. Missing Semantic Elements
+- **Problem**: Using `<div>` for everything
+- **Solution**: Use `<main>`, `<section>`, `<article>`, `<nav>`, `<aside>`
+
+### 5. Poor ARIA Labels
+- **Problem**: Generic labels like "section" or "content"
+- **Solution**: Descriptive labels like "Getting started guide" or "API reference"
+
+## Review Checklist
+
+Before publishing documentation:
+
+- [ ] Page title is in frontmatter, not H1 in content
+- [ ] Content starts with H2
+- [ ] No heading levels are skipped
+- [ ] Logical content hierarchy
+- [ ] Semantic HTML elements used appropriately
+- [ ] ARIA labels are descriptive and helpful
+- [ ] Skip navigation is available
+- [ ] Content is accessible to screen readers
+- [ ] All internal links work correctly
+- [ ] Table of contents reflects actual structure

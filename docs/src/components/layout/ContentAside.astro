@@ -1,0 +1,160 @@
+---
+/**
+ * Semantic aside component for supplementary content.
+ *
+ * Use for content that is related to but separate from the main content,
+ * such as sidebars, callouts, notes, or related links.
+ *
+ * Why this component exists:
+ * - Creates proper HTML5 aside landmarks for complementary content
+ * - Provides semantic distinction between main and supplementary content
+ * - Offers consistent styling for different types of aside content
+ * - Improves document structure for screen readers and search engines
+ *
+ * @example
+ * ```astro
+ * <ContentAside type="callout" ariaLabel="Important notice">
+ *   <strong>Note:</strong> Remember to backup your data.
+ * </ContentAside>
+ * ```
+ */
+
+/**
+ * Available aside content types that determine styling and semantic context.
+ */
+export const ASIDE_TYPES = [
+  'sidebar',
+  'callout',
+  'note',
+  'related',
+  'example'
+] as const;
+
+export type AsideType = typeof ASIDE_TYPES[number];
+
+/**
+ * Configuration options for the ContentAside component.
+ */
+export interface ContentAsideProps {
+  /**
+   * Accessible label that describes the aside content.
+   * Helps screen reader users understand the purpose of the supplementary content.
+   *
+   * @example
+   * ariaLabel="Related links"
+   * ariaLabel="Important warning"
+   */
+  ariaLabel?: string;
+  /**
+   * Unique identifier for the aside element.
+   * Useful for styling, skip links, and programmatic access.
+   */
+  id?: string;
+  /**
+   * Additional CSS classes to apply to the aside element.
+   */
+  class?: string;
+  /**
+   * Type of aside content that determines styling and semantic context.
+   * Each type has predefined styling appropriate for its use case.
+   *
+   * @default 'sidebar'
+   */
+  type?: AsideType;
+}
+
+const {
+  ariaLabel,
+  id,
+  class: className,
+  type = 'sidebar'
+} = Astro.props as ContentAsideProps;
+---
+
+<aside
+  {id}
+  class:list={["content-aside", `aside-${type}`, className]}
+  {...(ariaLabel && { 'aria-label': ariaLabel })}
+  role="complementary"
+>
+  <slot />
+</aside>
+
+<style>
+  .content-aside {
+    /* Base aside styling */
+    margin: 1rem 0;
+  }
+
+  .aside-sidebar {
+    /* Sidebar specific styling */
+    background-color: var(--sl-color-gray-7);
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 4px solid var(--sl-color-accent);
+  }
+
+  .aside-callout {
+    /* Callout box styling */
+    background-color: var(--sl-color-accent-low);
+    border: 1px solid var(--sl-color-accent);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .aside-note {
+    /* Note styling */
+    background-color: var(--sl-color-gray-7);
+    border-left: 4px solid var(--sl-color-gray-3);
+    padding: 1rem;
+    margin: 1rem 0;
+    font-style: italic;
+  }
+
+  .aside-related {
+    /* Related content styling */
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .aside-example {
+    /* Example content styling */
+    background-color: var(--sl-color-gray-6);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+  }
+
+  /* Improve typography within aside elements */
+  .content-aside :global(h2) {
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+    font-size: 1.2em;
+  }
+
+  .content-aside :global(h3) {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 1.1em;
+  }
+
+  .content-aside :global(p) {
+    margin-bottom: 0.75rem;
+  }
+
+  .content-aside :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .content-aside :global(ul, ol) {
+    margin-bottom: 0.75rem;
+    padding-left: 1.25rem;
+  }
+
+  .content-aside :global(li) {
+    margin-bottom: 0.25rem;
+  }
+</style>

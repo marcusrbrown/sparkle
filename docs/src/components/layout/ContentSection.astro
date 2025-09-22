@@ -1,0 +1,81 @@
+---
+/**
+ * Semantic section component for organizing content within documentation pages.
+ *
+ * Provides proper sectioning for accessibility and helps organize content
+ * into logical, semantic sections with optional headings.
+ *
+ * Why this component exists:
+ * - Creates proper HTML5 section landmarks for screen readers
+ * - Provides consistent spacing and visual separation between content sections
+ * - Enables semantic grouping of related content for better document structure
+ * - Supports skip navigation by allowing meaningful section identification
+ *
+ * @example
+ * ```astro
+ * <ContentSection ariaLabel="Getting started guide" id="getting-started">
+ *   <h2>Getting Started</h2>
+ *   <p>Introduction content...</p>
+ * </ContentSection>
+ * ```
+ */
+
+/**
+ * Configuration options for the ContentSection component.
+ */
+export interface ContentSectionProps {
+  /**
+   * Accessible label for the section that describes its content.
+   * Helps screen reader users understand the section's purpose.
+   *
+   * @example
+   * ariaLabel="Installation instructions"
+   * ariaLabel="API reference"
+   */
+  ariaLabel?: string;
+  /**
+   * Unique identifier for the section.
+   * Useful for skip links, deep linking, and targeted CSS styling.
+   *
+   * @example
+   * id="installation"
+   * id="api-reference"
+   */
+  id?: string;
+  /**
+   * Additional CSS classes to apply to the section element.
+   */
+  class?: string;
+}
+
+const { ariaLabel, id, class: className } = Astro.props as ContentSectionProps;
+---
+
+<section
+  {id}
+  class:list={["content-section", className]}
+  {...(ariaLabel && { 'aria-label': ariaLabel })}
+>
+  <slot />
+</section>
+
+<style>
+  .content-section {
+    /* Provide proper spacing between sections */
+    margin-block: 2rem;
+  }
+
+  .content-section:first-child {
+    margin-block-start: 0;
+  }
+
+  .content-section:last-child {
+    margin-block-end: 0;
+  }
+
+  /* Improve readability with proper section separation */
+  .content-section + .content-section {
+    border-top: 1px solid var(--sl-color-gray-6);
+    padding-top: 2rem;
+  }
+</style>

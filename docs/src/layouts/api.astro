@@ -1,0 +1,135 @@
+---
+/**
+ * API documentation layout that enforces proper heading hierarchy
+ * for auto-generated API documentation pages.
+ *
+ * This layout addresses the common issue where API docs use H1 headings
+ * in content, which conflicts with page titles, breaking accessibility.
+ *
+ * Why this layout exists:
+ * - Resolves heading hierarchy conflicts in auto-generated API documentation
+ * - Provides proper HTML5 document structure for API reference pages
+ * - Ensures consistent styling and spacing for API documentation
+ * - Maintains accessibility standards for programmatically generated content
+ * - Centralizes API-specific styling and layout concerns
+ *
+ * Technical implementation:
+ * - Uses CSS to visually adjust heading levels for proper hierarchy
+ * - Transforms content H1 elements to appear as H2 for visual consistency
+ * - Maintains semantic meaning while fixing visual presentation
+ * - Provides dedicated styling for API-specific content patterns
+ *
+ * @example
+ * ```md
+ * ---
+ * title: Types API Reference
+ * layout: ~/layouts/api.astro
+ * ---
+ *
+ * # types/src  <!-- This becomes visually styled as H2 -->
+ * ## Interfaces  <!-- This becomes H3 styling -->
+ * ```
+ */
+
+/**
+ * Configuration options for the API documentation layout.
+ */
+export interface ApiLayoutProps {
+  /**
+   * The page title displayed in the document head and page header.
+   * Should clearly identify the API module or section being documented.
+   *
+   * @example
+   * title="Types API Reference"
+   * title="UI Components API Reference"
+   */
+  title: string;
+  /**
+   * Optional description of the API section.
+   * Used for SEO meta tags and displayed below the page title.
+   *
+   * @example
+   * description="TypeScript type definitions for the Sparkle Design System"
+   */
+  description?: string;
+}
+
+const { title, description } = Astro.props as ApiLayoutProps;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+  </head>
+  <body>
+    <main id="main-content" tabindex="-1" role="main" aria-label="API Documentation">
+      <header class="api-header">
+        <h1>{title}</h1>
+        {description && <p class="api-description">{description}</p>}
+      </header>
+
+      <div class="api-content">
+        <slot />
+      </div>
+    </main>
+  </body>
+</html>
+
+<style>
+  .api-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--sl-color-gray-6);
+  }
+
+  .api-header h1 {
+    margin: 0 0 0.5rem 0;
+    color: var(--sl-color-text);
+  }
+
+  .api-description {
+    margin: 0;
+    color: var(--sl-color-gray-2);
+    font-size: 1.1rem;
+  }
+
+  .api-content {
+    /* Transform H1 in content to H2 for proper hierarchy */
+  }
+
+  .api-content :global(h1) {
+    font-size: var(--sl-text-h2);
+    font-weight: var(--sl-font-weight-heading);
+    line-height: var(--sl-line-height-heading);
+    margin: 2rem 0 1rem 0;
+  }
+
+  .api-content :global(h2) {
+    font-size: var(--sl-text-h3);
+    margin: 1.5rem 0 0.75rem 0;
+  }
+
+  .api-content :global(h3) {
+    font-size: var(--sl-text-h4);
+    margin: 1.25rem 0 0.5rem 0;
+  }
+
+  .api-content :global(h4) {
+    font-size: var(--sl-text-h5);
+    margin: 1rem 0 0.5rem 0;
+  }
+
+  .api-content :global(h5) {
+    font-size: var(--sl-text-h6);
+    margin: 0.75rem 0 0.5rem 0;
+  }
+
+  .api-content :global(h6) {
+    font-size: var(--sl-text-body);
+    font-weight: var(--sl-font-weight-semibold);
+    margin: 0.5rem 0 0.25rem 0;
+  }
+</style>

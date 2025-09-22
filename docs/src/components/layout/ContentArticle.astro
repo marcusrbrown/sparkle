@@ -1,0 +1,105 @@
+---
+/**
+ * Semantic article wrapper for standalone content pieces.
+ *
+ * Use this for self-contained content that could be syndicated
+ * or distributed independently, such as tutorials, guides, or
+ * component documentation pages.
+ *
+ * Why this component exists:
+ * - Creates proper HTML5 article landmarks for standalone content
+ * - Provides semantic structure for content that makes sense independently
+ * - Improves SEO and document structure for search engines
+ * - Enhances accessibility by clearly defining article boundaries
+ * - Offers consistent typography and spacing for article content
+ *
+ * Use article elements for content that:
+ * - Could be published standalone (blog posts, tutorials, guides)
+ * - Has a clear beginning, middle, and end
+ * - Makes sense when extracted from the surrounding context
+ * - Could be syndicated or shared independently
+ *
+ * @example
+ * ```astro
+ * <ContentArticle ariaLabel="Button component guide">
+ *   <h2>Button Component</h2>
+ *   <p>Complete guide to using button components...</p>
+ * </ContentArticle>
+ * ```
+ */
+
+/**
+ * Configuration options for the ContentArticle component.
+ */
+export interface ContentArticleProps {
+  /**
+   * Accessible label that describes the article content.
+   * Should provide a clear summary of what the article contains.
+   *
+   * @example
+   * ariaLabel="Installation guide"
+   * ariaLabel="Button component documentation"
+   */
+  ariaLabel?: string;
+  /**
+   * Unique identifier for the article element.
+   * Useful for deep linking, styling, and programmatic access.
+   */
+  id?: string;
+  /**
+   * Additional CSS classes to apply to the article element.
+   */
+  class?: string;
+}
+
+const { ariaLabel, id, class: className } = Astro.props as ContentArticleProps;
+---
+
+<article
+  {id}
+  class:list={["content-article", className]}
+  {...(ariaLabel && { 'aria-label': ariaLabel })}
+>
+  <slot />
+</article>
+
+<style>
+  .content-article {
+    /* Provide proper article spacing */
+    margin-block: 1.5rem;
+  }
+
+  /* Improve typography within articles */
+  .content-article :global(h2) {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .content-article :global(h3) {
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .content-article :global(p) {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+  }
+
+  .content-article :global(ul, ol) {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+  }
+
+  .content-article :global(li) {
+    margin-bottom: 0.5rem;
+  }
+
+  /* Improve code block spacing within articles */
+  .content-article :global(pre) {
+    margin: 1.5rem 0;
+  }
+
+  .content-article :global(code) {
+    font-size: 0.9em;
+  }
+</style>
