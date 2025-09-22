@@ -13,7 +13,7 @@ layout: ~/layouts/api.astro
 
 ## Classes
 
-### TestScenarioBuilder\<TError, TState\>
+### TestScenarioBuilder
 
 A fluent builder for creating type-safe error test scenarios.
 
@@ -185,7 +185,7 @@ A description of the test scenario
 
 ## Interfaces
 
-### ErrorBoundaryConfig\<TError\>
+### ErrorBoundaryConfig
 
 Base interface for error boundary configurations.
 
@@ -197,7 +197,7 @@ Base interface for error boundary configurations.
 
 ***
 
-### ErrorRecoveryStrategy\<TError, TState\>
+### ErrorRecoveryStrategy
 
 Type-safe error recovery strategy.
 
@@ -213,7 +213,7 @@ Type-safe error recovery strategy.
 
 ***
 
-### TestContext\<TState\>
+### TestContext
 
 Represents a test scenario context that maintains type safety throughout the test lifecycle.
 
@@ -225,7 +225,7 @@ Represents a test scenario context that maintains type safety throughout the tes
 
 ***
 
-### TestResult\<TError\>
+### TestResult
 
 Result of a test scenario execution.
 
@@ -237,7 +237,7 @@ Result of a test scenario execution.
 
 ***
 
-### TestScenarioConfig\<TError, TState\>
+### TestScenarioConfig
 
 Configuration for a test scenario.
 

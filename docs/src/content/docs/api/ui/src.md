@@ -13,7 +13,7 @@ layout: ~/layouts/api.astro
 
 ## Type Aliases
 
-### As\<Props\>
+### As
 
 > **As**\<`Props`\> = `React.ElementType`\<`Props`\>
 

@@ -19,7 +19,7 @@ Animation scale for durations, easing curves, and transitions
 
 ***
 
-### ApiResponse\<T\>
+### ApiResponse
 
 Common API response types
 
