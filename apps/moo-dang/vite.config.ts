@@ -34,7 +34,7 @@ export default defineConfig({
     globals: true,
     environment: 'happy-dom',
     setupFiles: ['./test/setup.ts'],
-    include: ['**/__tests__/*.{ts,tsx}', '**/*.test.{ts,tsx}'],
+    include: ['src/**/*.test.{ts,tsx}', 'src/**/__tests__/*.{ts,tsx}'],
     exclude: ['**/node_modules/**', '**/dist/**', '**/src/wasm/**/*.zig'],
   },
 })

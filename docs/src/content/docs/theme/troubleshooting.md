@@ -213,7 +213,7 @@ const transformedThemes = transformer.batchTransform(themes, baseTokens)
 
 ```typescript
 // ✅ Ensure CSS is injected properly
-import '@sparkle/theme/styles.css'
+import '@sparkle/ui/styles.css'
 
 // ✅ Force theme update
 const {setTheme} = useTheme()
