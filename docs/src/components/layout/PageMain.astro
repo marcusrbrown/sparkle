@@ -8,7 +8,38 @@
  * - Section structure for content organization
  * - Skip navigation support for accessibility
  * - Proper heading hierarchy without H1 conflicts
+ *
+ * Why this component exists:
+ * - Creates the primary main landmark required for accessibility
+ * - Provides a consistent entry point for page content across the site
+ * - Ensures proper focus management for skip navigation functionality
+ * - Establishes the semantic boundary between navigation and main content
+ * - Offers consistent styling and layout for all documentation pages
+ *
+ * Technical implementation:
+ * - Uses semantic HTML5 main element with proper ARIA labeling
+ * - Includes tabindex="-1" to support programmatic focus (skip links)
+ * - Provides proper focus indicators for keyboard navigation
+ * - Uses CSS custom properties for consistent theming
+ *
+ * @example
+ * ```astro
+ * <PageMain>
+ *   <h1>Page Title</h1>
+ *   <p>Main page content...</p>
+ * </PageMain>
+ * ```
  */
+
+/**
+ * Configuration options for the PageMain component.
+ * Currently this component accepts no props as it serves as a
+ * standard wrapper for all main content.
+ */
+export interface PageMainProps {
+  // No props currently needed - this component provides
+  // a standard main wrapper for all documentation pages
+}
 ---
 
 <main id="main-content" tabindex="-1" role="main" aria-label="Main content">

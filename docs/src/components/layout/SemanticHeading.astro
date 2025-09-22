@@ -5,30 +5,60 @@
  *
  * This component ensures proper heading levels are used and provides
  * accessibility features like skip links and proper ARIA labeling.
+ *
+ * Why this component exists:
+ * - Prevents heading hierarchy violations that break screen reader navigation
+ * - Provides consistent styling and spacing across documentation
+ * - Automatically generates permalink anchors for deep linking
+ * - Enforces accessibility best practices for heading structure
+ *
+ * @example
+ * ```astro
+ * <SemanticHeading level={2} id="getting-started">
+ *   Getting Started
+ * </SemanticHeading>
+ * ```
  */
 
-export interface Props {
+/**
+ * Valid heading levels for documentation content.
+ * Level 1 is reserved for page titles generated from frontmatter.
+ */
+export type HeadingLevel = 2 | 3 | 4 | 5 | 6;
+
+/**
+ * Configuration options for the SemanticHeading component.
+ */
+export interface SemanticHeadingProps {
   /**
    * Heading level (2-6). Level 1 is reserved for page titles.
+   *
+   * @example
+   * level={2} // Creates <h2>
+   * level={3} // Creates <h3>
    */
-  level: 2 | 3 | 4 | 5 | 6;
+  level: HeadingLevel;
   /**
-   * Optional ID for linking and skip navigation
+   * Optional ID for linking and skip navigation.
+   * Used to generate permalink anchors and enable deep linking.
    */
   id?: string;
   /**
-   * Additional CSS classes
+   * Additional CSS classes to apply to the heading element.
    */
   class?: string;
   /**
-   * Whether to include a permalink anchor
+   * Whether to include a permalink anchor beside the heading.
+   * Enables users to link directly to this section.
+   *
+   * @default true
    */
   permalink?: boolean;
 }
 
-const { level, id, class: className, permalink = true } = Astro.props;
+const { level, id, class: className, permalink = true } = Astro.props as SemanticHeadingProps;
 
-// Create the heading element dynamically
+// Create the heading element dynamically with proper type safety
 const HeadingTag = `h${level}` as const;
 ---
 

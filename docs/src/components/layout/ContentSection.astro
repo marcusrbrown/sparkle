@@ -4,24 +4,51 @@
  *
  * Provides proper sectioning for accessibility and helps organize content
  * into logical, semantic sections with optional headings.
+ *
+ * Why this component exists:
+ * - Creates proper HTML5 section landmarks for screen readers
+ * - Provides consistent spacing and visual separation between content sections
+ * - Enables semantic grouping of related content for better document structure
+ * - Supports skip navigation by allowing meaningful section identification
+ *
+ * @example
+ * ```astro
+ * <ContentSection ariaLabel="Getting started guide" id="getting-started">
+ *   <h2>Getting Started</h2>
+ *   <p>Introduction content...</p>
+ * </ContentSection>
+ * ```
  */
 
-export interface Props {
+/**
+ * Configuration options for the ContentSection component.
+ */
+export interface ContentSectionProps {
   /**
-   * Accessible label for the section
+   * Accessible label for the section that describes its content.
+   * Helps screen reader users understand the section's purpose.
+   *
+   * @example
+   * ariaLabel="Installation instructions"
+   * ariaLabel="API reference"
    */
   ariaLabel?: string;
   /**
-   * ID for the section, useful for skip links
+   * Unique identifier for the section.
+   * Useful for skip links, deep linking, and targeted CSS styling.
+   *
+   * @example
+   * id="installation"
+   * id="api-reference"
    */
   id?: string;
   /**
-   * Additional CSS classes
+   * Additional CSS classes to apply to the section element.
    */
   class?: string;
 }
 
-const { ariaLabel, id, class: className } = Astro.props;
+const { ariaLabel, id, class: className } = Astro.props as ContentSectionProps;
 ---
 
 <section

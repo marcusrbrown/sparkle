@@ -4,28 +4,71 @@
  *
  * Provides proper navigation semantics and accessibility features
  * for various types of navigation elements within documentation.
+ *
+ * Why this component exists:
+ * - Ensures proper ARIA labeling and navigation landmarks
+ * - Provides consistent styling for different navigation contexts
+ * - Supports keyboard navigation and screen reader accessibility
+ * - Centralizes navigation semantics across the documentation site
+ *
+ * @example
+ * ```astro
+ * <ContentNavigation ariaLabel="Page navigation" type="pagination">
+ *   <a href="/prev">Previous</a>
+ *   <a href="/next">Next</a>
+ * </ContentNavigation>
+ * ```
  */
 
-export interface Props {
+/**
+ * Navigation types that determine styling and semantic context.
+ */
+export const NAVIGATION_TYPES = [
+  'primary',
+  'secondary',
+  'breadcrumb',
+  'pagination',
+  'toc'
+] as const;
+
+export type NavigationType = typeof NAVIGATION_TYPES[number];
+
+/**
+ * Configuration options for the ContentNavigation component.
+ */
+export interface ContentNavigationProps {
   /**
-   * Accessible label for the navigation
+   * Accessible label for the navigation element.
+   * Required for screen reader users to understand the navigation purpose.
+   *
+   * @example
+   * ariaLabel="Main navigation"
+   * ariaLabel="Page pagination"
    */
   ariaLabel: string;
   /**
-   * ID for the navigation element
+   * Optional ID for the navigation element.
+   * Useful for skip links and targeted styling.
    */
   id?: string;
   /**
-   * Additional CSS classes
+   * Additional CSS classes to apply to the navigation element.
    */
   class?: string;
   /**
-   * Navigation type for semantic context
+   * Navigation type that determines styling and semantic context.
+   *
+   * @default 'secondary'
    */
-  type?: 'primary' | 'secondary' | 'breadcrumb' | 'pagination' | 'toc';
+  type?: NavigationType;
 }
 
-const { ariaLabel, id, class: className, type = 'secondary' } = Astro.props;
+const {
+  ariaLabel,
+  id,
+  class: className,
+  type = 'secondary'
+} = Astro.props as ContentNavigationProps;
 ---
 
 <nav

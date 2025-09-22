@@ -3,21 +3,63 @@
  * Skip navigation component for improved accessibility.
  *
  * Provides keyboard users a way to skip to main content,
- * bypassing navigation elements.
+ * bypassing navigation elements for faster content access.
+ *
+ * Why this component exists:
+ * - Enables keyboard users to quickly jump to main content
+ * - Meets WCAG accessibility guidelines for skip links
+ * - Improves user experience for assistive technology users
+ * - Provides visual feedback when focused for sighted keyboard users
+ *
+ * Implementation follows WCAG 2.1 AA guidelines for skip links:
+ * - Visually hidden by default but visible when focused
+ * - Uses proper semantic HTML with accessible anchors
+ * - Positioned to be the first focusable element on the page
+ *
+ * @example
+ * ```astro
+ * <SkipNavigation target="main-content" label="Skip to main content" />
+ * ```
  */
 
-export interface Props {
+/**
+ * Default configuration values for the skip navigation component.
+ */
+export const SKIP_NAVIGATION_DEFAULTS = {
+  target: 'main-content',
+  label: 'Skip to main content'
+} as const;
+
+/**
+ * Configuration options for the SkipNavigation component.
+ */
+export interface SkipNavigationProps {
   /**
-   * Target element ID to skip to (default: "main-content")
+   * Target element ID to skip to.
+   * Should match the ID of the main content container.
+   *
+   * @default "main-content"
+   * @example
+   * target="main-content"
+   * target="article-content"
    */
   target?: string;
   /**
-   * Label for the skip link
+   * Accessible label text for the skip link.
+   * Should clearly describe where the link takes the user.
+   *
+   * @default "Skip to main content"
+   * @example
+   * label="Skip to main content"
+   * label="Skip to article"
    */
   label?: string;
 }
 
-const { target = "main-content", label = "Skip to main content" } = Astro.props;
+const {
+  target = SKIP_NAVIGATION_DEFAULTS.target,
+  label = SKIP_NAVIGATION_DEFAULTS.label
+} = Astro.props as SkipNavigationProps;
 ---
 
 <a href={`#${target}`} class="skip-link">
