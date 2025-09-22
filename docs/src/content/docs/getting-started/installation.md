@@ -91,7 +91,6 @@ Import Sparkle's CSS in your main stylesheet or entry point:
 ```css
 /* Import Sparkle base styles */
 @import '@sparkle/ui/styles.css';
-@import '@sparkle/theme/styles.css';
 ```
 
 ### 3. TypeScript Configuration

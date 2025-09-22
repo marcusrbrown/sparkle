@@ -39,7 +39,6 @@ import { App } from './App'
 
 // Import Sparkle styles
 import '@sparkle/ui/styles.css'
-import '@sparkle/theme/styles.css'
 
 const root = createRoot(document.querySelector('#root') as HTMLElement)
 

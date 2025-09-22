@@ -1,0 +1,36 @@
+{
+  "name": "moo-dang",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "build:types": "tsc",
+    "dev": "vite",
+    "lint": "eslint",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@sparkle/theme": "workspace:*",
+    "@sparkle/types": "workspace:*",
+    "@sparkle/ui": "workspace:*",
+    "@sparkle/utils": "workspace:*",
+    "@xterm/addon-fit": "^0.10.0",
+    "@xterm/xterm": "^5.5.0",
+    "react": "19.1.1",
+    "react-dom": "19.1.1"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.4.2",
+    "@testing-library/react": "^16.0.0",
+    "@types/react": "~19.1.0",
+    "@types/react-dom": "19.1.9",
+    "@vitejs/plugin-react-swc": "^4.0.0",
+    "happy-dom": "18.0.1",
+    "typescript": "5.9.2",
+    "vite": "7.1.6",
+    "vitest": "^3.0.0"
+  }
+}

@@ -212,6 +212,26 @@
       "env": ["NODE_ENV"],
       "cache": true
     },
+    "build:moo-dang": {
+      "dependsOn": [
+        "@sparkle/ui#build:ui",
+        "@sparkle/theme#build:theme",
+        "@sparkle/types#build:types",
+        "@sparkle/utils#build:utils"
+      ],
+      "outputs": ["dist/**"],
+      "inputs": [
+        "src/**/*.{ts,tsx,js,jsx}",
+        "src/**/*.css",
+        "public/**",
+        "index.html",
+        "package.json",
+        "tsconfig.json",
+        "vite.config.ts"
+      ],
+      "env": ["NODE_ENV"],
+      "cache": true
+    },
     "typecheck": {
       "dependsOn": ["^build:types"],
       "inputs": ["src/**/*.{ts,tsx}", "tsconfig.json", "package.json"],
