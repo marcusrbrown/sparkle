@@ -14,7 +14,8 @@
       "@/*": ["apps/fro-jive/*"],
       "@/components/*": ["apps/fro-jive/components/*"],
       "@/constants/*": ["apps/fro-jive/constants/*"],
-      "@/app/*": ["apps/fro-jive/app/*"]
+      "@/app/*": ["apps/fro-jive/app/*"],
+      "@moo-dang/*": ["apps/moo-dang/src/*"]
     },
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
@@ -34,6 +35,7 @@
     {"path": "packages/error-testing"},
     {"path": "packages/ui"},
     {"path": "packages/storybook"},
+    {"path": "apps/moo-dang"},
     {"path": "docs"}
   ],
   "files": []

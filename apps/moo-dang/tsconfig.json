@@ -1,0 +1,19 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "lib": ["ESNext", "DOM", "DOM.Iterable", "WebWorker"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"],
+      "@/components/*": ["./src/components/*"],
+      "@/workers/*": ["./src/workers/*"],
+      "@/shell/*": ["./src/shell/*"],
+      "@/wasm/*": ["./src/wasm/*"]
+    },
+    "types": ["vite/client", "vitest/globals"],
+    "strict": true
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.jsx", "vite.config.ts"],
+  "exclude": ["node_modules", "dist", "src/wasm/**/*.zig"]
+}
