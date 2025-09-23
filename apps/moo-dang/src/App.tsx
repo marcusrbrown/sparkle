@@ -1,26 +1,54 @@
 import type {ReactElement} from 'react'
 import {ThemeProvider} from '@sparkle/theme'
+import {Terminal} from './components'
 
 /**
  * Main application component for the moo-dang WASM web shell.
  *
  * This component provides the root layout and theme context for the entire
- * application. It serves as a placeholder during Phase 1 development and
- * will be enhanced with terminal interface components in future phases.
+ * application. It integrates the Terminal component to provide the main
+ * shell interface with xterm.js integration.
  *
- * @returns The main application with theme provider and basic layout
+ * @returns The main application with theme provider and terminal interface
  */
 function App(): ReactElement {
+  const handleTerminalData = (_data: string) => {
+    // TODO: In Phase 3, this will be connected to the Web Worker shell
+    // For now, we simply accept the input without processing
+  }
+
+  const handleTerminalReady = () => {
+    // Terminal is ready for interaction
+    // TODO: In Phase 3, this will trigger shell environment initialization
+  }
+
   return (
     <ThemeProvider defaultTheme="system">
-      <div className="min-h-screen bg-background">
-        <header className="border-b p-4">
+      <div className="min-h-screen bg-background flex flex-col">
+        <header className="border-b p-4 flex-shrink-0">
           <h1 className="text-2xl font-bold text-foreground">moo-dang</h1>
           <p className="text-muted-foreground">WASM-based Web Shell</p>
         </header>
-        <main className="p-4">
-          <div className="rounded-lg border bg-card p-6">
-            <p className="text-card-foreground">Terminal interface coming soon...</p>
+        <main className="flex-1 p-4 min-h-0">
+          <div className="h-full">
+            <Terminal
+              initialText="Welcome to moo-dang shell!\r\nTerminal interface is ready. Shell environment coming in Phase 3...\r\n$ "
+              onData={handleTerminalData}
+              onReady={handleTerminalReady}
+              className="h-full"
+              options={{
+                fontSize: 14,
+                fontFamily: 'Menlo, Monaco, "Courier New", monospace',
+                cursorBlink: true,
+                scrollback: 1000,
+              }}
+              theme={{
+                background: '#1a1a1a',
+                foreground: '#e0e0e0',
+                cursor: '#00ff00',
+                selection: 'rgba(255, 255, 255, 0.3)',
+              }}
+            />
           </div>
         </main>
       </div>

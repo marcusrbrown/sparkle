@@ -25,9 +25,6 @@ export default defineConfig({
     format: 'es',
     plugins: () => [react()],
   },
-  optimizeDeps: {
-    exclude: ['@xterm/xterm'],
-  },
   build: {
     target: 'es2022',
     rollupOptions: {
