@@ -2,7 +2,7 @@ import type {ReactElement} from 'react'
 import {ThemeProvider} from '@sparkle/theme'
 
 import {consola} from 'consola'
-import {useRef, useState} from 'react'
+import {useCallback, useRef, useState} from 'react'
 
 import {
   AccessibilityProvider,
@@ -15,91 +15,84 @@ import {
 /**
  * Main application component for the moo-dang WASM web shell.
  *
- * This component provides the root layout and theme context for the entire
- * application. It integrates the CommandTerminal component to provide the main
- * shell interface with command input handling, history, and xterm.js integration.
- *
- * @returns The main application with theme provider and command terminal interface
+ * Provides the root layout and theme context for the terminal interface,
+ * integrating accessibility features and command execution handling.
  */
 function App(): ReactElement {
   const terminalRef = useRef<CommandTerminalHandle>(null)
   const [showKeyboardHelp, setShowKeyboardHelp] = useState(false)
 
-  /**
-   * Demonstrates sample output types by adding various formatted outputs.
-   */
-  const demonstrateSampleOutputs = () => {
+  const demonstrateSampleOutputs = useCallback((): void => {
     const terminal = terminalRef.current
     if (!terminal) return
 
-    // Add sample outputs demonstrating different types
-    terminal.addOutput('command', 'ls -la')
-    terminal.addOutput(
-      'output',
-      'total 42\ndrwxr-xr-x  3 user  staff   96 Sep 23 01:30 .\ndrwxr-xr-x  4 user  staff  128 Sep 23 01:29 ..\n-rw-r--r--  1 user  staff 1234 Sep 23 01:30 README.md',
-    )
+    const demoOutputs = [
+      {type: 'command' as const, content: 'ls -la'},
+      {
+        type: 'output' as const,
+        content:
+          'total 42\ndrwxr-xr-x  3 user  staff   96 Sep 23 01:30 .\ndrwxr-xr-x  4 user  staff  128 Sep 23 01:29 ..\n-rw-r--r--  1 user  staff 1234 Sep 23 01:30 README.md',
+      },
+      {type: 'command' as const, content: 'npm install nonexistent-package'},
+      {type: 'error' as const, content: 'Package "nonexistent-package" not found in npm registry'},
+      {type: 'command' as const, content: 'echo "Testing output formatting"'},
+      {type: 'output' as const, content: 'Testing output formatting'},
+      {type: 'warning' as const, content: 'This is a warning message about deprecated functionality'},
+      {type: 'info' as const, content: 'System information: moo-dang shell v1.0.0'},
+      {type: 'system' as const, content: 'Terminal output rendering demonstration complete'},
+    ] as const
 
-    terminal.addOutput('command', 'npm install nonexistent-package')
-    terminal.addOutput('error', 'Package "nonexistent-package" not found in npm registry')
-
-    terminal.addOutput('command', 'echo "Testing output formatting"')
-    terminal.addOutput('output', 'Testing output formatting')
-
-    terminal.addOutput('warning', 'This is a warning message about deprecated functionality')
-    terminal.addOutput('info', 'System information: moo-dang shell v1.0.0')
-    terminal.addOutput('system', 'Terminal output rendering demonstration complete')
-  }
-
-  /**
-   * Handles command execution from the terminal.
-   * In Phase 3, this will be connected to the Web Worker shell environment.
-   */
-  const handleCommandExecute = (command: string) => {
-    consola.info(`Command executed: "${command}"`)
-
-    // Check for accessibility shortcuts
-    if (command.trim() === 'help' || command.trim() === '?') {
-      setShowKeyboardHelp(true)
-      return
+    for (const {type, content} of demoOutputs) {
+      terminal.addOutput(type, content)
     }
+  }, [])
 
-    // Demonstrate sample outputs for specific commands
-    if (command.trim() === 'demo') {
-      demonstrateSampleOutputs()
-      return
-    }
+  const handleCommandExecute = useCallback(
+    (command: string): void => {
+      command = command.trim()
+      consola.info(`Command executed: "${command}"`)
 
-    // For other commands, show a placeholder response
-    const terminal = terminalRef.current
-    if (terminal) {
-      terminal.addOutput('command', command)
-      terminal.addOutput(
-        'output',
-        `Command "${command}" executed successfully.\nType "demo" to see output formatting examples.`,
-      )
-    }
+      if (command === 'help' || command === '?') {
+        setShowKeyboardHelp(true)
+        return
+      }
 
-    // TODO: In Phase 3, this will send commands to the Web Worker shell
-  }
+      if (command === 'demo') {
+        demonstrateSampleOutputs()
+        return
+      }
 
-  /**
-   * Handles when the terminal is ready for interaction.
-   */
-  const handleTerminalReady = () => {
-    consola.info('Terminal is ready for command input')
-
-    // Show initial demo outputs
-    setTimeout(() => {
       const terminal = terminalRef.current
       if (terminal) {
-        terminal.addOutput('system', 'Welcome to moo-dang shell!')
-        terminal.addOutput('info', 'Terminal output rendering is now active')
-        terminal.addOutput('info', 'Try typing "demo" to see output formatting examples')
+        terminal.addOutput('command', command)
+        terminal.addOutput(
+          'output',
+          `Command "${command}" executed successfully.\nType "demo" to see output formatting examples.`,
+        )
       }
-    }, 500)
+    },
+    [demonstrateSampleOutputs],
+  )
 
-    // TODO: In Phase 3, this will trigger shell environment initialization
-  }
+  const handleTerminalReady = useCallback((): void => {
+    consola.info('Terminal is ready for command input')
+
+    const DEMO_DELAY_MS = 500
+    const welcomeMessages = [
+      {type: 'system' as const, content: 'Welcome to moo-dang shell!'},
+      {type: 'info' as const, content: 'Terminal output rendering is now active'},
+      {type: 'info' as const, content: 'Try typing "demo" to see output formatting examples'},
+    ] as const
+
+    setTimeout(() => {
+      const terminal = terminalRef.current
+      if (!terminal) return
+
+      for (const {type, content} of welcomeMessages) {
+        terminal.addOutput(type, content)
+      }
+    }, DEMO_DELAY_MS)
+  }, [])
 
   return (
     <ThemeProvider defaultTheme="system">

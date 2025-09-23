@@ -1,7 +1,7 @@
 /**
  * Accessibility utilities and screen reader support for terminal components.
  *
- * This module provides comprehensive accessibility features including ARIA live regions,
+ * Provides comprehensive accessibility features including ARIA live regions,
  * screen reader announcements, focus management, and enhanced keyboard navigation.
  */
 
@@ -9,54 +9,34 @@ import {cx} from '@sparkle/ui'
 import {consola} from 'consola'
 import React, {useCallback, useEffect, useRef, useState} from 'react'
 
-/**
- * Configuration for accessibility features.
- */
 export interface AccessibilityConfig {
-  /** Enable screen reader announcements */
-  enableAnnouncements: boolean
-  /** Enable enhanced keyboard navigation help */
-  enableKeyboardHelp: boolean
-  /** Enable focus management */
-  enableFocusManagement: boolean
-  /** Announcement priority level */
-  announcementPriority: 'polite' | 'assertive'
-  /** Debounce delay for rapid announcements (ms) */
-  debounceDelay: number
+  readonly enableAnnouncements: boolean
+  readonly enableKeyboardHelp: boolean
+  readonly enableFocusManagement: boolean
+  readonly announcementPriority: 'polite' | 'assertive'
+  readonly debounceDelay: number
 }
 
-/**
- * Default accessibility configuration.
- */
 export const DEFAULT_ACCESSIBILITY_CONFIG: AccessibilityConfig = {
   enableAnnouncements: true,
   enableKeyboardHelp: true,
   enableFocusManagement: true,
   announcementPriority: 'polite',
   debounceDelay: 150,
-}
+} as const
 
-/**
- * Terminal accessibility status information.
- */
 export interface AccessibilityStatus {
-  /** Whether screen reader support is active */
-  screenReaderActive: boolean
-  /** Current focus element */
-  currentFocus: string | null
-  /** Last announcement made */
-  lastAnnouncement: string | null
-  /** Whether high contrast mode is preferred */
-  prefersHighContrast: boolean
-  /** Whether reduced motion is preferred */
-  prefersReducedMotion: boolean
+  readonly screenReaderActive: boolean
+  readonly currentFocus: string | null
+  readonly lastAnnouncement: string | null
+  readonly prefersHighContrast: boolean
+  readonly prefersReducedMotion: boolean
 }
 
 /**
  * Hook for managing terminal accessibility features.
  *
- * @param config Configuration for accessibility features
- * @returns Accessibility state and utility functions
+ * Provides debounced screen reader announcements and user preference detection.
  */
 export function useTerminalAccessibility(config: Partial<AccessibilityConfig> = {}) {
   const mergedConfig = {...DEFAULT_ACCESSIBILITY_CONFIG, ...config}
@@ -71,11 +51,8 @@ export function useTerminalAccessibility(config: Partial<AccessibilityConfig> = 
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null)
   const lastAnnouncementRef = useRef<string>('')
 
-  /**
-   * Announces a message to screen readers with debouncing to prevent spam.
-   */
   const announce = useCallback(
-    (message: string, priority: 'polite' | 'assertive' = mergedConfig.announcementPriority) => {
+    (message: string, priority: 'polite' | 'assertive' = mergedConfig.announcementPriority): void => {
       if (!mergedConfig.enableAnnouncements) return
 
       // Debounce rapid announcements
