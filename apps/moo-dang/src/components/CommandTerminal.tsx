@@ -3,26 +3,66 @@ import type {XTermTheme} from './theme-utils'
 import {cx, type HTMLProperties} from '@sparkle/ui'
 import {consola} from 'consola'
 import React, {useCallback, useEffect, useImperativeHandle, useRef, useState} from 'react'
-import {useCommandInput, type CommandInputConfig} from '../hooks'
+import {useCommandInput, useTerminalOutput, type CommandInputConfig, type TerminalOutputType} from '../hooks'
 import {clearCurrentLine, formatCommandLine, getTerminalCursorPosition, parseTerminalKey} from '../utils'
 import {Terminal as BaseTerminal, type TerminalHandle as BaseTerminalHandle, type TerminalOptions} from './Terminal'
 
 /**
- * Command terminal specific error with enhanced context.
+ * Command terminal specific error interface with enhanced context.
  *
  * Provides structured error information for command terminal operations,
  * enabling better debugging and error recovery.
  */
-export class CommandTerminalError extends Error {
+export interface CommandTerminalError extends Error {
   readonly operation: string
-  override readonly cause?: unknown
+  readonly cause?: unknown
+}
 
-  constructor(message: string, operation: string, cause?: unknown) {
-    super(`CommandTerminal ${operation}: ${message}`)
-    this.name = 'CommandTerminalError'
-    this.operation = operation
-    this.cause = cause
+/**
+ * Creates a structured command terminal error with enhanced context.
+ *
+ * Uses functional approach instead of class inheritance for better
+ * maintainability and adherence to project coding standards.
+ *
+ * @param message Error message describing what went wrong
+ * @param operation The terminal operation that failed
+ * @param cause Optional underlying cause of the error
+ * @returns CommandTerminalError with structured information
+ */
+export function createCommandTerminalError(message: string, operation: string, cause?: unknown): CommandTerminalError {
+  const error = new Error(`CommandTerminal ${operation}: ${message}`) as CommandTerminalError
+  error.name = 'CommandTerminalError'
+
+  // Use Object.defineProperty to set readonly properties
+  Object.defineProperty(error, 'operation', {
+    value: operation,
+    writable: false,
+    enumerable: true,
+    configurable: false,
+  })
+
+  if (cause !== undefined) {
+    Object.defineProperty(error, 'cause', {
+      value: cause,
+      writable: false,
+      enumerable: true,
+      configurable: false,
+    })
   }
+
+  return error
+}
+
+/**
+ * Command history entry interface for better type safety.
+ */
+export interface CommandHistoryEntry {
+  /** The executed command */
+  command: string
+  /** When the command was executed */
+  timestamp: Date
+  /** Unique identifier for the command */
+  id: string
 }
 
 /**
@@ -40,28 +80,38 @@ export interface CommandTerminalHandle extends BaseTerminalHandle {
   /** Clear command history */
   clearHistory: () => void
   /** Get command history */
-  getHistory: () => {command: string; timestamp: Date; id: string}[]
+  getHistory: () => CommandHistoryEntry[]
+  /** Add output to the terminal */
+  addOutput: (type: TerminalOutputType, content: string) => void
+  /** Clear all terminal output */
+  clearOutput: () => void
+  /** Get all output entries */
+  getOutputHistory: () => string
+  /** Write formatted output directly to terminal */
+  writeOutput: (content: string, formatted?: boolean) => void
 }
 
 /**
  * Props for the enhanced Terminal component with command input handling.
+ *
+ * Extends HTML div props but excludes children to maintain terminal control.
  */
 export interface CommandTerminalProps extends Omit<HTMLProperties<HTMLDivElement>, 'children'> {
-  /** Initial text to display (optional) */
+  /** Initial text to display when terminal loads */
   initialText?: string
-  /** Custom theme override (optional - uses Sparkle theme by default) */
+  /** Custom theme override (uses Sparkle theme system by default) */
   themeOverride?: XTermTheme
-  /** Terminal options */
+  /** Terminal configuration options */
   options?: TerminalOptions
-  /** Command input configuration */
+  /** Command input behavior configuration */
   commandConfig?: CommandInputConfig
-  /** Callback when a command is executed */
+  /** Handler for command execution events */
   onCommandExecute?: (command: string) => void
-  /** Callback when terminal is resized */
+  /** Handler for terminal resize events */
   onResize?: (cols: number, rows: number) => void
-  /** Callback when terminal is ready */
+  /** Handler for terminal ready state */
   onReady?: (terminal: XTerm) => void
-  /** Whether to enable command input handling (default: true) */
+  /** Enable command input processing (default: true) */
   enableCommandInput?: boolean
 }
 
@@ -100,6 +150,12 @@ export const CommandTerminal = React.forwardRef<CommandTerminalHandle, CommandTe
   // Command input handling
   const commandInput = useCommandInput(commandConfig, onCommandExecute)
 
+  // Terminal output handling
+  const terminalOutput = useTerminalOutput({
+    maxOutputEntries: 1000,
+    autoScroll: true,
+  })
+
   /**
    * Renders the current command line with prompt and cursor positioning.
    *
@@ -129,7 +185,7 @@ export const CommandTerminal = React.forwardRef<CommandTerminalHandle, CommandTe
       const cursorPos = getTerminalCursorPosition(commandInput.prompt, commandInput.cursorPosition)
       terminal.write(`\r${String.fromCharCode(0x1b)}[${cursorPos}C`)
     } catch (error) {
-      const terminalError = new CommandTerminalError(
+      const terminalError = createCommandTerminalError(
         error instanceof Error ? error.message : 'Unknown render error',
         'command line rendering',
         error,
@@ -328,8 +384,17 @@ export const CommandTerminal = React.forwardRef<CommandTerminalHandle, CommandTe
       getCurrentCommand: () => commandInput.currentCommand,
       clearHistory: commandInput.clearHistory,
       getHistory: () => commandInput.commandHistory,
+      // Output methods
+      addOutput: terminalOutput.addOutput,
+      clearOutput: terminalOutput.clearOutput,
+      getOutputHistory: () => terminalOutput.outputEntries.map(entry => entry.content).join('\n'),
+      writeOutput: (content: string) => {
+        if (baseTerminalRef.current) {
+          baseTerminalRef.current.write(content)
+        }
+      },
     }),
-    [enableCommandInput, commandInput],
+    [enableCommandInput, commandInput, terminalOutput],
   )
 
   const containerClasses = cx('command-terminal-container', className)
