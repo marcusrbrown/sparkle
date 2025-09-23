@@ -13,6 +13,14 @@ export default defineConfig({
       '@/wasm': resolve(__dirname, './src/wasm'),
     },
   },
+  // WASM support configuration
+  assetsInclude: ['**/*.wasm'],
+  server: {
+    fs: {
+      // Allow serving WASM files from the project and workspace
+      allow: ['..', resolve(__dirname, './src/wasm')],
+    },
+  },
   worker: {
     format: 'es',
     plugins: () => [react()],
