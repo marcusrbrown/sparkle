@@ -12,7 +12,8 @@
       "@/wasm/*": ["./src/wasm/*"]
     },
     "types": ["vite/client", "vitest/globals"],
-    "strict": true
+    "strict": true,
+    "noEmit": true
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.jsx", "vite.config.ts"],
   "exclude": ["node_modules", "dist", "src/wasm/**/*.zig"]
