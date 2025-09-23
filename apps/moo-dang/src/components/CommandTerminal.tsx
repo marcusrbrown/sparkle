@@ -1,0 +1,318 @@
+import type {Terminal as XTerm} from '@xterm/xterm'
+import type {XTermTheme} from './theme-utils'
+import {cx, type HTMLProperties} from '@sparkle/ui'
+import {consola} from 'consola'
+import React, {useCallback, useEffect, useImperativeHandle, useRef, useState} from 'react'
+import {useCommandInput, type CommandInputConfig} from '../hooks'
+import {clearCurrentLine, formatCommandLine, getTerminalCursorPosition, parseTerminalKey} from '../utils'
+import {Terminal as BaseTerminal, type TerminalHandle as BaseTerminalHandle, type TerminalOptions} from './Terminal'
+
+/**
+ * Enhanced Terminal handle interface that includes command input functionality.
+ */
+export interface CommandTerminalHandle extends BaseTerminalHandle {
+  /** Execute the current command */
+  executeCommand: () => void
+  /** Clear the current command input */
+  clearCommand: () => void
+  /** Set the current command */
+  setCommand: (command: string) => void
+  /** Get the current command */
+  getCurrentCommand: () => string
+  /** Clear command history */
+  clearHistory: () => void
+  /** Get command history */
+  getHistory: () => {command: string; timestamp: Date; id: string}[]
+}
+
+/**
+ * Props for the enhanced Terminal component with command input handling.
+ */
+export interface CommandTerminalProps extends Omit<HTMLProperties<HTMLDivElement>, 'children'> {
+  /** Initial text to display (optional) */
+  initialText?: string
+  /** Custom theme override (optional - uses Sparkle theme by default) */
+  themeOverride?: XTermTheme
+  /** Terminal options */
+  options?: TerminalOptions
+  /** Command input configuration */
+  commandConfig?: CommandInputConfig
+  /** Callback when a command is executed */
+  onCommandExecute?: (command: string) => void
+  /** Callback when terminal is resized */
+  onResize?: (cols: number, rows: number) => void
+  /** Callback when terminal is ready */
+  onReady?: (terminal: XTerm) => void
+  /** Whether to enable command input handling (default: true) */
+  enableCommandInput?: boolean
+}
+
+/**
+ * Enhanced Terminal component with integrated command input handling and history.
+ *
+ * This component extends the base Terminal with full command-line interface
+ * functionality including command history, keyboard shortcuts, line editing,
+ * and proper prompt management.
+ *
+ * Features:
+ * - Full command history with up/down arrow navigation
+ * - Line editing with cursor positioning
+ * - Keyboard shortcuts (Ctrl+C, Ctrl+L, etc.)
+ * - Proper prompt display and management
+ * - Integration with xterm.js for terminal emulation
+ * - Theme integration with Sparkle design system
+ */
+export const CommandTerminal = React.forwardRef<CommandTerminalHandle, CommandTerminalProps>((props, ref) => {
+  const {
+    className,
+    initialText = '',
+    themeOverride,
+    options = {},
+    commandConfig = {},
+    onCommandExecute,
+    onResize,
+    onReady,
+    enableCommandInput = true,
+    ...rest
+  } = props
+
+  const baseTerminalRef = useRef<BaseTerminalHandle>(null)
+  const [isReady, setIsReady] = useState(false)
+
+  // Command input handling
+  const commandInput = useCommandInput(commandConfig, onCommandExecute)
+
+  /**
+   * Renders the current command line with prompt and cursor.
+   */
+  const renderCommandLine = useCallback(() => {
+    if (!baseTerminalRef.current || !isReady) return
+
+    const terminal = baseTerminalRef.current.getTerminal()
+    if (!terminal) return
+
+    try {
+      // Clear the current line
+      terminal.write(clearCurrentLine())
+
+      // Format and display the command line
+      const {line} = formatCommandLine(commandInput.prompt, commandInput.currentCommand)
+      terminal.write(line)
+
+      // Position cursor at the correct location
+      const cursorPos = getTerminalCursorPosition(commandInput.prompt, commandInput.cursorPosition)
+      terminal.write(`\\r${String.fromCharCode(0x1b)}[${cursorPos}C`)
+    } catch (error) {
+      consola.error('Failed to render command line:', error)
+    }
+  }, [isReady, commandInput.prompt, commandInput.currentCommand, commandInput.cursorPosition])
+
+  /**
+   * Handles keyboard input from xterm.js and processes it through command input.
+   */
+  const handleTerminalData = useCallback(
+    (data: string) => {
+      if (!enableCommandInput) return
+
+      const keyEvent = parseTerminalKey(data)
+
+      if (!keyEvent.shouldHandle) {
+        consola.debug('Ignoring unhandled key event:', keyEvent)
+        return
+      }
+
+      switch (keyEvent.type) {
+        case 'enter':
+          // Execute the command and move to next line
+          if (baseTerminalRef.current) {
+            baseTerminalRef.current.write(String.raw`\r\n`)
+          }
+          commandInput.executeCommand()
+          break
+
+        case 'backspace':
+          commandInput.deleteCharacterBeforeCursor()
+          break
+
+        case 'delete':
+          commandInput.deleteCharacterAtCursor()
+          break
+
+        case 'arrow-up':
+          commandInput.navigateHistoryUp()
+          break
+
+        case 'arrow-down':
+          commandInput.navigateHistoryDown()
+          break
+
+        case 'arrow-left':
+          commandInput.moveCursorLeft()
+          break
+
+        case 'arrow-right':
+          commandInput.moveCursorRight()
+          break
+
+        case 'home':
+        case 'ctrl-a':
+          commandInput.moveCursorToStart()
+          break
+
+        case 'end':
+        case 'ctrl-e':
+          commandInput.moveCursorToEnd()
+          break
+
+        case 'ctrl-c':
+          // Cancel current command
+          if (baseTerminalRef.current) {
+            baseTerminalRef.current.write(String.raw`^C\r\n`)
+          }
+          commandInput.clearCommand()
+          break
+
+        case 'ctrl-l':
+          // Clear screen
+          if (baseTerminalRef.current) {
+            baseTerminalRef.current.clear()
+          }
+          break
+
+        case 'ctrl-k':
+          // Delete from cursor to end of line
+          {
+            const newCommand = commandInput.currentCommand.slice(0, commandInput.cursorPosition)
+            commandInput.setCommand(newCommand)
+          }
+          break
+
+        case 'ctrl-u':
+          // Delete entire line
+          commandInput.clearCommand()
+          break
+
+        case 'printable':
+          if (keyEvent.char) {
+            commandInput.insertCharacterAtCursor(keyEvent.char)
+          }
+          break
+
+        case 'tab':
+          // TODO: Implement tab completion in Phase 3
+          consola.debug('Tab completion not yet implemented')
+          break
+
+        default:
+          consola.debug('Unhandled key type:', keyEvent.type)
+      }
+    },
+    [enableCommandInput, commandInput],
+  )
+
+  /**
+   * Handles when the terminal is ready for interaction.
+   */
+  const handleTerminalReady = useCallback(
+    (terminal: XTerm) => {
+      setIsReady(true)
+
+      // Display initial prompt
+      if (enableCommandInput) {
+        terminal.write(`\\r\\n${commandInput.prompt}`)
+      }
+
+      if (onReady) {
+        onReady(terminal)
+      }
+    },
+    [enableCommandInput, commandInput.prompt, onReady],
+  )
+
+  // Re-render command line when command input state changes
+  useEffect(() => {
+    if (enableCommandInput && isReady) {
+      renderCommandLine()
+    }
+  }, [
+    enableCommandInput,
+    isReady,
+    renderCommandLine,
+    commandInput.currentCommand,
+    commandInput.cursorPosition,
+    commandInput.prompt,
+  ])
+
+  // Display new prompt after command execution
+  useEffect(() => {
+    if (enableCommandInput && isReady && baseTerminalRef.current) {
+      // Command was executed, show new prompt
+      if (commandInput.currentCommand === '' && !commandInput.isBrowsingHistory) {
+        baseTerminalRef.current.write(commandInput.prompt)
+      } else {
+        // Not showing prompt if command exists or browsing history
+      }
+    }
+  }, [enableCommandInput, isReady, commandInput.currentCommand, commandInput.isBrowsingHistory, commandInput.prompt])
+
+  // Set up imperative handle
+  useImperativeHandle(
+    ref,
+    (): CommandTerminalHandle => ({
+      // Base terminal methods
+      getTerminal: () => baseTerminalRef.current?.getTerminal() || null,
+      fitToContainer: async () => {
+        if (baseTerminalRef.current) {
+          await baseTerminalRef.current.fitToContainer()
+        }
+      },
+      write: (text: string) => {
+        if (baseTerminalRef.current) {
+          baseTerminalRef.current.write(text)
+        }
+      },
+      clear: () => {
+        if (baseTerminalRef.current) {
+          baseTerminalRef.current.clear()
+          if (enableCommandInput) {
+            baseTerminalRef.current.write(commandInput.prompt)
+          }
+        }
+      },
+      focus: () => {
+        if (baseTerminalRef.current) {
+          baseTerminalRef.current.focus()
+        }
+      },
+      // Command methods
+      executeCommand: commandInput.executeCommand,
+      clearCommand: commandInput.clearCommand,
+      setCommand: commandInput.setCommand,
+      getCurrentCommand: () => commandInput.currentCommand,
+      clearHistory: commandInput.clearHistory,
+      getHistory: () => commandInput.commandHistory,
+    }),
+    [enableCommandInput, commandInput],
+  )
+
+  const containerClasses = cx('command-terminal-container', className)
+
+  return (
+    <div className={containerClasses} {...rest}>
+      <BaseTerminal
+        ref={baseTerminalRef}
+        initialText={initialText}
+        themeOverride={themeOverride}
+        options={{
+          ...options,
+        }}
+        onData={enableCommandInput ? handleTerminalData : undefined}
+        onResize={onResize}
+        onReady={handleTerminalReady}
+        className="h-full"
+      />
+    </div>
+  )
+})
+
+CommandTerminal.displayName = 'CommandTerminal'

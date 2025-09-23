@@ -1,24 +1,33 @@
 import type {ReactElement} from 'react'
 import {ThemeProvider} from '@sparkle/theme'
-import {Terminal} from './components'
+import {consola} from 'consola'
+import {CommandTerminal} from './components'
 
 /**
  * Main application component for the moo-dang WASM web shell.
  *
  * This component provides the root layout and theme context for the entire
- * application. It integrates the Terminal component to provide the main
- * shell interface with xterm.js integration.
+ * application. It integrates the CommandTerminal component to provide the main
+ * shell interface with command input handling, history, and xterm.js integration.
  *
- * @returns The main application with theme provider and terminal interface
+ * @returns The main application with theme provider and command terminal interface
  */
 function App(): ReactElement {
-  const handleTerminalData = (_data: string) => {
-    // TODO: In Phase 3, this will be connected to the Web Worker shell
-    // For now, we simply accept the input without processing
+  /**
+   * Handles command execution from the terminal.
+   * In Phase 3, this will be connected to the Web Worker shell environment.
+   */
+  const handleCommandExecute = (command: string) => {
+    consola.info(`Command executed: "${command}"`)
+    // TODO: In Phase 3, this will send commands to the Web Worker shell
+    // For now, we just log the command execution
   }
 
+  /**
+   * Handles when the terminal is ready for interaction.
+   */
   const handleTerminalReady = () => {
-    // Terminal is ready for interaction
+    consola.info('Terminal is ready for command input')
     // TODO: In Phase 3, this will trigger shell environment initialization
   }
 
@@ -31,11 +40,16 @@ function App(): ReactElement {
         </header>
         <main className="flex-1 p-4 min-h-0">
           <div className="h-full">
-            <Terminal
-              initialText="Welcome to moo-dang shell!\r\nTerminal interface is ready. Shell environment coming in Phase 3...\r\n$ "
-              onData={handleTerminalData}
+            <CommandTerminal
+              initialText="Welcome to moo-dang shell!\r\nType commands below. Use ↑/↓ arrows for history.\r\n"
+              onCommandExecute={handleCommandExecute}
               onReady={handleTerminalReady}
               className="h-full"
+              commandConfig={{
+                prompt: '$ ',
+                maxHistorySize: 50,
+                allowDuplicates: false,
+              }}
               options={{
                 fontSize: 14,
                 cursorBlink: true,
