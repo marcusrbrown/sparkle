@@ -97,7 +97,7 @@ export interface ScrollbackStats {
 }
 
 /**
- * Scrollback buffer manager class.
+ * Scrollback buffer state management using functional approach.
  *
  * Provides comprehensive scrollback buffer management with features like:
  * - Automatic overflow handling with configurable limits
@@ -106,55 +106,145 @@ export interface ScrollbackStats {
  * - Memory usage monitoring and cleanup
  * - Export capabilities for debugging and analysis
  */
-export class ScrollbackManager {
-  private readonly config: Required<ScrollbackConfig>
-  private lines: ScrollbackLine[] = []
-  private lineIdCounter = 0
 
-  constructor(config: ScrollbackConfig = {}) {
-    this.config = {
-      maxLines: config.maxLines ?? 1000,
-      persist: config.persist ?? false,
-      storageKey: config.storageKey ?? 'moo-dang-scrollback',
-      enableSearch: config.enableSearch ?? true,
-      maxAgeMinutes: config.maxAgeMinutes ?? 1440, // 24 hours
-    }
+/**
+ * Internal state for scrollback buffer management.
+ */
+interface ScrollbackState {
+  lines: ScrollbackLine[]
+  lineIdCounter: number
+  config: Required<ScrollbackConfig>
+}
 
-    // Load persisted data if enabled
-    if (this.config.persist) {
-      this.loadFromStorage()
+/**
+ * Scrollback buffer manager interface.
+ *
+ * Uses functional programming patterns instead of class-based approach
+ * for better maintainability and testability.
+ */
+export interface ScrollbackManager {
+  /** Add a new line to the scrollback buffer */
+  addLine: (content: string, type?: ScrollbackLine['type'], metadata?: ScrollbackLine['metadata']) => ScrollbackLine
+  /** Add multiple lines from terminal output entries */
+  addFromOutputEntries: (entries: TerminalOutputEntry[]) => void
+  /** Get all lines in the scrollback buffer */
+  getLines: (limit?: number) => ScrollbackLine[]
+  /** Get lines within a specific range */
+  getLineRange: (start: number, end: number) => ScrollbackLine[]
+  /** Search the scrollback buffer */
+  search: (options: ScrollbackSearchOptions) => ScrollbackSearchResult[]
+  /** Clear all lines from the scrollback buffer */
+  clear: () => void
+  /** Remove lines older than the specified age */
+  cleanupOldLines: (ageMinutes?: number) => number
+  /** Get statistics about the scrollback buffer */
+  getStats: () => ScrollbackStats
+  /** Export scrollback buffer as plain text */
+  exportAsText: (includeTimestamps?: boolean) => string
+  /** Export scrollback buffer as JSON */
+  exportAsJson: () => string
+}
+
+/**
+ * Loads scrollback data from browser storage.
+ */
+function loadFromStorage(config: Required<ScrollbackConfig>): Pick<ScrollbackState, 'lines' | 'lineIdCounter'> {
+  try {
+    const stored = localStorage.getItem(config.storageKey)
+    if (stored) {
+      const data = JSON.parse(stored)
+      if (Array.isArray(data.lines)) {
+        const lines = data.lines.map((line: any) => ({
+          ...line,
+          timestamp: new Date(line.timestamp),
+        }))
+        consola.debug(`Loaded ${lines.length} lines from storage`)
+        return {
+          lines,
+          lineIdCounter: data.lineIdCounter || 0,
+        }
+      }
     }
+  } catch (error) {
+    consola.warn('Failed to load scrollback from storage:', error)
+  }
+  return {
+    lines: [],
+    lineIdCounter: 0,
+  }
+}
+
+/**
+ * Saves scrollback data to browser storage.
+ */
+function saveToStorage(state: ScrollbackState): void {
+  try {
+    const data = {
+      lines: state.lines,
+      lineIdCounter: state.lineIdCounter,
+      savedAt: new Date().toISOString(),
+    }
+    localStorage.setItem(state.config.storageKey, JSON.stringify(data))
+  } catch (error) {
+    consola.warn('Failed to save scrollback to storage:', error)
+  }
+}
+
+/**
+ * Creates a new scrollback manager with the specified configuration.
+ *
+ * Uses functional programming patterns to manage scrollback state and operations.
+ * All methods maintain immutability where appropriate and provide clean interfaces.
+ *
+ * @param config Scrollback configuration options
+ * @returns ScrollbackManager interface with all necessary operations
+ */
+export function createScrollbackManager(config: ScrollbackConfig = {}): ScrollbackManager {
+  const resolvedConfig: Required<ScrollbackConfig> = {
+    maxLines: config.maxLines ?? 1000,
+    persist: config.persist ?? false,
+    storageKey: config.storageKey ?? 'moo-dang-scrollback',
+    enableSearch: config.enableSearch ?? true,
+    maxAgeMinutes: config.maxAgeMinutes ?? 1440, // 24 hours
+  }
+
+  // Initialize state
+  const persistedData = resolvedConfig.persist ? loadFromStorage(resolvedConfig) : {lines: [], lineIdCounter: 0}
+
+  const state: ScrollbackState = {
+    lines: persistedData.lines,
+    lineIdCounter: persistedData.lineIdCounter,
+    config: resolvedConfig,
   }
 
   /**
    * Adds a new line to the scrollback buffer.
-   *
-   * @param content Line content
-   * @param type Optional line type
-   * @param metadata Optional metadata
-   * @returns The created scrollback line
    */
-  addLine(content: string, type?: ScrollbackLine['type'], metadata?: ScrollbackLine['metadata']): ScrollbackLine {
+  const addLine = (
+    content: string,
+    type?: ScrollbackLine['type'],
+    metadata?: ScrollbackLine['metadata'],
+  ): ScrollbackLine => {
     const line: ScrollbackLine = {
-      id: `line-${Date.now()}-${++this.lineIdCounter}`,
+      id: `line-${Date.now()}-${++state.lineIdCounter}`,
       content,
       timestamp: new Date(),
       type,
       metadata,
     }
 
-    this.lines.push(line)
+    state.lines.push(line)
 
     // Enforce maximum lines limit
-    if (this.lines.length > this.config.maxLines) {
-      const removedCount = this.lines.length - this.config.maxLines
-      this.lines = this.lines.slice(removedCount)
+    if (state.lines.length > state.config.maxLines) {
+      const removedCount = state.lines.length - state.config.maxLines
+      state.lines = state.lines.slice(removedCount)
       consola.debug(`Removed ${removedCount} old lines from scrollback buffer`)
     }
 
     // Persist if enabled
-    if (this.config.persist) {
-      this.saveToStorage()
+    if (state.config.persist) {
+      saveToStorage(state)
     }
 
     return line
@@ -162,12 +252,10 @@ export class ScrollbackManager {
 
   /**
    * Adds multiple lines from terminal output entries.
-   *
-   * @param entries Array of terminal output entries
    */
-  addFromOutputEntries(entries: TerminalOutputEntry[]): void {
+  const addFromOutputEntries = (entries: TerminalOutputEntry[]): void => {
     for (const entry of entries) {
-      this.addLine(entry.content, entry.type, {
+      addLine(entry.content, entry.type, {
         command: entry.metadata?.command,
       })
     }
@@ -175,33 +263,23 @@ export class ScrollbackManager {
 
   /**
    * Gets all lines in the scrollback buffer.
-   *
-   * @param limit Optional limit on number of lines to return
-   * @returns Array of scrollback lines
    */
-  getLines(limit?: number): ScrollbackLine[] {
-    return limit ? this.lines.slice(-limit) : [...this.lines]
+  const getLines = (limit?: number): ScrollbackLine[] => {
+    return limit ? state.lines.slice(-limit) : [...state.lines]
   }
 
   /**
    * Gets lines within a specific range.
-   *
-   * @param start Start index (inclusive)
-   * @param end End index (exclusive)
-   * @returns Array of scrollback lines
    */
-  getLineRange(start: number, end: number): ScrollbackLine[] {
-    return this.lines.slice(start, end)
+  const getLineRange = (start: number, end: number): ScrollbackLine[] => {
+    return state.lines.slice(start, end)
   }
 
   /**
    * Searches the scrollback buffer.
-   *
-   * @param options Search options
-   * @returns Array of search results
    */
-  search(options: ScrollbackSearchOptions): ScrollbackSearchResult[] {
-    if (!this.config.enableSearch) {
+  const search = (options: ScrollbackSearchOptions): ScrollbackSearchResult[] => {
+    if (!state.config.enableSearch) {
       consola.warn('Search is disabled in scrollback configuration')
       return []
     }
@@ -227,8 +305,8 @@ export class ScrollbackManager {
       return []
     }
 
-    for (let index = 0; index < this.lines.length && results.length < maxResults; index++) {
-      const line = this.lines[index]
+    for (let index = 0; index < state.lines.length && results.length < maxResults; index++) {
+      const line = state.lines[index]
 
       if (!line) continue
 
@@ -277,12 +355,12 @@ export class ScrollbackManager {
   /**
    * Clears all lines from the scrollback buffer.
    */
-  clear(): void {
-    this.lines = []
-    this.lineIdCounter = 0
+  const clear = (): void => {
+    state.lines = []
+    state.lineIdCounter = 0
 
-    if (this.config.persist) {
-      this.saveToStorage()
+    if (state.config.persist) {
+      saveToStorage(state)
     }
 
     consola.debug('Cleared scrollback buffer')
@@ -290,21 +368,18 @@ export class ScrollbackManager {
 
   /**
    * Removes lines older than the specified age.
-   *
-   * @param ageMinutes Age threshold in minutes
-   * @returns Number of lines removed
    */
-  cleanupOldLines(ageMinutes?: number): number {
-    const cutoffAge = ageMinutes ?? this.config.maxAgeMinutes
+  const cleanupOldLines = (ageMinutes?: number): number => {
+    const cutoffAge = ageMinutes ?? state.config.maxAgeMinutes
     const cutoffTime = new Date(Date.now() - cutoffAge * 60 * 1000)
 
-    const originalLength = this.lines.length
-    this.lines = this.lines.filter(line => line.timestamp > cutoffTime)
-    const removedCount = originalLength - this.lines.length
+    const originalLength = state.lines.length
+    state.lines = state.lines.filter(line => line.timestamp > cutoffTime)
+    const removedCount = originalLength - state.lines.length
 
     if (removedCount > 0) {
-      if (this.config.persist) {
-        this.saveToStorage()
+      if (state.config.persist) {
+        saveToStorage(state)
       }
       consola.debug(`Cleaned up ${removedCount} old lines from scrollback buffer`)
     }
@@ -314,14 +389,12 @@ export class ScrollbackManager {
 
   /**
    * Gets statistics about the scrollback buffer.
-   *
-   * @returns Scrollback buffer statistics
    */
-  getStats(): ScrollbackStats {
+  const getStats = (): ScrollbackStats => {
     const linesByType: Record<string, number> = {}
     let totalBytes = 0
 
-    for (const line of this.lines) {
+    for (const line of state.lines) {
       const type = line.type || 'unknown'
       linesByType[type] = (linesByType[type] || 0) + 1
 
@@ -331,22 +404,19 @@ export class ScrollbackManager {
     }
 
     return {
-      totalLines: this.lines.length,
+      totalLines: state.lines.length,
       estimatedMemoryUsage: totalBytes,
-      oldestLine: this.lines.length > 0 ? this.lines.at(0)?.timestamp : undefined,
-      newestLine: this.lines.length > 0 ? this.lines.at(-1)?.timestamp : undefined,
+      oldestLine: state.lines.length > 0 ? state.lines.at(0)?.timestamp : undefined,
+      newestLine: state.lines.length > 0 ? state.lines.at(-1)?.timestamp : undefined,
       linesByType,
     }
   }
 
   /**
    * Exports scrollback buffer as plain text.
-   *
-   * @param includeTimestamps Whether to include timestamps
-   * @returns Plain text representation
    */
-  exportAsText(includeTimestamps = false): string {
-    return this.lines
+  const exportAsText = (includeTimestamps = false): string => {
+    return state.lines
       .map(line => {
         const timestamp = includeTimestamps ? `[${line.timestamp.toISOString()}] ` : ''
         const type = line.type ? `[${line.type.toUpperCase()}] ` : ''
@@ -357,15 +427,13 @@ export class ScrollbackManager {
 
   /**
    * Exports scrollback buffer as JSON.
-   *
-   * @returns JSON representation of the buffer
    */
-  exportAsJson(): string {
+  const exportAsJson = (): string => {
     return JSON.stringify(
       {
-        config: this.config,
-        lines: this.lines,
-        stats: this.getStats(),
+        config: state.config,
+        lines: state.lines,
+        stats: getStats(),
         exportedAt: new Date().toISOString(),
       },
       null,
@@ -373,51 +441,16 @@ export class ScrollbackManager {
     )
   }
 
-  /**
-   * Loads scrollback data from browser storage.
-   */
-  private loadFromStorage(): void {
-    try {
-      const stored = localStorage.getItem(this.config.storageKey)
-      if (stored) {
-        const data = JSON.parse(stored)
-        if (Array.isArray(data.lines)) {
-          this.lines = data.lines.map((line: any) => ({
-            ...line,
-            timestamp: new Date(line.timestamp),
-          }))
-          this.lineIdCounter = data.lineIdCounter || 0
-          consola.debug(`Loaded ${this.lines.length} lines from storage`)
-        }
-      }
-    } catch (error) {
-      consola.warn('Failed to load scrollback from storage:', error)
-    }
+  return {
+    addLine,
+    addFromOutputEntries,
+    getLines,
+    getLineRange,
+    search,
+    clear,
+    cleanupOldLines,
+    getStats,
+    exportAsText,
+    exportAsJson,
   }
-
-  /**
-   * Saves scrollback data to browser storage.
-   */
-  private saveToStorage(): void {
-    try {
-      const data = {
-        lines: this.lines,
-        lineIdCounter: this.lineIdCounter,
-        savedAt: new Date().toISOString(),
-      }
-      localStorage.setItem(this.config.storageKey, JSON.stringify(data))
-    } catch (error) {
-      consola.warn('Failed to save scrollback to storage:', error)
-    }
-  }
-}
-
-/**
- * Creates a new scrollback manager with the specified configuration.
- *
- * @param config Scrollback configuration options
- * @returns ScrollbackManager instance
- */
-export function createScrollbackManager(config?: ScrollbackConfig): ScrollbackManager {
-  return new ScrollbackManager(config)
 }

@@ -2,7 +2,6 @@ import type {ReactElement} from 'react'
 import {ThemeProvider} from '@sparkle/theme'
 
 import {consola} from 'consola'
-
 import {useRef} from 'react'
 
 import {CommandTerminal, type CommandTerminalHandle} from './components'
