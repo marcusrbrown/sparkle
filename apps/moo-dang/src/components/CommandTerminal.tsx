@@ -3,7 +3,7 @@ import type {XTermTheme} from './theme-utils'
 import {cx, type HTMLProperties} from '@sparkle/ui'
 import {consola} from 'consola'
 import React, {useCallback, useEffect, useImperativeHandle, useRef, useState} from 'react'
-import {useCommandInput, type CommandInputConfig} from '../hooks'
+import {useCommandInput, useTerminalOutput, type CommandInputConfig} from '../hooks'
 import {clearCurrentLine, formatCommandLine, getTerminalCursorPosition, parseTerminalKey} from '../utils'
 import {Terminal as BaseTerminal, type TerminalHandle as BaseTerminalHandle, type TerminalOptions} from './Terminal'
 
@@ -41,6 +41,14 @@ export interface CommandTerminalHandle extends BaseTerminalHandle {
   clearHistory: () => void
   /** Get command history */
   getHistory: () => {command: string; timestamp: Date; id: string}[]
+  /** Add output to the terminal */
+  addOutput: (type: 'command' | 'output' | 'error' | 'warning' | 'info' | 'system', content: string) => void
+  /** Clear all terminal output */
+  clearOutput: () => void
+  /** Get all output entries */
+  getOutputHistory: () => string
+  /** Write formatted output directly to terminal */
+  writeOutput: (content: string, formatted?: boolean) => void
 }
 
 /**
@@ -99,6 +107,12 @@ export const CommandTerminal = React.forwardRef<CommandTerminalHandle, CommandTe
 
   // Command input handling
   const commandInput = useCommandInput(commandConfig, onCommandExecute)
+
+  // Terminal output handling
+  const terminalOutput = useTerminalOutput({
+    maxOutputEntries: 1000,
+    autoScroll: true,
+  })
 
   /**
    * Renders the current command line with prompt and cursor positioning.
@@ -328,8 +342,17 @@ export const CommandTerminal = React.forwardRef<CommandTerminalHandle, CommandTe
       getCurrentCommand: () => commandInput.currentCommand,
       clearHistory: commandInput.clearHistory,
       getHistory: () => commandInput.commandHistory,
+      // Output methods
+      addOutput: terminalOutput.addOutput,
+      clearOutput: terminalOutput.clearOutput,
+      getOutputHistory: () => terminalOutput.outputEntries.map(entry => entry.content).join('\n'),
+      writeOutput: (content: string) => {
+        if (baseTerminalRef.current) {
+          baseTerminalRef.current.write(content)
+        }
+      },
     }),
-    [enableCommandInput, commandInput],
+    [enableCommandInput, commandInput, terminalOutput],
   )
 
   const containerClasses = cx('command-terminal-container', className)
