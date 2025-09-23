@@ -161,7 +161,7 @@ export function useCommandInput(
   /**
    * Execute the current command and add it to history.
    */
-  const executeCommand = useCallback(() => {
+  const executeCommand = useCallback((): void => {
     const command = currentCommand.trim()
     if (!command) return
 
@@ -189,7 +189,7 @@ export function useCommandInput(
   /**
    * Update the current command text and reset history browsing.
    */
-  const setCommand = useCallback((command: string) => {
+  const setCommand = useCallback((command: string): void => {
     setCurrentCommand(command)
     setCursorPosition(command.length)
     setHistoryIndex(-1)
@@ -199,7 +199,7 @@ export function useCommandInput(
   /**
    * Clear the current command.
    */
-  const clearCommand = useCallback(() => {
+  const clearCommand = useCallback((): void => {
     setCurrentCommand('')
     setCursorPosition(0)
     setHistoryIndex(-1)
@@ -209,7 +209,7 @@ export function useCommandInput(
   /**
    * Navigate up in command history.
    */
-  const navigateHistoryUp = useCallback(() => {
+  const navigateHistoryUp = useCallback((): void => {
     if (commandHistory.length === 0) return
 
     const newIndex = isBrowsingHistory ? Math.max(0, historyIndex - 1) : commandHistory.length - 1
@@ -226,7 +226,7 @@ export function useCommandInput(
   /**
    * Navigate down in command history.
    */
-  const navigateHistoryDown = useCallback(() => {
+  const navigateHistoryDown = useCallback((): void => {
     if (!isBrowsingHistory) return
 
     if (historyIndex >= commandHistory.length - 1) {
@@ -326,7 +326,7 @@ export function useCommandInput(
   /**
    * Set the prompt string.
    */
-  const setPrompt = useCallback((newPrompt: string) => {
+  const setPrompt = useCallback((newPrompt: string): void => {
     setCurrentPrompt(newPrompt)
     consola.debug(`Prompt updated: "${newPrompt}"`)
   }, [])

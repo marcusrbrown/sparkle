@@ -8,6 +8,24 @@ import {clearCurrentLine, formatCommandLine, getTerminalCursorPosition, parseTer
 import {Terminal as BaseTerminal, type TerminalHandle as BaseTerminalHandle, type TerminalOptions} from './Terminal'
 
 /**
+ * Command terminal specific error with enhanced context.
+ *
+ * Provides structured error information for command terminal operations,
+ * enabling better debugging and error recovery.
+ */
+export class CommandTerminalError extends Error {
+  readonly operation: string
+  override readonly cause?: unknown
+
+  constructor(message: string, operation: string, cause?: unknown) {
+    super(`CommandTerminal ${operation}: ${message}`)
+    this.name = 'CommandTerminalError'
+    this.operation = operation
+    this.cause = cause
+  }
+}
+
+/**
  * Enhanced Terminal handle interface that includes command input functionality.
  */
 export interface CommandTerminalHandle extends BaseTerminalHandle {
@@ -83,9 +101,17 @@ export const CommandTerminal = React.forwardRef<CommandTerminalHandle, CommandTe
   const commandInput = useCommandInput(commandConfig, onCommandExecute)
 
   /**
-   * Renders the current command line with prompt and cursor.
+   * Renders the current command line with prompt and cursor positioning.
+   *
+   * This function handles the visual representation of the command line by:
+   * - Clearing the current terminal line
+   * - Writing the formatted prompt and command text
+   * - Positioning the cursor at the correct location
+   *
+   * The rendering is debounced and only occurs when the terminal is ready
+   * to prevent unnecessary writes during rapid state changes.
    */
-  const renderCommandLine = useCallback(() => {
+  const renderCommandLine = useCallback((): void => {
     if (!baseTerminalRef.current || !isReady) return
 
     const terminal = baseTerminalRef.current.getTerminal()
@@ -101,17 +127,28 @@ export const CommandTerminal = React.forwardRef<CommandTerminalHandle, CommandTe
 
       // Position cursor at the correct location
       const cursorPos = getTerminalCursorPosition(commandInput.prompt, commandInput.cursorPosition)
-      terminal.write(`\\r${String.fromCharCode(0x1b)}[${cursorPos}C`)
+      terminal.write(`\r${String.fromCharCode(0x1b)}[${cursorPos}C`)
     } catch (error) {
-      consola.error('Failed to render command line:', error)
+      const terminalError = new CommandTerminalError(
+        error instanceof Error ? error.message : 'Unknown render error',
+        'command line rendering',
+        error,
+      )
+      consola.error('Failed to render command line:', terminalError)
     }
   }, [isReady, commandInput.prompt, commandInput.currentCommand, commandInput.cursorPosition])
 
   /**
-   * Handles keyboard input from xterm.js and processes it through command input.
+   * Handles keyboard input from xterm.js and processes command line interactions.
+   *
+   * This function intercepts raw terminal input data and converts it into
+   * meaningful command line actions including text insertion, navigation,
+   * history traversal, and command execution. The function processes both
+   * printable characters and special key sequences through the terminal
+   * key parser to maintain proper cursor positioning and command state.
    */
   const handleTerminalData = useCallback(
-    (data: string) => {
+    (data: string): void => {
       if (!enableCommandInput) return
 
       const keyEvent = parseTerminalKey(data)
@@ -219,7 +256,7 @@ export const CommandTerminal = React.forwardRef<CommandTerminalHandle, CommandTe
 
       // Display initial prompt
       if (enableCommandInput) {
-        terminal.write(`\\r\\n${commandInput.prompt}`)
+        terminal.write(`\r\n${commandInput.prompt}`)
       }
 
       if (onReady) {
