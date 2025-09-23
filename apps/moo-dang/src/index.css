@@ -3,7 +3,14 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Terminal-specific styles will be added here in future phases */
+/* Terminal-specific styles */
+.terminal-container {
+  min-width: 200px;
+  min-height: 100px;
+  width: 100%;
+  height: 100%;
+}
+
 body {
   margin: 0;
   padding: 0;

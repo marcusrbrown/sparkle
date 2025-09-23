@@ -1,7 +1,8 @@
 import {cx, type HTMLProperties} from '@sparkle/ui'
 import {FitAddon} from '@xterm/addon-fit'
 import {Terminal as XTerm} from '@xterm/xterm'
-import React, {useEffect, useRef, useState} from 'react'
+import {consola} from 'consola'
+import React, {useCallback, useEffect, useImperativeHandle, useRef, useState} from 'react'
 import '@xterm/xterm/css/xterm.css'
 
 const DEFAULT_TERMINAL_OPTIONS = {
@@ -10,23 +11,48 @@ const DEFAULT_TERMINAL_OPTIONS = {
   cursorBlink: true,
   scrollback: 1000,
   allowProposedApi: true,
-} as const
+} as const satisfies TerminalOptions
 
 const DEFAULT_THEME_OPTIONS = {
   background: '#000000',
   foreground: '#ffffff',
   cursor: '#ffffff',
   selection: 'rgba(255, 255, 255, 0.3)',
-} as const
+} as const satisfies TerminalTheme
 
 /**
- * Creates a terminal-specific error with proper context and cause chaining.
+ * Imperative handle interface for Terminal component.
+ * Provides programmatic access to terminal operations.
  */
-function createTerminalError(message: string, cause?: unknown): Error {
-  const error = new Error(`Terminal error: ${message}`)
-  error.name = 'TerminalError'
-  error.cause = cause
-  return error
+export interface TerminalHandle {
+  /** Get the underlying XTerm instance */
+  getTerminal: () => XTerm | null
+  /** Manually trigger terminal resize to fit container */
+  fitToContainer: () => Promise<void>
+  /** Write text to the terminal */
+  write: (text: string) => void
+  /** Clear the terminal screen */
+  clear: () => void
+  /** Focus the terminal for keyboard input */
+  focus: () => void
+}
+
+/**
+ * Terminal-specific error with enhanced context and cause chaining.
+ *
+ * Provides structured error information for terminal operations,
+ * enabling better debugging and error recovery.
+ */
+export class TerminalError extends Error {
+  readonly operation: string
+  override readonly cause?: unknown
+
+  constructor(message: string, operation: string, cause?: unknown) {
+    super(`Terminal ${operation}: ${message}`)
+    this.name = 'TerminalError'
+    this.operation = operation
+    this.cause = cause
+  }
 }
 
 /**
@@ -36,7 +62,7 @@ export function writeToTerminal(terminal: XTerm, text: string): void {
   try {
     terminal.write(text)
   } catch (writeError) {
-    throw createTerminalError(`Failed to write to terminal: ${writeError}`, writeError)
+    throw new TerminalError('Write operation failed', 'write', writeError)
   }
 }
 
@@ -47,7 +73,7 @@ export function clearTerminal(terminal: XTerm): void {
   try {
     terminal.clear()
   } catch (clearError) {
-    throw createTerminalError(`Failed to clear terminal: ${clearError}`, clearError)
+    throw new TerminalError('Clear operation failed', 'clear', clearError)
   }
 }
 
@@ -58,25 +84,29 @@ export function focusTerminal(terminal: XTerm): void {
   try {
     terminal.focus()
   } catch (focusError) {
-    throw createTerminalError(`Failed to focus terminal: ${focusError}`, focusError)
+    throw new TerminalError('Focus operation failed', 'focus', focusError)
   }
+}
+
+export interface TerminalTheme {
+  background?: string
+  foreground?: string
+  cursor?: string
+  selection?: string
+}
+
+export interface TerminalOptions {
+  fontSize?: number
+  fontFamily?: string
+  cursorBlink?: boolean
+  scrollback?: number
+  allowProposedApi?: boolean
 }
 
 export interface TerminalProps extends Omit<HTMLProperties<HTMLDivElement>, 'children'> {
   initialText?: string
-  theme?: {
-    background?: string
-    foreground?: string
-    cursor?: string
-    selection?: string
-  }
-  options?: {
-    fontSize?: number
-    fontFamily?: string
-    cursorBlink?: boolean
-    scrollback?: number
-    allowProposedApi?: boolean
-  }
+  theme?: TerminalTheme
+  options?: TerminalOptions
   onData?: (data: string) => void
   onResize?: (cols: number, rows: number) => void
   onReady?: (terminal: XTerm) => void
@@ -86,9 +116,9 @@ export interface TerminalProps extends Omit<HTMLProperties<HTMLDivElement>, 'chi
  * Terminal component that integrates xterm.js with React and Sparkle UI patterns.
  *
  * Provides a full-featured terminal interface with theme integration, accessibility,
- * and error handling following Sparkle UI conventions.
+ * enhanced resize handling, and error handling following Sparkle UI conventions.
  */
-export const Terminal = React.forwardRef<HTMLDivElement, TerminalProps>((props, ref) => {
+export const Terminal = React.forwardRef<TerminalHandle, TerminalProps>((props, ref) => {
   const {className, initialText = '', theme = {}, options = {}, onData, onResize, onReady, ...rest} = props
 
   const containerRef = useRef<HTMLDivElement>(null)
@@ -97,16 +127,57 @@ export const Terminal = React.forwardRef<HTMLDivElement, TerminalProps>((props, 
   const [isReady, setIsReady] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const mergedRef = React.useCallback(
-    (node: HTMLDivElement | null) => {
-      containerRef.current = node
-      if (typeof ref === 'function') {
-        ref(node)
-      } else if (ref != null) {
-        ref.current = node
-      }
-    },
-    [ref],
+  /**
+   * Safely performs terminal fit operation with comprehensive error handling.
+   * Only performs fit if container has reasonable dimensions.
+   */
+  const performFit = useCallback(async (): Promise<void> => {
+    if (!fitAddonRef.current || !terminalRef.current || !isReady || !containerRef.current) {
+      return
+    }
+
+    const containerRect = containerRef.current.getBoundingClientRect()
+    if (containerRect.width < 50 || containerRect.height < 20) {
+      consola.warn('Skipping terminal fit: container dimensions too small', {
+        width: containerRect.width,
+        height: containerRect.height,
+      })
+      return
+    }
+
+    try {
+      fitAddonRef.current.fit()
+    } catch (fitError) {
+      const errorMessage = fitError instanceof Error ? fitError.message : 'Unknown fit error'
+      const terminalError = new TerminalError(errorMessage, 'fit', fitError)
+      consola.warn('Terminal fit operation failed:', terminalError)
+      throw terminalError
+    }
+  }, [isReady])
+
+  // Set up imperative handle for programmatic control
+  useImperativeHandle(
+    ref,
+    (): TerminalHandle => ({
+      getTerminal: () => terminalRef.current,
+      fitToContainer: performFit,
+      write: (text: string) => {
+        if (terminalRef.current) {
+          writeToTerminal(terminalRef.current, text)
+        }
+      },
+      clear: () => {
+        if (terminalRef.current) {
+          clearTerminal(terminalRef.current)
+        }
+      },
+      focus: () => {
+        if (terminalRef.current) {
+          focusTerminal(terminalRef.current)
+        }
+      },
+    }),
+    [performFit],
   )
 
   useEffect(() => {
@@ -130,7 +201,12 @@ export const Terminal = React.forwardRef<HTMLDivElement, TerminalProps>((props, 
       terminal.loadAddon(fitAddon)
 
       terminal.open(containerRef.current)
-      fitAddon.fit()
+
+      requestAnimationFrame(() => {
+        if (fitAddonRef.current) {
+          fitAddon.fit()
+        }
+      })
 
       if (initialText.length > 0) {
         terminal.write(initialText)
@@ -154,9 +230,9 @@ export const Terminal = React.forwardRef<HTMLDivElement, TerminalProps>((props, 
       }
     } catch (initError) {
       const errorMessage = initError instanceof Error ? initError.message : 'Unknown initialization error'
-      const terminalError = createTerminalError(`Failed to initialize terminal: ${errorMessage}`, initError)
+      const terminalError = new TerminalError(errorMessage, 'initialization', initError)
 
-      console.error('Terminal initialization failed:', terminalError)
+      consola.error('Terminal initialization failed:', terminalError)
       setError(terminalError.message)
       setIsReady(false)
     }
@@ -171,24 +247,30 @@ export const Terminal = React.forwardRef<HTMLDivElement, TerminalProps>((props, 
         setIsReady(false)
         setError(null)
       } catch (cleanupError) {
-        console.warn('Terminal cleanup encountered an error:', cleanupError)
+        consola.warn('Terminal cleanup encountered an error:', cleanupError)
       }
     }
   }, [initialText, theme, options, onData, onResize, onReady])
 
   useEffect(() => {
-    if (!isReady || fitAddonRef.current == null) return
+    if (!isReady || !fitAddonRef.current) return
 
-    const handleResize = () => {
-      try {
-        fitAddonRef.current?.fit()
-      } catch (resizeError) {
-        console.warn('Terminal resize failed:', resizeError)
+    const handleWindowResize = () => {
+      if (fitAddonRef.current) {
+        requestAnimationFrame(() => {
+          if (fitAddonRef.current) {
+            try {
+              fitAddonRef.current.fit()
+            } catch (fitError) {
+              consola.warn('Terminal resize failed:', fitError)
+            }
+          }
+        })
       }
     }
 
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
+    window.addEventListener('resize', handleWindowResize)
+    return () => window.removeEventListener('resize', handleWindowResize)
   }, [isReady])
 
   const containerClasses = cx(
@@ -209,7 +291,7 @@ export const Terminal = React.forwardRef<HTMLDivElement, TerminalProps>((props, 
 
   return (
     <div
-      ref={mergedRef}
+      ref={containerRef}
       className={containerClasses}
       role="terminal"
       aria-label="Terminal interface"
