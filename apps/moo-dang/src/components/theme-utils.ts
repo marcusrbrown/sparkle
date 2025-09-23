@@ -1,131 +1,122 @@
-import type {ThemeConfig} from '@sparkle/types'
+import type {ThemeConfig} from '@sparkle/theme'
 
 /**
- * Extended xterm.js theme interface with comprehensive color mapping.
- * Includes the essential colors needed for terminal theming.
+ * xterm.js terminal theme configuration interface.
+ * Maps to the ITheme interface from xterm.js library.
  */
 export interface XTermTheme {
-  /** Default background color */
-  background?: string
-  /** Default foreground color */
   foreground?: string
-  /** Cursor color */
+  background?: string
   cursor?: string
-  /** Cursor accent color (fg color for a block cursor) */
   cursorAccent?: string
-  /** Selection background color (can be transparent) */
-  selectionBackground?: string
-  /** Selection foreground color */
   selectionForeground?: string
-  /** Selection background when terminal is not focused */
-  selectionInactiveBackground?: string
-
-  // ANSI colors (0-7)
-  /** ANSI black (eg. \x1b[30m) */
+  selectionBackground?: string
   black?: string
-  /** ANSI red (eg. \x1b[31m) */
   red?: string
-  /** ANSI green (eg. \x1b[32m) */
   green?: string
-  /** ANSI yellow (eg. \x1b[33m) */
   yellow?: string
-  /** ANSI blue (eg. \x1b[34m) */
   blue?: string
-  /** ANSI magenta (eg. \x1b[35m) */
   magenta?: string
-  /** ANSI cyan (eg. \x1b[36m) */
   cyan?: string
-  /** ANSI white (eg. \x1b[37m) */
   white?: string
-
-  // ANSI bright colors (8-15)
-  /** ANSI bright black (eg. \x1b[1;30m) */
   brightBlack?: string
-  /** ANSI bright red (eg. \x1b[1;31m) */
   brightRed?: string
-  /** ANSI bright green (eg. \x1b[1;32m) */
   brightGreen?: string
-  /** ANSI bright yellow (eg. \x1b[1;33m) */
   brightYellow?: string
-  /** ANSI bright blue (eg. \x1b[1;34m) */
   brightBlue?: string
-  /** ANSI bright magenta (eg. \x1b[1;35m) */
   brightMagenta?: string
-  /** ANSI bright cyan (eg. \x1b[1;36m) */
   brightCyan?: string
-  /** ANSI bright white (eg. \x1b[1;37m) */
   brightWhite?: string
-
-  /** ANSI extended colors (16-255) */
-  extendedAnsi?: string[]
 }
 
 /**
- * Converts Sparkle theme tokens to xterm.js theme format.
+ * Default ANSI color palette optimized for terminal readability.
+ * These colors provide good contrast and are widely compatible across terminals.
+ * Based on the solarized color scheme which is designed for long-term viewing.
+ */
+const DEFAULT_ANSI_COLORS = {
+  // Standard ANSI colors with carefully chosen contrast ratios
+  black: '#073642',
+  red: '#dc322f',
+  green: '#859900',
+  yellow: '#b58900',
+  blue: '#268bd2',
+  magenta: '#d33682',
+  cyan: '#2aa198',
+  white: '#eee8d5',
+  // Bright variants provide visual hierarchy in terminal output
+  brightBlack: '#525252',
+  brightRed: '#f87171',
+  brightGreen: '#4ade80',
+  brightYellow: '#facc15',
+  brightBlue: '#60a5fa',
+  brightMagenta: '#e879f9',
+  brightCyan: '#22d3ee',
+  brightWhite: '#ffffff',
+} as const
+
+/**
+ * Default monospace font stack optimized for terminal display.
+ * Prioritizes readability and character distinction in code environments.
+ */
+const DEFAULT_TERMINAL_FONTS = 'Menlo, Monaco, "Courier New", monospace' as const
+
+/**
+ * Standard terminal font size in pixels.
+ * Balances readability with screen real estate usage.
+ */
+const DEFAULT_TERMINAL_FONT_SIZE = 14 as const
+
+/**
+ * Converts Sparkle theme configuration to xterm.js compatible theme.
  *
- * Maps semantic colors from Sparkle design tokens to appropriate
- * xterm.js terminal colors, ensuring proper contrast and accessibility.
- * Provides sensible ANSI color mappings using the theme's color scales.
+ * This conversion handles the semantic differences between design system tokens
+ * and terminal color requirements. Sparkle uses semantic naming (primary, secondary)
+ * while xterm.js expects ANSI color names (red, green, blue).
  *
  * @param theme - Sparkle theme configuration with design tokens
- * @returns XTerm theme object compatible with xterm.js Terminal
- *
- * @example
- * ```typescript
- * import { useTheme } from '@sparkle/theme'
- * import { sparkleToXTermTheme } from './theme-utils'
- *
- * const { theme } = useTheme()
- * const xtermTheme = sparkleToXTermTheme(theme)
- *
- * const terminal = new Terminal({
- *   theme: xtermTheme
- * })
- * ```
+ * @returns xterm.js theme object optimized for terminal display
  */
 export function sparkleToXTermTheme(theme: ThemeConfig): XTermTheme {
-  // Extract color tokens with fallbacks for safety
   const colors = theme.colors || {}
-  const background = colors.background || {}
-  const text = colors.text || {}
+  const semantic = colors.semantic || {}
+  const neutral = colors.neutral || {}
   const primary = colors.primary || {}
   const success = colors.success || {}
   const warning = colors.warning || {}
-  const error = colors.error || {}
-  const neutral = colors.neutral || {}
+  const danger = colors.danger || {}
 
   return {
-    // Core terminal colors using semantic tokens
-    background: background.primary || '#000000',
-    foreground: text.primary || '#ffffff',
-    cursor: primary[500] || text.primary || '#ffffff',
-    cursorAccent: background.primary || '#000000',
+    // Core terminal colors using semantic tokens with fallbacks
+    foreground: semantic.foreground || neutral?.[900] || neutral?.[800] || '#1f2937',
+    background: semantic.background || neutral?.[50] || neutral?.[100] || '#f9fafb',
+    cursor: primary?.[500] || primary?.[600] || '#3b82f6',
+    cursorAccent: semantic.background || neutral?.[50] || '#f9fafb',
 
-    // Selection colors with transparency for better UX
-    selectionBackground: `${primary[500] || '#3b82f6'}40`, // 25% opacity
-    selectionForeground: text.primary,
-    selectionInactiveBackground: `${neutral?.[500] || '#6b7280'}20`, // 12.5% opacity
+    // Selection colors with transparency for better visibility
+    selectionForeground: semantic.foreground || '#1f2937',
+    selectionBackground: `${primary?.[500] || '#3b82f6'}40`, // 25% opacity
 
-    // ANSI colors (0-7) using neutral and semantic color scales
-    // Dark colors - using darker shades from neutral scale
-    black: neutral?.[800] || background.secondary || '#262626',
-    red: error?.[600] || '#dc2626',
-    green: success?.[600] || '#16a34a',
-    yellow: warning?.[600] || '#ca8a04',
-    blue: primary?.[600] || '#2563eb',
-    magenta: '#c026d3', // Using a sensible purple
-    cyan: '#0891b2', // Using a sensible cyan
-    white: neutral?.[300] || text.secondary || '#d1d5db',
+    // ANSI color mappings using semantic tokens where possible
+    // Falls back to carefully chosen defaults for terminal readability
+    black: neutral?.[900] || DEFAULT_ANSI_COLORS.black,
+    red: danger?.[500] || DEFAULT_ANSI_COLORS.red,
+    green: success?.[500] || DEFAULT_ANSI_COLORS.green,
+    yellow: warning?.[500] || DEFAULT_ANSI_COLORS.yellow,
+    blue: primary?.[500] || DEFAULT_ANSI_COLORS.blue,
+    magenta: primary?.[700] || DEFAULT_ANSI_COLORS.magenta,
+    cyan: primary?.[400] || DEFAULT_ANSI_COLORS.cyan,
+    white: neutral?.[100] || DEFAULT_ANSI_COLORS.white,
 
-    // ANSI bright colors (8-15) using lighter shades
-    brightBlack: neutral?.[600] || '#525252',
-    brightRed: error?.[400] || '#f87171',
-    brightGreen: success?.[400] || '#4ade80',
-    brightYellow: warning?.[400] || '#facc15',
-    brightBlue: primary?.[400] || '#60a5fa',
-    brightMagenta: '#e879f9', // Bright purple
-    brightCyan: '#22d3ee', // Bright cyan
-    brightWhite: text.primary || '#ffffff',
+    // Bright variants for enhanced contrast in terminal output
+    brightBlack: neutral?.[600] || DEFAULT_ANSI_COLORS.brightBlack,
+    brightRed: danger?.[400] || DEFAULT_ANSI_COLORS.brightRed,
+    brightGreen: success?.[400] || DEFAULT_ANSI_COLORS.brightGreen,
+    brightYellow: warning?.[400] || DEFAULT_ANSI_COLORS.brightYellow,
+    brightBlue: primary?.[400] || DEFAULT_ANSI_COLORS.brightBlue,
+    brightMagenta: primary?.[500] || DEFAULT_ANSI_COLORS.brightMagenta,
+    brightCyan: primary?.[300] || DEFAULT_ANSI_COLORS.brightCyan,
+    brightWhite: neutral?.[50] || DEFAULT_ANSI_COLORS.brightWhite,
   }
 }
 
@@ -159,7 +150,9 @@ export const DEFAULT_XTERM_THEME: XTermTheme = {
 
 /**
  * Gets font family from Sparkle theme typography tokens.
- * Falls back to monospace fonts suitable for terminal usage.
+ *
+ * Prioritizes monospace fonts for terminal usage because character width
+ * consistency is critical for proper alignment in command-line interfaces.
  *
  * @param theme - Sparkle theme configuration
  * @returns CSS font-family string optimized for terminal display
@@ -168,26 +161,28 @@ export function getTerminalFontFamily(theme: ThemeConfig): string {
   const typography = theme.typography || {}
   const fontFamily = typography.fontFamily || {}
 
-  // Prefer mono font, fallback to sans if not available
+  // Prefer mono font for character alignment in terminal
   const monoFamily = fontFamily.mono
-  const sansFamily = fontFamily.sans
 
   if (monoFamily) {
     return Array.isArray(monoFamily) ? monoFamily.join(', ') : String(monoFamily)
   }
 
+  // Fallback to sans with monospace appended for character width consistency
+  const sansFamily = fontFamily.sans
   if (sansFamily) {
     const family = Array.isArray(sansFamily) ? sansFamily.join(', ') : String(sansFamily)
     return `${family}, monospace`
   }
 
-  // Default monospace stack for terminals
-  return 'Menlo, Monaco, "Courier New", monospace'
+  return DEFAULT_TERMINAL_FONTS
 }
 
 /**
  * Gets font size from Sparkle theme typography tokens.
- * Returns a reasonable terminal font size with fallback.
+ *
+ * Uses smaller font sizes than typical web content because terminals
+ * display dense text content where readability at smaller sizes is preferred.
  *
  * @param theme - Sparkle theme configuration
  * @returns Font size in pixels suitable for terminal display
@@ -196,24 +191,18 @@ export function getTerminalFontSize(theme: ThemeConfig): number {
   const typography = theme.typography || {}
   const fontSize = typography.fontSize || {}
 
-  // Use small or base font size, preferring smaller for terminals
-  const smallSize = fontSize.sm || fontSize.small
-  const baseSize = fontSize.base || fontSize.md || fontSize.medium
+  // Prefer smaller font sizes for terminal density
+  const candidates = [fontSize.sm, fontSize.small, fontSize.base, fontSize.md, fontSize.medium]
 
-  if (smallSize) {
-    const parsed = Number.parseFloat(String(smallSize))
-    if (!Number.isNaN(parsed)) {
-      return parsed
+  for (const size of candidates) {
+    if (size) {
+      const parsed = Number.parseFloat(String(size))
+      if (!Number.isNaN(parsed) && parsed > 0) {
+        // Use base size for sm/small, slightly reduce for larger sizes
+        return candidates.indexOf(size) < 2 ? parsed : Math.max(12, parsed - 2)
+      }
     }
   }
 
-  if (baseSize) {
-    const parsed = Number.parseFloat(String(baseSize))
-    if (!Number.isNaN(parsed)) {
-      return Math.max(12, parsed - 2) // Slightly smaller than base
-    }
-  }
-
-  // Default terminal font size
-  return 14
+  return DEFAULT_TERMINAL_FONT_SIZE
 }
