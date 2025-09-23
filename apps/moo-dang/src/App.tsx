@@ -2,9 +2,15 @@ import type {ReactElement} from 'react'
 import {ThemeProvider} from '@sparkle/theme'
 
 import {consola} from 'consola'
-import {useRef} from 'react'
+import {useRef, useState} from 'react'
 
-import {CommandTerminal, type CommandTerminalHandle} from './components'
+import {
+  AccessibilityProvider,
+  CommandTerminal,
+  KeyboardShortcutsHelp,
+  ScreenReaderHelper,
+  type CommandTerminalHandle,
+} from './components'
 
 /**
  * Main application component for the moo-dang WASM web shell.
@@ -17,6 +23,7 @@ import {CommandTerminal, type CommandTerminalHandle} from './components'
  */
 function App(): ReactElement {
   const terminalRef = useRef<CommandTerminalHandle>(null)
+  const [showKeyboardHelp, setShowKeyboardHelp] = useState(false)
 
   /**
    * Demonstrates sample output types by adding various formatted outputs.
@@ -49,6 +56,12 @@ function App(): ReactElement {
    */
   const handleCommandExecute = (command: string) => {
     consola.info(`Command executed: "${command}"`)
+
+    // Check for accessibility shortcuts
+    if (command.trim() === 'help' || command.trim() === '?') {
+      setShowKeyboardHelp(true)
+      return
+    }
 
     // Demonstrate sample outputs for specific commands
     if (command.trim() === 'demo') {
@@ -90,33 +103,44 @@ function App(): ReactElement {
 
   return (
     <ThemeProvider defaultTheme="system">
-      <div className="min-h-screen bg-background flex flex-col">
-        <header className="border-b p-4 flex-shrink-0">
-          <h1 className="text-2xl font-bold text-foreground">moo-dang</h1>
-          <p className="text-muted-foreground">WASM-based Web Shell</p>
-        </header>
-        <main className="flex-1 p-4 min-h-0">
-          <div className="h-full">
-            <CommandTerminal
-              ref={terminalRef}
-              initialText="Welcome to moo-dang shell!\r\nType commands below. Use ↑/↓ arrows for history.\r\n"
-              onCommandExecute={handleCommandExecute}
-              onReady={handleTerminalReady}
-              className="h-full"
-              commandConfig={{
-                prompt: '$ ',
-                maxHistorySize: 50,
-                allowDuplicates: false,
-              }}
-              options={{
-                fontSize: 14,
-                cursorBlink: true,
-                scrollback: 1000,
-              }}
-            />
-          </div>
-        </main>
-      </div>
+      <AccessibilityProvider>
+        <div className="min-h-screen bg-background flex flex-col">
+          <header className="border-b p-4 flex-shrink-0">
+            <h1 className="text-2xl font-bold text-foreground">moo-dang</h1>
+            <p className="text-muted-foreground">WASM-based Web Shell</p>
+          </header>
+          <main className="flex-1 p-4 min-h-0">
+            <div className="h-full relative">
+              <ScreenReaderHelper
+                terminalState="Terminal ready for input"
+                currentCommand=""
+                cursorPosition={0}
+                isReady={true}
+              />
+
+              <CommandTerminal
+                ref={terminalRef}
+                initialText="Welcome to moo-dang shell!\r\nType commands below. Use ↑/↓ arrows for history.\r\n"
+                onCommandExecute={handleCommandExecute}
+                onReady={handleTerminalReady}
+                className="h-full"
+                commandConfig={{
+                  prompt: '$ ',
+                  maxHistorySize: 50,
+                  allowDuplicates: false,
+                }}
+                options={{
+                  fontSize: 14,
+                  cursorBlink: true,
+                  scrollback: 1000,
+                }}
+              />
+
+              <KeyboardShortcutsHelp isVisible={showKeyboardHelp} onClose={() => setShowKeyboardHelp(false)} />
+            </div>
+          </main>
+        </div>
+      </AccessibilityProvider>
     </ThemeProvider>
   )
 }

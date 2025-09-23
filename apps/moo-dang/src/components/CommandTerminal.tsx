@@ -4,7 +4,13 @@ import {cx, type HTMLProperties} from '@sparkle/ui'
 import {consola} from 'consola'
 import React, {useCallback, useEffect, useImperativeHandle, useRef, useState} from 'react'
 import {useCommandInput, useTerminalOutput, type CommandInputConfig, type TerminalOutputType} from '../hooks'
-import {clearCurrentLine, formatCommandLine, getTerminalCursorPosition, parseTerminalKey} from '../utils'
+import {
+  clearCurrentLine,
+  formatCommandLine,
+  generateKeyboardShortcutsHelp,
+  getTerminalCursorPosition,
+  parseExtendedTerminalKey,
+} from '../utils'
 import {Terminal as BaseTerminal, type TerminalHandle as BaseTerminalHandle, type TerminalOptions} from './Terminal'
 
 /**
@@ -207,7 +213,8 @@ export const CommandTerminal = React.forwardRef<CommandTerminalHandle, CommandTe
     (data: string): void => {
       if (!enableCommandInput) return
 
-      const keyEvent = parseTerminalKey(data)
+      // Use enhanced key parser with accessibility features
+      const keyEvent = parseExtendedTerminalKey(data)
 
       if (!keyEvent.shouldHandle) {
         consola.debug('Ignoring unhandled key event:', keyEvent)
@@ -232,18 +239,22 @@ export const CommandTerminal = React.forwardRef<CommandTerminalHandle, CommandTe
           break
 
         case 'arrow-up':
+        case 'ctrl-p':
           commandInput.navigateHistoryUp()
           break
 
         case 'arrow-down':
+        case 'ctrl-n':
           commandInput.navigateHistoryDown()
           break
 
         case 'arrow-left':
+        case 'ctrl-b':
           commandInput.moveCursorLeft()
           break
 
         case 'arrow-right':
+        case 'ctrl-f':
           commandInput.moveCursorRight()
           break
 
@@ -283,6 +294,38 @@ export const CommandTerminal = React.forwardRef<CommandTerminalHandle, CommandTe
         case 'ctrl-u':
           // Delete entire line
           commandInput.clearCommand()
+          break
+
+        case 'ctrl-w':
+          // Delete previous word
+          {
+            const currentCommand = commandInput.currentCommand
+            const cursorPos = commandInput.cursorPosition
+            const beforeCursor = currentCommand.slice(0, cursorPos)
+            const afterCursor = currentCommand.slice(cursorPos)
+
+            // Find the start of the previous word
+            const trimmed = beforeCursor.trimEnd()
+            const lastSpaceIndex = trimmed.lastIndexOf(' ')
+            const newBeforeCursor = lastSpaceIndex === -1 ? '' : beforeCursor.slice(0, lastSpaceIndex + 1)
+
+            commandInput.setCommand(newBeforeCursor + afterCursor)
+          }
+          break
+
+        case 'f1':
+          // Show keyboard shortcuts help
+          if (baseTerminalRef.current) {
+            const helpText = generateKeyboardShortcutsHelp()
+            baseTerminalRef.current.write(helpText)
+          }
+          break
+
+        case 'f2':
+          // Accessibility menu (placeholder for now)
+          if (baseTerminalRef.current) {
+            baseTerminalRef.current.write('\r\n♿ Accessibility menu not yet implemented\r\n')
+          }
           break
 
         case 'printable':

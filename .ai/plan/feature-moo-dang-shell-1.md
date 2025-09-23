@@ -56,8 +56,8 @@ This implementation plan outlines the creation of `moo-dang`, a WASM-based web s
 | TASK-008 | Implement terminal resize handling and fit addon | ✅ | 2025-09-22 |
 | TASK-009 | Add terminal theme integration with Sparkle theme system | ✅ | 2025-09-23 |
 | TASK-010 | Create terminal command input handling and history | ✅ | 2025-09-23 |
-| TASK-011 | Implement terminal output rendering and scrollback | |  |
-| TASK-012 | Add keyboard shortcuts and accessibility features | |  |
+| TASK-011 | Implement terminal output rendering and scrollback | ✅ | 2025-09-23 |
+| TASK-012 | Add keyboard shortcuts and accessibility features | ✅ | 2025-09-23 |
 
 ### Implementation Phase 3: Web Worker Shell Environment
 

@@ -1,4 +1,15 @@
 export {
+  announceKeyboardAction,
+  EXTENDED_TERMINAL_KEYS,
+  generateKeyboardShortcutsHelp,
+  KEYBOARD_SHORTCUTS,
+  parseExtendedTerminalKey,
+  type ExtendedTerminalKeyEvent,
+  type ExtendedTerminalKeyType,
+  type KeyboardShortcut,
+} from './accessibility-keyboard'
+
+export {
   ANSI_COLORS,
   ANSI_CONTROLS,
   formatCommandPrompt,
@@ -13,13 +24,14 @@ export {
 
 export {
   createScrollbackManager,
-  ScrollbackManager,
   type ScrollbackConfig,
   type ScrollbackLine,
   type ScrollbackSearchOptions,
   type ScrollbackSearchResult,
   type ScrollbackStats,
 } from './scrollback-manager'
+
+export type {ScrollbackManager} from './scrollback-manager'
 
 export {
   clearCurrentLine,
