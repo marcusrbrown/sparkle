@@ -38,15 +38,8 @@ function App(): ReactElement {
               className="h-full"
               options={{
                 fontSize: 14,
-                fontFamily: 'Menlo, Monaco, "Courier New", monospace',
                 cursorBlink: true,
                 scrollback: 1000,
-              }}
-              theme={{
-                background: '#1a1a1a',
-                foreground: '#e0e0e0',
-                cursor: '#00ff00',
-                selection: 'rgba(255, 255, 255, 0.3)',
               }}
             />
           </div>
