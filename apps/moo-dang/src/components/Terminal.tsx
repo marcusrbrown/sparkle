@@ -1,7 +1,7 @@
 import {cx, type HTMLProperties} from '@sparkle/ui'
 import {FitAddon} from '@xterm/addon-fit'
 import {Terminal as XTerm} from '@xterm/xterm'
-import React, {useEffect, useRef, useState} from 'react'
+import React, {useCallback, useEffect, useImperativeHandle, useRef, useState} from 'react'
 import '@xterm/xterm/css/xterm.css'
 
 const DEFAULT_TERMINAL_OPTIONS = {
@@ -18,6 +18,23 @@ const DEFAULT_THEME_OPTIONS = {
   cursor: '#ffffff',
   selection: 'rgba(255, 255, 255, 0.3)',
 } as const
+
+/**
+ * Imperative handle interface for Terminal component.
+ * Provides programmatic access to terminal operations.
+ */
+export interface TerminalHandle {
+  /** Get the underlying XTerm instance */
+  getTerminal: () => XTerm | null
+  /** Manually trigger terminal resize to fit container */
+  fitToContainer: () => Promise<void>
+  /** Write text to the terminal */
+  write: (text: string) => void
+  /** Clear the terminal screen */
+  clear: () => void
+  /** Focus the terminal for keyboard input */
+  focus: () => void
+}
 
 /**
  * Creates a terminal-specific error with proper context and cause chaining.
@@ -86,9 +103,9 @@ export interface TerminalProps extends Omit<HTMLProperties<HTMLDivElement>, 'chi
  * Terminal component that integrates xterm.js with React and Sparkle UI patterns.
  *
  * Provides a full-featured terminal interface with theme integration, accessibility,
- * and error handling following Sparkle UI conventions.
+ * enhanced resize handling, and error handling following Sparkle UI conventions.
  */
-export const Terminal = React.forwardRef<HTMLDivElement, TerminalProps>((props, ref) => {
+export const Terminal = React.forwardRef<TerminalHandle, TerminalProps>((props, ref) => {
   const {className, initialText = '', theme = {}, options = {}, onData, onResize, onReady, ...rest} = props
 
   const containerRef = useRef<HTMLDivElement>(null)
@@ -97,16 +114,62 @@ export const Terminal = React.forwardRef<HTMLDivElement, TerminalProps>((props, 
   const [isReady, setIsReady] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const mergedRef = React.useCallback(
-    (node: HTMLDivElement | null) => {
-      containerRef.current = node
-      if (typeof ref === 'function') {
-        ref(node)
-      } else if (ref != null) {
-        ref.current = node
-      }
-    },
-    [ref],
+  // Debounce resize operations to prevent excessive calls
+  // REMOVED - simplified approach
+
+  /**
+   * Safely performs terminal fit operation with comprehensive error handling.
+   * Only performs fit if container has reasonable dimensions.
+   */
+  const performFit = useCallback(async (): Promise<void> => {
+    if (!fitAddonRef.current || !terminalRef.current || !isReady || !containerRef.current) {
+      return
+    }
+
+    // Check if container has reasonable dimensions before fitting
+    const containerRect = containerRef.current.getBoundingClientRect()
+    if (containerRect.width < 50 || containerRect.height < 20) {
+      // Container is too small or not yet properly sized - skip this fit
+      console.warn('Skipping terminal fit: container dimensions too small', {
+        width: containerRect.width,
+        height: containerRect.height,
+      })
+      return
+    }
+
+    try {
+      fitAddonRef.current.fit()
+    } catch (fitError) {
+      const errorMessage = fitError instanceof Error ? fitError.message : 'Unknown fit error'
+      const terminalError = createTerminalError(`Failed to fit terminal to container: ${errorMessage}`, fitError)
+      console.warn('Terminal fit operation failed:', terminalError)
+      throw terminalError
+    }
+  }, [isReady])
+
+  // Set up imperative handle for programmatic control
+  useImperativeHandle(
+    ref,
+    (): TerminalHandle => ({
+      getTerminal: () => terminalRef.current,
+      fitToContainer: performFit,
+      write: (text: string) => {
+        if (terminalRef.current) {
+          writeToTerminal(terminalRef.current, text)
+        }
+      },
+      clear: () => {
+        if (terminalRef.current) {
+          clearTerminal(terminalRef.current)
+        }
+      },
+      focus: () => {
+        if (terminalRef.current) {
+          focusTerminal(terminalRef.current)
+        }
+      },
+    }),
+    [performFit],
   )
 
   useEffect(() => {
@@ -130,7 +193,13 @@ export const Terminal = React.forwardRef<HTMLDivElement, TerminalProps>((props, 
       terminal.loadAddon(fitAddon)
 
       terminal.open(containerRef.current)
-      fitAddon.fit()
+
+      // Wait for next frame to ensure layout is complete before fitting
+      requestAnimationFrame(() => {
+        if (fitAddonRef.current) {
+          fitAddon.fit()
+        }
+      })
 
       if (initialText.length > 0) {
         terminal.write(initialText)
@@ -176,19 +245,27 @@ export const Terminal = React.forwardRef<HTMLDivElement, TerminalProps>((props, 
     }
   }, [initialText, theme, options, onData, onResize, onReady])
 
+  // Simple window resize handling
   useEffect(() => {
-    if (!isReady || fitAddonRef.current == null) return
+    if (!isReady || !fitAddonRef.current) return
 
-    const handleResize = () => {
-      try {
-        fitAddonRef.current?.fit()
-      } catch (resizeError) {
-        console.warn('Terminal resize failed:', resizeError)
+    const handleWindowResize = () => {
+      if (fitAddonRef.current) {
+        // Use requestAnimationFrame to ensure resize happens after layout
+        requestAnimationFrame(() => {
+          if (fitAddonRef.current) {
+            try {
+              fitAddonRef.current.fit()
+            } catch (fitError) {
+              console.warn('Terminal resize failed:', fitError)
+            }
+          }
+        })
       }
     }
 
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
+    window.addEventListener('resize', handleWindowResize)
+    return () => window.removeEventListener('resize', handleWindowResize)
   }, [isReady])
 
   const containerClasses = cx(
@@ -209,7 +286,7 @@ export const Terminal = React.forwardRef<HTMLDivElement, TerminalProps>((props, 
 
   return (
     <div
-      ref={mergedRef}
+      ref={containerRef}
       className={containerClasses}
       role="terminal"
       aria-label="Terminal interface"
