@@ -1,8 +1,10 @@
+import {useTheme} from '@sparkle/theme'
 import {cx, type HTMLProperties} from '@sparkle/ui'
 import {FitAddon} from '@xterm/addon-fit'
 import {Terminal as XTerm} from '@xterm/xterm'
 import {consola} from 'consola'
 import React, {useCallback, useEffect, useImperativeHandle, useRef, useState} from 'react'
+import {getTerminalFontFamily, getTerminalFontSize, sparkleToXTermTheme, type XTermTheme} from './theme-utils'
 import '@xterm/xterm/css/xterm.css'
 
 const DEFAULT_TERMINAL_OPTIONS = {
@@ -17,8 +19,8 @@ const DEFAULT_THEME_OPTIONS = {
   background: '#000000',
   foreground: '#ffffff',
   cursor: '#ffffff',
-  selection: 'rgba(255, 255, 255, 0.3)',
-} as const satisfies TerminalTheme
+  selectionBackground: 'rgba(255, 255, 255, 0.3)',
+} as const satisfies XTermTheme
 
 /**
  * Imperative handle interface for Terminal component.
@@ -88,13 +90,6 @@ export function focusTerminal(terminal: XTerm): void {
   }
 }
 
-export interface TerminalTheme {
-  background?: string
-  foreground?: string
-  cursor?: string
-  selection?: string
-}
-
 export interface TerminalOptions {
   fontSize?: number
   fontFamily?: string
@@ -105,7 +100,8 @@ export interface TerminalOptions {
 
 export interface TerminalProps extends Omit<HTMLProperties<HTMLDivElement>, 'children'> {
   initialText?: string
-  theme?: TerminalTheme
+  /** Custom theme override (optional - uses Sparkle theme by default) */
+  themeOverride?: XTermTheme
   options?: TerminalOptions
   onData?: (data: string) => void
   onResize?: (cols: number, rows: number) => void
@@ -119,13 +115,19 @@ export interface TerminalProps extends Omit<HTMLProperties<HTMLDivElement>, 'chi
  * enhanced resize handling, and error handling following Sparkle UI conventions.
  */
 export const Terminal = React.forwardRef<TerminalHandle, TerminalProps>((props, ref) => {
-  const {className, initialText = '', theme = {}, options = {}, onData, onResize, onReady, ...rest} = props
+  const {className, initialText = '', themeOverride, options = {}, onData, onResize, onReady, ...rest} = props
 
   const containerRef = useRef<HTMLDivElement>(null)
   const terminalRef = useRef<XTerm | null>(null)
   const fitAddonRef = useRef<FitAddon | null>(null)
   const [isReady, setIsReady] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  // Get Sparkle theme context
+  const {theme: sparkleTheme} = useTheme()
+
+  // Convert Sparkle theme to XTerm theme, with override option
+  const xtermTheme = themeOverride || sparkleToXTermTheme(sparkleTheme)
 
   /**
    * Safely performs terminal fit operation with comprehensive error handling.
@@ -187,9 +189,12 @@ export const Terminal = React.forwardRef<TerminalHandle, TerminalProps>((props, 
       const terminalOptions = {
         ...DEFAULT_TERMINAL_OPTIONS,
         ...options,
+        // Apply font family and size from Sparkle theme if not overridden
+        fontFamily: options.fontFamily || getTerminalFontFamily(sparkleTheme),
+        fontSize: options.fontSize || getTerminalFontSize(sparkleTheme),
         theme: {
           ...DEFAULT_THEME_OPTIONS,
-          ...theme,
+          ...xtermTheme,
         },
       }
 
@@ -250,7 +255,7 @@ export const Terminal = React.forwardRef<TerminalHandle, TerminalProps>((props, 
         consola.warn('Terminal cleanup encountered an error:', cleanupError)
       }
     }
-  }, [initialText, theme, options, onData, onResize, onReady])
+  }, [initialText, xtermTheme, options, onData, onResize, onReady, sparkleTheme])
 
   useEffect(() => {
     if (!isReady || !fitAddonRef.current) return
