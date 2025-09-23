@@ -13,8 +13,9 @@ describe('App Component', () => {
     // Check for the subtitle
     expect(screen.getByText('WASM-based Web Shell')).toBeDefined()
 
-    // Check for the placeholder content
-    expect(screen.getByText('Terminal interface coming soon...')).toBeDefined()
+    // Check for the terminal interface
+    expect(screen.getByRole('terminal')).toBeDefined()
+    expect(screen.getByLabelText('Terminal interface')).toBeDefined()
   })
 
   it('should have the correct component structure', () => {
