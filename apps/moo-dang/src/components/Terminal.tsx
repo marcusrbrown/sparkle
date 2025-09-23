@@ -1,6 +1,7 @@
 import {cx, type HTMLProperties} from '@sparkle/ui'
 import {FitAddon} from '@xterm/addon-fit'
 import {Terminal as XTerm} from '@xterm/xterm'
+import {consola} from 'consola'
 import React, {useCallback, useEffect, useImperativeHandle, useRef, useState} from 'react'
 import '@xterm/xterm/css/xterm.css'
 
@@ -10,14 +11,14 @@ const DEFAULT_TERMINAL_OPTIONS = {
   cursorBlink: true,
   scrollback: 1000,
   allowProposedApi: true,
-} as const
+} as const satisfies TerminalOptions
 
 const DEFAULT_THEME_OPTIONS = {
   background: '#000000',
   foreground: '#ffffff',
   cursor: '#ffffff',
   selection: 'rgba(255, 255, 255, 0.3)',
-} as const
+} as const satisfies TerminalTheme
 
 /**
  * Imperative handle interface for Terminal component.
@@ -37,13 +38,21 @@ export interface TerminalHandle {
 }
 
 /**
- * Creates a terminal-specific error with proper context and cause chaining.
+ * Terminal-specific error with enhanced context and cause chaining.
+ *
+ * Provides structured error information for terminal operations,
+ * enabling better debugging and error recovery.
  */
-function createTerminalError(message: string, cause?: unknown): Error {
-  const error = new Error(`Terminal error: ${message}`)
-  error.name = 'TerminalError'
-  error.cause = cause
-  return error
+export class TerminalError extends Error {
+  readonly operation: string
+  override readonly cause?: unknown
+
+  constructor(message: string, operation: string, cause?: unknown) {
+    super(`Terminal ${operation}: ${message}`)
+    this.name = 'TerminalError'
+    this.operation = operation
+    this.cause = cause
+  }
 }
 
 /**
@@ -53,7 +62,7 @@ export function writeToTerminal(terminal: XTerm, text: string): void {
   try {
     terminal.write(text)
   } catch (writeError) {
-    throw createTerminalError(`Failed to write to terminal: ${writeError}`, writeError)
+    throw new TerminalError('Write operation failed', 'write', writeError)
   }
 }
 
@@ -64,7 +73,7 @@ export function clearTerminal(terminal: XTerm): void {
   try {
     terminal.clear()
   } catch (clearError) {
-    throw createTerminalError(`Failed to clear terminal: ${clearError}`, clearError)
+    throw new TerminalError('Clear operation failed', 'clear', clearError)
   }
 }
 
@@ -75,25 +84,29 @@ export function focusTerminal(terminal: XTerm): void {
   try {
     terminal.focus()
   } catch (focusError) {
-    throw createTerminalError(`Failed to focus terminal: ${focusError}`, focusError)
+    throw new TerminalError('Focus operation failed', 'focus', focusError)
   }
+}
+
+export interface TerminalTheme {
+  background?: string
+  foreground?: string
+  cursor?: string
+  selection?: string
+}
+
+export interface TerminalOptions {
+  fontSize?: number
+  fontFamily?: string
+  cursorBlink?: boolean
+  scrollback?: number
+  allowProposedApi?: boolean
 }
 
 export interface TerminalProps extends Omit<HTMLProperties<HTMLDivElement>, 'children'> {
   initialText?: string
-  theme?: {
-    background?: string
-    foreground?: string
-    cursor?: string
-    selection?: string
-  }
-  options?: {
-    fontSize?: number
-    fontFamily?: string
-    cursorBlink?: boolean
-    scrollback?: number
-    allowProposedApi?: boolean
-  }
+  theme?: TerminalTheme
+  options?: TerminalOptions
   onData?: (data: string) => void
   onResize?: (cols: number, rows: number) => void
   onReady?: (terminal: XTerm) => void
@@ -114,9 +127,6 @@ export const Terminal = React.forwardRef<TerminalHandle, TerminalProps>((props, 
   const [isReady, setIsReady] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // Debounce resize operations to prevent excessive calls
-  // REMOVED - simplified approach
-
   /**
    * Safely performs terminal fit operation with comprehensive error handling.
    * Only performs fit if container has reasonable dimensions.
@@ -126,11 +136,9 @@ export const Terminal = React.forwardRef<TerminalHandle, TerminalProps>((props, 
       return
     }
 
-    // Check if container has reasonable dimensions before fitting
     const containerRect = containerRef.current.getBoundingClientRect()
     if (containerRect.width < 50 || containerRect.height < 20) {
-      // Container is too small or not yet properly sized - skip this fit
-      console.warn('Skipping terminal fit: container dimensions too small', {
+      consola.warn('Skipping terminal fit: container dimensions too small', {
         width: containerRect.width,
         height: containerRect.height,
       })
@@ -141,8 +149,8 @@ export const Terminal = React.forwardRef<TerminalHandle, TerminalProps>((props, 
       fitAddonRef.current.fit()
     } catch (fitError) {
       const errorMessage = fitError instanceof Error ? fitError.message : 'Unknown fit error'
-      const terminalError = createTerminalError(`Failed to fit terminal to container: ${errorMessage}`, fitError)
-      console.warn('Terminal fit operation failed:', terminalError)
+      const terminalError = new TerminalError(errorMessage, 'fit', fitError)
+      consola.warn('Terminal fit operation failed:', terminalError)
       throw terminalError
     }
   }, [isReady])
@@ -194,7 +202,6 @@ export const Terminal = React.forwardRef<TerminalHandle, TerminalProps>((props, 
 
       terminal.open(containerRef.current)
 
-      // Wait for next frame to ensure layout is complete before fitting
       requestAnimationFrame(() => {
         if (fitAddonRef.current) {
           fitAddon.fit()
@@ -223,9 +230,9 @@ export const Terminal = React.forwardRef<TerminalHandle, TerminalProps>((props, 
       }
     } catch (initError) {
       const errorMessage = initError instanceof Error ? initError.message : 'Unknown initialization error'
-      const terminalError = createTerminalError(`Failed to initialize terminal: ${errorMessage}`, initError)
+      const terminalError = new TerminalError(errorMessage, 'initialization', initError)
 
-      console.error('Terminal initialization failed:', terminalError)
+      consola.error('Terminal initialization failed:', terminalError)
       setError(terminalError.message)
       setIsReady(false)
     }
@@ -240,24 +247,22 @@ export const Terminal = React.forwardRef<TerminalHandle, TerminalProps>((props, 
         setIsReady(false)
         setError(null)
       } catch (cleanupError) {
-        console.warn('Terminal cleanup encountered an error:', cleanupError)
+        consola.warn('Terminal cleanup encountered an error:', cleanupError)
       }
     }
   }, [initialText, theme, options, onData, onResize, onReady])
 
-  // Simple window resize handling
   useEffect(() => {
     if (!isReady || !fitAddonRef.current) return
 
     const handleWindowResize = () => {
       if (fitAddonRef.current) {
-        // Use requestAnimationFrame to ensure resize happens after layout
         requestAnimationFrame(() => {
           if (fitAddonRef.current) {
             try {
               fitAddonRef.current.fit()
             } catch (fitError) {
-              console.warn('Terminal resize failed:', fitError)
+              consola.warn('Terminal resize failed:', fitError)
             }
           }
         })
