@@ -86,12 +86,14 @@ describe('VirtualFileSystemImpl', () => {
       })
 
       it('should throw error for non-existent directory', async () => {
-        await expect(vfs.changeDirectory('/nonexistent')).rejects.toThrow('Directory not found: /nonexistent')
+        await expect(vfs.changeDirectory('/nonexistent')).rejects.toThrow(
+          'Directory operation failed for "/nonexistent": Directory not found',
+        )
       })
 
       it('should throw error when trying to cd to a file', async () => {
         await expect(vfs.changeDirectory('/home/user/README.md')).rejects.toThrow(
-          'Not a directory: /home/user/README.md',
+          'Directory operation failed for "/home/user/README.md": Not a directory',
         )
       })
     })
@@ -120,11 +122,15 @@ describe('VirtualFileSystemImpl', () => {
       })
 
       it('should throw error for non-existent directory', async () => {
-        await expect(vfs.listDirectory('/nonexistent')).rejects.toThrow('Directory not found: /nonexistent')
+        await expect(vfs.listDirectory('/nonexistent')).rejects.toThrow(
+          'Directory operation failed for "/nonexistent": Directory not found',
+        )
       })
 
       it('should throw error when trying to list a file', async () => {
-        await expect(vfs.listDirectory('/home/user/README.md')).rejects.toThrow('Not a directory: /home/user/README.md')
+        await expect(vfs.listDirectory('/home/user/README.md')).rejects.toThrow(
+          'Directory operation failed for "/home/user/README.md": Not a directory',
+        )
       })
     })
 
@@ -151,7 +157,9 @@ describe('VirtualFileSystemImpl', () => {
       })
 
       it('should throw error for non-existent directory', async () => {
-        await expect(vfs.getDetailedListing('/nonexistent')).rejects.toThrow('Directory not found: /nonexistent')
+        await expect(vfs.getDetailedListing('/nonexistent')).rejects.toThrow(
+          'Directory operation failed for "/nonexistent": Directory not found',
+        )
       })
     })
 
@@ -176,13 +184,15 @@ describe('VirtualFileSystemImpl', () => {
 
       it('should throw error if parent directory does not exist', async () => {
         await expect(vfs.createDirectory('/nonexistent/newdir')).rejects.toThrow(
-          'Parent directory not found: /nonexistent',
+          'Directory operation failed for "/nonexistent": Parent directory not found',
         )
       })
 
       it('should throw error if directory already exists', async () => {
         await vfs.createDirectory('/tmp/duplicate')
-        await expect(vfs.createDirectory('/tmp/duplicate')).rejects.toThrow('Directory already exists: /tmp/duplicate')
+        await expect(vfs.createDirectory('/tmp/duplicate')).rejects.toThrow(
+          'Directory operation failed for "/tmp/duplicate": Directory already exists',
+        )
       })
     })
   })
@@ -226,11 +236,13 @@ describe('VirtualFileSystemImpl', () => {
       })
 
       it('should throw error for non-existent file', async () => {
-        await expect(vfs.readFile('/nonexistent.txt')).rejects.toThrow('File not found: /nonexistent.txt')
+        await expect(vfs.readFile('/nonexistent.txt')).rejects.toThrow(
+          'File operation failed for "/nonexistent.txt": File not found',
+        )
       })
 
       it('should throw error when trying to read a directory', async () => {
-        await expect(vfs.readFile('/home/user')).rejects.toThrow('Not a file: /home/user')
+        await expect(vfs.readFile('/home/user')).rejects.toThrow('File operation failed for "/home/user": Not a file')
       })
     })
 
@@ -266,7 +278,7 @@ describe('VirtualFileSystemImpl', () => {
 
       it('should throw error if parent directory does not exist', async () => {
         await expect(vfs.writeFile('/nonexistent/file.txt', 'content')).rejects.toThrow(
-          'Parent directory not found: /nonexistent',
+          'Directory operation failed for "/nonexistent": Parent directory not found',
         )
       })
     })
@@ -296,7 +308,7 @@ describe('VirtualFileSystemImpl', () => {
       })
 
       it('should throw error for non-existent path', async () => {
-        await expect(vfs.getSize('/nonexistent')).rejects.toThrow('Path not found: /nonexistent')
+        await expect(vfs.getSize('/nonexistent')).rejects.toThrow('Get size failed for "/nonexistent": Path not found')
       })
     })
 
@@ -318,7 +330,9 @@ describe('VirtualFileSystemImpl', () => {
       })
 
       it('should throw error for non-existent file', async () => {
-        await expect(vfs.remove('/nonexistent.txt')).rejects.toThrow('File not found: /nonexistent.txt')
+        await expect(vfs.remove('/nonexistent.txt')).rejects.toThrow(
+          'Remove failed for "/nonexistent.txt": File not found',
+        )
       })
     })
   })
