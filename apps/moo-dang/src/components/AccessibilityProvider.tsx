@@ -38,7 +38,15 @@ export interface AccessibilityStatus {
  *
  * Provides debounced screen reader announcements and user preference detection.
  */
-export function useTerminalAccessibility(config: Partial<AccessibilityConfig> = {}) {
+export function useTerminalAccessibility(config: Partial<AccessibilityConfig> = {}): {
+  status: AccessibilityStatus
+  announce: (message: string, priority?: 'polite' | 'assertive') => void
+  updateFocus: (elementDescription: string) => void
+  announceCommand: (command: string, result?: 'success' | 'error' | 'pending') => void
+  announceHistoryNavigation: (direction: 'previous' | 'next', command: string, position: number, total: number) => void
+  announceCursorPosition: (position: number, total: number, character?: string) => void
+  detectScreenReader: () => boolean
+} {
   const mergedConfig = {...DEFAULT_ACCESSIBILITY_CONFIG, ...config}
   const [status, setStatus] = useState<AccessibilityStatus>({
     screenReaderActive: false,
@@ -56,7 +64,7 @@ export function useTerminalAccessibility(config: Partial<AccessibilityConfig> = 
       if (!mergedConfig.enableAnnouncements) return
 
       // Debounce rapid announcements
-      if (debounceTimerRef.current) {
+      if (debounceTimerRef.current !== null) {
         clearTimeout(debounceTimerRef.current)
       }
 
@@ -143,7 +151,7 @@ export function useTerminalAccessibility(config: Partial<AccessibilityConfig> = 
    */
   const announceCommand = useCallback(
     (command: string, result?: 'success' | 'error' | 'pending') => {
-      if (!command.trim()) return
+      if (command.trim().length === 0) return
 
       let message = `Command executed: ${command}`
       if (result === 'success') {
@@ -176,7 +184,7 @@ export function useTerminalAccessibility(config: Partial<AccessibilityConfig> = 
   const announceCursorPosition = useCallback(
     (position: number, total: number, character?: string) => {
       let message = `Cursor at position ${position} of ${total}`
-      if (character) {
+      if (character != null && character.length > 0) {
         message += `, character: ${character}`
       }
       announce(message, 'polite')
@@ -216,7 +224,7 @@ export function useTerminalAccessibility(config: Partial<AccessibilityConfig> = 
       contrastMedia.removeEventListener('change', handleContrastChange)
       motionMedia.removeEventListener('change', handleMotionChange)
 
-      if (debounceTimerRef.current) {
+      if (debounceTimerRef.current !== null) {
         clearTimeout(debounceTimerRef.current)
       }
     }
@@ -260,7 +268,7 @@ export function AccessibilityProvider({children, config}: AccessibilityProviderP
  */
 export function useAccessibility(): ReturnType<typeof useTerminalAccessibility> {
   const context = React.useContext(AccessibilityContext)
-  if (!context) {
+  if (context === null) {
     throw new Error('useAccessibility must be used within an AccessibilityProvider')
   }
   return context
@@ -338,30 +346,46 @@ export function KeyboardShortcutsHelp({
 }: KeyboardShortcutsHelpProps): React.ReactElement | null {
   const dialogRef = useRef<HTMLDivElement>(null)
 
-  // Focus management for modal
+  // Focus management for modal with delay to prevent event conflicts
   useEffect(() => {
-    if (isVisible && dialogRef.current) {
-      dialogRef.current.focus()
+    if (isVisible && dialogRef.current !== null) {
+      // Small delay to prevent buffered keyboard events from interfering
+      const focusTimeout = setTimeout(() => {
+        if (dialogRef.current !== null) {
+          dialogRef.current.focus()
+        }
+      }, 100)
+
+      return () => clearTimeout(focusTimeout)
     }
+
+    return undefined
   }, [isVisible])
 
-  // Handle escape key to close modal
+  // Handle escape key to close modal with delay to prevent immediate closure
   useEffect(() => {
+    if (!isVisible) return undefined
+
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && isVisible) {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        event.stopPropagation()
         onClose()
       }
     }
 
-    if (isVisible) {
-      document.addEventListener('keydown', handleKeyDown)
-      return () => document.removeEventListener('keydown', handleKeyDown)
-    }
+    // Add delay before attaching listener to prevent buffered events
+    const listenerTimeout = setTimeout(() => {
+      document.addEventListener('keydown', handleKeyDown, true)
+    }, 150)
 
-    return undefined
+    return () => {
+      clearTimeout(listenerTimeout)
+      document.removeEventListener('keydown', handleKeyDown, true)
+    }
   }, [isVisible, onClose])
 
-  if (!isVisible) return null
+  if (isVisible === false) return null
 
   return (
     <div
@@ -371,7 +395,11 @@ export function KeyboardShortcutsHelp({
       aria-describedby="shortcuts-description"
       className={cx('fixed inset-0 z-50 flex items-center justify-center', 'bg-black/50 backdrop-blur-sm', className)}
       onClick={e => {
-        if (e.target === e.currentTarget) onClose()
+        if (e.target === e.currentTarget) {
+          e.preventDefault()
+          e.stopPropagation()
+          onClose()
+        }
       }}
     >
       <div
