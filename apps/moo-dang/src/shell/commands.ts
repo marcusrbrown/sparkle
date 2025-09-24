@@ -1,9 +1,5 @@
 /**
  * Shell commands implementation for the virtual shell environment.
- *
- * Provides built-in commands using function-based architecture for better
- * testability and composability. All commands follow consistent patterns
- * for error handling, result formatting, and execution timing.
  */
 
 import type {ShellEnvironment} from './environment'
@@ -11,36 +7,26 @@ import type {CommandExecutionResult, ExecutionContext, ShellCommand, VirtualFile
 
 /**
  * Shell command execution error for command-specific failures.
- *
- * Provides structured error information for failed command executions,
- * including the command name and appropriate exit code.
  */
-export class ShellCommandError extends Error {
+export interface ShellCommandError {
   readonly command: string
   readonly exitCode: number
+  readonly message: string
+}
 
-  constructor(command: string, exitCode: number, message: string) {
-    super(`${command}: ${message}`)
-    this.name = 'ShellCommandError'
-    this.command = command
-    this.exitCode = exitCode
+/**
+ * Creates a shell command error with consistent formatting.
+ */
+export function createShellCommandError(command: string, exitCode: number, message: string): ShellCommandError {
+  return {
+    command,
+    exitCode,
+    message: `${command}: ${message}`,
   }
 }
 
 /**
- * Create command execution result with timing information.
- *
- * Standardizes result format across all commands with consistent timing
- * and process tracking. This ensures all commands return results in a
- * uniform structure for proper shell integration.
- *
- * @param context - Execution context containing process ID and environment
- * @param command - Full command string that was executed
- * @param stdout - Standard output from the command execution
- * @param stderr - Standard error output from the command execution
- * @param exitCode - Command exit code (0 for success, non-zero for error)
- * @param startTime - Command start time for execution duration calculation
- * @returns Structured command execution result
+ * Creates standardized command execution result with timing information.
  */
 function createCommandResult(
   context: ExecutionContext,
@@ -60,15 +46,6 @@ function createCommandResult(
   }
 }
 
-/**
- * Create echo command implementation.
- *
- * Echo command displays its arguments as a line of text to standard output.
- * This is one of the most fundamental shell commands, used for displaying
- * text and testing command execution.
- *
- * @returns Shell command implementation for echo
- */
 function createEchoCommand(): ShellCommand {
   return {
     name: 'echo',
@@ -81,56 +58,30 @@ function createEchoCommand(): ShellCommand {
   }
 }
 
-/**
- * Create pwd (print working directory) command implementation.
- *
- * Pwd command prints the absolute path of the current working directory.
- * This command ignores all arguments and always returns the current directory
- * from the execution context.
- *
- * @returns Shell command implementation for pwd
- */
 function createPwdCommand(): ShellCommand {
   return {
     name: 'pwd',
     description: 'Print working directory',
     execute: async (_args: string[], context: ExecutionContext): Promise<CommandExecutionResult> => {
       const startTime = Date.now()
-      const workingDirectory = context.workingDirectory
-      return createCommandResult(context, 'pwd', workingDirectory, '', 0, startTime)
+      return createCommandResult(context, 'pwd', context.workingDirectory, '', 0, startTime)
     },
   }
 }
 
 /**
- * File system entry metadata for directory listings.
- *
- * Represents a file or directory with Unix-like attributes for display
- * in long-format directory listings (ls -l style).
+ * File system entry metadata for Unix-style directory listings.
  */
 interface FileEntry {
-  /** File or directory name */
   readonly name: string
-  /** Entry type (file or directory) */
   readonly type: 'file' | 'directory'
-  /** Unix-style permission string (e.g., '-rw-r--r--') */
   readonly permissions: string
-  /** File size in bytes */
   readonly size: number
-  /** Last modified date string */
   readonly modified: string
 }
 
 /**
- * Get detailed file listing with metadata for long-format display.
- *
- * Transforms basic file names into detailed file entries with Unix-like
- * metadata including permissions, size, and modification time. Uses
- * heuristics to determine file vs directory types in the virtual environment.
- *
- * @param fileSystem - Virtual file system to query
- * @param path - Directory path to list
- * @returns Array of file entries with detailed metadata
+ * Gets detailed file listing with Unix-like metadata using heuristics for file type detection.
  */
 async function getDetailedListing(fileSystem: VirtualFileSystem, path: string): Promise<FileEntry[]> {
   const entries = await fileSystem.listDirectory(path)
@@ -149,14 +100,7 @@ async function getDetailedListing(fileSystem: VirtualFileSystem, path: string): 
 }
 
 /**
- * Format directory listing in long format (ls -l style).
- *
- * Creates Unix-like long-format directory listing with file permissions,
- * sizes, dates, and names. Optionally filters hidden files (those starting with '.').
- *
- * @param entries - File entries to format
- * @param showAll - Whether to show hidden files (starting with '.')
- * @returns Formatted directory listing string
+ * Formats directory entries in Unix-style long format with optional hidden file filtering.
  */
 function formatLongListing(entries: FileEntry[], showAll: boolean): string {
   const filteredEntries = showAll ? entries : entries.filter(entry => !entry.name.startsWith('.'))
@@ -175,14 +119,7 @@ function formatLongListing(entries: FileEntry[], showAll: boolean): string {
 }
 
 /**
- * Create ls (list directory) command implementation.
- *
- * Lists directory contents with support for common flags like -l (long format)
- * and -a (show all files including hidden). Handles both simple and detailed
- * directory listings based on command flags.
- *
- * @param fileSystem - Virtual file system to query
- * @returns Shell command implementation for ls
+ * Creates ls command with support for -l (long format) and -a (show hidden) flags.
  */
 function createLsCommand(fileSystem: VirtualFileSystem): ShellCommand {
   return {
@@ -217,14 +154,7 @@ function createLsCommand(fileSystem: VirtualFileSystem): ShellCommand {
 }
 
 /**
- * Resolve relative paths to absolute paths within the virtual file system.
- *
- * Converts relative path references to absolute paths by combining them
- * with the current working directory. Handles edge cases like root directory.
- *
- * @param path - Path to resolve (can be absolute or relative)
- * @param workingDirectory - Current working directory for relative resolution
- * @returns Absolute path string
+ * Resolves relative paths to absolute paths, handling root directory edge case.
  */
 function resolvePath(path: string, workingDirectory: string): string {
   if (path.startsWith('/')) {
@@ -234,14 +164,7 @@ function resolvePath(path: string, workingDirectory: string): string {
 }
 
 /**
- * Create cat (concatenate) command implementation.
- *
- * Cat command displays the contents of one or more files to standard output.
- * It can handle multiple files and will concatenate their contents in order.
- * Returns appropriate error messages for missing files or operands.
- *
- * @param fileSystem - Virtual file system to read files from
- * @returns Shell command implementation for cat
+ * Creates cat command for displaying and concatenating file contents.
  */
 function createCatCommand(fileSystem: VirtualFileSystem): ShellCommand {
   return {
@@ -286,14 +209,7 @@ function createCatCommand(fileSystem: VirtualFileSystem): ShellCommand {
 }
 
 /**
- * Create help command implementation.
- *
- * Help command provides information about available commands and their usage.
- * Can display general help listing all commands or specific help for individual commands.
- * Integrates with the command registry to provide accurate, up-to-date information.
- *
- * @param commands - Map of available commands for help information
- * @returns Shell command implementation for help
+ * Creates help command for displaying command information and usage.
  */
 function createHelpCommand(commands: Map<string, ShellCommand>): ShellCommand {
   return {
@@ -342,15 +258,7 @@ function createHelpCommand(commands: Map<string, ShellCommand>): ShellCommand {
 }
 
 /**
- * Create cd (change directory) command implementation.
- *
- * Cd command changes the current working directory to the specified path.
- * Updates both the execution context and the shell environment state to
- * reflect the new working directory. Handles relative and absolute paths.
- *
- * @param fileSystem - Virtual file system to validate directory paths
- * @param environment - Shell environment to update the working directory
- * @returns Shell command implementation for cd
+ * Creates cd command with home directory (~) support.
  */
 function createCdCommand(fileSystem: VirtualFileSystem, environment: ShellEnvironment): ShellCommand {
   return {
@@ -361,14 +269,11 @@ function createCdCommand(fileSystem: VirtualFileSystem, environment: ShellEnviro
 
       try {
         const targetPath = args.length > 0 && args[0] ? args[0] : '~'
-
-        // Handle home directory shortcut
         const resolvedPath =
           targetPath === '~'
             ? context.environmentVariables.HOME || '/home/user'
             : resolvePath(targetPath, context.workingDirectory)
 
-        // Validate that the target path exists and is a directory
         if (!(await fileSystem.exists(resolvedPath))) {
           return createCommandResult(
             context,
@@ -391,17 +296,8 @@ function createCdCommand(fileSystem: VirtualFileSystem, environment: ShellEnviro
           )
         }
 
-        // Change the directory in the shell environment
         await environment.changeDirectory(resolvedPath)
-
-        return createCommandResult(
-          context,
-          `cd ${args.join(' ')}`,
-          '', // No output for successful cd
-          '',
-          0,
-          startTime,
-        )
+        return createCommandResult(context, `cd ${args.join(' ')}`, '', '', 0, startTime)
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error)
         return createCommandResult(context, `cd ${args.join(' ')}`, '', `cd: ${errorMessage}`, 1, startTime)
@@ -410,15 +306,6 @@ function createCdCommand(fileSystem: VirtualFileSystem, environment: ShellEnviro
   }
 }
 
-/**
- * Create clear command implementation.
- *
- * Clear command clears the terminal screen using ANSI escape sequences.
- * Sends escape codes to clear the entire screen and move cursor to home position.
- * This command ignores all arguments.
- *
- * @returns Shell command implementation for clear
- */
 function createClearCommand(): ShellCommand {
   return {
     name: 'clear',
@@ -431,15 +318,7 @@ function createClearCommand(): ShellCommand {
 }
 
 /**
- * Create standard set of shell commands with file system and environment integration.
- *
- * Initializes all built-in commands with proper dependencies and returns
- * a map for efficient command lookup by name. Each command is configured
- * with access to the virtual file system and shell environment where appropriate.
- *
- * @param fileSystem - Virtual file system instance for file operations
- * @param environment - Shell environment instance for state management
- * @returns Map of command names to command implementations
+ * Creates the standard set of shell commands (echo, pwd, ls, cat, cd, clear, help).
  */
 export function createStandardCommands(
   fileSystem: VirtualFileSystem,
