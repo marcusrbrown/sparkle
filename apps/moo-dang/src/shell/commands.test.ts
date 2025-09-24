@@ -384,4 +384,222 @@ describe('Standard Shell Commands', () => {
       expect(catResult.stderr).toMatch(/^cat:/)
     })
   })
+
+  describe('Environment Variable Commands', () => {
+    describe('env command', () => {
+      it('should display all environment variables when no arguments', async () => {
+        const envCommand = commands.get('env')!
+        const result = await envCommand.execute([], executionContext)
+
+        expect(result.exitCode).toBe(0)
+        expect(result.stderr).toBe('')
+        expect(result.stdout).toContain('HOME=/home/user')
+        expect(result.stdout).toContain('USER=user')
+        expect(result.stdout).toContain('PATH=/bin:/usr/bin')
+      })
+
+      it('should handle variable assignments', async () => {
+        const envCommand = commands.get('env')!
+        const result = await envCommand.execute(['TEST_VAR=test_value'], executionContext)
+
+        expect(result.exitCode).toBe(0)
+        expect(result.stdout).toContain('TEST_VAR=test_value')
+      })
+
+      it('should show what would happen with command execution', async () => {
+        const envCommand = commands.get('env')!
+        const result = await envCommand.execute(['TEST_VAR=value', 'echo', 'hello'], executionContext)
+
+        expect(result.exitCode).toBe(0)
+        expect(result.stdout).toContain('TEST_VAR=value')
+        expect(result.stdout).toContain('echo hello')
+      })
+    })
+
+    describe('export command', () => {
+      it('should display exported variables when no arguments', async () => {
+        const exportCommand = commands.get('export')!
+        const result = await exportCommand.execute([], executionContext)
+
+        expect(result.exitCode).toBe(0)
+        expect(result.stdout).toContain('declare -x HOME="/home/user"')
+        expect(result.stdout).toContain('declare -x USER="user"')
+      })
+
+      it('should set environment variable', async () => {
+        const exportCommand = commands.get('export')!
+        const result = await exportCommand.execute(['TEST_VAR=exported_value'], executionContext)
+
+        expect(result.exitCode).toBe(0)
+        expect(result.stderr).toBe('')
+
+        // Verify the variable was set in the environment
+        expect(environment.getEnvironmentVariable('TEST_VAR')).toBe('exported_value')
+      })
+
+      it('should handle variable names without values', async () => {
+        const exportCommand = commands.get('export')!
+        const result = await exportCommand.execute(['EXISTING_VAR'], executionContext)
+
+        expect(result.exitCode).toBe(0)
+        expect(result.stderr).toBe('')
+      })
+
+      it('should reject invalid variable names', async () => {
+        const exportCommand = commands.get('export')!
+        const result = await exportCommand.execute(['123_INVALID=value'], executionContext)
+
+        expect(result.exitCode).toBe(1)
+        expect(result.stderr).toContain('invalid variable name')
+      })
+    })
+
+    describe('printenv command', () => {
+      it('should print all environment variables when no arguments', async () => {
+        const printenvCommand = commands.get('printenv')!
+        const result = await printenvCommand.execute([], executionContext)
+
+        expect(result.exitCode).toBe(0)
+        expect(result.stdout).toContain('HOME=/home/user')
+        expect(result.stdout).toContain('USER=user')
+      })
+
+      it('should print specific environment variables', async () => {
+        const printenvCommand = commands.get('printenv')!
+        const result = await printenvCommand.execute(['HOME', 'USER'], executionContext)
+
+        expect(result.exitCode).toBe(0)
+        expect(result.stdout).toContain('/home/user')
+        expect(result.stdout).toContain('user')
+      })
+
+      it('should handle missing environment variables gracefully', async () => {
+        const printenvCommand = commands.get('printenv')!
+        const result = await printenvCommand.execute(['NONEXISTENT_VAR'], executionContext)
+
+        expect(result.exitCode).toBe(1)
+        expect(result.stdout).toBe('')
+      })
+
+      it('should handle mixed existing and missing variables', async () => {
+        const printenvCommand = commands.get('printenv')!
+        const result = await printenvCommand.execute(['HOME', 'NONEXISTENT', 'USER'], executionContext)
+
+        expect(result.exitCode).toBe(0) // Should succeed if any variables found
+        expect(result.stdout).toContain('/home/user')
+        expect(result.stdout).toContain('user')
+      })
+    })
+
+    describe('unset command', () => {
+      it('should require variable name', async () => {
+        const unsetCommand = commands.get('unset')!
+        const result = await unsetCommand.execute([], executionContext)
+
+        expect(result.exitCode).toBe(1)
+        expect(result.stderr).toContain('missing variable name')
+      })
+
+      it('should unset environment variable', async () => {
+        // First set a variable
+        environment.setEnvironmentVariable('TEST_UNSET', 'test_value')
+        expect(environment.getEnvironmentVariable('TEST_UNSET')).toBe('test_value')
+
+        const unsetCommand = commands.get('unset')!
+        const result = await unsetCommand.execute(['TEST_UNSET'], executionContext)
+
+        expect(result.exitCode).toBe(0)
+        expect(result.stderr).toBe('')
+
+        // Variable should be empty (unset)
+        expect(environment.getEnvironmentVariable('TEST_UNSET')).toBe('')
+      })
+
+      it('should reject invalid variable names', async () => {
+        const unsetCommand = commands.get('unset')!
+        const result = await unsetCommand.execute(['123_INVALID'], executionContext)
+
+        expect(result.exitCode).toBe(1)
+        expect(result.stderr).toContain('invalid variable name')
+      })
+
+      it('should handle multiple variables', async () => {
+        environment.setEnvironmentVariable('TEST_A', 'value_a')
+        environment.setEnvironmentVariable('TEST_B', 'value_b')
+
+        const unsetCommand = commands.get('unset')!
+        const result = await unsetCommand.execute(['TEST_A', 'TEST_B'], executionContext)
+
+        expect(result.exitCode).toBe(0)
+        expect(environment.getEnvironmentVariable('TEST_A')).toBe('')
+        expect(environment.getEnvironmentVariable('TEST_B')).toBe('')
+      })
+    })
+
+    describe('which command', () => {
+      beforeEach(async () => {
+        // Create some test executables in PATH directories
+        await fileSystem.writeFile('/bin/test_executable', '#!/bin/sh\necho "test executable"')
+
+        // Create /usr/bin directory structure if it doesn't exist
+        try {
+          await fileSystem.createDirectory('/usr')
+          await fileSystem.createDirectory('/usr/bin')
+        } catch {
+          // Directory might already exist
+        }
+        await fileSystem.writeFile('/usr/bin/another_executable', '#!/bin/sh\necho "another executable"')
+      })
+
+      it('should require command name', async () => {
+        const whichCommand = commands.get('which')!
+        const result = await whichCommand.execute([], executionContext)
+
+        expect(result.exitCode).toBe(1)
+        expect(result.stderr).toContain('missing command name')
+      })
+
+      it('should find executables in PATH', async () => {
+        const whichCommand = commands.get('which')!
+        const result = await whichCommand.execute(['test_executable'], executionContext)
+
+        expect(result.exitCode).toBe(0)
+        expect(result.stdout).toContain('/bin/test_executable')
+      })
+
+      it('should find executables in different PATH directories', async () => {
+        const whichCommand = commands.get('which')!
+        const result = await whichCommand.execute(['another_executable'], executionContext)
+
+        expect(result.exitCode).toBe(0)
+        expect(result.stdout).toContain('/usr/bin/another_executable')
+      })
+
+      it('should handle non-existent commands', async () => {
+        const whichCommand = commands.get('which')!
+        const result = await whichCommand.execute(['nonexistent_command'], executionContext)
+
+        expect(result.exitCode).toBe(1)
+        expect(result.stdout).toBe('')
+      })
+
+      it('should handle multiple commands', async () => {
+        const whichCommand = commands.get('which')!
+        const result = await whichCommand.execute(['test_executable', 'another_executable'], executionContext)
+
+        expect(result.exitCode).toBe(0)
+        expect(result.stdout).toContain('/bin/test_executable')
+        expect(result.stdout).toContain('/usr/bin/another_executable')
+      })
+
+      it('should handle mixed existing and non-existent commands', async () => {
+        const whichCommand = commands.get('which')!
+        const result = await whichCommand.execute(['test_executable', 'nonexistent'], executionContext)
+
+        expect(result.exitCode).toBe(0) // Should succeed if any commands found
+        expect(result.stdout).toContain('/bin/test_executable')
+        expect(result.stdout).not.toContain('nonexistent')
+      })
+    })
+  })
 })

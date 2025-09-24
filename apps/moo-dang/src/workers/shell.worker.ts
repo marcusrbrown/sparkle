@@ -18,7 +18,7 @@ import type {
 } from '../shell/types'
 
 import {consola} from 'consola'
-import {createStandardCommands} from '../shell/commands'
+import {createStandardCommands, resolveCommandWithPath} from '../shell/commands'
 import {ShellEnvironment} from '../shell/environment'
 import {parseCommand} from '../shell/parser'
 import {VirtualFileSystemImpl} from '../shell/virtual-file-system'
@@ -114,7 +114,8 @@ async function handleExecuteCommand(
     }
   }
 
-  const parts = parseCommand(trimmedCommand)
+  const tempContext = state.environment.createExecutionContext(stdin)
+  const parts = parseCommand(trimmedCommand, tempContext.environmentVariables)
   const commandName = parts[0]
   const args = parts.slice(1)
 
@@ -132,7 +133,15 @@ async function handleExecuteCommand(
     }
   }
 
-  const shellCommand = state.commands.get(commandName)
+  let shellCommand = state.commands.get(commandName)
+
+  // If command not found in built-ins, try PATH resolution
+  if (!shellCommand) {
+    const resolveContext = state.environment.createExecutionContext()
+    const resolvedCommand = await resolveCommandWithPath(commandName, resolveContext, state.fileSystem, state.commands)
+    shellCommand = resolvedCommand || undefined
+  }
+
   if (!shellCommand) {
     return {
       type: 'command-result',
