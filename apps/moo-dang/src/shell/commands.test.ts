@@ -10,16 +10,19 @@ import type {ExecutionContext, ShellCommand} from './types'
 import {beforeEach, describe, expect, it} from 'vitest'
 
 import {createStandardCommands} from './commands'
+import {ShellEnvironment} from './environment'
 import {VirtualFileSystemImpl} from './virtual-file-system'
 
 describe('Standard Shell Commands', () => {
   let fileSystem: VirtualFileSystemImpl
+  let environment: ShellEnvironment
   let commands: Map<string, ShellCommand>
   let executionContext: ExecutionContext
 
   beforeEach(() => {
     fileSystem = new VirtualFileSystemImpl(false)
-    commands = createStandardCommands(fileSystem)
+    environment = new ShellEnvironment(fileSystem)
+    commands = createStandardCommands(fileSystem, environment)
     executionContext = {
       workingDirectory: '/home/user',
       environmentVariables: {
@@ -129,6 +132,42 @@ describe('Standard Shell Commands', () => {
 
       expect(result.stdout).toBe('\u001B[2J\u001B[H')
       expect(result.exitCode).toBe(0)
+    })
+  })
+
+  describe('cd command', () => {
+    it('should change to existing directory', async () => {
+      // Create a test directory first
+      await fileSystem.createDirectory('/home/user/testdir')
+
+      const cdCommand = commands.get('cd')!
+      const result = await cdCommand.execute(['testdir'], executionContext)
+
+      expect(result.stdout).toBe('')
+      expect(result.stderr).toBe('')
+      expect(result.exitCode).toBe(0)
+    })
+
+    it('should change to home directory when no arguments', async () => {
+      const cdCommand = commands.get('cd')!
+      const result = await cdCommand.execute([], executionContext)
+
+      expect(result.exitCode).toBe(0)
+    })
+
+    it('should handle tilde (~) for home directory', async () => {
+      const cdCommand = commands.get('cd')!
+      const result = await cdCommand.execute(['~'], executionContext)
+
+      expect(result.exitCode).toBe(0)
+    })
+
+    it('should return error for non-existent directory', async () => {
+      const cdCommand = commands.get('cd')!
+      const result = await cdCommand.execute(['/nonexistent'], executionContext)
+
+      expect(result.exitCode).toBe(1)
+      expect(result.stderr).toContain('cd: no such file or directory')
     })
   })
 
@@ -303,9 +342,28 @@ describe('Standard Shell Commands', () => {
         writeFile: async () => {
           throw new Error('File write error')
         },
+        createDirectory: async () => {
+          throw new Error('Create directory error')
+        },
+        remove: async () => {
+          throw new Error('Remove error')
+        },
+        isDirectory: async () => {
+          throw new Error('Directory check error')
+        },
+        isFile: async () => {
+          throw new Error('File check error')
+        },
+        getSize: async () => {
+          throw new Error('Size check error')
+        },
+        getDetailedListing: async () => {
+          throw new Error('Detailed listing error')
+        },
       }
 
-      const errorCommands = createStandardCommands(errorFileSystem)
+      const errorEnvironment = new ShellEnvironment(errorFileSystem)
+      const errorCommands = createStandardCommands(errorFileSystem, errorEnvironment)
       const lsCommand = errorCommands.get('ls')!
 
       const result = await lsCommand.execute([], executionContext)

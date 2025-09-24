@@ -6,6 +6,7 @@
  * for error handling, result formatting, and execution timing.
  */
 
+import type {ShellEnvironment} from './environment'
 import type {CommandExecutionResult, ExecutionContext, ShellCommand, VirtualFileSystem} from './types'
 
 /**
@@ -341,6 +342,75 @@ function createHelpCommand(commands: Map<string, ShellCommand>): ShellCommand {
 }
 
 /**
+ * Create cd (change directory) command implementation.
+ *
+ * Cd command changes the current working directory to the specified path.
+ * Updates both the execution context and the shell environment state to
+ * reflect the new working directory. Handles relative and absolute paths.
+ *
+ * @param fileSystem - Virtual file system to validate directory paths
+ * @param environment - Shell environment to update the working directory
+ * @returns Shell command implementation for cd
+ */
+function createCdCommand(fileSystem: VirtualFileSystem, environment: ShellEnvironment): ShellCommand {
+  return {
+    name: 'cd',
+    description: 'Change directory',
+    execute: async (args: string[], context: ExecutionContext): Promise<CommandExecutionResult> => {
+      const startTime = Date.now()
+
+      try {
+        const targetPath = args.length > 0 && args[0] ? args[0] : '~'
+
+        // Handle home directory shortcut
+        const resolvedPath =
+          targetPath === '~'
+            ? context.environmentVariables.HOME || '/home/user'
+            : resolvePath(targetPath, context.workingDirectory)
+
+        // Validate that the target path exists and is a directory
+        if (!(await fileSystem.exists(resolvedPath))) {
+          return createCommandResult(
+            context,
+            `cd ${args.join(' ')}`,
+            '',
+            `cd: no such file or directory: ${targetPath}`,
+            1,
+            startTime,
+          )
+        }
+
+        if (!(await fileSystem.isDirectory(resolvedPath))) {
+          return createCommandResult(
+            context,
+            `cd ${args.join(' ')}`,
+            '',
+            `cd: not a directory: ${targetPath}`,
+            1,
+            startTime,
+          )
+        }
+
+        // Change the directory in the shell environment
+        await environment.changeDirectory(resolvedPath)
+
+        return createCommandResult(
+          context,
+          `cd ${args.join(' ')}`,
+          '', // No output for successful cd
+          '',
+          0,
+          startTime,
+        )
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : String(error)
+        return createCommandResult(context, `cd ${args.join(' ')}`, '', `cd: ${errorMessage}`, 1, startTime)
+      }
+    },
+  }
+}
+
+/**
  * Create clear command implementation.
  *
  * Clear command clears the terminal screen using ANSI escape sequences.
@@ -361,28 +431,34 @@ function createClearCommand(): ShellCommand {
 }
 
 /**
- * Create standard set of shell commands with file system integration.
+ * Create standard set of shell commands with file system and environment integration.
  *
  * Initializes all built-in commands with proper dependencies and returns
  * a map for efficient command lookup by name. Each command is configured
- * with access to the virtual file system where appropriate.
+ * with access to the virtual file system and shell environment where appropriate.
  *
  * @param fileSystem - Virtual file system instance for file operations
+ * @param environment - Shell environment instance for state management
  * @returns Map of command names to command implementations
  */
-export function createStandardCommands(fileSystem: VirtualFileSystem): Map<string, ShellCommand> {
+export function createStandardCommands(
+  fileSystem: VirtualFileSystem,
+  environment: ShellEnvironment,
+): Map<string, ShellCommand> {
   const commands = new Map<string, ShellCommand>()
 
   const echoCommand = createEchoCommand()
   const pwdCommand = createPwdCommand()
   const lsCommand = createLsCommand(fileSystem)
   const catCommand = createCatCommand(fileSystem)
+  const cdCommand = createCdCommand(fileSystem, environment)
   const clearCommand = createClearCommand()
 
   commands.set(echoCommand.name, echoCommand)
   commands.set(pwdCommand.name, pwdCommand)
   commands.set(lsCommand.name, lsCommand)
   commands.set(catCommand.name, catCommand)
+  commands.set(cdCommand.name, cdCommand)
   commands.set(clearCommand.name, clearCommand)
 
   const helpCommand = createHelpCommand(commands)
