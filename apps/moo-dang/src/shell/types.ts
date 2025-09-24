@@ -3,6 +3,67 @@
  */
 
 /**
+ * Redirection operator types for I/O redirection.
+ */
+export type RedirectionOperator = '>' | '<' | '>>' | '2>' | '&>'
+
+/**
+ * Redirection specification for command I/O.
+ */
+export interface IORedirection {
+  /** Type of redirection operation */
+  readonly operator: RedirectionOperator
+  /** Target file path for redirection */
+  readonly target: string
+  /** File descriptor for advanced redirection (optional) */
+  readonly fileDescriptor?: number
+}
+
+/**
+ * Parsed command with potential pipeline and redirection information.
+ */
+export interface ParsedCommand {
+  /** Command name */
+  readonly command: string
+  /** Command arguments */
+  readonly args: string[]
+  /** Input redirection specifications */
+  readonly inputRedirections: IORedirection[]
+  /** Output redirection specifications */
+  readonly outputRedirections: IORedirection[]
+}
+
+/**
+ * Command pipeline representation.
+ */
+export interface CommandPipeline {
+  /** Commands in the pipeline (in order of execution) */
+  readonly commands: ParsedCommand[]
+  /** Whether to run pipeline in background */
+  readonly background: boolean
+}
+
+/**
+ * Pipeline execution result combining results from all commands.
+ */
+export interface PipelineExecutionResult {
+  /** Process ID of the pipeline (first command's process ID) */
+  readonly processId: number
+  /** Original command line that created the pipeline */
+  readonly command: string
+  /** Results from each command in the pipeline */
+  readonly commandResults: CommandExecutionResult[]
+  /** Final stdout from the last command */
+  readonly stdout: string
+  /** Combined stderr from all commands */
+  readonly stderr: string
+  /** Exit code of the last command (or first failing command) */
+  readonly exitCode: number
+  /** Total execution time for the entire pipeline */
+  readonly executionTime: number
+}
+
+/**
  * Shell environment state containing working directory, environment variables, and shell options.
  */
 export interface ShellEnvironmentState {
@@ -90,6 +151,7 @@ export interface CommandExecutionResult {
  */
 export type ShellWorkerRequest =
   | ExecuteCommandRequest
+  | ExecutePipelineRequest
   | GetEnvironmentRequest
   | SetEnvironmentRequest
   | ChangeDirectoryRequest
@@ -102,6 +164,16 @@ export type ShellWorkerRequest =
 export interface ExecuteCommandRequest {
   readonly type: 'execute'
   readonly command: string
+  readonly stdin?: string
+  readonly timeout?: number
+}
+
+/**
+ * Request to execute a command pipeline in the shell.
+ */
+export interface ExecutePipelineRequest {
+  readonly type: 'execute-pipeline'
+  readonly pipeline: CommandPipeline
   readonly stdin?: string
   readonly timeout?: number
 }
@@ -150,6 +222,7 @@ export interface ListProcessesRequest {
  */
 export type ShellWorkerResponse =
   | CommandExecutionResponse
+  | PipelineExecutionResponse
   | EnvironmentResponse
   | EnvironmentSetResponse
   | DirectoryChangedResponse
@@ -165,6 +238,14 @@ export type ShellWorkerResponse =
 export interface CommandExecutionResponse {
   readonly type: 'command-result'
   readonly result: CommandExecutionResult
+}
+
+/**
+ * Response to pipeline execution request.
+ */
+export interface PipelineExecutionResponse {
+  readonly type: 'pipeline-result'
+  readonly result: PipelineExecutionResult
 }
 
 /**

@@ -145,3 +145,151 @@ export function parseCommand(command: string, environmentVariables?: Record<stri
   // No environment variables - return content and filter empty strings for backward compatibility
   return tokens.map((token: ParsedToken) => token.content).filter((content: string) => content !== '')
 }
+
+/**
+ * Parse a command line into a pipeline with commands and redirections.
+ *
+ * Handles pipeline operators (|) and I/O redirection operators (>, <, >>, 2>, &>)
+ * to create structured pipeline representation for execution.
+ *
+ * @param commandLine - Complete command line potentially containing pipelines and redirections
+ * @param environmentVariables - Environment variables for expansion
+ * @returns Parsed pipeline with commands and redirection information
+ *
+ * @example
+ * ```typescript
+ * // Simple command with redirection
+ * parseCommandPipeline('ls -la > output.txt')
+ * // Returns: {commands: [{command: 'ls', args: ['-la'], outputRedirections: [{operator: '>', target: 'output.txt'}]}], background: false}
+ *
+ * // Pipeline with multiple commands
+ * parseCommandPipeline('cat file.txt | grep "error" | wc -l')
+ * // Returns: {commands: [...], background: false}
+ * ```
+ */
+export function parseCommandPipeline(
+  commandLine: string,
+  environmentVariables?: Record<string, string>,
+): import('./types').CommandPipeline {
+  const trimmedCommand = commandLine.trim()
+
+  // Check for background execution
+  const background = trimmedCommand.endsWith(' &')
+  const cleanCommand = background ? trimmedCommand.slice(0, -1).trim() : trimmedCommand
+
+  // Split by pipeline operator while respecting quotes
+  const pipelineCommands = splitByOperator(cleanCommand, '|')
+
+  const commands = pipelineCommands.map(cmdString => parseCommandWithRedirections(cmdString, environmentVariables))
+
+  return {
+    commands,
+    background,
+  }
+}
+
+/**
+ * Parse a single command with redirection operators.
+ *
+ * Identifies and separates redirection operators from command arguments,
+ * creating structured representation of the command and its I/O redirections.
+ */
+function parseCommandWithRedirections(
+  commandString: string,
+  environmentVariables?: Record<string, string>,
+): import('./types').ParsedCommand {
+  const redirectionOperators = ['&>', '>>', '2>', '>', '<'] // Order matters - longer operators first
+
+  const inputRedirections: import('./types').IORedirection[] = []
+  const outputRedirections: import('./types').IORedirection[] = []
+
+  let remainingCommand = commandString.trim()
+
+  // Extract redirections from the command
+  for (const operator of redirectionOperators) {
+    const regex = new RegExp(`\\s+(${escapeRegExp(operator)})\\s+([^\\s]+)`, 'g')
+    let match = regex.exec(remainingCommand)
+
+    while (match !== null) {
+      const [fullMatch, op, target] = match
+      if (target) {
+        const redirection: import('./types').IORedirection = {
+          operator: op as import('./types').RedirectionOperator,
+          target: expandVariables(target, environmentVariables || {}),
+        }
+
+        if (op === '<') {
+          inputRedirections.push(redirection)
+        } else {
+          outputRedirections.push(redirection)
+        }
+
+        // Remove the redirection from the command string
+        remainingCommand = remainingCommand.replaceAll(fullMatch, ' ')
+      }
+
+      match = regex.exec(remainingCommand)
+    }
+  }
+
+  // Parse the remaining command
+  const commandParts = parseCommand(remainingCommand, environmentVariables)
+  const command = commandParts[0] || ''
+  const args = commandParts.slice(1)
+
+  return {
+    command,
+    args,
+    inputRedirections,
+    outputRedirections,
+  }
+}
+
+/**
+ * Split a command line by operator while respecting quoted strings.
+ *
+ * Ensures that operators inside quoted strings are not treated as separators,
+ * maintaining proper command parsing for complex shell expressions.
+ */
+function splitByOperator(command: string, operator: string): string[] {
+  const parts: string[] = []
+  let current = ''
+  let inQuotes = false
+  let quoteChar = ''
+  let i = 0
+
+  while (i < command.length) {
+    const char = command[i]
+
+    if ((char === '"' || char === "'") && !inQuotes) {
+      inQuotes = true
+      quoteChar = char
+      current += char
+    } else if (char === quoteChar && inQuotes) {
+      inQuotes = false
+      quoteChar = ''
+      current += char
+    } else if (command.slice(i, i + operator.length) === operator && !inQuotes) {
+      parts.push(current.trim())
+      current = ''
+      i += operator.length - 1 // -1 because loop will increment
+    } else {
+      current += char
+    }
+
+    i++
+  }
+
+  if (current.trim()) {
+    parts.push(current.trim())
+  }
+
+  return parts.filter(part => part.length > 0)
+}
+
+/**
+ * Escape special regex characters in a string.
+ */
+function escapeRegExp(string: string): string {
+  return string.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`)
+}
