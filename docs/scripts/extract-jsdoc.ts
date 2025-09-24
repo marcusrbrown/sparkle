@@ -2,6 +2,7 @@ import {existsSync, mkdirSync, writeFileSync} from 'node:fs'
 import {dirname, join, relative} from 'node:path'
 import process from 'node:process'
 import {fileURLToPath} from 'node:url'
+import {consola} from 'consola'
 
 import {parse as parseJSDoc, type Annotation} from 'doctrine'
 import {Project, SyntaxKind, type FunctionDeclaration, type VariableDeclaration} from 'ts-morph'
@@ -67,7 +68,7 @@ export class JSDocExtractor {
    * Extracts documentation from all components in the UI package
    */
   async extractAll(): Promise<ComponentDocumentation[]> {
-    console.log('🔍 Extracting JSDoc documentation from @sparkle/ui components...')
+    consola.info('🔍 Extracting JSDoc documentation from @sparkle/ui components...')
 
     const componentFiles = this.project.getSourceFiles().filter(file => {
       const filePath = file.getFilePath()
@@ -92,7 +93,7 @@ export class JSDocExtractor {
       }
     }
 
-    console.log(`✅ Extracted documentation for ${documentation.length} components`)
+    consola.success(`✅ Extracted documentation for ${documentation.length} components`)
     return documentation
   }
 
@@ -315,7 +316,7 @@ export class JSDocExtractor {
     }
 
     writeFileSync(outputFile, JSON.stringify(documentation, null, 2))
-    console.log(`📝 Saved component documentation to ${outputFile}`)
+    consola.info(`📝 Saved component documentation to ${outputFile}`)
   }
 }
 
@@ -326,9 +327,9 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   try {
     const documentation = await extractor.extractAll()
     await extractor.saveDocumentation(documentation)
-    console.log('🎉 JSDoc extraction completed successfully!')
+    consola.success('🎉 JSDoc extraction completed successfully!')
   } catch (error) {
-    console.error('❌ JSDoc extraction failed:', error)
+    consola.error('❌ JSDoc extraction failed:', error)
     process.exit(1)
   }
 }

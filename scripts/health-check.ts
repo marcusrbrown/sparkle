@@ -8,6 +8,7 @@
 import {execSync} from 'node:child_process'
 import {existsSync, readdirSync} from 'node:fs'
 import process from 'node:process'
+import {consola} from 'consola'
 
 // ANSI color codes for better output formatting
 const colors = {
@@ -19,25 +20,25 @@ const colors = {
   bold: '\u001B[1m',
 } as const
 
-// Helper functions for formatted output
+// Helper functions for formatted output using consola
 function printHeader(message: string): void {
-  console.log(`${colors.blue}${colors.bold}${message}${colors.reset}`)
+  consola.info(`${colors.blue}${colors.bold}${message}${colors.reset}`)
 }
 
 function printSuccess(message: string): void {
-  console.log(`${colors.green}✅ ${message}${colors.reset}`)
+  consola.success(`${colors.green}✅ ${message}${colors.reset}`)
 }
 
 function printWarning(message: string): void {
-  console.log(`${colors.yellow}⚠️  ${message}${colors.reset}`)
+  consola.warn(`${colors.yellow}⚠️  ${message}${colors.reset}`)
 }
 
 function printError(message: string): void {
-  console.log(`${colors.red}❌ ${message}${colors.reset}`)
+  consola.error(`${colors.red}❌ ${message}${colors.reset}`)
 }
 
 function printInfo(message: string): void {
-  console.log(`${colors.blue}ℹ️  ${message}${colors.reset}`)
+  consola.info(`${colors.blue}ℹ️  ${message}${colors.reset}`)
 }
 
 // Utility function to run commands safely
@@ -68,13 +69,13 @@ let healthStatus = 0
 let warningsCount = 0
 
 async function runHealthCheck(): Promise<void> {
-  console.log()
+  consola.log('')
   printHeader('🔍 Running development environment health check...')
-  console.log()
+  consola.log('')
 
   // 1. Check workspace consistency
   printHeader('📦 Validating workspace consistency...')
-  console.log()
+  consola.log('')
 
   const workspaceCheck = runCommand('pnpm check:monorepo', {allowFailure: true})
   if (workspaceCheck.success) {
@@ -83,11 +84,11 @@ async function runHealthCheck(): Promise<void> {
     printError('Workspace consistency check failed')
     healthStatus = 1
   }
-  console.log()
+  consola.log('')
 
   // 2. Validate package dependencies
   printHeader('🔗 Validating package dependencies...')
-  console.log()
+  consola.log('')
 
   const depsCheck = runCommand('pnpm check:dependencies', {allowFailure: true})
   if (depsCheck.success) {
@@ -96,11 +97,11 @@ async function runHealthCheck(): Promise<void> {
     printError('Package dependency validation failed')
     healthStatus = 1
   }
-  console.log()
+  consola.log('')
 
   // 3. Verify TypeScript project references (handle known compatibility issues gracefully)
   printHeader('🔧 Checking TypeScript project references...')
-  console.log()
+  consola.log('')
   printInfo('Running TypeScript build dry run to verify project references...')
 
   // Use a more robust TypeScript check that handles version compatibility issues
@@ -121,11 +122,11 @@ async function runHealthCheck(): Promise<void> {
     printInfo("Run 'tsc --build --dry' for detailed error information")
     healthStatus = 1
   }
-  console.log()
+  consola.log('')
 
   // 4. Test build pipeline integrity
   printHeader('🏗️ Testing build pipeline integrity...')
-  console.log()
+  consola.log('')
   printInfo('Running Turborepo build dry run to verify pipeline...')
 
   const buildDryCheck = runCommand('pnpm run build --dry', {silent: true, allowFailure: true})
@@ -161,11 +162,11 @@ async function runHealthCheck(): Promise<void> {
       printSuccess('All packages have proper build commands')
     }
   }
-  console.log()
+  consola.log('')
 
   // 5. Additional workspace validation checks
   printHeader('🔍 Additional workspace validation...')
-  console.log()
+  consola.log('')
 
   // Check if node_modules exists and is properly structured
   if (existsSync('node_modules')) {
@@ -213,11 +214,11 @@ async function runHealthCheck(): Promise<void> {
     printInfo('Could not check TypeScript build info files')
   }
 
-  console.log()
+  consola.log('')
 
   // 6. Development environment checks
   printHeader('⚙️ Development environment validation...')
-  console.log()
+  consola.log('')
 
   // Check Node.js version
   const nodeVersion = runCommand('node --version', {silent: true})
@@ -235,11 +236,11 @@ async function runHealthCheck(): Promise<void> {
   const turboVersion = runCommand('npx turbo --version', {silent: true})
   printInfo(`Turbo version: ${turboVersion.output.trim()}`)
 
-  console.log()
+  consola.log('')
 
   // 7. Summary and recommendations
   printHeader('📋 Health Check Summary')
-  console.log()
+  consola.log('')
 
   if (healthStatus === 0) {
     if (warningsCount === 0) {
@@ -250,7 +251,7 @@ async function runHealthCheck(): Promise<void> {
     }
   } else {
     printError('Health check failed! Please address the errors above before continuing development.')
-    console.log()
+    consola.log('')
     printInfo('Common fixes:')
     printInfo("  • Run 'pnpm install' to install/update dependencies")
     printInfo("  • Run 'pnpm fix:monorepo' to fix workspace issues")
@@ -258,21 +259,21 @@ async function runHealthCheck(): Promise<void> {
     printInfo("  • Run 'pnpm build' to ensure all packages can build successfully")
   }
 
-  console.log()
+  consola.log('')
   printHeader('🚀 Next steps for development:')
-  console.log()
+  consola.log('')
   printInfo("  • Run 'pnpm dev' to start development servers")
   printInfo("  • Run 'pnpm build:types:watch' for TypeScript watch mode")
   printInfo("  • Run 'pnpm check' for comprehensive quality checks")
   printInfo("  • Run 'pnpm test' to run all tests")
 
-  console.log()
+  consola.log('')
   if (healthStatus === 0) {
     printSuccess('Health check complete! Happy coding! 🎉')
   } else {
     printError('Health check failed! Please fix errors before development.')
   }
-  console.log()
+  consola.log('')
 }
 
 // Run the health check

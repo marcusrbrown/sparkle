@@ -4,6 +4,7 @@ import {readdirSync, readFileSync, statSync} from 'node:fs'
 import {dirname, resolve} from 'node:path'
 import process from 'node:process'
 import {fileURLToPath} from 'node:url'
+import {consola} from 'consola'
 
 const filename = fileURLToPath(import.meta.url)
 const DIRNAME = dirname(filename)
@@ -65,11 +66,11 @@ function getWorkspacePackages(): {name: string; path: string; packageJson: Packa
           packageJson,
         })
       } catch (error) {
-        console.error(`${colors.red}Error reading package.json for ${entry}:${colors.reset}`, error)
+        consola.error(`${colors.red}Error reading package.json for ${entry}:${colors.reset}`, error)
       }
     }
   } catch (error) {
-    console.error(`${colors.red}Error reading packages directory:${colors.reset}`, error)
+    consola.error(`${colors.red}Error reading packages directory:${colors.reset}`, error)
     process.exit(1)
   }
 
@@ -123,12 +124,12 @@ function validatePackageDependencies(pkg: {name: string; packageJson: PackageJso
  * Validate all workspace dependencies
  */
 function validateWorkspaceDependencies(): ValidationError[] {
-  console.log(`${colors.blue}${colors.bold}🔗 Validating workspace dependencies...${colors.reset}`)
+  consola.info(`${colors.blue}${colors.bold}🔗 Validating workspace dependencies...${colors.reset}`)
 
   const packages = getWorkspacePackages()
   const allErrors: ValidationError[] = []
 
-  console.log(`${colors.blue}Found ${packages.length} workspace packages${colors.reset}`)
+  consola.info(`${colors.blue}Found ${packages.length} workspace packages${colors.reset}`)
 
   for (const pkg of packages) {
     const errors = validatePackageDependencies(pkg)
@@ -143,13 +144,13 @@ function validateWorkspaceDependencies(): ValidationError[] {
  */
 function displayValidationResults(errors: ValidationError[]): void {
   if (errors.length === 0) {
-    console.log(`${colors.green}${colors.bold}✅ All workspace dependencies valid${colors.reset}`)
-    console.log(`${colors.green}All internal @sparkle/* dependencies use workspace:* protocol${colors.reset}`)
+    consola.success(`${colors.green}${colors.bold}✅ All workspace dependencies valid${colors.reset}`)
+    consola.success(`${colors.green}All internal @sparkle/* dependencies use workspace:* protocol${colors.reset}`)
     return
   }
 
-  console.log(`${colors.red}${colors.bold}❌ Workspace dependency validation failed${colors.reset}`)
-  console.log(`${colors.red}Found ${errors.length} violation(s):${colors.reset}\n`)
+  consola.error(`${colors.red}${colors.bold}❌ Workspace dependency validation failed${colors.reset}`)
+  consola.error(`${colors.red}Found ${errors.length} violation(s):${colors.reset}\n`)
 
   // Group errors by package for better readability
   const errorsByPackage = new Map<string, ValidationError[]>()
@@ -164,21 +165,21 @@ function displayValidationResults(errors: ValidationError[]): void {
   }
 
   for (const [packageName, packageErrors] of errorsByPackage) {
-    console.log(`${colors.yellow}📦 Package: ${colors.bold}${packageName}${colors.reset}`)
+    consola.log(`${colors.yellow}📦 Package: ${colors.bold}${packageName}${colors.reset}`)
     for (const error of packageErrors) {
-      console.log(
+      consola.log(
         `  ${colors.red}•${colors.reset} ${colors.red}${error.dependencyName}${colors.reset} in ${colors.yellow}${error.dependencyType}${colors.reset}`,
       )
-      console.log(`    Current: ${colors.red}"${error.currentVersion}"${colors.reset}`)
-      console.log(`    Expected: ${colors.green}"workspace:*"${colors.reset}`)
+      consola.log(`    Current: ${colors.red}"${error.currentVersion}"${colors.reset}`)
+      consola.log(`    Expected: ${colors.green}"workspace:*"${colors.reset}`)
     }
-    console.log()
+    consola.log('')
   }
 
-  console.log(`${colors.yellow}${colors.bold}💡 How to fix:${colors.reset}`)
-  console.log(`${colors.yellow}  1. Change internal dependency versions to "workspace:*"${colors.reset}`)
-  console.log(`${colors.yellow}  2. Run "pnpm install" to update lockfile${colors.reset}`)
-  console.log(`${colors.yellow}  3. Or run "pnpm fix:monorepo" to auto-fix with manypkg${colors.reset}`)
+  consola.info(`${colors.yellow}${colors.bold}💡 How to fix:${colors.reset}`)
+  consola.info(`${colors.yellow}  1. Change internal dependency versions to "workspace:*"${colors.reset}`)
+  consola.info(`${colors.yellow}  2. Run "pnpm install" to update lockfile${colors.reset}`)
+  consola.info(`${colors.yellow}  3. Or run "pnpm fix:monorepo" to auto-fix with manypkg${colors.reset}`)
 }
 
 /**
@@ -193,7 +194,7 @@ function main(): void {
       process.exit(1)
     }
   } catch (error) {
-    console.error(`${colors.red}${colors.bold}💥 Validation failed with error:${colors.reset}`, error)
+    consola.error(`${colors.red}${colors.bold}💥 Validation failed with error:${colors.reset}`, error)
     process.exit(1)
   }
 }

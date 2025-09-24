@@ -4,6 +4,7 @@ import {existsSync, readFileSync} from 'node:fs'
 import {dirname, resolve} from 'node:path'
 import process from 'node:process'
 import {fileURLToPath} from 'node:url'
+import {consola} from 'consola'
 
 const filename = fileURLToPath(import.meta.url)
 const DIRNAME = dirname(filename)
@@ -69,7 +70,7 @@ class TurboValidator {
   private validPackageNames = new Set<string>()
 
   log(message: string, color: ColorKey = 'reset'): void {
-    console.log(`${colors[color]}${message}${colors.reset}`)
+    consola.log(`${colors[color]}${message}${colors.reset}`)
   }
 
   error(message: string): void {
