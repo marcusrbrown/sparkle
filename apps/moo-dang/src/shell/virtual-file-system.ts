@@ -378,11 +378,14 @@ export class VirtualFileSystemImpl implements VirtualFileSystem {
    */
   private logDebug(message: string, data?: Record<string, unknown>): void {
     if (this.enableDebugLogging) {
-      globalThis.postMessage({
-        type: 'debug',
-        message: `[VirtualFileSystem] ${message}`,
-        data: data || {},
-      })
+      // Use consola for structured logging instead of postMessage
+      import('consola')
+        .then(({consola}) => {
+          consola.debug(`[VirtualFileSystem] ${message}`, data || {})
+        })
+        .catch(() => {
+          // Fallback if consola import fails
+        })
     }
   }
 }

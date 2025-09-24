@@ -1,13 +1,8 @@
 /**
- * Enhanced Shell Worker - Provides isolated shell environment with proper process management.
+ * Enhanced Shell Worker providing isolated shell environment with proper process management.
  *
- * This worker implements a complete shell environment with:
- * - Process isolation and execution contexts
- * - Virtual file system for safe file operations
- * - Built-in shell commands (echo, pwd, ls, cat, help, clear)
- * - Environment variable management
- * - Working directory management
- * - Process lifecycle management
+ * Web Worker implementation for executing shell commands in isolation from the main thread.
+ * Supports virtual file system operations, process lifecycle management, and built-in commands.
  */
 
 import type {
@@ -22,310 +17,314 @@ import type {
   ShellWorkerResponse,
 } from '../shell/types'
 
+import {consola} from 'consola'
 import {createStandardCommands} from '../shell/commands'
 import {ShellEnvironment} from '../shell/environment'
 import {VirtualFileSystemImpl} from '../shell/virtual-file-system'
 
+interface ShellWorkerState {
+  readonly environment: ShellEnvironment
+  readonly fileSystem: VirtualFileSystemImpl
+  readonly commands: Map<string, ShellCommand>
+}
+
 /**
- * Enhanced shell worker implementation with proper isolation and state management.
+ * Initialize shell worker state with virtual file system and command registry.
+ *
+ * Creates isolated environment suitable for Web Worker execution with conservative
+ * resource limits to prevent browser performance issues.
  */
-class ShellWorkerImpl {
-  private readonly environment: ShellEnvironment
-  private readonly fileSystem: VirtualFileSystemImpl
-  private readonly commands: Map<string, ShellCommand>
+function createShellWorkerState(): ShellWorkerState {
+  const fileSystem = new VirtualFileSystemImpl(false)
 
-  constructor() {
-    // Initialize virtual file system without debug logging
-    this.fileSystem = new VirtualFileSystemImpl(false)
+  const environment = new ShellEnvironment(fileSystem, {
+    enableDebugLogging: false,
+    maxProcesses: 5, // Conservative limit for web environment
+    commandTimeout: 15000, // 15 second timeout for commands
+  })
 
-    // Initialize shell environment without debug logging to prevent interference
-    this.environment = new ShellEnvironment(this.fileSystem, {
-      enableDebugLogging: false,
-      maxProcesses: 5, // Conservative limit for web environment
-      commandTimeout: 15000, // 15 second timeout for commands
-    })
+  const commands = createStandardCommands(fileSystem)
 
-    // Initialize standard shell commands
-    this.commands = createStandardCommands(this.fileSystem)
+  return {environment, fileSystem, commands}
+}
 
-    // Don't log initialization here - App.tsx handles this to prevent duplicates
-  }
-
-  /**
-   * Handle incoming messages from the main thread.
-   */
-  async handleMessage(request: ShellWorkerRequest): Promise<ShellWorkerResponse> {
-    try {
-      switch (request.type) {
-        case 'execute':
-          return await this.handleExecuteCommand(request)
-        case 'get-environment':
-          return this.handleGetEnvironment(request)
-        case 'set-environment':
-          return this.handleSetEnvironment(request)
-        case 'change-directory':
-          return await this.handleChangeDirectory(request)
-        case 'kill-process':
-          return this.handleKillProcess(request)
-        case 'list-processes':
-          return this.handleListProcesses(request)
-        default:
-          return {
-            type: 'error',
-            message: `Unknown request type: ${(request as any).type}`,
-            code: 'UNKNOWN_REQUEST',
-          }
-      }
-    } catch (error) {
-      this.logError('Request handling failed', error)
-      return {
-        type: 'error',
-        message: error instanceof Error ? error.message : String(error),
-        code: 'REQUEST_FAILED',
-      }
-    }
-  }
-
-  /**
-   * Execute a command in the shell environment.
-   */
-  private async handleExecuteCommand(request: ExecuteCommandRequest): Promise<ShellWorkerResponse> {
-    const {command, stdin, timeout} = request
-    const trimmedCommand = command.trim()
-
-    if (!trimmedCommand) {
-      return {
-        type: 'command-result',
-        result: {
-          processId: 0,
-          command: '',
-          stdout: '',
-          stderr: '',
-          exitCode: 0,
-          executionTime: 0,
-        },
-      }
-    }
-
-    // Parse command and arguments
-    const parts = this.parseCommand(trimmedCommand)
-    const commandName = parts[0]
-    const args = parts.slice(1)
-
-    if (!commandName) {
-      return {
-        type: 'command-result',
-        result: {
-          processId: 0,
-          command: trimmedCommand,
-          stdout: '',
-          stderr: 'Command parsing failed',
-          exitCode: 1,
-          executionTime: 0,
-        },
-      }
-    }
-
-    // Check if command exists
-    const shellCommand = this.commands.get(commandName)
-    if (!shellCommand) {
-      return {
-        type: 'command-result',
-        result: {
-          processId: 0,
-          command: trimmedCommand,
-          stdout: '',
-          stderr: `Command not found: ${commandName}`,
-          exitCode: 127,
-          executionTime: 0,
-        },
-      }
-    }
-
-    // Create execution context
-    const context = this.environment.createExecutionContext(stdin)
-
-    // Start process tracking
-    const processInfo = this.environment.startProcess(trimmedCommand, context)
-
-    try {
-      // Execute command with timeout
-      const result = await this.executeWithTimeout(() => shellCommand.execute(args, context), timeout || 15000)
-
-      // Complete process
-      this.environment.completeProcess(processInfo.id, result)
-
-      return {
-        type: 'command-result',
-        result,
-      }
-    } catch (error) {
-      // Handle execution error
-      const errorResult = {
-        processId: context.processId,
-        command: trimmedCommand,
-        stdout: '',
-        stderr: error instanceof Error ? error.message : String(error),
-        exitCode: 1,
-        executionTime: Date.now() - processInfo.startTime,
-      }
-
-      this.environment.completeProcess(processInfo.id, errorResult)
-
-      return {
-        type: 'command-result',
-        result: errorResult,
-      }
-    }
-  }
-
-  /**
-   * Get current shell environment state.
-   */
-  private handleGetEnvironment(_request: GetEnvironmentRequest): ShellWorkerResponse {
-    const state = this.environment.getState()
-    return {
-      type: 'environment',
-      state,
-    }
-  }
-
-  /**
-   * Set environment variable.
-   */
-  private handleSetEnvironment(request: SetEnvironmentRequest): ShellWorkerResponse {
-    this.environment.setEnvironmentVariable(request.key, request.value)
-    return {
-      type: 'environment-set',
-      key: request.key,
-      value: request.value,
-    }
-  }
-
-  /**
-   * Change working directory.
-   */
-  private async handleChangeDirectory(request: ChangeDirectoryRequest): Promise<ShellWorkerResponse> {
-    try {
-      const newDirectory = await this.environment.changeDirectory(request.path)
-      return {
-        type: 'directory-changed',
-        newDirectory,
-      }
-    } catch (error) {
-      return {
-        type: 'error',
-        message: error instanceof Error ? error.message : String(error),
-        code: 'DIRECTORY_CHANGE_FAILED',
-      }
-    }
-  }
-
-  /**
-   * Kill a running process.
-   */
-  private handleKillProcess(request: KillProcessRequest): ShellWorkerResponse {
-    const killed = this.environment.killProcess(request.processId)
-    if (killed) {
-      return {
-        type: 'process-killed',
-        processId: request.processId,
-      }
-    } else {
-      return {
-        type: 'error',
-        message: `Process not found or already terminated: ${request.processId}`,
-        code: 'PROCESS_NOT_FOUND',
-      }
-    }
-  }
-
-  /**
-   * List all running processes.
-   */
-  private handleListProcesses(_request: ListProcessesRequest): ShellWorkerResponse {
-    const processes = this.environment.getProcesses()
-    return {
-      type: 'process-list',
-      processes,
-    }
-  }
-
-  /**
-   * Parse command string into command and arguments.
-   */
-  private parseCommand(command: string): string[] {
-    // Simple parsing - split on spaces, handle basic quoting
-    const parts: string[] = []
-    let current = ''
-    let inQuotes = false
-    let quoteChar = ''
-
-    const chars = Array.from(command)
-
-    for (const char of chars) {
-      if ((char === '"' || char === "'") && !inQuotes) {
-        inQuotes = true
-        quoteChar = char
-      } else if (char === quoteChar && inQuotes) {
-        inQuotes = false
-        quoteChar = ''
-      } else if (char === ' ' && !inQuotes) {
-        if (current) {
-          parts.push(current)
-          current = ''
+/**
+ * Handle incoming messages from the main thread.
+ *
+ * Routes requests to appropriate handlers based on message type and returns
+ * structured responses with proper error handling.
+ */
+async function handleMessage(state: ShellWorkerState, request: ShellWorkerRequest): Promise<ShellWorkerResponse> {
+  try {
+    switch (request.type) {
+      case 'execute':
+        return await handleExecuteCommand(state, request)
+      case 'get-environment':
+        return handleGetEnvironment(state, request)
+      case 'set-environment':
+        return handleSetEnvironment(state, request)
+      case 'change-directory':
+        return await handleChangeDirectory(state, request)
+      case 'kill-process':
+        return handleKillProcess(state, request)
+      case 'list-processes':
+        return handleListProcesses(state, request)
+      default:
+        return {
+          type: 'error',
+          message: `Unknown request type: ${(request as {type: unknown}).type}`,
+          code: 'UNKNOWN_REQUEST',
         }
-      } else {
-        current += char
-      }
     }
-
-    if (current) {
-      parts.push(current)
+  } catch (error) {
+    logError('Request handling failed', error)
+    return {
+      type: 'error',
+      message: error instanceof Error ? error.message : String(error),
+      code: 'REQUEST_FAILED',
     }
-
-    return parts
-  }
-
-  /**
-   * Execute function with timeout.
-   */
-  private async executeWithTimeout<T>(fn: () => Promise<T>, timeoutMs: number): Promise<T> {
-    return new Promise((resolve, reject) => {
-      const timer = setTimeout(() => {
-        reject(new Error(`Command timed out after ${timeoutMs}ms`))
-      }, timeoutMs)
-
-      fn()
-        .then(result => {
-          clearTimeout(timer)
-          resolve(result)
-        })
-        .catch(error => {
-          clearTimeout(timer)
-          reject(error)
-        })
-    })
-  }
-
-  /**
-   * Log error message to main thread.
-   */
-  private logError(message: string, error?: unknown): void {
-    globalThis.postMessage({
-      type: 'log',
-      level: 'error',
-      message: `[ShellWorker] ${message}`,
-      error: error instanceof Error ? error.message : String(error),
-    })
   }
 }
 
-// Initialize shell worker
-const shellWorker = new ShellWorkerImpl()
+/**
+ * Execute a command in the shell environment.
+ *
+ * Handles command parsing, validation, execution, and result processing with proper
+ * timeout handling and error recovery.
+ */
+async function handleExecuteCommand(
+  state: ShellWorkerState,
+  request: ExecuteCommandRequest,
+): Promise<ShellWorkerResponse> {
+  const {command, stdin, timeout} = request
+  const trimmedCommand = command.trim()
+
+  if (!trimmedCommand) {
+    return {
+      type: 'command-result',
+      result: {
+        processId: 0,
+        command: '',
+        stdout: '',
+        stderr: '',
+        exitCode: 0,
+        executionTime: 0,
+      },
+    }
+  }
+
+  const parts = parseCommand(trimmedCommand)
+  const commandName = parts[0]
+  const args = parts.slice(1)
+
+  if (!commandName) {
+    return {
+      type: 'command-result',
+      result: {
+        processId: 0,
+        command: trimmedCommand,
+        stdout: '',
+        stderr: 'Command parsing failed',
+        exitCode: 1,
+        executionTime: 0,
+      },
+    }
+  }
+
+  const shellCommand = state.commands.get(commandName)
+  if (!shellCommand) {
+    return {
+      type: 'command-result',
+      result: {
+        processId: 0,
+        command: trimmedCommand,
+        stdout: '',
+        stderr: `Command not found: ${commandName}`,
+        exitCode: 127,
+        executionTime: 0,
+      },
+    }
+  }
+
+  const context = state.environment.createExecutionContext(stdin)
+  const processInfo = state.environment.startProcess(trimmedCommand, context)
+
+  try {
+    const result = await executeWithTimeout(() => shellCommand.execute(args, context), timeout || 15000)
+    state.environment.completeProcess(processInfo.id, result)
+
+    return {
+      type: 'command-result',
+      result,
+    }
+  } catch (error) {
+    const errorResult = {
+      processId: context.processId,
+      command: trimmedCommand,
+      stdout: '',
+      stderr: error instanceof Error ? error.message : String(error),
+      exitCode: 1,
+      executionTime: Date.now() - processInfo.startTime,
+    }
+
+    state.environment.completeProcess(processInfo.id, errorResult)
+
+    return {
+      type: 'command-result',
+      result: errorResult,
+    }
+  }
+}
+
+/**
+ * Get current shell environment state.
+ */
+function handleGetEnvironment(state: ShellWorkerState, _request: GetEnvironmentRequest): ShellWorkerResponse {
+  const environmentState = state.environment.getState()
+  return {
+    type: 'environment',
+    state: environmentState,
+  }
+}
+
+/**
+ * Set environment variable in shell state.
+ */
+function handleSetEnvironment(state: ShellWorkerState, request: SetEnvironmentRequest): ShellWorkerResponse {
+  state.environment.setEnvironmentVariable(request.key, request.value)
+  return {
+    type: 'environment-set',
+    key: request.key,
+    value: request.value,
+  }
+}
+
+/**
+ * Change working directory with path validation.
+ */
+async function handleChangeDirectory(
+  state: ShellWorkerState,
+  request: ChangeDirectoryRequest,
+): Promise<ShellWorkerResponse> {
+  try {
+    const newDirectory = await state.environment.changeDirectory(request.path)
+    return {
+      type: 'directory-changed',
+      newDirectory,
+    }
+  } catch (error) {
+    return {
+      type: 'error',
+      message: error instanceof Error ? error.message : String(error),
+      code: 'DIRECTORY_CHANGE_FAILED',
+    }
+  }
+}
+
+/**
+ * Terminate a running process by ID.
+ */
+function handleKillProcess(state: ShellWorkerState, request: KillProcessRequest): ShellWorkerResponse {
+  const killed = state.environment.killProcess(request.processId)
+  if (killed) {
+    return {
+      type: 'process-killed',
+      processId: request.processId,
+    }
+  } else {
+    return {
+      type: 'error',
+      message: `Process not found or already terminated: ${request.processId}`,
+      code: 'PROCESS_NOT_FOUND',
+    }
+  }
+}
+
+/**
+ * List all running processes in the environment.
+ */
+function handleListProcesses(state: ShellWorkerState, _request: ListProcessesRequest): ShellWorkerResponse {
+  const processes = state.environment.getProcesses()
+  return {
+    type: 'process-list',
+    processes,
+  }
+}
+
+/**
+ * Parse command string into command and arguments with quote handling.
+ *
+ * Supports basic shell quoting with single and double quotes to handle arguments
+ * containing spaces or special characters.
+ */
+function parseCommand(command: string): string[] {
+  const parts: string[] = []
+  let current = ''
+  let inQuotes = false
+  let quoteChar = ''
+
+  const chars = Array.from(command)
+
+  for (const char of chars) {
+    if ((char === '"' || char === "'") && !inQuotes) {
+      inQuotes = true
+      quoteChar = char
+    } else if (char === quoteChar && inQuotes) {
+      inQuotes = false
+      quoteChar = ''
+    } else if (char === ' ' && !inQuotes) {
+      if (current) {
+        parts.push(current)
+        current = ''
+      }
+    } else {
+      current += char
+    }
+  }
+
+  if (current) {
+    parts.push(current)
+  }
+
+  return parts
+}
+
+/**
+ * Execute function with timeout to prevent hanging operations.
+ *
+ * Wraps Promise-returning functions with a timeout mechanism to ensure commands
+ * don't block the worker indefinitely.
+ */
+async function executeWithTimeout<T>(fn: () => Promise<T>, timeoutMs: number): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
+      reject(new Error(`Command timed out after ${timeoutMs}ms`))
+    }, timeoutMs)
+
+    fn()
+      .then(result => {
+        clearTimeout(timer)
+        resolve(result)
+      })
+      .catch(error => {
+        clearTimeout(timer)
+        reject(error)
+      })
+  })
+}
+
+/**
+ * Log error message to main thread using structured logging.
+ */
+function logError(message: string, error?: unknown): void {
+  consola.error(`[ShellWorker] ${message}`, error instanceof Error ? error.message : String(error))
+}
+
+// Initialize shell worker state
+const shellWorkerState = createShellWorkerState()
 
 // Listen for messages from main thread
 globalThis.addEventListener('message', async (event: MessageEvent<ShellWorkerRequest>) => {
-  const response = await shellWorker.handleMessage(event.data)
+  const response = await handleMessage(shellWorkerState, event.data)
   globalThis.postMessage(response)
 })

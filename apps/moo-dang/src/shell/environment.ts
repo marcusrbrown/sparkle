@@ -295,13 +295,14 @@ export class ShellEnvironment {
    */
   private logDebug(message: string, data?: Record<string, unknown>): void {
     if (this.state.shellOptions.enableDebugLogging) {
-      // Use self.postMessage to send debug info to main thread instead of console.debug
-      // This follows Web Worker best practices for debugging
-      globalThis.postMessage({
-        type: 'debug',
-        message: `[ShellEnvironment] ${message}`,
-        data: data || {},
-      })
+      // Use consola for structured logging in Web Worker environment
+      import('consola')
+        .then(({consola}) => {
+          consola.debug(`[ShellEnvironment] ${message}`, data || {})
+        })
+        .catch(() => {
+          // Fallback if consola import fails
+        })
     }
   }
 }

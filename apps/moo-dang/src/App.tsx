@@ -24,13 +24,11 @@ import ShellWorker from './workers/shell.worker?worker'
 function App(): ReactElement {
   const terminalRef = useRef<CommandTerminalHandle>(null)
   const [showKeyboardHelp, setShowKeyboardHelp] = useState(false)
-  // Prevents duplicate terminal initialization in React StrictMode development
+  // StrictMode double-invokes effects - this prevents duplicate initialization
   const hasInitialized = useRef(false)
 
-  // Simple shell worker reference
   const shellWorker = useRef<Worker | null>(null)
 
-  // Memoize options to prevent recreation on every render
   const terminalOptions = useMemo(
     () => ({
       fontSize: 14,
@@ -40,7 +38,6 @@ function App(): ReactElement {
     [],
   )
 
-  // Memoize command config to prevent recreation on every render
   const commandConfig = useMemo(
     () => ({
       prompt: '$ ',
@@ -50,7 +47,6 @@ function App(): ReactElement {
     [],
   )
 
-  // Memoize initial text to prevent terminal recreation
   const initialText = useMemo(
     () => 'Welcome to moo-dang shell!\r\nType commands below. Use ↑/↓ arrows for history.\r\n',
     [],
@@ -87,13 +83,10 @@ function App(): ReactElement {
     }
   }, [])
 
-  // Initialize shell worker on mount
   useEffect(() => {
     try {
-      // Create worker using Vite's query suffix method
       shellWorker.current = new ShellWorker()
 
-      // Add error listener
       shellWorker.current.addEventListener('error', error => {
         consola.error('Worker error:', error)
       })
@@ -143,13 +136,11 @@ function App(): ReactElement {
         return
       }
 
-      // Execute command in shell worker
       const terminal = terminalRef.current
       if (terminal !== null) {
         terminal.addOutput('command', command)
 
         if (shellWorker.current) {
-          // Set up one-time message listener for this command
           const handleMessage = (event: MessageEvent<ShellWorkerResponse>) => {
             shellWorker.current?.removeEventListener('message', handleMessage)
             const response = event.data
@@ -168,22 +159,18 @@ function App(): ReactElement {
             } else if (response.type === 'error') {
               terminal.addOutput('error', `Shell error: ${response.message}`)
             } else if (response.type === 'log') {
-              // Handle debug/log messages from worker
               if (response.level === 'error') {
                 console.error(response.message, response.error || '')
               } else {
-                // Log info messages to system output in terminal for debugging
                 terminal.addOutput('system', `[Worker] ${response.message}`)
               }
             } else if (response.type === 'debug') {
-              // Handle debug messages from worker environment - show in terminal for visibility
               terminal.addOutput('system', `[Debug] ${response.message}`)
             }
           }
 
           shellWorker.current.addEventListener('message', handleMessage)
 
-          // Send command to worker
           const request: ShellWorkerRequest = {
             type: 'execute',
             command,
