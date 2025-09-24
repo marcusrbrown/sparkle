@@ -1,9 +1,9 @@
 import type {ReactElement} from 'react'
+import type {ShellWorkerRequest, ShellWorkerResponse} from './shell/types'
 import {ThemeProvider} from '@sparkle/theme'
 
 import {consola} from 'consola'
-import {useCallback, useMemo, useRef, useState} from 'react'
-
+import {useCallback, useEffect, useMemo, useRef, useState} from 'react'
 import {
   AccessibilityProvider,
   CommandTerminal,
@@ -11,6 +11,9 @@ import {
   ScreenReaderHelper,
   type CommandTerminalHandle,
 } from './components'
+
+// Import worker using Vite's query suffix method
+import ShellWorker from './workers/shell.worker?worker'
 
 /**
  * Main application component for the moo-dang WASM web shell.
@@ -21,10 +24,11 @@ import {
 function App(): ReactElement {
   const terminalRef = useRef<CommandTerminalHandle>(null)
   const [showKeyboardHelp, setShowKeyboardHelp] = useState(false)
-  // Prevents duplicate terminal initialization in React StrictMode development
+  // StrictMode double-invokes effects - this prevents duplicate initialization
   const hasInitialized = useRef(false)
 
-  // Memoize options to prevent recreation on every render
+  const shellWorker = useRef<Worker | null>(null)
+
   const terminalOptions = useMemo(
     () => ({
       fontSize: 14,
@@ -34,7 +38,6 @@ function App(): ReactElement {
     [],
   )
 
-  // Memoize command config to prevent recreation on every render
   const commandConfig = useMemo(
     () => ({
       prompt: '$ ',
@@ -44,7 +47,6 @@ function App(): ReactElement {
     [],
   )
 
-  // Memoize initial text to prevent terminal recreation
   const initialText = useMemo(
     () => 'Welcome to moo-dang shell!\r\nType commands below. Use ↑/↓ arrows for history.\r\n',
     [],
@@ -78,6 +80,25 @@ function App(): ReactElement {
 
     for (const {type, content} of demoOutputs) {
       terminal.addOutput(type, content)
+    }
+  }, [])
+
+  useEffect(() => {
+    try {
+      shellWorker.current = new ShellWorker()
+
+      shellWorker.current.addEventListener('error', error => {
+        consola.error('Worker error:', error)
+      })
+    } catch (error) {
+      consola.error('Failed to initialize shell worker:', error)
+    }
+
+    return () => {
+      if (shellWorker.current) {
+        shellWorker.current.terminate()
+        shellWorker.current = null
+      }
     }
   }, [])
 
@@ -118,10 +139,46 @@ function App(): ReactElement {
       const terminal = terminalRef.current
       if (terminal !== null) {
         terminal.addOutput('command', command)
-        terminal.addOutput(
-          'output',
-          `Command "${command}" executed successfully.\nType "demo" to see output formatting examples.`,
-        )
+
+        if (shellWorker.current) {
+          const handleMessage = (event: MessageEvent<ShellWorkerResponse>) => {
+            shellWorker.current?.removeEventListener('message', handleMessage)
+            const response = event.data
+
+            if (response.type === 'command-result') {
+              const {result} = response
+              if (result.stderr) {
+                terminal.addOutput('error', result.stderr)
+              }
+              if (result.stdout) {
+                terminal.addOutput('output', result.stdout)
+              }
+              if (result.exitCode !== 0 && !result.stderr) {
+                terminal.addOutput('error', `Command failed with exit code ${result.exitCode}`)
+              }
+            } else if (response.type === 'error') {
+              terminal.addOutput('error', `Shell error: ${response.message}`)
+            } else if (response.type === 'log') {
+              if (response.level === 'error') {
+                consola.error(response.message, response.error || '')
+              } else {
+                terminal.addOutput('system', `[Worker] ${response.message}`)
+              }
+            } else if (response.type === 'debug') {
+              terminal.addOutput('system', `[Debug] ${response.message}`)
+            }
+          }
+
+          shellWorker.current.addEventListener('message', handleMessage)
+
+          const request: ShellWorkerRequest = {
+            type: 'execute',
+            command,
+          }
+          shellWorker.current.postMessage(request)
+        } else {
+          terminal.addOutput('error', 'Shell worker not initialized')
+        }
       }
     },
     [demonstrateSampleOutputs],

@@ -1,0 +1,282 @@
+/**
+ * Enhanced shell environment types for proper isolation and state management.
+ */
+
+/**
+ * Shell environment state containing working directory, environment variables, and shell options.
+ */
+export interface ShellEnvironmentState {
+  /** Current working directory path */
+  readonly workingDirectory: string
+  /** Environment variables available to shell commands */
+  readonly environmentVariables: Record<string, string>
+  /** Shell execution options and settings */
+  readonly shellOptions: ShellOptions
+  /** Process table for tracking running processes */
+  readonly processes: ReadonlyMap<number, ProcessInfo>
+  /** Next available process ID */
+  readonly nextProcessId: number
+}
+
+/**
+ * Shell configuration options.
+ */
+export interface ShellOptions {
+  /** Maximum number of concurrent processes */
+  readonly maxProcesses: number
+  /** Command execution timeout in milliseconds */
+  readonly commandTimeout: number
+  /** Enable debug logging for shell operations */
+  readonly enableDebugLogging: boolean
+  /** Shell prompt string */
+  readonly prompt: string
+}
+
+/**
+ * Information about a running process in the shell.
+ */
+export interface ProcessInfo {
+  /** Unique process identifier */
+  readonly id: number
+  /** Command that started this process */
+  readonly command: string
+  /** Process start time */
+  readonly startTime: number
+  /** Process execution context */
+  readonly context: ExecutionContext
+  /** Process status */
+  readonly status: ProcessStatus
+}
+
+/**
+ * Process execution status.
+ */
+export type ProcessStatus = 'running' | 'completed' | 'failed' | 'killed'
+
+/**
+ * Execution context for command isolation.
+ */
+export interface ExecutionContext {
+  /** Working directory for this execution */
+  readonly workingDirectory: string
+  /** Environment variables for this execution */
+  readonly environmentVariables: Record<string, string>
+  /** Standard input data */
+  readonly stdin?: string
+  /** Process ID for this execution */
+  readonly processId: number
+}
+
+/**
+ * Result of command execution.
+ */
+export interface CommandExecutionResult {
+  /** Process ID that executed the command */
+  readonly processId: number
+  /** Command that was executed */
+  readonly command: string
+  /** Standard output from the command */
+  readonly stdout: string
+  /** Standard error from the command */
+  readonly stderr: string
+  /** Exit code (0 for success, non-zero for error) */
+  readonly exitCode: number
+  /** Execution time in milliseconds */
+  readonly executionTime: number
+}
+
+/**
+ * Enhanced shell worker request types.
+ */
+export type ShellWorkerRequest =
+  | ExecuteCommandRequest
+  | GetEnvironmentRequest
+  | SetEnvironmentRequest
+  | ChangeDirectoryRequest
+  | KillProcessRequest
+  | ListProcessesRequest
+
+/**
+ * Request to execute a command in the shell.
+ */
+export interface ExecuteCommandRequest {
+  readonly type: 'execute'
+  readonly command: string
+  readonly stdin?: string
+  readonly timeout?: number
+}
+
+/**
+ * Request to get current shell environment state.
+ */
+export interface GetEnvironmentRequest {
+  readonly type: 'get-environment'
+}
+
+/**
+ * Request to set environment variable.
+ */
+export interface SetEnvironmentRequest {
+  readonly type: 'set-environment'
+  readonly key: string
+  readonly value: string
+}
+
+/**
+ * Request to change working directory.
+ */
+export interface ChangeDirectoryRequest {
+  readonly type: 'change-directory'
+  readonly path: string
+}
+
+/**
+ * Request to kill a running process.
+ */
+export interface KillProcessRequest {
+  readonly type: 'kill-process'
+  readonly processId: number
+}
+
+/**
+ * Request to list all running processes.
+ */
+export interface ListProcessesRequest {
+  readonly type: 'list-processes'
+}
+
+/**
+ * Enhanced shell worker response types.
+ */
+export type ShellWorkerResponse =
+  | CommandExecutionResponse
+  | EnvironmentResponse
+  | EnvironmentSetResponse
+  | DirectoryChangedResponse
+  | ProcessKilledResponse
+  | ProcessListResponse
+  | ErrorResponse
+  | LogResponse
+  | DebugResponse
+
+/**
+ * Response to command execution request.
+ */
+export interface CommandExecutionResponse {
+  readonly type: 'command-result'
+  readonly result: CommandExecutionResult
+}
+
+/**
+ * Response to environment state request.
+ */
+export interface EnvironmentResponse {
+  readonly type: 'environment'
+  readonly state: ShellEnvironmentState
+}
+
+/**
+ * Response to environment variable set request.
+ */
+export interface EnvironmentSetResponse {
+  readonly type: 'environment-set'
+  readonly key: string
+  readonly value: string
+}
+
+/**
+ * Response to directory change request.
+ */
+export interface DirectoryChangedResponse {
+  readonly type: 'directory-changed'
+  readonly newDirectory: string
+}
+
+/**
+ * Response to process kill request.
+ */
+export interface ProcessKilledResponse {
+  readonly type: 'process-killed'
+  readonly processId: number
+}
+
+/**
+ * Response to process list request.
+ */
+export interface ProcessListResponse {
+  readonly type: 'process-list'
+  readonly processes: ProcessInfo[]
+}
+
+/**
+ * Error response for failed operations.
+ */
+export interface ErrorResponse {
+  readonly type: 'error'
+  readonly message: string
+  readonly code?: string
+}
+
+/**
+ * Log response for worker log messages.
+ */
+export interface LogResponse {
+  readonly type: 'log'
+  readonly level: 'info' | 'error'
+  readonly message: string
+  readonly data?: Record<string, unknown>
+  readonly error?: string
+}
+
+/**
+ * Debug response for worker debug messages.
+ */
+export interface DebugResponse {
+  readonly type: 'debug'
+  readonly message: string
+  readonly data?: Record<string, unknown>
+}
+
+/**
+ * Shell command interface for implementing built-in commands.
+ */
+export interface ShellCommand {
+  /** Command name */
+  readonly name: string
+  /** Command description */
+  readonly description: string
+  /** Execute the command with given arguments and context */
+  readonly execute: (args: string[], context: ExecutionContext) => Promise<CommandExecutionResult>
+}
+
+/**
+ * Virtual file system interface for shell file operations.
+ */
+export interface VirtualFileSystem {
+  /** Get current working directory */
+  readonly getCurrentDirectory: () => string
+  /** Change working directory */
+  readonly changeDirectory: (path: string) => Promise<string>
+  /** List directory contents */
+  readonly listDirectory: (path: string) => Promise<string[]>
+  /** Check if path exists */
+  readonly exists: (path: string) => Promise<boolean>
+  /** Read file contents */
+  readonly readFile: (path: string) => Promise<string>
+  /** Write file contents */
+  readonly writeFile: (path: string, content: string) => Promise<void>
+}
+
+// Legacy types for backward compatibility - will be removed in future versions
+/** @deprecated Use ExecuteCommandRequest instead */
+export interface LegacyShellWorkerRequest {
+  type: 'execute'
+  command: string
+}
+
+/** @deprecated Use CommandExecutionResponse instead */
+export interface LegacyShellWorkerResponse {
+  type: 'result'
+  output: string
+  error?: string
+}
