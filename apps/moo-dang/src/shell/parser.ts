@@ -6,6 +6,8 @@
  * The design balances user expectations from terminal environments with browser safety requirements.
  */
 
+import type {CommandPipeline, IORedirection, ParsedCommand, RedirectionOperator} from './types'
+
 /**
  * Quote handling strategy for parsed command tokens.
  *
@@ -170,7 +172,7 @@ export function parseCommand(command: string, environmentVariables?: Record<stri
 export function parseCommandPipeline(
   commandLine: string,
   environmentVariables?: Record<string, string>,
-): import('./types').CommandPipeline {
+): CommandPipeline {
   const trimmedCommand = commandLine.trim()
 
   // Check for background execution
@@ -193,15 +195,20 @@ export function parseCommandPipeline(
  *
  * Identifies and separates redirection operators from command arguments,
  * creating structured representation of the command and its I/O redirections.
+ * Supports all common Unix shell redirection operators with proper precedence.
+ *
+ * @param commandString - Single command string potentially containing redirections
+ * @param environmentVariables - Environment variables for variable expansion in paths
+ * @returns Parsed command with separated arguments and redirection specifications
  */
 function parseCommandWithRedirections(
   commandString: string,
   environmentVariables?: Record<string, string>,
-): import('./types').ParsedCommand {
+): ParsedCommand {
   const redirectionOperators = ['&>', '>>', '2>', '>', '<'] // Order matters - longer operators first
 
-  const inputRedirections: import('./types').IORedirection[] = []
-  const outputRedirections: import('./types').IORedirection[] = []
+  const inputRedirections: IORedirection[] = []
+  const outputRedirections: IORedirection[] = []
 
   let remainingCommand = commandString.trim()
 
@@ -213,8 +220,8 @@ function parseCommandWithRedirections(
     while (match !== null) {
       const [fullMatch, op, target] = match
       if (target) {
-        const redirection: import('./types').IORedirection = {
-          operator: op as import('./types').RedirectionOperator,
+        const redirection: IORedirection = {
+          operator: op as RedirectionOperator,
           target: expandVariables(target, environmentVariables || {}),
         }
 
