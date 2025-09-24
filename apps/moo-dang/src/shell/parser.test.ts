@@ -7,43 +7,7 @@
 
 import {describe, expect, it} from 'vitest'
 
-/**
- * Parse command string into command and arguments with quote handling.
- *
- * Supports basic shell quoting with single and double quotes to handle arguments
- * containing spaces or special characters.
- */
-function parseCommand(command: string): string[] {
-  const parts: string[] = []
-  let current = ''
-  let inQuotes = false
-  let quoteChar = ''
-
-  const chars = Array.from(command)
-
-  for (const char of chars) {
-    if ((char === '"' || char === "'") && !inQuotes) {
-      inQuotes = true
-      quoteChar = char
-    } else if (char === quoteChar && inQuotes) {
-      inQuotes = false
-      quoteChar = ''
-    } else if (char === ' ' && !inQuotes) {
-      if (current) {
-        parts.push(current)
-        current = ''
-      }
-    } else {
-      current += char
-    }
-  }
-
-  if (current) {
-    parts.push(current)
-  }
-
-  return parts
-}
+import {parseCommand} from './parser'
 
 describe('parseCommand', () => {
   describe('basic command parsing', () => {
