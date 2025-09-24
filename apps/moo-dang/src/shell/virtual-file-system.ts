@@ -5,7 +5,7 @@
  * basic Unix-like file system operations in the browser environment.
  */
 
-import type {VirtualFileSystem} from './types'
+import type {DirectoryEntry, VirtualFileSystem} from './types'
 
 /**
  * Virtual file node representing files and directories.
@@ -178,15 +178,7 @@ export class VirtualFileSystemImpl implements VirtualFileSystem {
   /**
    * Get detailed information about directory contents (like ls -l).
    */
-  async getDetailedListing(path: string): Promise<
-    {
-      name: string
-      type: 'file' | 'directory'
-      permissions: string
-      size: number
-      lastModified: Date
-    }[]
-  > {
+  async getDetailedListing(path: string): Promise<DirectoryEntry[]> {
     const resolvedPath = this.resolvePath(path)
     const node = this.getNode(resolvedPath)
 
@@ -198,13 +190,15 @@ export class VirtualFileSystemImpl implements VirtualFileSystem {
       throw new Error(`Not a directory: ${path}`)
     }
 
-    const details = Array.from(node.children.entries()).map(([name, childNode]) => ({
-      name,
-      type: childNode.type,
-      permissions: childNode.permissions,
-      size: childNode.type === 'file' ? childNode.content?.length || 0 : 0,
-      lastModified: new Date(childNode.lastModified),
-    }))
+    const details = Array.from(node.children.entries()).map(
+      ([name, childNode]): DirectoryEntry => ({
+        name,
+        type: childNode.type,
+        permissions: childNode.permissions,
+        size: childNode.type === 'file' ? childNode.content?.length || 0 : 0,
+        lastModified: new Date(childNode.lastModified),
+      }),
+    )
 
     // Sort by name
     details.sort((a, b) => a.name.localeCompare(b.name))
@@ -216,7 +210,7 @@ export class VirtualFileSystemImpl implements VirtualFileSystem {
   /**
    * Create a new directory.
    */
-  async createVirtualDirectory(path: string): Promise<void> {
+  async createDirectory(path: string): Promise<void> {
     const resolvedPath = this.resolvePath(path)
     const parentPath = this.getParentPath(resolvedPath)
     const dirName = this.getBaseName(resolvedPath)
@@ -371,6 +365,81 @@ export class VirtualFileSystemImpl implements VirtualFileSystem {
   private getBaseName(path: string): string {
     const parts = path.split('/').filter(Boolean)
     return parts.at(-1) || ''
+  }
+
+  /**
+   * Check if path is a directory.
+   */
+  async isDirectory(path: string): Promise<boolean> {
+    const resolvedPath = this.resolvePath(path)
+    const node = this.getNode(resolvedPath)
+
+    if (!node) {
+      return false
+    }
+
+    const isDir = node.type === 'directory'
+    this.logDebug('Directory check performed', {path: resolvedPath, isDirectory: isDir})
+    return isDir
+  }
+
+  /**
+   * Check if path is a file.
+   */
+  async isFile(path: string): Promise<boolean> {
+    const resolvedPath = this.resolvePath(path)
+    const node = this.getNode(resolvedPath)
+
+    if (!node) {
+      return false
+    }
+
+    const isFileType = node.type === 'file'
+    this.logDebug('File check performed', {path: resolvedPath, isFile: isFileType})
+    return isFileType
+  }
+
+  /**
+   * Get file or directory size in bytes.
+   */
+  async getSize(path: string): Promise<number> {
+    const resolvedPath = this.resolvePath(path)
+    const node = this.getNode(resolvedPath)
+
+    if (!node) {
+      throw new Error(`Path not found: ${path}`)
+    }
+
+    let size = 0
+    if (node.type === 'file') {
+      size = node.content?.length || 0
+    } else if (node.type === 'directory' && node.children) {
+      // Calculate total size of all files in directory (recursive)
+      size = await this.calculateDirectorySize(node)
+    }
+
+    this.logDebug('Size calculated', {path: resolvedPath, size})
+    return size
+  }
+
+  /**
+   * Calculate total size of directory contents recursively.
+   */
+  private async calculateDirectorySize(directory: VirtualFileNode): Promise<number> {
+    if (directory.type !== 'directory' || !directory.children) {
+      return 0
+    }
+
+    let totalSize = 0
+    for (const child of directory.children.values()) {
+      if (child.type === 'file') {
+        totalSize += child.content?.length || 0
+      } else if (child.type === 'directory') {
+        totalSize += await this.calculateDirectorySize(child)
+      }
+    }
+
+    return totalSize
   }
 
   /**

@@ -250,6 +250,22 @@ export interface ShellCommand {
 }
 
 /**
+ * Directory entry information for detailed listings.
+ */
+export interface DirectoryEntry {
+  /** Entry name */
+  readonly name: string
+  /** Entry type (file or directory) */
+  readonly type: 'file' | 'directory'
+  /** File permissions string (e.g., '-rw-r--r--' or 'drwxr-xr-x') */
+  readonly permissions: string
+  /** File size in bytes (0 for directories) */
+  readonly size: number
+  /** Last modification timestamp */
+  readonly lastModified: Date
+}
+
+/**
  * Virtual file system interface for shell file operations.
  */
 export interface VirtualFileSystem {
@@ -257,14 +273,26 @@ export interface VirtualFileSystem {
   readonly getCurrentDirectory: () => string
   /** Change working directory */
   readonly changeDirectory: (path: string) => Promise<string>
-  /** List directory contents */
+  /** List directory contents (simple names only) */
   readonly listDirectory: (path: string) => Promise<string[]>
+  /** Get detailed directory listing with file information */
+  readonly getDetailedListing: (path: string) => Promise<DirectoryEntry[]>
   /** Check if path exists */
   readonly exists: (path: string) => Promise<boolean>
   /** Read file contents */
   readonly readFile: (path: string) => Promise<string>
   /** Write file contents */
   readonly writeFile: (path: string, content: string) => Promise<void>
+  /** Create a new directory */
+  readonly createDirectory: (path: string) => Promise<void>
+  /** Remove a file or directory */
+  readonly remove: (path: string) => Promise<void>
+  /** Check if path is a directory */
+  readonly isDirectory: (path: string) => Promise<boolean>
+  /** Check if path is a file */
+  readonly isFile: (path: string) => Promise<boolean>
+  /** Get file or directory size in bytes */
+  readonly getSize: (path: string) => Promise<number>
 }
 
 // Legacy types for backward compatibility - will be removed in future versions
