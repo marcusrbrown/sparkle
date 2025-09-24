@@ -1,20 +1,37 @@
 import type {ReactElement} from 'react'
+import {consola} from 'consola'
 import {StrictMode} from 'react'
 import {createRoot} from 'react-dom/client'
 import App from './App.js'
 import './index.css'
 
 /**
- * Custom error class for application initialization failures.
+ * Application initialization error with enhanced context.
  */
-export class AppInitializationError extends Error {
-  override readonly cause?: unknown
+export interface AppInitializationError extends Error {
+  readonly cause?: unknown
+}
 
-  constructor(message: string, cause?: unknown) {
-    super(`Application initialization failed: ${message}`)
-    this.name = 'AppInitializationError'
-    this.cause = cause
+/**
+ * Creates a structured application initialization error.
+ *
+ * Uses functional approach for better maintainability and consistency
+ * with project coding standards that favor functions over ES6 classes.
+ */
+export function createAppInitializationError(message: string, cause?: unknown): AppInitializationError {
+  const error = new Error(`Application initialization failed: ${message}`) as AppInitializationError
+  error.name = 'AppInitializationError'
+
+  if (cause !== undefined) {
+    Object.defineProperty(error, 'cause', {
+      value: cause,
+      writable: false,
+      enumerable: true,
+      configurable: false,
+    })
   }
+
+  return error
 }
 
 /**
@@ -27,7 +44,7 @@ function initializeApp(): void {
   try {
     const rootElement = document.querySelector('#root')
     if (!rootElement) {
-      throw new AppInitializationError('Root element not found - ensure the HTML contains <div id="root"></div>')
+      throw createAppInitializationError('Root element not found - ensure the HTML contains <div id="root"></div>')
     }
 
     const root = createRoot(rootElement)
@@ -39,7 +56,7 @@ function initializeApp(): void {
 
     root.render(appElement)
   } catch (error) {
-    console.error('Failed to initialize application:', error)
+    consola.error('Failed to initialize application:', error)
     throw error
   }
 }
