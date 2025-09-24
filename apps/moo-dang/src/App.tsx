@@ -50,9 +50,15 @@ function App(): ReactElement {
     [],
   )
 
+  /**
+   * Demonstrates various terminal output types for testing rendering.
+   *
+   * Displays sample commands, outputs, errors, warnings, and system messages
+   * to showcase the terminal's formatting capabilities.
+   */
   const demonstrateSampleOutputs = useCallback((): void => {
     const terminal = terminalRef.current
-    if (!terminal) return
+    if (terminal === null) return
 
     const demoOutputs = [
       {type: 'command' as const, content: 'ls -la'},
@@ -75,12 +81,31 @@ function App(): ReactElement {
     }
   }, [])
 
+  /**
+   * Handles command execution from the terminal input.
+   *
+   * Processes special commands (help, demo) and provides generic output
+   * for other commands. Includes duplicate execution prevention for help.
+   *
+   * @param command - The command string to execute
+   */
   const handleCommandExecute = useCallback(
     (command: string): void => {
       command = command.trim()
       consola.info(`Command executed: "${command}"`)
 
       if (command === 'help' || command === '?') {
+        // Prevent multiple rapid executions of help command
+        if (showKeyboardHelp) {
+          consola.debug('Help command ignored - modal already open')
+          return
+        }
+
+        const terminal = terminalRef.current
+        if (terminal !== null) {
+          terminal.addOutput('command', command)
+          terminal.addOutput('info', 'Opening keyboard shortcuts help...')
+        }
         setShowKeyboardHelp(true)
         return
       }
@@ -91,7 +116,7 @@ function App(): ReactElement {
       }
 
       const terminal = terminalRef.current
-      if (terminal) {
+      if (terminal !== null) {
         terminal.addOutput('command', command)
         terminal.addOutput(
           'output',
@@ -102,6 +127,12 @@ function App(): ReactElement {
     [demonstrateSampleOutputs],
   )
 
+  /**
+   * Handles terminal ready event and displays welcome messages.
+   *
+   * Prevents duplicate initialization in React StrictMode by using a ref guard.
+   * Displays welcome messages after a short delay to ensure terminal is ready.
+   */
   const handleTerminalReady = useCallback((): void => {
     // React StrictMode intentionally double-invokes effects in development
     // This guard prevents duplicate welcome messages and console logs
@@ -121,7 +152,7 @@ function App(): ReactElement {
 
     setTimeout(() => {
       const terminal = terminalRef.current
-      if (!terminal) return
+      if (terminal === null) return
 
       for (const {type, content} of welcomeMessages) {
         terminal.addOutput(type, content)
