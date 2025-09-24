@@ -1,26 +1,21 @@
-//! Cat WASM executable for the moo-dang shell
-//!
+//! Cat WASM executable for the moo-dang shell.
 //! Demonstrates file-like operations and stream processing (simulated).
-//! Note: In the shell environment, actual file operations would be handled
-//! through the virtual file system via shell API extensions.
+//! Uses virtual file system simulation until full shell API extensions are available.
 
 const shell_api = @import("shell_api");
 const std = @import("std");
 
-/// Main entry point for the cat executable
 export fn main() void {
     const argc = shell_api.getArgCount();
 
     if (argc <= 1) {
-        // No arguments - read from stdin and echo to stdout
         catStdin();
     } else {
-        // Arguments provided - simulate reading files
         catFiles();
     }
 }
 
-/// Read from stdin and output to stdout
+/// Echoes lines from standard input to standard output until EOF.
 fn catStdin() void {
     shell_api.print("Reading from stdin (type lines, Ctrl+C to exit):\n", .{});
 
@@ -34,7 +29,7 @@ fn catStdin() void {
         };
 
         if (line.len == 0) {
-            break; // EOF
+            break;
         }
 
         shell_api.print("{s}\n", .{line});
@@ -43,7 +38,8 @@ fn catStdin() void {
     shell_api.setExitCode(0);
 }
 
-/// Simulate reading files (in real implementation, this would use shell VFS API)
+/// Simulates reading and displaying file contents using predefined virtual files.
+/// Production implementation would integrate with shell's virtual file system API.
 fn catFiles() void {
     const argc = shell_api.getArgCount();
     var buffer: [256]u8 = undefined;
@@ -55,8 +51,6 @@ fn catFiles() void {
             return;
         };
 
-        // In a real implementation, we would call shell_read_file() or similar
-        // For now, we'll simulate the behavior
         shell_api.print("=== Contents of {s} ===\n", .{filename});
 
         if (std.mem.eql(u8, filename, "hello.txt")) {
@@ -73,7 +67,7 @@ fn catFiles() void {
     shell_api.setExitCode(0);
 }
 
-/// Show file stats (simulated)
+/// Displays simulated file statistics for demonstration purposes.
 export fn stat_file() void {
     const argc = shell_api.getArgCount();
     if (argc <= 1) {
@@ -89,7 +83,6 @@ export fn stat_file() void {
         return;
     };
 
-    // Simulate file stats
     shell_api.print("File: {s}\n", .{filename});
     shell_api.print("Size: 42 bytes\n", .{});
     shell_api.print("Type: regular file\n", .{});

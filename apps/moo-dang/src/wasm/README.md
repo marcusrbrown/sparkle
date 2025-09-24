@@ -7,9 +7,10 @@ This directory contains the Zig WebAssembly development environment for the moo-
 The moo-dang shell supports running WASM executables compiled from Zig code. These executables:
 
 - Run in isolation within Web Workers for security
-- Have access to a shell API for I/O operations
+- Have access to a comprehensive shell API for I/O operations
 - Can receive command-line arguments and environment variables
 - Support standard Unix-like program patterns
+- Follow modern error handling and resource management practices
 
 ## Directory Structure
 
@@ -74,20 +75,18 @@ zig build test
 
 ## Shell API Reference
 
-The shell API (`src/shell_api.zig`) provides the interface between Zig executables and the shell environment.
+The shell API (`src/shell_api.zig`) provides a comprehensive interface between Zig executables and the shell environment.
 
 ### Output Functions
 
 ```zig
-const shell_api = @import("../src/shell_api.zig");
+const shell_api = @import("shell_api");
 
-// Write to stdout
+// Raw byte output (prefer formatted functions below)
 shell_api.writeStdout("Hello, World!");
-
-// Write to stderr
 shell_api.writeStderr("Error message");
 
-// Formatted output
+// Formatted output with automatic buffer management
 shell_api.print("Number: {}\n", .{42});
 shell_api.printErr("Error: {s}\n", .{"Something went wrong"});
 ```
@@ -95,7 +94,7 @@ shell_api.printErr("Error: {s}\n", .{"Something went wrong"});
 ### Input Functions
 
 ```zig
-// Read line from stdin
+// Read line from stdin with automatic newline handling
 var buffer: [256]u8 = undefined;
 const line = shell_api.readLine(buffer[0..]) catch {
     shell_api.printErr("Failed to read input\n");

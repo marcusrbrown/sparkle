@@ -1,16 +1,14 @@
-//! Hello World WASM executable for the moo-dang shell
-//!
+//! Hello World WASM executable for the moo-dang shell.
 //! Demonstrates basic shell API usage including output and exit codes.
 
 const shell_api = @import("shell_api");
 
-/// Main entry point for the hello executable
 export fn main() void {
     shell_api.print("Hello, World from Zig WASM!\n", .{});
     shell_api.setExitCode(0);
 }
 
-/// Alternative hello function that takes a name parameter
+/// Demonstrates personalized greeting using command line arguments.
 export fn hello_name() void {
     var buffer: [256]u8 = undefined;
 
@@ -34,7 +32,7 @@ export fn hello_name() void {
     shell_api.setExitCode(0);
 }
 
-/// Version information function
+/// Prints version information for the hello executable.
 export fn version() void {
     shell_api.print("hello v1.0.0 - Zig WASM example\n", .{});
     shell_api.setExitCode(0);
