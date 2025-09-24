@@ -202,12 +202,32 @@ export function useTerminalOutput(config: TerminalOutputConfig = {}): UseTermina
         return updatedEntries
       })
 
-      // Auto-render to terminal if available
+      // Auto-render new entry to terminal if available
       if (terminalRef.current && autoScroll) {
         requestAnimationFrame(() => {
           if (terminalRef.current && !pendingRenderRef.current) {
             pendingRenderRef.current = true
-            renderToTerminal(terminalRef.current)
+
+            // Only render the new entry, not all entries
+            try {
+              let formattedContent = newEntry.content
+
+              // Add timestamp if enabled
+              if (showTimestamps) {
+                const timestamp = newEntry.timestamp.toLocaleTimeString()
+                formattedContent = `[${timestamp}] ${formattedContent}`
+              }
+
+              // Add newline if content doesn't end with one
+              if (!formattedContent.endsWith('\r\n') && !formattedContent.endsWith('\n')) {
+                formattedContent += '\r\n'
+              }
+
+              terminalRef.current.write(formattedContent)
+            } catch (error) {
+              consola.error('Failed to render new output entry to terminal:', error)
+            }
+
             pendingRenderRef.current = false
           }
         })

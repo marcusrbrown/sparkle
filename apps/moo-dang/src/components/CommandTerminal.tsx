@@ -115,7 +115,7 @@ export const CommandTerminal = React.forwardRef<CommandTerminalHandle, CommandTe
   /**
    * Renders the current command line with prompt and cursor positioning.
    *
-   * Debounced to prevent excessive writes during rapid state changes.
+   * Memoized to prevent excessive writes during rapid state changes.
    */
   const renderCommandLine = useCallback((): void => {
     if (!baseTerminalRef.current || !isReady) return
@@ -268,6 +268,7 @@ export const CommandTerminal = React.forwardRef<CommandTerminalHandle, CommandTe
 
         default:
           consola.debug('Unhandled key type:', keyEvent.type)
+          break
       }
     },
     [enableCommandInput, commandInput],
@@ -277,6 +278,9 @@ export const CommandTerminal = React.forwardRef<CommandTerminalHandle, CommandTe
     (terminal: XTerm): void => {
       setIsReady(true)
 
+      // Connect terminal output to the actual terminal for rendering
+      terminalOutput.setTerminal(terminal)
+
       if (enableCommandInput) {
         terminal.write(`\r\n${commandInput.prompt}`)
       }
@@ -285,30 +289,37 @@ export const CommandTerminal = React.forwardRef<CommandTerminalHandle, CommandTe
         onReady(terminal)
       }
     },
-    [enableCommandInput, commandInput.prompt, onReady],
+    [enableCommandInput, commandInput.prompt, onReady, terminalOutput],
   )
 
-  useEffect(() => {
-    if (enableCommandInput && isReady) {
-      renderCommandLine()
-    }
-  }, [
-    enableCommandInput,
-    isReady,
-    renderCommandLine,
-    commandInput.currentCommand,
-    commandInput.cursorPosition,
-    commandInput.prompt,
-  ])
+  // Use ref to avoid constant re-renders from command input changes
+  const lastRenderRef = useRef({
+    currentCommand: '',
+    cursorPosition: 0,
+    prompt: '',
+  })
 
+  // Effect to render command line when command input changes
   useEffect(() => {
-    if (enableCommandInput && isReady && baseTerminalRef.current) {
-      const shouldShowPrompt = commandInput.currentCommand === '' && !commandInput.isBrowsingHistory
-      if (shouldShowPrompt) {
-        baseTerminalRef.current.write(commandInput.prompt)
-      }
+    if (!enableCommandInput || !isReady) return
+
+    const current = {
+      currentCommand: commandInput.currentCommand,
+      cursorPosition: commandInput.cursorPosition,
+      prompt: commandInput.prompt,
     }
-  }, [enableCommandInput, isReady, commandInput.currentCommand, commandInput.isBrowsingHistory, commandInput.prompt])
+
+    // Only render if something actually changed
+    const hasChanged =
+      current.currentCommand !== lastRenderRef.current.currentCommand ||
+      current.cursorPosition !== lastRenderRef.current.cursorPosition ||
+      current.prompt !== lastRenderRef.current.prompt
+
+    if (hasChanged) {
+      renderCommandLine()
+      lastRenderRef.current = current
+    }
+  }, [enableCommandInput, isReady, commandInput.currentCommand, commandInput.cursorPosition, commandInput.prompt])
 
   useImperativeHandle(
     ref,
@@ -363,9 +374,7 @@ export const CommandTerminal = React.forwardRef<CommandTerminalHandle, CommandTe
         ref={baseTerminalRef}
         initialText={initialText}
         themeOverride={themeOverride}
-        options={{
-          ...options,
-        }}
+        options={options}
         onData={enableCommandInput ? handleTerminalData : undefined}
         onResize={onResize}
         onReady={handleTerminalReady}

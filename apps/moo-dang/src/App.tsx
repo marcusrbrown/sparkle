@@ -2,7 +2,7 @@ import type {ReactElement} from 'react'
 import {ThemeProvider} from '@sparkle/theme'
 
 import {consola} from 'consola'
-import {useCallback, useRef, useState} from 'react'
+import {useCallback, useMemo, useRef, useState} from 'react'
 
 import {
   AccessibilityProvider,
@@ -21,6 +21,34 @@ import {
 function App(): ReactElement {
   const terminalRef = useRef<CommandTerminalHandle>(null)
   const [showKeyboardHelp, setShowKeyboardHelp] = useState(false)
+  // Prevents duplicate terminal initialization in React StrictMode development
+  const hasInitialized = useRef(false)
+
+  // Memoize options to prevent recreation on every render
+  const terminalOptions = useMemo(
+    () => ({
+      fontSize: 14,
+      cursorBlink: true,
+      scrollback: 1000,
+    }),
+    [],
+  )
+
+  // Memoize command config to prevent recreation on every render
+  const commandConfig = useMemo(
+    () => ({
+      prompt: '$ ',
+      maxHistorySize: 50,
+      allowDuplicates: false,
+    }),
+    [],
+  )
+
+  // Memoize initial text to prevent terminal recreation
+  const initialText = useMemo(
+    () => 'Welcome to moo-dang shell!\r\nType commands below. Use ↑/↓ arrows for history.\r\n',
+    [],
+  )
 
   const demonstrateSampleOutputs = useCallback((): void => {
     const terminal = terminalRef.current
@@ -75,6 +103,13 @@ function App(): ReactElement {
   )
 
   const handleTerminalReady = useCallback((): void => {
+    // React StrictMode intentionally double-invokes effects in development
+    // This guard prevents duplicate welcome messages and console logs
+    if (hasInitialized.current) {
+      return
+    }
+    hasInitialized.current = true
+
     consola.info('Terminal is ready for command input')
 
     const DEMO_DELAY_MS = 500
@@ -97,40 +132,30 @@ function App(): ReactElement {
   return (
     <ThemeProvider defaultTheme="system">
       <AccessibilityProvider>
-        <div className="min-h-screen bg-background flex flex-col">
-          <header className="border-b p-4 flex-shrink-0">
-            <h1 className="text-2xl font-bold text-foreground">moo-dang</h1>
-            <p className="text-muted-foreground">WASM-based Web Shell</p>
+        <div style={{height: '100vh', display: 'flex', flexDirection: 'column'}}>
+          <header style={{borderBottom: '1px solid #e5e7eb', padding: '1rem', textAlign: 'center'}}>
+            <h1 className="text-2xl font-bold">moo-dang</h1>
+            <p className="text-sm">WASM-based Web Shell</p>
           </header>
-          <main className="flex-1 p-4 min-h-0">
-            <div className="h-full relative">
-              <ScreenReaderHelper
-                terminalState="Terminal ready for input"
-                currentCommand=""
-                cursorPosition={0}
-                isReady={true}
-              />
+          <main style={{flex: '1', padding: '1rem'}}>
+            <ScreenReaderHelper
+              terminalState="Terminal ready for input"
+              currentCommand=""
+              cursorPosition={0}
+              isReady={true}
+            />
 
-              <CommandTerminal
-                ref={terminalRef}
-                initialText="Welcome to moo-dang shell!\r\nType commands below. Use ↑/↓ arrows for history.\r\n"
-                onCommandExecute={handleCommandExecute}
-                onReady={handleTerminalReady}
-                className="h-full"
-                commandConfig={{
-                  prompt: '$ ',
-                  maxHistorySize: 50,
-                  allowDuplicates: false,
-                }}
-                options={{
-                  fontSize: 14,
-                  cursorBlink: true,
-                  scrollback: 1000,
-                }}
-              />
+            <CommandTerminal
+              ref={terminalRef}
+              initialText={initialText}
+              onCommandExecute={handleCommandExecute}
+              onReady={handleTerminalReady}
+              style={{height: '100%', width: '100%'}}
+              commandConfig={commandConfig}
+              options={terminalOptions}
+            />
 
-              <KeyboardShortcutsHelp isVisible={showKeyboardHelp} onClose={() => setShowKeyboardHelp(false)} />
-            </div>
+            <KeyboardShortcutsHelp isVisible={showKeyboardHelp} onClose={() => setShowKeyboardHelp(false)} />
           </main>
         </div>
       </AccessibilityProvider>

@@ -3,7 +3,7 @@ import {cx, type HTMLProperties} from '@sparkle/ui'
 import {FitAddon} from '@xterm/addon-fit'
 import {Terminal as XTerm} from '@xterm/xterm'
 import {consola} from 'consola'
-import React, {useCallback, useEffect, useImperativeHandle, useRef, useState} from 'react'
+import React, {useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState} from 'react'
 import {getTerminalFontFamily, getTerminalFontSize, sparkleToXTermTheme, type XTermTheme} from './theme-utils'
 import '@xterm/xterm/css/xterm.css'
 
@@ -40,71 +40,127 @@ export interface TerminalHandle {
 }
 
 /**
- * Terminal-specific error with enhanced context and cause chaining.
+ * Terminal-specific error interface with enhanced context and cause chaining.
  *
  * Provides structured error information for terminal operations,
  * enabling better debugging and error recovery.
  */
-export class TerminalError extends Error {
+export interface TerminalError extends Error {
   readonly operation: string
-  override readonly cause?: unknown
+  readonly cause?: unknown
+}
 
-  constructor(message: string, operation: string, cause?: unknown) {
-    super(`Terminal ${operation}: ${message}`)
-    this.name = 'TerminalError'
-    this.operation = operation
-    this.cause = cause
+/**
+ * Creates a structured terminal error with enhanced context.
+ *
+ * Uses functional approach for better maintainability and consistency
+ * with project coding standards.
+ *
+ * @param message - Descriptive error message
+ * @param operation - Terminal operation that failed
+ * @param cause - Original error that caused this failure
+ * @returns Structured terminal error object
+ */
+export function createTerminalError(message: string, operation: string, cause?: unknown): TerminalError {
+  const error = new Error(`Terminal ${operation}: ${message}`) as TerminalError
+  error.name = 'TerminalError'
+
+  Object.defineProperty(error, 'operation', {
+    value: operation,
+    writable: false,
+    enumerable: true,
+    configurable: false,
+  })
+
+  if (cause !== undefined) {
+    Object.defineProperty(error, 'cause', {
+      value: cause,
+      writable: false,
+      enumerable: true,
+      configurable: false,
+    })
   }
+
+  return error
 }
 
 /**
  * Write text to the terminal instance with error handling.
+ *
+ * @param terminal - XTerm instance to write to
+ * @param text - Text content to write
+ * @throws {TerminalError} When write operation fails
  */
 export function writeToTerminal(terminal: XTerm, text: string): void {
   try {
     terminal.write(text)
   } catch (writeError) {
-    throw new TerminalError('Write operation failed', 'write', writeError)
+    throw createTerminalError('Write operation failed', 'write', writeError)
   }
 }
 
 /**
  * Clear the terminal screen with error handling.
+ *
+ * @param terminal - XTerm instance to clear
+ * @throws {TerminalError} When clear operation fails
  */
 export function clearTerminal(terminal: XTerm): void {
   try {
     terminal.clear()
   } catch (clearError) {
-    throw new TerminalError('Clear operation failed', 'clear', clearError)
+    throw createTerminalError('Clear operation failed', 'clear', clearError)
   }
 }
 
 /**
  * Focus the terminal for keyboard input with error handling.
+ *
+ * @param terminal - XTerm instance to focus
+ * @throws {TerminalError} When focus operation fails
  */
 export function focusTerminal(terminal: XTerm): void {
   try {
     terminal.focus()
   } catch (focusError) {
-    throw new TerminalError('Focus operation failed', 'focus', focusError)
+    throw createTerminalError('Focus operation failed', 'focus', focusError)
   }
 }
 
+/**
+ * Configuration options for terminal behavior and appearance.
+ */
 export interface TerminalOptions {
+  /** Font size in pixels */
   fontSize?: number
+  /** Font family string for terminal text */
   fontFamily?: string
+  /** Whether cursor should blink */
   cursorBlink?: boolean
+  /** Number of lines to keep in scrollback buffer */
   scrollback?: number
+  /** Enable proposed API features (experimental) */
   allowProposedApi?: boolean
 }
 
+/**
+ * Props for the Terminal component.
+ *
+ * Extends standard div props while excluding children since terminal
+ * content is managed programmatically through xterm.js.
+ */
 export interface TerminalProps extends Omit<HTMLProperties<HTMLDivElement>, 'children'> {
+  /** Initial text to display when terminal loads */
   initialText?: string
   /** Custom theme override (optional - uses Sparkle theme by default) */
   themeOverride?: XTermTheme
+  /** Terminal configuration options */
   options?: TerminalOptions
+  /** Callback fired when user types in terminal */
   onData?: (data: string) => void
+  /** Callback fired when terminal dimensions change */
   onResize?: (cols: number, rows: number) => void
+  /** Callback fired when terminal is ready for use */
   onReady?: (terminal: XTerm) => void
 }
 
@@ -120,14 +176,26 @@ export const Terminal = React.forwardRef<TerminalHandle, TerminalProps>((props, 
   const containerRef = useRef<HTMLDivElement>(null)
   const terminalRef = useRef<XTerm | null>(null)
   const fitAddonRef = useRef<FitAddon | null>(null)
+  const onDataDisposableRef = useRef<{dispose: () => void} | null>(null)
   const [isReady, setIsReady] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   // Get Sparkle theme context
   const {theme: sparkleTheme} = useTheme()
 
-  // Convert Sparkle theme to XTerm theme, with override option
-  const xtermTheme = themeOverride || sparkleToXTermTheme(sparkleTheme)
+  // Memoize theme conversion to prevent unnecessary rerenders
+  const xtermTheme = useMemo(() => {
+    return themeOverride || sparkleToXTermTheme(sparkleTheme)
+  }, [themeOverride, sparkleTheme])
+
+  // Memoize font settings to prevent unnecessary rerenders
+  const fontSettings = useMemo(
+    () => ({
+      fontFamily: options.fontFamily || getTerminalFontFamily(sparkleTheme),
+      fontSize: options.fontSize || getTerminalFontSize(sparkleTheme),
+    }),
+    [options.fontFamily, options.fontSize, sparkleTheme],
+  )
 
   /**
    * Safely performs terminal fit operation with comprehensive error handling.
@@ -151,7 +219,7 @@ export const Terminal = React.forwardRef<TerminalHandle, TerminalProps>((props, 
       fitAddonRef.current.fit()
     } catch (fitError) {
       const errorMessage = fitError instanceof Error ? fitError.message : 'Unknown fit error'
-      const terminalError = new TerminalError(errorMessage, 'fit', fitError)
+      const terminalError = createTerminalError(errorMessage, 'fit', fitError)
       consola.warn('Terminal fit operation failed:', terminalError)
       throw terminalError
     }
@@ -182,22 +250,38 @@ export const Terminal = React.forwardRef<TerminalHandle, TerminalProps>((props, 
     [performFit],
   )
 
+  // Store current callbacks in refs to avoid recreating terminal
+  const onDataRef = useRef(onData)
+  const onResizeRef = useRef(onResize)
+  const onReadyRef = useRef(onReady)
+
+  // Update refs when callbacks change
+  useEffect(() => {
+    onDataRef.current = onData
+    onResizeRef.current = onResize
+    onReadyRef.current = onReady
+  }, [onData, onResize, onReady])
+
+  // Memoize terminal options to prevent recreation
+  const terminalOptions = useMemo(
+    () => ({
+      ...DEFAULT_TERMINAL_OPTIONS,
+      ...options,
+      fontFamily: fontSettings.fontFamily,
+      fontSize: fontSettings.fontSize,
+      theme: {
+        ...DEFAULT_THEME_OPTIONS,
+        ...xtermTheme,
+      },
+    }),
+    [options, fontSettings.fontFamily, fontSettings.fontSize, xtermTheme],
+  )
+
+  // Separate effect for terminal initialization
   useEffect(() => {
     if (containerRef.current == null) return
 
     try {
-      const terminalOptions = {
-        ...DEFAULT_TERMINAL_OPTIONS,
-        ...options,
-        // Apply font family and size from Sparkle theme if not overridden
-        fontFamily: options.fontFamily || getTerminalFontFamily(sparkleTheme),
-        fontSize: options.fontSize || getTerminalFontSize(sparkleTheme),
-        theme: {
-          ...DEFAULT_THEME_OPTIONS,
-          ...xtermTheme,
-        },
-      }
-
       const terminal = new XTerm(terminalOptions)
       terminalRef.current = terminal
 
@@ -207,35 +291,53 @@ export const Terminal = React.forwardRef<TerminalHandle, TerminalProps>((props, 
 
       terminal.open(containerRef.current)
 
+      // Ensure the terminal is properly sized after opening
+      // Use multiple approaches for better reliability
       requestAnimationFrame(() => {
-        if (fitAddonRef.current) {
-          fitAddon.fit()
+        if (fitAddonRef.current && containerRef.current) {
+          const rect = containerRef.current.getBoundingClientRect()
+          if (rect.width > 0 && rect.height > 0) {
+            try {
+              fitAddon.fit()
+            } catch (fitError) {
+              consola.warn('Initial terminal fit failed:', fitError)
+            }
+          }
         }
       })
 
-      if (initialText.length > 0) {
-        terminal.write(initialText)
+      // Secondary fit attempt after a short delay to handle CSS loading
+      setTimeout(() => {
+        if (fitAddonRef.current && containerRef.current) {
+          try {
+            fitAddon.fit()
+          } catch (fitError) {
+            consola.warn('Secondary terminal fit failed:', fitError)
+          }
+        }
+      }, 50)
+
+      if (onDataRef.current) {
+        onDataDisposableRef.current = terminal.onData((data: string) => {
+          onDataRef.current?.(data)
+        })
       }
 
-      if (onData != null) {
-        terminal.onData(onData)
-      }
-
-      if (onResize != null) {
+      if (onResizeRef.current != null) {
         terminal.onResize((event: {cols: number; rows: number}) => {
-          onResize(event.cols, event.rows)
+          onResizeRef.current?.(event.cols, event.rows)
         })
       }
 
       setIsReady(true)
       setError(null)
 
-      if (onReady != null) {
-        onReady(terminal)
+      if (onReadyRef.current != null) {
+        onReadyRef.current(terminal)
       }
     } catch (initError) {
       const errorMessage = initError instanceof Error ? initError.message : 'Unknown initialization error'
-      const terminalError = new TerminalError(errorMessage, 'initialization', initError)
+      const terminalError = createTerminalError(errorMessage, 'initialization', initError)
 
       consola.error('Terminal initialization failed:', terminalError)
       setError(terminalError.message)
@@ -244,6 +346,12 @@ export const Terminal = React.forwardRef<TerminalHandle, TerminalProps>((props, 
 
     return () => {
       try {
+        // Dispose onData handler
+        if (onDataDisposableRef.current) {
+          onDataDisposableRef.current.dispose()
+          onDataDisposableRef.current = null
+        }
+
         if (terminalRef.current != null) {
           terminalRef.current.dispose()
           terminalRef.current = null
@@ -255,27 +363,54 @@ export const Terminal = React.forwardRef<TerminalHandle, TerminalProps>((props, 
         consola.warn('Terminal cleanup encountered an error:', cleanupError)
       }
     }
-  }, [initialText, xtermTheme, options, onData, onResize, onReady, sparkleTheme])
+  }, [terminalOptions])
+
+  // Separate effect for writing initial text (only when terminal is ready)
+  useEffect(() => {
+    if (terminalRef.current && isReady && initialText.length > 0) {
+      terminalRef.current.write(initialText)
+    }
+  }, [initialText, isReady])
 
   useEffect(() => {
-    if (!isReady || !fitAddonRef.current) return
+    if (!isReady || !fitAddonRef.current || !containerRef.current) return
 
-    const handleWindowResize = () => {
-      if (fitAddonRef.current) {
-        requestAnimationFrame(() => {
-          if (fitAddonRef.current) {
-            try {
-              fitAddonRef.current.fit()
-            } catch (fitError) {
-              consola.warn('Terminal resize failed:', fitError)
-            }
-          }
-        })
+    let resizeTimeout: NodeJS.Timeout | null = null
+
+    const handleResize = () => {
+      if (resizeTimeout) {
+        clearTimeout(resizeTimeout)
       }
+
+      resizeTimeout = setTimeout(() => {
+        if (fitAddonRef.current && containerRef.current) {
+          try {
+            // Check if container has valid dimensions before attempting fit
+            const rect = containerRef.current.getBoundingClientRect()
+            if (rect.width > 0 && rect.height > 0) {
+              fitAddonRef.current.fit()
+            }
+          } catch (fitError) {
+            consola.warn('Terminal resize failed:', fitError)
+          }
+        }
+      }, 100) // Debounce resize by 100ms
     }
 
-    window.addEventListener('resize', handleWindowResize)
-    return () => window.removeEventListener('resize', handleWindowResize)
+    // Use ResizeObserver for more accurate container size changes
+    const resizeObserver = new ResizeObserver(handleResize)
+    resizeObserver.observe(containerRef.current)
+
+    // Also listen to window resize as fallback
+    window.addEventListener('resize', handleResize)
+
+    return () => {
+      if (resizeTimeout) {
+        clearTimeout(resizeTimeout)
+      }
+      resizeObserver.disconnect()
+      window.removeEventListener('resize', handleResize)
+    }
   }, [isReady])
 
   const containerClasses = cx(
