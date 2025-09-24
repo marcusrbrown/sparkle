@@ -66,7 +66,7 @@ This implementation plan outlines the creation of `moo-dang`, a WASM-based web s
 | Task | Description | Completed | Date |
 |------|-------------|-----------|------|
 | TASK-013 | Create Web Worker for shell environment isolation | ✅ | 2025-09-24 |
-| TASK-014 | Implement shell command parser and dispatcher | |  |
+| TASK-014 | Implement shell command parser and dispatcher | ✅ | 2025-09-24 |
 | TASK-015 | Create virtual file system abstraction for shell | |  |
 | TASK-016 | Implement basic shell commands (ls, cd, pwd, cat, echo) | |  |
 | TASK-017 | Add shell environment variables and path management | |  |
