@@ -36,3 +36,39 @@ globalThis.ResizeObserver = class ResizeObserver {
     // Mock implementation
   }
 }
+
+// Mock Worker for Web Worker testing
+class MockWorker extends EventTarget {
+  constructor(_url: string | URL) {
+    super()
+    // Mock constructor - don't actually create a worker in tests
+  }
+
+  postMessage(message: any): void {
+    // Mock message posting - emit back to main thread after short delay
+    setTimeout(() => {
+      this.dispatchEvent(
+        new MessageEvent('message', {
+          data: {type: 'mock-response', originalMessage: message},
+        }),
+      )
+    }, 10)
+  }
+
+  terminate(): void {
+    // Mock termination - no-op in tests
+  }
+
+  addEventListener(type: string, listener: EventListener): void {
+    super.addEventListener(type, listener)
+  }
+
+  removeEventListener(type: string, listener: EventListener): void {
+    super.removeEventListener(type, listener)
+  }
+}
+
+// Replace global Worker with mock in test environment
+if (globalThis.Worker === undefined) {
+  globalThis.Worker = MockWorker as any
+}
