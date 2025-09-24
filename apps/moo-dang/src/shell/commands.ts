@@ -1,32 +1,65 @@
 /**
  * Shell commands implementation for the virtual shell environment.
+ *
+ * This module provides Unix-like shell commands designed for secure browser execution.
+ * Each command follows POSIX conventions where feasible while preventing security
+ * vulnerabilities in the browser context. Commands use structured logging for
+ * debugging and maintain consistent error reporting patterns.
  */
 
 import type {ShellEnvironment} from './environment'
 import type {CommandExecutionResult, ExecutionContext, ShellCommand, VirtualFileSystem} from './types'
 
-/**
- * Shell command execution error for command-specific failures.
- */
-export interface ShellCommandError {
-  readonly command: string
-  readonly exitCode: number
-  readonly message: string
-}
+import {consola} from 'consola'
 
 /**
- * Creates a shell command error with consistent formatting.
+ * Base error class for shell command execution failures.
+ *
+ * Provides structured error information with specific exit codes that match
+ * Unix conventions, enabling scripts to handle errors appropriately.
  */
-export function createShellCommandError(command: string, exitCode: number, message: string): ShellCommandError {
-  return {
-    command,
-    exitCode,
-    message: `${command}: ${message}`,
+export class ShellCommandError extends Error {
+  readonly command: string
+  readonly exitCode: number
+
+  constructor(command: string, exitCode: number, message: string) {
+    super(`${command}: ${message}`)
+    this.name = 'ShellCommandError'
+    this.command = command
+    this.exitCode = exitCode
   }
 }
 
 /**
- * Creates standardized command execution result with timing information.
+ * Error for invalid command arguments or syntax.
+ *
+ * Uses exit code 1 for compatibility with existing test suite and simpler error handling.
+ */
+export class InvalidArgumentError extends ShellCommandError {
+  constructor(command: string, message: string) {
+    super(command, 1, message)
+    this.name = 'InvalidArgumentError'
+  }
+}
+
+/**
+ * Error for file or directory operations.
+ *
+ * Uses exit code 1 for general errors that don't fit other categories.
+ */
+export class FileOperationError extends ShellCommandError {
+  constructor(command: string, message: string) {
+    super(command, 1, message)
+    this.name = 'FileOperationError'
+  }
+}
+
+/**
+ * Creates standardized command execution result with timing information and structured logging.
+ *
+ * Centralizes result creation to ensure consistent format and enable performance monitoring.
+ * Logs command execution details for debugging and performance analysis while avoiding
+ * noise from successful operations that users don't need to see.
  */
 function createCommandResult(
   context: ExecutionContext,
@@ -36,13 +69,33 @@ function createCommandResult(
   exitCode = 0,
   startTime = Date.now(),
 ): CommandExecutionResult {
+  const executionTime = Date.now() - startTime
+
+  // Log errors and performance issues for debugging, but avoid noise from normal operations
+  if (exitCode !== 0) {
+    consola.debug(`Command failed: ${command} (exit code: ${exitCode}, time: ${executionTime}ms)`, {
+      command,
+      exitCode,
+      stderr,
+      executionTime,
+      processId: context.processId,
+    })
+  } else if (executionTime > 1000) {
+    // Log slow commands for performance monitoring
+    consola.info(`Slow command execution: ${command} took ${executionTime}ms`, {
+      command,
+      executionTime,
+      processId: context.processId,
+    })
+  }
+
   return {
     processId: context.processId,
     command,
     stdout,
     stderr,
     exitCode,
-    executionTime: Date.now() - startTime,
+    executionTime,
   }
 }
 
@@ -380,6 +433,11 @@ function createEnvCommand(): ShellCommand {
 
 /**
  * Creates export command for setting environment variables.
+ *
+ * Implements POSIX export behavior where variables are made available to child processes.
+ * In our browser shell, all variables are effectively exported, but we maintain the
+ * command for script compatibility. Variable name validation prevents JavaScript
+ * injection attacks while allowing standard shell variable names.
  */
 function createExportCommand(environment: ShellEnvironment): ShellCommand {
   return {
@@ -390,7 +448,7 @@ function createExportCommand(environment: ShellEnvironment): ShellCommand {
 
       try {
         if (args.length === 0) {
-          // Display exported variables (in practice, all variables are exported in our shell)
+          // Display exported variables using bash-style declare format for compatibility
           const output = Object.entries(context.environmentVariables)
             .sort(([a], [b]) => a.localeCompare(b))
             .map(([key, value]) => `declare -x ${key}="${value}"`)
@@ -399,57 +457,52 @@ function createExportCommand(environment: ShellEnvironment): ShellCommand {
           return createCommandResult(context, 'export', output, '', 0, startTime)
         }
 
-        // Process variable assignments
+        // Process variable assignments and validations
         for (const arg of args) {
           if (arg.includes('=')) {
             const [key, ...valueParts] = arg.split('=')
-            if (key && key.trim()) {
-              const trimmedKey = key.trim()
+            const trimmedKey = key?.trim()
 
-              // Validate variable name format
-              if (!/^[a-z_]\w*$/i.test(trimmedKey)) {
-                return createCommandResult(
-                  context,
-                  `export ${args.join(' ')}`,
-                  '',
-                  `export: invalid variable name: ${trimmedKey}`,
-                  1,
-                  startTime,
-                )
-              }
-
-              const value = valueParts.join('=')
-              environment.setEnvironmentVariable(trimmedKey, value)
-            } else {
-              return createCommandResult(
-                context,
-                `export ${args.join(' ')}`,
-                '',
-                `export: invalid variable name: ${key}`,
-                1,
-                startTime,
-              )
+            if (!trimmedKey) {
+              throw new InvalidArgumentError('export', `invalid variable name: ${key || '(empty)'}`)
             }
+
+            // Validate variable name to prevent injection and maintain POSIX compliance
+            if (!/^[a-z_]\w*$/i.test(trimmedKey)) {
+              throw new InvalidArgumentError('export', `invalid variable name: ${trimmedKey}`)
+            }
+
+            const value = valueParts.join('=')
+            environment.setEnvironmentVariable(trimmedKey, value)
+
+            consola.debug(`Environment variable exported: ${trimmedKey}=${value}`, {
+              command: 'export',
+              variable: trimmedKey,
+              processId: context.processId,
+            })
           } else {
-            // Export existing variable (no-op in our implementation since all vars are exported)
+            // Export existing variable (validate name even though it's a no-op)
             const varName = arg.trim()
             if (!varName || !/^[a-z_]\w*$/i.test(varName)) {
-              return createCommandResult(
-                context,
-                `export ${args.join(' ')}`,
-                '',
-                `export: invalid variable name: ${varName}`,
-                1,
-                startTime,
-              )
+              throw new InvalidArgumentError('export', `invalid variable name: ${varName || '(empty)'}`)
             }
           }
         }
 
         return createCommandResult(context, `export ${args.join(' ')}`, '', '', 0, startTime)
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : String(error)
-        return createCommandResult(context, `export ${args.join(' ')}`, '', `export: ${errorMessage}`, 1, startTime)
+        if (error instanceof ShellCommandError) {
+          return createCommandResult(context, `export ${args.join(' ')}`, '', error.message, error.exitCode, startTime)
+        }
+
+        // Unexpected errors should be logged for debugging
+        consola.error('Unexpected error in export command', {
+          error: error instanceof Error ? error.message : String(error),
+          args,
+          processId: context.processId,
+        })
+
+        return createCommandResult(context, `export ${args.join(' ')}`, '', `export: unexpected error`, 1, startTime)
       }
     },
   }
@@ -554,32 +607,39 @@ function createUnsetCommand(environment: ShellEnvironment): ShellCommand {
 /**
  * Resolves a command name to its full path using the PATH environment variable.
  *
- * Searches through directories in PATH to find executable commands. In a real shell,
- * this would check file permissions and executable status, but in our virtual environment
- * we simulate this behavior.
+ * Implements Unix PATH resolution by searching each directory in order until the
+ * command is found. Commands with path separators are returned as-is because
+ * they specify explicit paths. This design follows shell conventions where
+ * "./cmd" or "/usr/bin/cmd" bypass PATH searching.
  */
 async function resolveCommandPath(
   commandName: string,
   pathVariable: string,
   fileSystem: VirtualFileSystem,
 ): Promise<string | null> {
-  // Don't resolve absolute paths or commands with path separators
+  // Commands with path separators specify explicit paths and bypass PATH resolution
   if (commandName.startsWith('/') || commandName.includes('/')) {
     return commandName
   }
 
-  const pathDirs = pathVariable.split(':').filter(Boolean)
+  const pathDirectories = pathVariable.split(':').filter(Boolean)
 
-  for (const dir of pathDirs) {
-    const fullPath = `${dir}/${commandName}`
+  for (const directory of pathDirectories) {
+    const candidatePath = `${directory}/${commandName}`
 
     try {
-      if (await fileSystem.exists(fullPath)) {
-        // In a real system we'd also check if it's executable
-        return fullPath
+      if (await fileSystem.exists(candidatePath)) {
+        // In a real filesystem we'd check execute permissions, but our virtual
+        // filesystem doesn't implement permissions, so existence implies executability
+        return candidatePath
       }
-    } catch {
-      // Continue searching if we can't access this directory
+    } catch (error) {
+      // Log directory access issues for debugging but continue searching
+      consola.debug(`Cannot access directory during PATH resolution: ${directory}`, {
+        directory,
+        command: commandName,
+        error: error instanceof Error ? error.message : String(error),
+      })
     }
   }
 
@@ -588,6 +648,10 @@ async function resolveCommandPath(
 
 /**
  * Creates which command for locating executables in PATH.
+ *
+ * Follows Unix which behavior where the command succeeds if any requested command
+ * is found and fails only if none are found. This allows scripts to check for
+ * command availability reliably.
  */
 function createWhichCommand(fileSystem: VirtualFileSystem): ShellCommand {
   return {
@@ -598,41 +662,58 @@ function createWhichCommand(fileSystem: VirtualFileSystem): ShellCommand {
 
       try {
         if (args.length === 0) {
-          return createCommandResult(context, 'which', '', 'which: missing command name', 1, startTime)
+          throw new InvalidArgumentError('which', 'missing command name')
         }
 
         const pathVariable = context.environmentVariables.PATH || ''
-        const results: string[] = []
-        let hasError = false
+        const foundPaths: string[] = []
+        const notFoundCommands: string[] = []
 
         for (const commandName of args) {
           const trimmedName = commandName.trim()
           if (!trimmedName) {
-            hasError = true
+            notFoundCommands.push('(empty)')
             continue
           }
 
           const resolvedPath = await resolveCommandPath(trimmedName, pathVariable, fileSystem)
           if (resolvedPath) {
-            results.push(resolvedPath)
+            foundPaths.push(resolvedPath)
+            consola.debug(`Command found in PATH: ${trimmedName} -> ${resolvedPath}`, {
+              command: trimmedName,
+              resolvedPath,
+              processId: context.processId,
+            })
           } else {
-            // which typically returns non-zero exit code when command not found
-            hasError = true
+            notFoundCommands.push(trimmedName)
           }
         }
 
-        const output = results.join('\n')
-        return createCommandResult(
-          context,
-          `which ${args.join(' ')}`,
-          output,
-          '',
-          hasError && results.length === 0 ? 1 : 0,
-          startTime,
-        )
+        // which returns success if any command was found, error if none found
+        const exitCode = foundPaths.length > 0 ? 0 : 1
+        const output = foundPaths.join('\n')
+
+        if (notFoundCommands.length > 0) {
+          consola.debug(`Commands not found in PATH: ${notFoundCommands.join(', ')}`, {
+            notFound: notFoundCommands,
+            pathVariable,
+            processId: context.processId,
+          })
+        }
+
+        return createCommandResult(context, `which ${args.join(' ')}`, output, '', exitCode, startTime)
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : String(error)
-        return createCommandResult(context, `which ${args.join(' ')}`, '', `which: ${errorMessage}`, 1, startTime)
+        if (error instanceof ShellCommandError) {
+          return createCommandResult(context, `which ${args.join(' ')}`, '', error.message, error.exitCode, startTime)
+        }
+
+        consola.error('Unexpected error in which command', {
+          error: error instanceof Error ? error.message : String(error),
+          args,
+          processId: context.processId,
+        })
+
+        return createCommandResult(context, `which ${args.join(' ')}`, '', 'which: unexpected error', 1, startTime)
       }
     },
   }

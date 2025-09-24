@@ -2,8 +2,13 @@
 /**
  * Tests for shell parser environment variable expansion functionality.
  *
- * Validates variable substitution, quote handling, and edge cases
- * in command parsing with environment variable support.
+ * These tests validate shell-compliant variable substitution behavior because users
+ * expect familiar terminal conventions. Variable expansion must work differently in
+ * single vs double quotes to maintain shell compatibility, and edge cases like
+ * undefined variables must behave predictably to prevent script failures.
+ *
+ * The test scenarios cover Unix shell conventions that are critical for script
+ * portability and user expectations in a browser-based shell environment.
  */
 
 import {beforeEach, describe, expect, it} from 'vitest'
@@ -54,12 +59,16 @@ describe('Environment Variable Expansion', () => {
       expect(expandVariables('Value: $SPECIAL_CHARS', testEnvironmentVariables)).toBe('Value: hello world!@#$%')
     })
 
-    it('should not expand invalid variable names', () => {
+    it('should not expand invalid variable names to prevent accidental substitutions', () => {
+      // Variable names starting with numbers are invalid in shell, so literal $ should be preserved
+      // This prevents unexpected behavior when users type things like "$1file" expecting literal text
       expect(expandVariables('$123invalid', testEnvironmentVariables)).toBe('$123invalid')
       expect(expandVariables('${123invalid}', testEnvironmentVariables)).toBe('${123invalid}')
     })
 
-    it('should handle variables at word boundaries', () => {
+    it('should handle variables at word boundaries to match shell variable name parsing', () => {
+      // $HOME_BACKUP is treated as a different variable name, not $HOME + "_BACKUP"
+      // This prevents issues where $HOMEdir would expand incorrectly if HOME exists
       expect(expandVariables('$HOME_BACKUP', testEnvironmentVariables)).toBe('') // Variable doesn't exist, expands to empty
       expect(expandVariables('$HOME.backup', testEnvironmentVariables)).toBe('/home/user.backup')
       expect(expandVariables('$HOME/', testEnvironmentVariables)).toBe('/home/user/')
@@ -82,7 +91,9 @@ describe('Environment Variable Expansion', () => {
       expect(parseCommand('cat "$HOME/file.txt"', testEnvironmentVariables)).toEqual(['cat', '/home/user/file.txt'])
     })
 
-    it('should not expand variables in single-quoted strings', () => {
+    it('should not expand variables in single-quoted strings to preserve literal values', () => {
+      // Single quotes preserve literal text, allowing users to pass actual $ characters
+      // This is crucial for commands that expect literal $VAR syntax or regex patterns
       expect(parseCommand("echo '$HOME is not expanded'", testEnvironmentVariables)).toEqual([
         'echo',
         '$HOME is not expanded',
@@ -90,7 +101,9 @@ describe('Environment Variable Expansion', () => {
       expect(parseCommand("ls '$USER/docs'", testEnvironmentVariables)).toEqual(['ls', '$USER/docs'])
     })
 
-    it('should handle mixed quoting styles', () => {
+    it('should handle mixed quoting styles to support complex command construction', () => {
+      // Different quote types can be mixed in the same command, each with their own expansion rules
+      // This allows users to combine literal text with variable expansion as needed
       expect(parseCommand('echo "Hello $USER" and \'$HOME not expanded\'', testEnvironmentVariables)).toEqual([
         'echo',
         'Hello testuser',
@@ -107,8 +120,9 @@ describe('Environment Variable Expansion', () => {
       ])
     })
 
-    it('should handle variables in command names', () => {
-      // Note: This is unusual but theoretically possible
+    it('should handle variables in command names for dynamic command execution', () => {
+      // Variable expansion in command position enables shell programming patterns
+      // where the command itself is determined by environment configuration
       testEnvironmentVariables.CMD = 'echo'
       expect(parseCommand('$CMD hello', testEnvironmentVariables)).toEqual(['echo', 'hello'])
     })
@@ -120,7 +134,9 @@ describe('Environment Variable Expansion', () => {
       ])
     })
 
-    it('should preserve original behavior without environment variables', () => {
+    it('should preserve original behavior without environment variables to maintain backward compatibility', () => {
+      // When no environment is provided, variable syntax should be preserved literally
+      // This ensures existing code that doesn't use environment variables continues to work
       expect(parseCommand('echo $HOME')).toEqual(['echo', '$HOME'])
       expect(parseCommand('ls "${USER}"')).toEqual(['ls', '${USER}'])
     })
