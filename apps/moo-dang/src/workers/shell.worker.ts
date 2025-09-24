@@ -44,7 +44,7 @@ function createShellWorkerState(): ShellWorkerState {
     commandTimeout: 15000, // 15 second timeout for commands
   })
 
-  const commands = createStandardCommands(fileSystem)
+  const commands = createStandardCommands(fileSystem, environment)
 
   return {environment, fileSystem, commands}
 }
