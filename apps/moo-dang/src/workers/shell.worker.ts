@@ -8,6 +8,7 @@
 import type {
   ChangeDirectoryRequest,
   ExecuteCommandRequest,
+  ExecutePipelineRequest,
   GetEnvironmentRequest,
   KillProcessRequest,
   ListProcessesRequest,
@@ -20,7 +21,8 @@ import type {
 import {consola} from 'consola'
 import {createStandardCommands, resolveCommandWithPath} from '../shell/commands'
 import {ShellEnvironment} from '../shell/environment'
-import {parseCommand} from '../shell/parser'
+import {parseCommand, parseCommandPipeline} from '../shell/parser'
+import {executePipeline} from '../shell/pipeline'
 import {VirtualFileSystemImpl} from '../shell/virtual-file-system'
 
 interface ShellWorkerState {
@@ -60,6 +62,8 @@ async function handleMessage(state: ShellWorkerState, request: ShellWorkerReques
     switch (request.type) {
       case 'execute':
         return await handleExecuteCommand(state, request)
+      case 'execute-pipeline':
+        return await handleExecutePipeline(state, request)
       case 'get-environment':
         return handleGetEnvironment(state, request)
       case 'set-environment':
@@ -83,6 +87,84 @@ async function handleMessage(state: ShellWorkerState, request: ShellWorkerReques
       type: 'error',
       message: error instanceof Error ? error.message : String(error),
       code: 'REQUEST_FAILED',
+    }
+  }
+}
+
+/**
+ * Execute a command pipeline in the shell environment.
+ *
+ * Handles multi-command pipelines with I/O redirection, managing the flow of data
+ * between commands and integrating with the virtual file system for file operations.
+ */
+async function handleExecutePipeline(
+  state: ShellWorkerState,
+  request: ExecutePipelineRequest,
+): Promise<ShellWorkerResponse> {
+  const {pipeline, stdin, timeout} = request
+
+  // Detect simple command case and delegate to single command handler
+  if (pipeline.commands.length === 1 && pipeline.commands[0]?.outputRedirections.length === 0) {
+    const singleCommand = pipeline.commands[0]
+    if (singleCommand) {
+      const commandRequest: ExecuteCommandRequest = {
+        type: 'execute',
+        command: `${singleCommand.command} ${singleCommand.args.join(' ')}`,
+        stdin,
+        timeout,
+      }
+      return await handleExecuteCommand(state, commandRequest)
+    }
+  }
+
+  const context = state.environment.createExecutionContext(stdin)
+  const processInfo = state.environment.startProcess(
+    pipeline.commands.map(cmd => `${cmd.command} ${cmd.args.join(' ')}`).join(' | '),
+    context,
+  )
+
+  try {
+    const result = await executeWithTimeout(
+      () => executePipeline(pipeline, state.commands, context, state.fileSystem),
+      timeout || 15000,
+    )
+
+    state.environment.completeProcess(processInfo.id, {
+      processId: result.processId,
+      command: result.command,
+      stdout: result.stdout,
+      stderr: result.stderr,
+      exitCode: result.exitCode,
+      executionTime: result.executionTime,
+    })
+
+    return {
+      type: 'pipeline-result',
+      result,
+    }
+  } catch (error) {
+    const errorResult = {
+      processId: context.processId,
+      command: pipeline.commands.map(cmd => `${cmd.command} ${cmd.args.join(' ')}`).join(' | '),
+      stdout: '',
+      stderr: error instanceof Error ? error.message : String(error),
+      exitCode: 1,
+      executionTime: Date.now() - processInfo.startTime,
+    }
+
+    state.environment.completeProcess(processInfo.id, errorResult)
+
+    return {
+      type: 'pipeline-result',
+      result: {
+        processId: errorResult.processId,
+        command: errorResult.command,
+        commandResults: [],
+        stdout: errorResult.stdout,
+        stderr: errorResult.stderr,
+        exitCode: errorResult.exitCode,
+        executionTime: errorResult.executionTime,
+      },
     }
   }
 }
@@ -112,6 +194,38 @@ async function handleExecuteCommand(
         executionTime: 0,
       },
     }
+  }
+
+  // Check if command contains pipeline operators or redirection
+  if (trimmedCommand.includes('|') || /[<>]/.test(trimmedCommand)) {
+    const tempContext = state.environment.createExecutionContext(stdin)
+    const pipeline = parseCommandPipeline(trimmedCommand, tempContext.environmentVariables)
+
+    const pipelineRequest: ExecutePipelineRequest = {
+      type: 'execute-pipeline',
+      pipeline,
+      stdin,
+      timeout,
+    }
+
+    const pipelineResponse = await handleExecutePipeline(state, pipelineRequest)
+
+    // Convert pipeline response to command response format for backward compatibility
+    if (pipelineResponse.type === 'pipeline-result') {
+      return {
+        type: 'command-result',
+        result: {
+          processId: pipelineResponse.result.processId,
+          command: pipelineResponse.result.command,
+          stdout: pipelineResponse.result.stdout,
+          stderr: pipelineResponse.result.stderr,
+          exitCode: pipelineResponse.result.exitCode,
+          executionTime: pipelineResponse.result.executionTime,
+        },
+      }
+    }
+
+    return pipelineResponse
   }
 
   const tempContext = state.environment.createExecutionContext(stdin)
