@@ -17,6 +17,9 @@ runs:
         node-version-file: .node-version
         package-manager-cache: false
 
+    - name: Setup Zig
+      uses: mlugg/setup-zig@8d6198c65fb0feaa111df26e6b467fea8345e46f # v2.0.5
+
     - id: cache-config
       name: Configure cache
       run: |
