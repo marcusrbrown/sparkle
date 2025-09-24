@@ -160,7 +160,7 @@ function App(): ReactElement {
               terminal.addOutput('error', `Shell error: ${response.message}`)
             } else if (response.type === 'log') {
               if (response.level === 'error') {
-                console.error(response.message, response.error || '')
+                consola.error(response.message, response.error || '')
               } else {
                 terminal.addOutput('system', `[Worker] ${response.message}`)
               }
