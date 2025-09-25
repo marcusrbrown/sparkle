@@ -81,7 +81,7 @@ This implementation plan outlines the creation of `moo-dang`, a WASM-based web s
 | TASK-019 | Set up Zig development environment and build configuration | ✅ | 2025-09-24 |
 | TASK-020 | Create basic Zig WASM executable template with shell API | ✅ | 2025-09-24 |
 | TASK-021 | Implement WASM module loading and execution in shell | ✅ | 2025-09-25 |
-| TASK-022 | Create shell-to-WASM communication interface | |  |
+| TASK-022 | Create shell-to-WASM communication interface | ✅ | 2025-09-25 |
 | TASK-023 | Implement WASM executable argument passing and environment | |  |
 | TASK-024 | Add WASM executable output capture and error handling | |  |
 
