@@ -1,6 +1,5 @@
 const std = @import("std");
 
-/// Information about an example executable to build
 const Example = struct {
     name: []const u8,
     description: []const u8,
@@ -39,7 +38,6 @@ pub fn build(b: *std.Build) void {
     _ = tests_step;
 }
 
-/// Creates a WASM executable with standard configuration for shell integration.
 fn createWasmExecutable(
     b: *std.Build,
     name: []const u8,
@@ -59,6 +57,7 @@ fn createWasmExecutable(
         }),
     });
 
+    // Required for WASM freestanding execution in browser
     exe.entry = .disabled;
     exe.rdynamic = true;
 

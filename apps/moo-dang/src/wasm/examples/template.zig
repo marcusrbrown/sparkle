@@ -1,28 +1,18 @@
 //! Template for creating new WASM executables for the moo-dang shell.
 //!
-//! This template demonstrates all major shell API patterns and serves as a
-//! starting point for creating new WASM executables. Copy this file and
-//! modify it for your specific use case.
+//! This comprehensive template demonstrates all shell API patterns including argument
+//! processing, environment access, I/O operations, and error handling. Use this as
+//! a starting point for new WASM executables.
 //!
-//! To use this template:
-//! 1. Copy template.zig to a new filename (e.g., mytool.zig)
-//! 2. Update the module documentation above
-//! 3. Modify the main() function for your executable's primary behavior
-//! 4. Add your custom functions and logic
-//! 5. Update the build configuration to include your new executable
-//!
-//! Key patterns demonstrated:
-//! - Basic I/O operations with error handling
-//! - Command-line argument processing with validation
-//! - Environment variable access
-//! - Proper exit code management
-//! - Error reporting to stderr
-//! - Multiple exported functions for different behaviors
+//! To create a new executable:
+//! 1. Copy template.zig to your new filename (e.g., mytool.zig)
+//! 2. Update the module documentation and Config constants
+//! 3. Implement your custom logic in main() and helper functions
+//! 4. Add the new executable to build.zig examples array
 
 const shell_api = @import("shell_api");
 const std = @import("std");
 
-/// Exit codes for consistent error reporting
 const ExitCode = struct {
     const SUCCESS: i32 = 0;
     const GENERAL_ERROR: i32 = 1;
@@ -31,7 +21,6 @@ const ExitCode = struct {
     const PERMISSION_DENIED: i32 = 4;
 };
 
-/// Configuration constants for your executable
 const Config = struct {
     const MAX_LINE_LENGTH: usize = 1024;
     const VERSION: []const u8 = "1.0.0";
@@ -39,11 +28,9 @@ const Config = struct {
     const PROGRAM_DESCRIPTION: []const u8 = "Template WASM executable demonstrating shell API usage";
 };
 
-/// Main entry point - customize this for your executable's primary behavior
 export fn main() void {
     const argc = shell_api.getArgCount();
 
-    // Handle help and version flags
     if (argc > 1) {
         var buffer: [256]u8 = undefined;
         const first_arg = shell_api.getArg(1, buffer[0..]) catch {
@@ -63,7 +50,6 @@ export fn main() void {
         }
     }
 
-    // Your main logic goes here
     shell_api.print("Hello from the WASM executable template!\n", .{});
     shell_api.print("This is a template demonstrating shell API patterns.\n", .{});
 
@@ -78,17 +64,14 @@ export fn main() void {
     shell_api.setExitCode(ExitCode.SUCCESS);
 }
 
-/// Demonstrates how to display help information
 export fn show_help() void {
     showHelp();
 }
 
-/// Demonstrates how to display version information
 export fn show_version() void {
     showVersion();
 }
 
-/// Demonstrates comprehensive argument processing with options and validation
 export fn process_arguments() void {
     const argc = shell_api.getArgCount();
 
@@ -102,7 +85,7 @@ export fn process_arguments() void {
     var verbose = false;
     var start_index: u32 = 1;
 
-    // Process options (arguments starting with -)
+    // Separate options from positional arguments
     while (start_index < argc) {
         const arg = shell_api.getArg(start_index, buffer[0..]) catch {
             shell_api.printErr("Error: Failed to read argument {}\n", .{start_index});
@@ -116,7 +99,7 @@ export fn process_arguments() void {
         }
 
         if (arg[0] != '-') {
-            break; // End of options
+            break;
         }
 
         if (std.mem.eql(u8, arg, "-v") or std.mem.eql(u8, arg, "--verbose")) {
@@ -129,7 +112,6 @@ export fn process_arguments() void {
         }
     }
 
-    // Process remaining arguments
     if (verbose) {
         shell_api.print("Verbose mode enabled\n", .{});
     }
@@ -152,7 +134,6 @@ export fn process_arguments() void {
     shell_api.setExitCode(ExitCode.SUCCESS);
 }
 
-/// Demonstrates reading from standard input with proper error handling
 export fn read_input() void {
     shell_api.print("Reading lines from stdin (empty line to stop):\n", .{});
 
@@ -178,12 +159,9 @@ export fn read_input() void {
     shell_api.setExitCode(ExitCode.SUCCESS);
 }
 
-/// Demonstrates environment variable access with error handling
 export fn show_environment() void {
     demonstrateEnvironment();
 }
-
-/// Internal helper functions
 fn showHelp() void {
     shell_api.print("{s} v{s} - {s}\n\n", .{ Config.PROGRAM_NAME, Config.VERSION, Config.PROGRAM_DESCRIPTION });
     shell_api.print("Usage: {s} [options] [arguments]\n\n", .{Config.PROGRAM_NAME});
@@ -223,6 +201,7 @@ fn demonstrateArguments() void {
 fn demonstrateEnvironment() void {
     shell_api.print("\nEnvironment variables:\n", .{});
 
+    // Common shell environment variables for demonstration
     const env_vars = [_][]const u8{ "HOME", "USER", "PATH", "PWD", "SHELL" };
     var buffer: [512]u8 = undefined;
 

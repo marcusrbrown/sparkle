@@ -1,24 +1,21 @@
 #!/usr/bin/env bash
 
-# WASM Executable Generator Script for moo-dang Shell
-# Creates new WASM executables from the template with customization
+# WASM Executable Generator for moo-dang Shell
+# Creates new WASM executables from template with customization
 
 set -euo pipefail
 
-# Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+NC='\033[0m'
 
-# Script configuration
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WASM_DIR="$(dirname "$SCRIPT_DIR")/src/wasm"
 TEMPLATE_FILE="$WASM_DIR/examples/template.zig"
 BUILD_FILE="$WASM_DIR/build.zig"
 
-# Usage information
 show_help() {
     cat << EOF
 WASM Executable Generator for moo-dang Shell
@@ -47,8 +44,12 @@ The generator will:
 EOF
 }
 
-# Parse command line arguments
 parse_args() {
+    if [ $# -eq 1 ] && [[ "$1" == "-h" || "$1" == "--help" ]]; then
+        show_help
+        exit 0
+    fi
+
     if [ $# -eq 0 ]; then
         echo -e "${RED}Error: Executable name is required${NC}"
         show_help
@@ -83,7 +84,6 @@ parse_args() {
         esac
     done
 
-    # Validate executable name
     if [[ ! "$EXECUTABLE_NAME" =~ ^[a-zA-Z][a-zA-Z0-9_-]*$ ]]; then
         echo -e "${RED}Error: Invalid executable name '$EXECUTABLE_NAME'${NC}"
         echo "Name must start with a letter and contain only letters, numbers, underscores, and hyphens"
@@ -91,7 +91,6 @@ parse_args() {
     fi
 }
 
-# Check prerequisites
 check_prerequisites() {
     if [ ! -f "$TEMPLATE_FILE" ]; then
         echo -e "${RED}Error: Template file not found at $TEMPLATE_FILE${NC}"
@@ -103,14 +102,12 @@ check_prerequisites() {
         exit 1
     fi
 
-    # Check if examples directory exists
     if [ ! -d "$WASM_DIR/examples" ]; then
         echo -e "${YELLOW}Creating examples directory...${NC}"
         mkdir -p "$WASM_DIR/examples"
     fi
 }
 
-# Generate the new executable file
 generate_executable() {
     local output_file="$WASM_DIR/examples/$EXECUTABLE_NAME.zig"
 
@@ -126,7 +123,6 @@ generate_executable() {
 
     echo -e "${BLUE}Generating $output_file...${NC}"
 
-    # Create customized executable from template
     sed -e "s/template/$EXECUTABLE_NAME/g" \
         -e "s/Template for creating new WASM executables for the moo-dang shell./$DESCRIPTION/g" \
         -e "s/const VERSION: \[\]const u8 = \"1.0.0\";/const VERSION: []const u8 = \"$VERSION\";/g" \
@@ -137,14 +133,12 @@ generate_executable() {
     echo -e "${GREEN}✓ Created $output_file${NC}"
 }
 
-# Update build.zig to include the new executable
 update_build_config() {
     local temp_file=$(mktemp)
     local new_entry="    .{ .name = \"$EXECUTABLE_NAME\", .description = \"$DESCRIPTION\" },"
 
     echo -e "${BLUE}Updating build configuration...${NC}"
 
-    # Find the examples array and add the new entry
     awk -v new_entry="$new_entry" '
         /^const examples = \[_\]Example\{/ {
             print $0
@@ -160,7 +154,6 @@ update_build_config() {
         { print $0 }
     ' "$BUILD_FILE" > "$temp_file"
 
-    # Check if the entry was actually added
     if grep -q "$EXECUTABLE_NAME" "$temp_file"; then
         mv "$temp_file" "$BUILD_FILE"
         echo -e "${GREEN}✓ Updated build configuration${NC}"
@@ -172,7 +165,6 @@ update_build_config() {
     fi
 }
 
-# Provide next steps
 show_next_steps() {
     cat << EOF
 
@@ -194,7 +186,7 @@ ${YELLOW}Next steps:${NC}
 
 4. ${BLUE}Customize your executable:${NC}
    # Edit: $WASM_DIR/examples/$EXECUTABLE_NAME.zig
-   # Modify the main() function and add your custom logic
+   # Implement your custom logic in main() and helper functions
 
 5. ${BLUE}Build the entire project:${NC}
    cd $(dirname "$WASM_DIR")
@@ -212,12 +204,11 @@ ${YELLOW}Template features included:${NC}
 - Help and version commands
 - Multiple exported functions
 
-Happy coding! 🚀
+🚀
 
 EOF
 }
 
-# Main execution
 main() {
     echo -e "${BLUE}WASM Executable Generator for moo-dang Shell${NC}\n"
 
@@ -228,5 +219,4 @@ main() {
     show_next_steps
 }
 
-# Run main function with all arguments
 main "$@"
