@@ -37,7 +37,7 @@ export function createWasmExecutableCommand(
         // Load the WASM module
         const wasmModule = await wasmLoader.loadModule(wasmBytes, {
           name: wasmName,
-          maxMemorySize: 16 * 1024 * 1024, // 16MB
+          maxMemorySize: 32 * 1024 * 1024, // 32MB - suitable for Zig WASM modules
           executionTimeout: 15000, // 15 seconds
           enableDebugLogging: false,
         })

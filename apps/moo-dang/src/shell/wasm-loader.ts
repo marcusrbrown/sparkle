@@ -26,7 +26,7 @@ import {WasmExecutionError, WasmLoadError, WasmTimeoutError} from './wasm-types'
  * Default configuration values for WASM module execution.
  */
 const DEFAULT_CONFIG: Required<Omit<WasmModuleConfig, 'name'>> = {
-  maxMemorySize: 16 * 1024 * 1024, // 16MB
+  maxMemorySize: 32 * 1024 * 1024, // 32MB - more suitable for Zig WASM modules
   executionTimeout: 15000, // 15 seconds
   enableDebugLogging: false,
   customImports: {},
@@ -92,11 +92,24 @@ function createShellImports(context: WasmExecutionContext, memory: WebAssembly.M
    */
   function readStringFromMemory(ptr: number, len: number): string {
     try {
+      // Get current memory buffer (it might have grown)
       const memoryArray = new Uint8Array(memory.buffer)
-      if (ptr < 0 || len < 0 || ptr + len > memoryArray.length) {
-        consola.warn('WASM string read out of bounds', {ptr, len, memorySize: memoryArray.length})
+      if (ptr < 0 || len < 0) {
+        consola.warn('WASM string read invalid parameters', {ptr, len, memorySize: memoryArray.length})
         return ''
       }
+
+      if (ptr + len > memoryArray.length) {
+        consola.warn('WASM string read out of bounds', {ptr, len, memorySize: memoryArray.length})
+        // Try to read what we can instead of returning empty string
+        const availableLen = Math.max(0, memoryArray.length - ptr)
+        if (availableLen > 0) {
+          const bytes = memoryArray.slice(ptr, ptr + availableLen)
+          return new TextDecoder('utf-8', {fatal: false}).decode(bytes)
+        }
+        return ''
+      }
+
       const bytes = memoryArray.slice(ptr, ptr + len)
       return new TextDecoder('utf-8', {fatal: false}).decode(bytes)
     } catch (error) {
@@ -110,8 +123,14 @@ function createShellImports(context: WasmExecutionContext, memory: WebAssembly.M
    */
   function writeStringToMemory(ptr: number, maxLen: number, data: string): number {
     try {
+      // Get current memory buffer (it might have grown)
       const memoryArray = new Uint8Array(memory.buffer)
-      if (ptr < 0 || maxLen <= 0 || ptr + maxLen > memoryArray.length) {
+      if (ptr < 0 || maxLen <= 0) {
+        consola.warn('WASM string write invalid parameters', {ptr, maxLen, memorySize: memoryArray.length})
+        return 0
+      }
+
+      if (ptr + maxLen > memoryArray.length) {
         consola.warn('WASM string write out of bounds', {ptr, maxLen, memorySize: memoryArray.length})
         return 0
       }
@@ -195,13 +214,6 @@ export class WasmModuleLoaderImpl implements WasmModuleLoader {
     }
 
     try {
-      // Create memory with initial size and maximum limit
-      const initialPages = Math.ceil(fullConfig.maxMemorySize / 65536) // WebAssembly page size is 64KB
-      const memory = new WebAssembly.Memory({
-        initial: Math.min(initialPages, 1), // Start with 1 page minimum
-        maximum: initialPages,
-      })
-
       // Create execution context (will be populated during execution)
       const executionContext: WasmExecutionContext = {
         args: [],
@@ -213,6 +225,16 @@ export class WasmModuleLoaderImpl implements WasmModuleLoader {
         workingDirectory: '/',
         processId: 0,
       }
+
+      // Compile the module first to check its memory requirements
+      const wasmModule = await WebAssembly.compile(bytes)
+
+      // Create memory with initial size and maximum limit
+      const initialPages = Math.ceil(fullConfig.maxMemorySize / 65536) // WebAssembly page size is 64KB
+      const memory = new WebAssembly.Memory({
+        initial: Math.max(initialPages, 256), // Start with at least 256 pages (16MB) for Zig modules
+        maximum: Math.max(initialPages, 512), // Allow up to 512 pages (32MB) maximum
+      })
 
       // Create shell imports
       const shellImports = this.createShellImportsFn(executionContext, memory)
@@ -226,8 +248,7 @@ export class WasmModuleLoaderImpl implements WasmModuleLoader {
         ...fullConfig.customImports,
       }
 
-      // Compile and instantiate the module
-      const wasmModule = await WebAssembly.compile(bytes)
+      // Instantiate the module with our imports
       const instance = await WebAssembly.instantiate(wasmModule, imports)
 
       // Extract exports
@@ -243,9 +264,12 @@ export class WasmModuleLoaderImpl implements WasmModuleLoader {
         }
       }
 
+      // Use the memory we provided in imports, which is now shared with the module
+      const actualMemory = memory
+
       const module: WasmModule = {
         instance,
-        memory: (instance.exports.memory as WebAssembly.Memory) || memory,
+        memory: actualMemory,
         context: executionContext,
         exports: moduleExports,
       }
