@@ -7,9 +7,33 @@
  */
 
 import type {CommandExecutionResult, ExecutionContext, ShellCommand} from './types'
-import type {WasmModuleLoader} from './wasm-types'
-
+import type {WasmExecutableName, WasmModuleLoader} from './wasm-types'
 import {consola} from 'consola'
+
+import {WASM_EXECUTABLES} from './wasm-types'
+
+/**
+ * Configuration constants for WASM executable commands.
+ *
+ * These values match the WASM loader defaults to ensure consistency
+ * across the execution pipeline.
+ */
+const WASM_COMMAND_CONFIG = {
+  /** Memory limit for WASM modules (32MB for Zig compatibility) */
+  MAX_MEMORY_SIZE: 32 * 1024 * 1024,
+  /** Execution timeout for WASM commands */
+  EXECUTION_TIMEOUT: 15000,
+} as const
+
+/**
+ * Mapping of WASM executable names to their file paths.
+ */
+const WASM_EXECUTABLE_PATHS: Record<WasmExecutableName, string> = {
+  hello: '/wasm/hello.wasm',
+  echo: '/wasm/echo.wasm',
+  cat: '/wasm/cat.wasm',
+  template: '/wasm/template.wasm',
+} as const
 
 /**
  * Creates a WASM executable command that can load and execute WebAssembly modules.
@@ -37,8 +61,8 @@ export function createWasmExecutableCommand(
         // Load the WASM module
         const wasmModule = await wasmLoader.loadModule(wasmBytes, {
           name: wasmName,
-          maxMemorySize: 32 * 1024 * 1024, // 32MB - suitable for Zig WASM modules
-          executionTimeout: 15000, // 15 seconds
+          maxMemorySize: WASM_COMMAND_CONFIG.MAX_MEMORY_SIZE,
+          executionTimeout: WASM_COMMAND_CONFIG.EXECUTION_TIMEOUT,
           enableDebugLogging: false,
         })
 
@@ -72,7 +96,7 @@ export function createWasmExecutableCommand(
           exitCode: result.exitCode,
           executionTime: Date.now() - startTime,
         }
-      } catch (error) {
+      } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : String(error)
         consola.error(`WASM execution failed: ${wasmName}`, {error: errorMessage, args})
 
@@ -95,15 +119,8 @@ export function createWasmExecutableCommand(
 export function createWasmExecutableCommands(wasmLoader: WasmModuleLoader): Map<string, ShellCommand> {
   const commands = new Map<string, ShellCommand>()
 
-  // Define available WASM executables
-  const wasmExecutables = [
-    {name: 'hello', path: '/wasm/hello.wasm'},
-    {name: 'echo', path: '/wasm/echo.wasm'},
-    {name: 'cat', path: '/wasm/cat.wasm'},
-    {name: 'template', path: '/wasm/template.wasm'},
-  ]
-
-  for (const {name, path} of wasmExecutables) {
+  for (const name of WASM_EXECUTABLES) {
+    const path = WASM_EXECUTABLE_PATHS[name]
     const command = createWasmExecutableCommand(name, path, wasmLoader)
     commands.set(name, command)
   }
@@ -117,9 +134,8 @@ export function createWasmExecutableCommands(wasmLoader: WasmModuleLoader): Map<
  * @param commandName - Name of the command to check
  * @returns True if the command is a known WASM executable
  */
-export function isWasmExecutable(commandName: string): boolean {
-  const wasmExecutables = ['hello', 'echo', 'cat', 'template']
-  return wasmExecutables.includes(commandName)
+export function isWasmExecutable(commandName: string): commandName is WasmExecutableName {
+  return WASM_EXECUTABLES.includes(commandName as WasmExecutableName)
 }
 
 /**
@@ -129,12 +145,8 @@ export function isWasmExecutable(commandName: string): boolean {
  * @returns Path to the WASM file or undefined if not found
  */
 export function resolveWasmExecutablePath(commandName: string): string | undefined {
-  const wasmExecutables: Record<string, string> = {
-    hello: '/wasm/hello.wasm',
-    echo: '/wasm/echo.wasm',
-    cat: '/wasm/cat.wasm',
-    template: '/wasm/template.wasm',
+  if (isWasmExecutable(commandName)) {
+    return WASM_EXECUTABLE_PATHS[commandName]
   }
-
-  return wasmExecutables[commandName]
+  return undefined
 }

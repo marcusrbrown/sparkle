@@ -23,14 +23,32 @@ import {consola} from 'consola'
 import {WasmExecutionError, WasmLoadError, WasmTimeoutError} from './wasm-types'
 
 /**
+ * Memory configuration constants for WebAssembly modules.
+ *
+ * WebAssembly memory is allocated in 64KB pages. Zig-compiled modules typically
+ * require more memory than C modules due to runtime overhead and garbage collection.
+ */
+const WASM_MEMORY_CONFIG = {
+  /** WebAssembly memory page size in bytes */
+  PAGE_SIZE: 64 * 1024,
+  /** Minimum initial pages for Zig modules (16MB) */
+  MIN_INITIAL_PAGES: 256,
+  /** Maximum pages allowed (32MB) for browser compatibility */
+  MAX_PAGES: 512,
+} as const
+
+/**
  * Default configuration values for WASM module execution.
+ *
+ * These defaults are optimized for Zig-compiled WebAssembly modules which
+ * require more memory and longer execution times than typical C modules.
  */
 const DEFAULT_CONFIG: Required<Omit<WasmModuleConfig, 'name'>> = {
-  maxMemorySize: 32 * 1024 * 1024, // 32MB - more suitable for Zig WASM modules
-  executionTimeout: 15000, // 15 seconds
+  maxMemorySize: WASM_MEMORY_CONFIG.MAX_PAGES * WASM_MEMORY_CONFIG.PAGE_SIZE, // 32MB
+  executionTimeout: 15000, // 15 seconds - generous for complex operations
   enableDebugLogging: false,
   customImports: {},
-}
+} as const
 
 /**
  * Simple LRU cache implementation for WASM modules.
@@ -80,6 +98,22 @@ class WasmModuleCacheImpl implements WasmModuleCache {
 }
 
 /**
+ * Creates WebAssembly memory with appropriate sizing for module requirements.
+ *
+ * Memory sizing is critical for Zig modules which need substantial initial allocation
+ * for their runtime. We start with a generous initial size and allow growth up to
+ * browser-safe limits.
+ */
+function createWasmMemory(maxMemorySize: number): WebAssembly.Memory {
+  const maxPages = Math.ceil(maxMemorySize / WASM_MEMORY_CONFIG.PAGE_SIZE)
+
+  return new WebAssembly.Memory({
+    initial: Math.max(WASM_MEMORY_CONFIG.MIN_INITIAL_PAGES, maxPages),
+    maximum: Math.max(maxPages, WASM_MEMORY_CONFIG.MAX_PAGES),
+  })
+}
+
+/**
  * Creates shell import functions for WASM module execution.
  *
  * These functions provide the interface between WASM modules and the shell environment,
@@ -112,8 +146,9 @@ function createShellImports(context: WasmExecutionContext, memory: WebAssembly.M
 
       const bytes = memoryArray.slice(ptr, ptr + len)
       return new TextDecoder('utf-8', {fatal: false}).decode(bytes)
-    } catch (error) {
-      consola.error('Failed to read string from WASM memory', error)
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      consola.error('Failed to read string from WASM memory', {error: errorMessage, ptr, len})
       return ''
     }
   }
@@ -145,8 +180,9 @@ function createShellImports(context: WasmExecutionContext, memory: WebAssembly.M
       }
 
       return writeLen
-    } catch (error) {
-      consola.error('Failed to write string to WASM memory', error)
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      consola.error('Failed to write string to WASM memory', {error: errorMessage, ptr, maxLen})
       return 0
     }
   }
@@ -229,12 +265,8 @@ export class WasmModuleLoaderImpl implements WasmModuleLoader {
       // Compile the module first to check its memory requirements
       const wasmModule = await WebAssembly.compile(bytes)
 
-      // Create memory with initial size and maximum limit
-      const initialPages = Math.ceil(fullConfig.maxMemorySize / 65536) // WebAssembly page size is 64KB
-      const memory = new WebAssembly.Memory({
-        initial: Math.max(initialPages, 256), // Start with at least 256 pages (16MB) for Zig modules
-        maximum: Math.max(initialPages, 512), // Allow up to 512 pages (32MB) maximum
-      })
+      // Create memory with appropriate sizing for the module
+      const memory = createWasmMemory(fullConfig.maxMemorySize)
 
       // Create shell imports
       const shellImports = this.createShellImportsFn(executionContext, memory)
@@ -282,12 +314,11 @@ export class WasmModuleLoaderImpl implements WasmModuleLoader {
       }
 
       return module
-    } catch (error) {
-      throw new WasmLoadError(
-        config.name,
-        `Failed to compile or instantiate module: ${error instanceof Error ? error.message : String(error)}`,
-        error instanceof Error ? error : undefined,
-      )
+    } catch (error: unknown) {
+      const cause = error instanceof Error ? error : undefined
+      const message = error instanceof Error ? error.message : String(error)
+
+      throw new WasmLoadError(config.name, `Failed to compile or instantiate module: ${message}`, cause)
     }
   }
 
@@ -318,19 +349,18 @@ export class WasmModuleLoaderImpl implements WasmModuleLoader {
         )
       }
 
-      // Execute with timeout
-      const timeoutMs = 15000 // 15 second default timeout
+      // Execute with timeout protection to prevent hanging
+      const timeoutMs = DEFAULT_CONFIG.executionTimeout
       await Promise.race([
         new Promise<void>(resolve => {
           try {
             exportedFunction()
             resolve()
-          } catch (error) {
-            throw new WasmExecutionError(
-              'unknown',
-              `Function execution failed: ${error instanceof Error ? error.message : String(error)}`,
-              error instanceof Error ? error : undefined,
-            )
+          } catch (error: unknown) {
+            const cause = error instanceof Error ? error : undefined
+            const message = error instanceof Error ? error.message : String(error)
+
+            throw new WasmExecutionError('unknown', `Function execution failed: ${message}`, cause)
           }
         }),
         new Promise<never>((_resolve, reject) => {
@@ -353,16 +383,15 @@ export class WasmModuleLoaderImpl implements WasmModuleLoader {
         functionName,
         peakMemoryUsage: module.memory.buffer.byteLength,
       }
-    } catch (error) {
+    } catch (error: unknown) {
       if (error instanceof WasmTimeoutError || error instanceof WasmExecutionError) {
         throw error
       }
 
-      throw new WasmExecutionError(
-        'unknown',
-        `Unexpected error during execution: ${error instanceof Error ? error.message : String(error)}`,
-        error instanceof Error ? error : undefined,
-      )
+      const cause = error instanceof Error ? error : undefined
+      const message = error instanceof Error ? error.message : String(error)
+
+      throw new WasmExecutionError('unknown', `Unexpected error during execution: ${message}`, cause)
     }
   }
 

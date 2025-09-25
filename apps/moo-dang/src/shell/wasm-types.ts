@@ -58,12 +58,18 @@ export interface WasmExecutionContext {
 }
 
 /**
+ * WASM executable names supported by the shell.
+ */
+export const WASM_EXECUTABLES = ['hello', 'echo', 'cat', 'template'] as const
+export type WasmExecutableName = (typeof WASM_EXECUTABLES)[number]
+
+/**
  * Configuration for WASM module loading and execution.
  */
 export interface WasmModuleConfig {
   /** Module name for debugging and error reporting */
   readonly name: string
-  /** Maximum memory size in bytes (default: 16MB) */
+  /** Maximum memory size in bytes (default: 32MB for Zig modules) */
   readonly maxMemorySize?: number
   /** Execution timeout in milliseconds (default: 15s) */
   readonly executionTimeout?: number
@@ -72,6 +78,11 @@ export interface WasmModuleConfig {
   /** Custom import functions to provide to the module */
   readonly customImports?: Record<string, Record<string, WebAssembly.ImportValue>>
 }
+
+/**
+ * Required subset of WasmModuleConfig with defaults applied.
+ */
+export type WasmModuleOptions = Required<WasmModuleConfig>
 
 /**
  * Result of WASM module execution.
