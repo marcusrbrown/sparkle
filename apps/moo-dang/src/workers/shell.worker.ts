@@ -17,6 +17,7 @@ import type {
   ShellWorkerRequest,
   ShellWorkerResponse,
 } from '../shell/types'
+import type {WasmModuleLoader} from '../shell/wasm-types'
 
 import {consola} from 'consola'
 import {createStandardCommands, resolveCommandWithPath} from '../shell/commands'
@@ -24,11 +25,14 @@ import {ShellEnvironment} from '../shell/environment'
 import {parseCommand, parseCommandPipeline} from '../shell/parser'
 import {executePipeline} from '../shell/pipeline'
 import {VirtualFileSystemImpl} from '../shell/virtual-file-system'
+import {createWasmExecutableCommands} from '../shell/wasm-commands'
+import {createWasmModuleLoader} from '../shell/wasm-loader'
 
 interface ShellWorkerState {
   readonly environment: ShellEnvironment
   readonly fileSystem: VirtualFileSystemImpl
   readonly commands: Map<string, ShellCommand>
+  readonly wasmLoader: WasmModuleLoader
 }
 
 /**
@@ -46,9 +50,19 @@ function createShellWorkerState(): ShellWorkerState {
     commandTimeout: 15000, // 15 second timeout for commands
   })
 
+  // Create WASM module loader
+  const wasmLoader = createWasmModuleLoader(5) // Cache up to 5 WASM modules
+
+  // Create standard commands
   const commands = createStandardCommands(fileSystem, environment)
 
-  return {environment, fileSystem, commands}
+  // Add WASM executable commands
+  const wasmCommands = createWasmExecutableCommands(wasmLoader)
+  for (const [name, command] of wasmCommands) {
+    commands.set(name, command)
+  }
+
+  return {environment, fileSystem, commands, wasmLoader}
 }
 
 /**
