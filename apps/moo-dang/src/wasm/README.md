@@ -73,6 +73,90 @@ zig build-exe examples/hello.zig -target wasm32-freestanding -fno-entry --export
 zig build test
 ```
 
+## Creating New WASM Executables
+
+### Using the Template Generator
+
+The easiest way to create new WASM executables is using the built-in generator script:
+
+```bash
+# Generate a new executable with default settings
+npm run generate:wasm mytool
+
+# Generate with custom description and version
+npm run generate:wasm myapp -- --description "Custom shell utility" --version "2.0.0"
+
+# Get help on generator options
+npm run generate:wasm -- --help
+```
+
+The generator creates a fully-featured executable from the comprehensive template that includes:
+
+- Command-line argument processing with options and validation
+- Environment variable access
+- Standard I/O operations (stdin, stdout, stderr)
+- Proper error handling and exit codes
+- Help and version commands
+- Multiple exported functions for different behaviors
+
+### Manual Template Usage
+
+You can also manually copy and customize the template:
+
+```bash
+# Copy the template to a new file
+cp src/wasm/template.zig src/wasm/examples/mytool.zig
+
+# Edit the new file to customize:
+# 1. Update the module documentation
+# 2. Modify Config constants (name, version, description)
+# 3. Implement your custom logic in main() and other functions
+# 4. Add new exported functions as needed
+
+# Add your executable to the build configuration
+# Edit build.zig and add to the examples array:
+# .{ .name = "mytool", .description = "My custom tool" },
+```
+
+### Template Features
+
+The `template.zig` file demonstrates all major shell API patterns:
+
+**Command-Line Processing:**
+
+- Argument parsing with validation
+- Option handling (flags like `-v`, `--verbose`)
+- Help (`--help`) and version (`--version`) commands
+
+**I/O Operations:**
+
+- Formatted output to stdout and stderr
+- Reading from stdin with proper error handling
+- Buffer management and size limits
+
+**Environment Integration:**
+
+- Environment variable access
+- Exit code management
+- Error reporting patterns
+
+**Multiple Entry Points:**
+
+- `main()` - Default entry point
+- `process_arguments()` - Demonstrate advanced argument handling
+- `read_input()` - Show stdin processing
+- `show_environment()` - Display environment variables
+- `show_help()` - Display usage information
+- `show_version()` - Display version information
+
+### Development Workflow
+
+1. **Generate**: Use the generator script to create your executable
+2. **Customize**: Edit the generated file to implement your logic
+3. **Build**: Run `npm run build:wasm` to compile all executables
+4. **Test**: Test in the shell or run `zig build test` for unit tests
+5. **Deploy**: Built WASM files are copied to `public/wasm/` for browser access
+
 ## Shell API Reference
 
 The shell API (`src/shell_api.zig`) provides a comprehensive interface between Zig executables and the shell environment.

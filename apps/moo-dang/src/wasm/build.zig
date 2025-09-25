@@ -10,6 +10,7 @@ const examples = [_]Example{
     .{ .name = "hello", .description = "basic example" },
     .{ .name = "echo", .description = "demonstrates argument handling" },
     .{ .name = "cat", .description = "demonstrates file I/O" },
+    .{ .name = "template", .description = "comprehensive template demonstrating all shell API patterns" },
 };
 
 pub fn build(b: *std.Build) void {

@@ -10,6 +10,7 @@
     "build:wasm:clean": "cd src/wasm && rm -rf zig-out",
     "dev": "npm run build:wasm && vite",
     "dev:watch": "concurrently \"npm run watch:wasm\" \"vite\"",
+    "generate:wasm": "./scripts/generate-wasm-executable.sh",
     "lint": "eslint",
     "preview": "vite preview",
     "test": "vitest run",
