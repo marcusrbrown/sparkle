@@ -24,15 +24,16 @@ import {WasmExecutionError, WasmLoadError, WasmTimeoutError} from './wasm-types'
 /**
  * Memory configuration constants for WebAssembly modules.
  *
- * WebAssembly memory is allocated in 64KB pages. Zig-compiled modules typically
- * require more memory than C modules due to runtime overhead and garbage collection.
+ * WebAssembly memory allocation requires careful sizing for different compilation targets.
+ * Zig-compiled modules need substantial initial allocation due to runtime overhead and
+ * garbage collection requirements, unlike minimal C modules that can start smaller.
  */
 const WASM_MEMORY_CONFIG = {
-  /** WebAssembly memory page size in bytes */
+  /** WebAssembly memory page size in bytes (64KB standard) */
   PAGE_SIZE: 64 * 1024,
-  /** Minimum initial pages for Zig modules (16MB) */
+  /** Minimum initial pages for Zig modules (16MB prevents frequent reallocations) */
   MIN_INITIAL_PAGES: 256,
-  /** Maximum pages allowed (32MB) for browser compatibility */
+  /** Maximum pages allowed (32MB ensures browser compatibility) */
   MAX_PAGES: 512,
 } as const
 
@@ -113,6 +114,65 @@ function createWasmMemory(maxMemorySize: number): WebAssembly.Memory {
 }
 
 /**
+ * Determines the correct memory buffer to use for WASM operations.
+ *
+ * Zig-compiled WASM modules often export their own memory while the host provides
+ * imported memory. This function intelligently selects the appropriate memory by
+ * checking where actual data is located, preventing null byte reads that occur
+ * when the wrong memory buffer is used.
+ *
+ * @param importedMemory - Memory buffer provided by the host
+ * @param getInstance - Function to get the WASM instance when available
+ * @param dataPtr - Pointer to data location for validation
+ * @param dataLen - Length of data for validation
+ * @returns The appropriate memory buffer (imported or exported)
+ */
+function selectTargetMemory(
+  importedMemory: WebAssembly.Memory,
+  getInstance: (() => WebAssembly.Instance) | undefined,
+  dataPtr: number,
+  dataLen: number,
+): WebAssembly.Memory {
+  const instance = getInstance?.()
+  if (!instance?.exports?.memory || !(instance.exports.memory instanceof WebAssembly.Memory)) {
+    return importedMemory
+  }
+
+  const exportedMemory = instance.exports.memory as WebAssembly.Memory
+
+  // Validate data pointer bounds in exported memory
+  if (dataPtr + dataLen > exportedMemory.buffer.byteLength) {
+    return importedMemory
+  }
+
+  // Sample a small portion of both memory buffers to detect where actual data exists
+  const sampleSize = Math.min(dataLen, 10)
+  const exportedBytes = new Uint8Array(exportedMemory.buffer).slice(dataPtr, dataPtr + sampleSize)
+  const importedBytes = new Uint8Array(importedMemory.buffer).slice(dataPtr, dataPtr + sampleSize)
+
+  // If exported memory contains non-zero data and imported doesn't, use exported
+  const hasDataInExported = exportedBytes.some(byte => byte !== 0)
+  const hasDataInImported = importedBytes.some(byte => byte !== 0)
+
+  return hasDataInExported && !hasDataInImported ? exportedMemory : importedMemory
+}
+
+/**
+ * Validates memory access bounds to prevent buffer overflows.
+ *
+ * WebAssembly memory operations must be bounds-checked to prevent security issues
+ * and provide meaningful error messages for debugging WASM module issues.
+ *
+ * @param ptr - Memory pointer to validate
+ * @param len - Length of data to access
+ * @param memorySize - Total size of available memory
+ * @returns True if access is within bounds, false otherwise
+ */
+function validateMemoryBounds(ptr: number, len: number, memorySize: number): boolean {
+  return ptr >= 0 && len >= 0 && ptr + len <= memorySize
+}
+
+/**
  * Creates shell import functions for WASM module execution with smart memory detection.
  *
  * These functions provide the interface between WASM modules and the shell environment,
@@ -127,53 +187,25 @@ function createShellImports(
 ): ShellImports {
   return {
     shell_write_stdout: (dataPtr: number, dataLen: number) => {
-      // Try to find the correct memory (either imported or exported)
-      let targetMemory = importedMemory
-
-      // Check if we should use exported memory instead
-      const instance = getInstance?.()
-      if (instance?.exports?.memory instanceof WebAssembly.Memory) {
-        const exportedMemory = instance.exports.memory as WebAssembly.Memory
-
-        // Check if the data pointer is valid in exported memory
-        if (dataPtr + dataLen <= exportedMemory.buffer.byteLength) {
-          const exportedBytes = new Uint8Array(exportedMemory.buffer).slice(dataPtr, dataPtr + Math.min(dataLen, 10))
-          const importedBytes = new Uint8Array(importedMemory.buffer).slice(dataPtr, dataPtr + Math.min(dataLen, 10))
-
-          // If exported memory has non-zero data and imported has zeros, use exported
-          const hasDataInExported = exportedBytes.some(b => b !== 0)
-          const hasDataInImported = importedBytes.some(b => b !== 0)
-
-          if (hasDataInExported && !hasDataInImported) {
-            targetMemory = exportedMemory
-          }
-        }
-      }
-
-      // Read from the target memory
+      const targetMemory = selectTargetMemory(importedMemory, getInstance, dataPtr, dataLen)
       const memoryArray = new Uint8Array(targetMemory.buffer)
 
-      if (dataPtr < 0 || dataLen < 0 || dataPtr + dataLen > memoryArray.length) {
-        consola.warn('WASM string read out of bounds', {dataPtr, dataLen, memorySize: memoryArray.length})
+      if (!validateMemoryBounds(dataPtr, dataLen, memoryArray.length)) {
+        consola.warn('WASM stdout write out of bounds', {dataPtr, dataLen, memorySize: memoryArray.length})
         return
       }
 
       const bytes = memoryArray.slice(dataPtr, dataPtr + dataLen)
       const data = new TextDecoder('utf-8', {fatal: false}).decode(bytes)
-
       context.stdout += data
     },
 
     shell_write_stderr: (dataPtr: number, dataLen: number) => {
-      // Similar logic for stderr...
-      let targetMemory = importedMemory
-      const instance = getInstance?.()
-      if (instance?.exports?.memory instanceof WebAssembly.Memory) {
-        targetMemory = instance.exports.memory as WebAssembly.Memory
-      }
-
+      const targetMemory = selectTargetMemory(importedMemory, getInstance, dataPtr, dataLen)
       const memoryArray = new Uint8Array(targetMemory.buffer)
-      if (dataPtr < 0 || dataLen < 0 || dataPtr + dataLen > memoryArray.length) {
+
+      if (!validateMemoryBounds(dataPtr, dataLen, memoryArray.length)) {
+        consola.warn('WASM stderr write out of bounds', {dataPtr, dataLen, memorySize: memoryArray.length})
         return
       }
 
@@ -183,14 +215,15 @@ function createShellImports(
     },
 
     shell_read_stdin: (bufferPtr: number, bufferLen: number) => {
-      let targetMemory = importedMemory
-      const instance = getInstance?.()
-      if (instance?.exports?.memory instanceof WebAssembly.Memory) {
-        targetMemory = instance.exports.memory as WebAssembly.Memory
+      if (bufferLen <= 0) {
+        return 0
       }
 
+      const targetMemory = selectTargetMemory(importedMemory, getInstance, bufferPtr, bufferLen)
       const memoryArray = new Uint8Array(targetMemory.buffer)
-      if (bufferPtr < 0 || bufferLen <= 0 || bufferPtr + bufferLen > memoryArray.length) {
+
+      if (!validateMemoryBounds(bufferPtr, bufferLen, memoryArray.length)) {
+        consola.warn('WASM stdin read out of bounds', {bufferPtr, bufferLen, memorySize: memoryArray.length})
         return 0
       }
 
@@ -211,18 +244,15 @@ function createShellImports(
     },
 
     shell_get_arg: (index: number, bufferPtr: number, bufferLen: number) => {
-      if (index < 0 || index >= context.args.length) {
+      if (index < 0 || index >= context.args.length || bufferLen <= 0) {
         return 0
       }
 
-      let targetMemory = importedMemory
-      const instance = getInstance?.()
-      if (instance?.exports?.memory instanceof WebAssembly.Memory) {
-        targetMemory = instance.exports.memory as WebAssembly.Memory
-      }
-
+      const targetMemory = selectTargetMemory(importedMemory, getInstance, bufferPtr, bufferLen)
       const memoryArray = new Uint8Array(targetMemory.buffer)
-      if (bufferPtr < 0 || bufferLen <= 0 || bufferPtr + bufferLen > memoryArray.length) {
+
+      if (!validateMemoryBounds(bufferPtr, bufferLen, memoryArray.length)) {
+        consola.warn('WASM get_arg out of bounds', {index, bufferPtr, bufferLen, memorySize: memoryArray.length})
         return 0
       }
 
@@ -240,25 +270,26 @@ function createShellImports(
     },
 
     shell_get_env: (keyPtr: number, keyLen: number, bufferPtr: number, bufferLen: number) => {
-      let targetMemory = importedMemory
-      const instance = getInstance?.()
-      if (instance?.exports?.memory instanceof WebAssembly.Memory) {
-        targetMemory = instance.exports.memory as WebAssembly.Memory
-      }
-
-      const memoryArray = new Uint8Array(targetMemory.buffer)
-
-      // Read key
-      if (keyPtr < 0 || keyLen < 0 || keyPtr + keyLen > memoryArray.length) {
+      if (bufferLen <= 0) {
         return 0
       }
+
+      const targetMemory = selectTargetMemory(importedMemory, getInstance, keyPtr, keyLen)
+      const memoryArray = new Uint8Array(targetMemory.buffer)
+
+      // Read environment variable key
+      if (!validateMemoryBounds(keyPtr, keyLen, memoryArray.length)) {
+        consola.warn('WASM get_env key read out of bounds', {keyPtr, keyLen, memorySize: memoryArray.length})
+        return 0
+      }
+
       const keyBytes = memoryArray.slice(keyPtr, keyPtr + keyLen)
       const key = new TextDecoder('utf-8', {fatal: false}).decode(keyBytes)
-
       const value = context.env[key] || ''
 
-      // Write value
-      if (bufferPtr < 0 || bufferLen <= 0 || bufferPtr + bufferLen > memoryArray.length) {
+      // Write environment variable value
+      if (!validateMemoryBounds(bufferPtr, bufferLen, memoryArray.length)) {
+        consola.warn('WASM get_env value write out of bounds', {bufferPtr, bufferLen, memorySize: memoryArray.length})
         return 0
       }
 
@@ -281,207 +312,215 @@ function createShellImports(
 }
 
 /**
- * WASM module loader implementation with caching and security features.
+ * Creates a WASM module loader implementation with caching and security features.
  *
- * Manages WebAssembly module lifecycle including compilation, instantiation,
- * execution, and cleanup. Provides memory management, timeout protection,
- * and proper error handling for Zig-compiled modules.
+ * This function-based approach provides better composability and follows Sparkle
+ * coding guidelines by avoiding ES6 classes. The returned object implements the
+ * WasmModuleLoader interface while maintaining encapsulated state through closures.
+ *
+ * @param cacheSize - Maximum number of modules to cache (default: 10)
+ * @returns WasmModuleLoader implementation with the specified cache size
  */
-export class WasmModuleLoaderImpl implements WasmModuleLoader {
-  private readonly cache: WasmModuleCache
+function createWasmModuleLoaderImpl(cacheSize = 10): WasmModuleLoader {
+  const cache = createWasmModuleCache(cacheSize)
 
-  constructor(cacheSize = 10) {
-    this.cache = createWasmModuleCache(cacheSize)
-  }
+  return {
+    async loadModule(bytes: ArrayBuffer, config: WasmModuleConfig): Promise<WasmModule> {
+      const fullConfig = {...DEFAULT_CONFIG, ...config}
+      const cacheKey = `${config.name}-${bytes.byteLength}`
 
-  async loadModule(bytes: ArrayBuffer, config: WasmModuleConfig): Promise<WasmModule> {
-    const fullConfig = {...DEFAULT_CONFIG, ...config}
-    const cacheKey = `${config.name}-${bytes.byteLength}`
-
-    // Check cache first to avoid recompilation
-    const cachedModule = this.cache.get(cacheKey)
-    if (cachedModule) {
-      if (fullConfig.enableDebugLogging) {
-        consola.debug(`Using cached WASM module: ${config.name}`)
-      }
-      return cachedModule
-    }
-
-    if (fullConfig.enableDebugLogging) {
-      consola.debug(`Loading WASM module: ${config.name}`, {
-        size: bytes.byteLength,
-        maxMemory: fullConfig.maxMemorySize,
-        timeout: fullConfig.executionTimeout,
-      })
-    }
-
-    try {
-      // Create execution context (will be populated during execution)
-      const executionContext: WasmExecutionContext = {
-        args: [],
-        env: {},
-        stdin: '',
-        stdout: '',
-        stderr: '',
-        exitCode: 0,
-        workingDirectory: '/',
-        processId: 0,
-      }
-
-      // Compile the module first to check its memory requirements
-      const wasmModule = await WebAssembly.compile(bytes)
-
-      // Try to instantiate the module first without providing memory
-      // to see if it exports its own (common for Zig modules)
-      let instance: WebAssembly.Instance
-
-      // Always provide our own memory, but create shell imports that can handle both
-      const actualMemory = createWasmMemory(fullConfig.maxMemorySize)
-
-      // Create shell imports with a closure to access instance when available
-      const shellImports = createShellImports(executionContext, actualMemory, () => instance)
-
-      const imports = {
-        env: {
-          ...shellImports,
-          memory: actualMemory,
-        },
-        ...fullConfig.customImports,
-      }
-
-      instance = await WebAssembly.instantiate(wasmModule, imports)
-      consola.debug('WASM using smart shell imports with memory detection')
-
-      // Extract exports
-      const moduleExports: WasmExports = {
-        main: instance.exports.main as (() => void) | undefined,
-        memory: instance.exports.memory as WebAssembly.Memory | undefined,
-      }
-
-      // Add all other exports
-      for (const [name, value] of Object.entries(instance.exports)) {
-        if (name !== 'main' && name !== 'memory') {
-          moduleExports[name] = value
+      // Check cache first to avoid recompilation
+      const cachedModule = cache.get(cacheKey)
+      if (cachedModule) {
+        if (fullConfig.enableDebugLogging) {
+          consola.debug(`Using cached WASM module: ${config.name}`)
         }
-      }
-
-      const module: WasmModule = {
-        instance,
-        memory: actualMemory,
-        context: executionContext,
-        exports: moduleExports,
+        return cachedModule
       }
 
       if (fullConfig.enableDebugLogging) {
-        consola.debug(`Successfully loaded WASM module: ${config.name}`, {
-          exports: Object.keys(instance.exports),
-          memorySize: module.memory.buffer.byteLength,
+        consola.debug(`Loading WASM module: ${config.name}`, {
+          size: bytes.byteLength,
+          maxMemory: fullConfig.maxMemorySize,
+          timeout: fullConfig.executionTimeout,
         })
       }
 
-      // Cache the compiled module for future use
-      this.cache.set(cacheKey, module)
+      try {
+        // Create execution context (will be populated during execution)
+        const executionContext: WasmExecutionContext = {
+          args: [],
+          env: {},
+          stdin: '',
+          stdout: '',
+          stderr: '',
+          exitCode: 0,
+          workingDirectory: '/',
+          processId: 0,
+        }
 
-      return module
-    } catch (error: unknown) {
-      const cause = error instanceof Error ? error : undefined
-      const message = error instanceof Error ? error.message : String(error)
+        // Compile the module first to check its memory requirements
+        const wasmModule = await WebAssembly.compile(bytes)
 
-      throw new WasmLoadError(config.name, `Failed to compile or instantiate module: ${message}`, cause)
-    }
-  }
+        // Try to instantiate the module first without providing memory
+        // to see if it exports its own (common for Zig modules)
+        let instance: WebAssembly.Instance
 
-  async executeFunction(
-    module: WasmModule,
-    functionName = 'main',
-    executionContext: ExecutionContext,
-  ): Promise<WasmExecutionResult> {
-    const startTime = Date.now()
+        // Always provide our own memory, but create shell imports that can handle both
+        const actualMemory = createWasmMemory(fullConfig.maxMemorySize)
 
-    // Update module execution context - use proper arguments if available
-    module.context.args = executionContext.args ? [functionName, ...executionContext.args] : [functionName]
-    module.context.env = {...executionContext.environmentVariables}
-    module.context.stdin = executionContext.stdin || ''
-    module.context.stdout = ''
-    module.context.stderr = ''
-    module.context.exitCode = 0
-    module.context.workingDirectory = executionContext.workingDirectory
-    module.context.processId = executionContext.processId
+        // Create shell imports with a closure to access instance when available
+        const shellImports = createShellImports(executionContext, actualMemory, () => instance)
 
-    try {
-      const exportedFunction = module.exports[functionName]
+        const imports = {
+          env: {
+            ...shellImports,
+            memory: actualMemory,
+          },
+          ...fullConfig.customImports,
+        }
 
-      if (!exportedFunction || typeof exportedFunction !== 'function') {
-        throw new WasmExecutionError(
-          'unknown',
-          `Function '${functionName}' not found or not callable. Available exports: ${Object.keys(module.exports).join(', ')}`,
-        )
-      }
+        instance = await WebAssembly.instantiate(wasmModule, imports)
+        consola.debug('WASM using smart shell imports with memory detection')
 
-      // Execute with timeout protection to prevent hanging
-      const timeoutMs = DEFAULT_CONFIG.executionTimeout
-      await Promise.race([
-        new Promise<void>(resolve => {
-          try {
-            exportedFunction()
-            resolve()
-          } catch (error: unknown) {
-            const cause = error instanceof Error ? error : undefined
-            const message = error instanceof Error ? error.message : String(error)
+        // Extract exports
+        const moduleExports: WasmExports = {
+          main: instance.exports.main as (() => void) | undefined,
+          memory: instance.exports.memory as WebAssembly.Memory | undefined,
+        }
 
-            throw new WasmExecutionError('unknown', `Function execution failed: ${message}`, cause)
+        // Add all other exports
+        for (const [name, value] of Object.entries(instance.exports)) {
+          if (name !== 'main' && name !== 'memory') {
+            moduleExports[name] = value
           }
-        }),
-        new Promise<never>((_resolve, reject) => {
-          setTimeout(() => {
-            reject(new WasmTimeoutError('unknown', timeoutMs))
-          }, timeoutMs)
-        }),
-      ])
+        }
 
-      const executionTime = Date.now() - startTime
+        const module: WasmModule = {
+          instance,
+          memory: actualMemory,
+          context: executionContext,
+          exports: moduleExports,
+        }
 
-      return {
-        processId: executionContext.processId,
-        command: functionName,
-        stdout: module.context.stdout,
-        stderr: module.context.stderr,
-        exitCode: module.context.exitCode,
-        executionTime,
-        moduleName: 'unknown',
-        functionName,
-        peakMemoryUsage: module.memory.buffer.byteLength,
+        if (fullConfig.enableDebugLogging) {
+          consola.debug(`Successfully loaded WASM module: ${config.name}`, {
+            exports: Object.keys(instance.exports),
+            memorySize: module.memory.buffer.byteLength,
+          })
+        }
+
+        // Cache the compiled module for future use
+        cache.set(cacheKey, module)
+
+        return module
+      } catch (error: unknown) {
+        const cause = error instanceof Error ? error : undefined
+        const message = error instanceof Error ? error.message : String(error)
+
+        throw new WasmLoadError(config.name, `Failed to compile or instantiate module: ${message}`, cause)
       }
-    } catch (error: unknown) {
-      if (error instanceof WasmTimeoutError || error instanceof WasmExecutionError) {
-        throw error
+    },
+
+    async executeFunction(
+      module: WasmModule,
+      functionName = 'main',
+      executionContext: ExecutionContext,
+    ): Promise<WasmExecutionResult> {
+      const startTime = Date.now()
+
+      // Update module execution context - use proper arguments if available
+      module.context.args = executionContext.args ? [functionName, ...executionContext.args] : [functionName]
+      module.context.env = {...executionContext.environmentVariables}
+      module.context.stdin = executionContext.stdin || ''
+      module.context.stdout = ''
+      module.context.stderr = ''
+      module.context.exitCode = 0
+      module.context.workingDirectory = executionContext.workingDirectory
+      module.context.processId = executionContext.processId
+
+      try {
+        const exportedFunction = module.exports[functionName]
+
+        if (!exportedFunction || typeof exportedFunction !== 'function') {
+          throw new WasmExecutionError(
+            'unknown',
+            `Function '${functionName}' not found or not callable. Available exports: ${Object.keys(module.exports).join(', ')}`,
+          )
+        }
+
+        // Execute with timeout protection to prevent hanging
+        const timeoutMs = DEFAULT_CONFIG.executionTimeout
+        await Promise.race([
+          new Promise<void>(resolve => {
+            try {
+              exportedFunction()
+              resolve()
+            } catch (error: unknown) {
+              const cause = error instanceof Error ? error : undefined
+              const message = error instanceof Error ? error.message : String(error)
+
+              throw new WasmExecutionError('unknown', `Function execution failed: ${message}`, cause)
+            }
+          }),
+          new Promise<never>((_resolve, reject) => {
+            setTimeout(() => {
+              reject(new WasmTimeoutError('unknown', timeoutMs))
+            }, timeoutMs)
+          }),
+        ])
+
+        const executionTime = Date.now() - startTime
+
+        return {
+          processId: executionContext.processId,
+          command: functionName,
+          stdout: module.context.stdout,
+          stderr: module.context.stderr,
+          exitCode: module.context.exitCode,
+          executionTime,
+          moduleName: 'unknown',
+          functionName,
+          peakMemoryUsage: module.memory.buffer.byteLength,
+        }
+      } catch (error: unknown) {
+        if (error instanceof WasmTimeoutError || error instanceof WasmExecutionError) {
+          throw error
+        }
+
+        const cause = error instanceof Error ? error : undefined
+        const message = error instanceof Error ? error.message : String(error)
+
+        throw new WasmExecutionError('unknown', `Unexpected error during execution: ${message}`, cause)
       }
+    },
 
-      const cause = error instanceof Error ? error : undefined
-      const message = error instanceof Error ? error.message : String(error)
+    unloadModule(module: WasmModule): void {
+      // Clear the execution context
+      module.context.stdout = ''
+      module.context.stderr = ''
+      module.context.exitCode = 0
 
-      throw new WasmExecutionError('unknown', `Unexpected error during execution: ${message}`, cause)
-    }
-  }
-
-  unloadModule(module: WasmModule): void {
-    // Clear the execution context
-    module.context.stdout = ''
-    module.context.stderr = ''
-    module.context.exitCode = 0
-
-    // Note: WebAssembly doesn't provide explicit cleanup APIs,
-    // but we can clear references to help with garbage collection
-    consola.debug('Unloaded WASM module', {
-      memorySize: module.memory.buffer.byteLength,
-      exports: Object.keys(module.exports),
-    })
+      // Note: WebAssembly doesn't provide explicit cleanup APIs,
+      // but we can clear references to help with garbage collection
+      consola.debug('Unloaded WASM module', {
+        memorySize: module.memory.buffer.byteLength,
+        exports: Object.keys(module.exports),
+      })
+    },
   }
 }
 
 /**
  * Create a new WASM module loader with the specified cache size.
+ *
+ * Factory function for creating WASM module loaders following Sparkle's
+ * function-based architecture patterns. Provides better composability and
+ * testability compared to class-based approaches.
+ *
+ * @param cacheSize - Maximum number of modules to cache (default: 10)
+ * @returns WasmModuleLoader implementation with caching and security features
  */
 export function createWasmModuleLoader(cacheSize = 10): WasmModuleLoader {
-  return new WasmModuleLoaderImpl(cacheSize)
+  return createWasmModuleLoaderImpl(cacheSize)
 }
