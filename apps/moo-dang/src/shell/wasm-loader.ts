@@ -8,7 +8,6 @@
 
 import type {ExecutionContext} from './types'
 import type {
-  CreateShellImports,
   ShellImports,
   WasmExecutionContext,
   WasmExecutionResult,
@@ -18,8 +17,8 @@ import type {
   WasmModuleConfig,
   WasmModuleLoader,
 } from './wasm-types'
-import {consola} from 'consola'
 
+import {consola} from 'consola'
 import {WasmExecutionError, WasmLoadError, WasmTimeoutError} from './wasm-types'
 
 /**
@@ -51,49 +50,49 @@ const DEFAULT_CONFIG: Required<Omit<WasmModuleConfig, 'name'>> = {
 } as const
 
 /**
- * Simple LRU cache implementation for WASM modules.
+ * Creates a simple LRU cache implementation for WASM modules.
+ *
+ * Uses Map data structure to maintain insertion order for efficient LRU tracking.
+ * When cache reaches capacity, removes least recently used entries automatically.
  */
-class WasmModuleCacheImpl implements WasmModuleCache {
-  private readonly cache = new Map<string, WasmModule>()
-  private readonly maxSize: number
+function createWasmModuleCache(maxSize = 10): WasmModuleCache {
+  const cache = new Map<string, WasmModule>()
 
-  constructor(maxSize = 10) {
-    this.maxSize = maxSize
-  }
-
-  get(key: string): WasmModule | undefined {
-    const module = this.cache.get(key)
-    if (module) {
-      // Move to end (most recently used)
-      this.cache.delete(key)
-      this.cache.set(key, module)
-    }
-    return module
-  }
-
-  set(key: string, module: WasmModule): void {
-    if (this.cache.has(key)) {
-      this.cache.delete(key)
-    } else if (this.cache.size >= this.maxSize) {
-      // Remove least recently used (first entry)
-      const firstKey = this.cache.keys().next().value
-      if (firstKey) {
-        this.cache.delete(firstKey)
+  return {
+    get(key: string): WasmModule | undefined {
+      const module = cache.get(key)
+      if (module) {
+        // Move to end (most recently used)
+        cache.delete(key)
+        cache.set(key, module)
       }
-    }
-    this.cache.set(key, module)
-  }
+      return module
+    },
 
-  delete(key: string): void {
-    this.cache.delete(key)
-  }
+    set(key: string, module: WasmModule): void {
+      if (cache.has(key)) {
+        cache.delete(key)
+      } else if (cache.size >= maxSize) {
+        // Remove least recently used (first entry)
+        const firstKey = cache.keys().next().value
+        if (firstKey) {
+          cache.delete(firstKey)
+        }
+      }
+      cache.set(key, module)
+    },
 
-  clear(): void {
-    this.cache.clear()
-  }
+    delete(key: string): void {
+      cache.delete(key)
+    },
 
-  size(): number {
-    return this.cache.size
+    clear(): void {
+      cache.clear()
+    },
+
+    size(): number {
+      return cache.size
+    },
   }
 }
 
@@ -228,18 +227,30 @@ function createShellImports(context: WasmExecutionContext, memory: WebAssembly.M
 
 /**
  * WASM module loader implementation with caching and security features.
+ *
+ * Manages WebAssembly module lifecycle including compilation, instantiation,
+ * execution, and cleanup. Provides memory management, timeout protection,
+ * and proper error handling for Zig-compiled modules.
  */
 export class WasmModuleLoaderImpl implements WasmModuleLoader {
   private readonly cache: WasmModuleCache
-  private readonly createShellImportsFn: CreateShellImports
 
   constructor(cacheSize = 10) {
-    this.cache = new WasmModuleCacheImpl(cacheSize)
-    this.createShellImportsFn = createShellImports
+    this.cache = createWasmModuleCache(cacheSize)
   }
 
   async loadModule(bytes: ArrayBuffer, config: WasmModuleConfig): Promise<WasmModule> {
     const fullConfig = {...DEFAULT_CONFIG, ...config}
+    const cacheKey = `${config.name}-${bytes.byteLength}`
+
+    // Check cache first to avoid recompilation
+    const cachedModule = this.cache.get(cacheKey)
+    if (cachedModule) {
+      if (fullConfig.enableDebugLogging) {
+        consola.debug(`Using cached WASM module: ${config.name}`)
+      }
+      return cachedModule
+    }
 
     if (fullConfig.enableDebugLogging) {
       consola.debug(`Loading WASM module: ${config.name}`, {
@@ -269,7 +280,7 @@ export class WasmModuleLoaderImpl implements WasmModuleLoader {
       const memory = createWasmMemory(fullConfig.maxMemorySize)
 
       // Create shell imports
-      const shellImports = this.createShellImportsFn(executionContext, memory)
+      const shellImports = createShellImports(executionContext, memory)
 
       // Combine custom imports with shell imports
       const imports = {
@@ -312,6 +323,9 @@ export class WasmModuleLoaderImpl implements WasmModuleLoader {
           memorySize: module.memory.buffer.byteLength,
         })
       }
+
+      // Cache the compiled module for future use
+      this.cache.set(cacheKey, module)
 
       return module
     } catch (error: unknown) {
@@ -407,13 +421,6 @@ export class WasmModuleLoaderImpl implements WasmModuleLoader {
       memorySize: module.memory.buffer.byteLength,
       exports: Object.keys(module.exports),
     })
-  }
-
-  /**
-   * Get the module cache for external management.
-   */
-  getCache(): WasmModuleCache {
-    return this.cache
   }
 }
 
