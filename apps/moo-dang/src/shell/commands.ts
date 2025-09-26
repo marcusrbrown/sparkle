@@ -8,6 +8,7 @@
  */
 
 import type {ShellEnvironment} from './environment'
+import type {ScriptStatement} from './script-types'
 import type {CommandExecutionResult, ExecutionContext, ShellCommand, VirtualFileSystem} from './types'
 
 import {consola} from 'consola'
@@ -16,6 +17,160 @@ import {createHelpSystem} from './help-system'
 
 import {createShellScriptExecutor} from './script-executor'
 import {createShellScriptParser} from './script-parser'
+
+/**
+ * Configuration constants for command execution behavior and resource limits.
+ *
+ * These values balance functionality with browser security and performance constraints.
+ */
+const COMMAND_EXECUTION_CONSTANTS = {
+  /** Maximum script execution time to prevent infinite loops in shell scripts */
+  SCRIPT_TIMEOUT_MS: 30_000,
+  /** Performance threshold for logging slow command executions */
+  SLOW_COMMAND_THRESHOLD_MS: 1000,
+} as const
+
+/**
+ * Validates source command arguments and returns the script path.
+ *
+ * Ensures exactly one filename argument is provided following POSIX conventions.
+ */
+function validateSourceArguments(args: string[]): {valid: true; scriptPath: string} | {valid: false; error: string} {
+  if (!args || args.length === 0) {
+    return {valid: false, error: 'source: filename argument required'}
+  }
+
+  if (args.length > 1) {
+    return {valid: false, error: 'source: too many arguments'}
+  }
+
+  const scriptPath = args[0]
+  if (!scriptPath) {
+    return {valid: false, error: 'source: filename argument required'}
+  }
+
+  return {valid: true, scriptPath}
+}
+
+/**
+ * Loads and parses a shell script file from the virtual filesystem.
+ *
+ * Handles file existence checking, content reading, and syntax parsing with
+ * detailed error reporting for script development feedback.
+ */
+async function loadAndParseScript(
+  fileSystem: VirtualFileSystem,
+  scriptPath: string,
+  workingDirectory: string,
+): Promise<{success: true; statements: ScriptStatement[]; resolvedPath: string} | {success: false; error: string}> {
+  try {
+    // Resolve the script path relative to working directory
+    const resolvedPath = resolvePath(scriptPath, workingDirectory)
+
+    // Check if file exists
+    if (!(await fileSystem.exists(resolvedPath))) {
+      return {success: false, error: `source: ${scriptPath}: No such file or directory`}
+    }
+
+    // Read script file from virtual filesystem
+    const scriptContent = await fileSystem.readFile(resolvedPath)
+
+    // Parse the script content
+    const parser = createShellScriptParser()
+    const parseResult = parser.parseScript(scriptContent)
+
+    if (!parseResult.success) {
+      const errorMessage = parseResult.error || 'Unknown parse error'
+      return {success: false, error: `source: ${scriptPath}: Parse error: ${errorMessage}`}
+    }
+
+    const statements = parseResult.statements || []
+    consola.info(`Script parsing successful: ${statements.length} statements found`)
+
+    return {success: true, statements, resolvedPath}
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    return {success: false, error: `source: ${scriptPath}: ${errorMessage}`}
+  }
+}
+
+/**
+ * Executes parsed shell script statements with proper context and error handling.
+ *
+ * Creates an isolated script execution environment while maintaining access to
+ * the parent shell's commands and environment variables.
+ */
+async function executeShellScript(
+  statements: ScriptStatement[],
+  context: ExecutionContext,
+  resolvedPath: string,
+  fileSystem: VirtualFileSystem,
+  environment: ShellEnvironment,
+  commands: Map<string, ShellCommand>,
+): Promise<{success: true; result: CommandExecutionResult} | {success: false; result: CommandExecutionResult}> {
+  const statementCount = statements.length
+
+  if (statementCount === 0) {
+    return {
+      success: true,
+      result: createCommandResult(context, 'source', 'Script is empty', '', 0),
+    }
+  }
+
+  try {
+    // Create script executor with access to all shell commands
+    const executor = createShellScriptExecutor(fileSystem, environment, commands)
+
+    // Create execution context for the script
+    const scriptContext = executor.createContext({
+      workingDirectory: context.workingDirectory,
+      environmentVariables: context.environmentVariables,
+      scriptPath: resolvedPath,
+      processId: context.processId,
+    })
+
+    // Execute the script
+    const executionResult = await executor.executeScript(statements, scriptContext, {
+      timeout: COMMAND_EXECUTION_CONSTANTS.SCRIPT_TIMEOUT_MS,
+      debug: false,
+    })
+
+    if (executionResult.success) {
+      return {
+        success: true,
+        result: createCommandResult(
+          context,
+          'source',
+          executionResult.stdout || `Script executed successfully: ${statementCount} statements`,
+          executionResult.stderr || '',
+          executionResult.exitCode,
+        ),
+      }
+    } else {
+      return {
+        success: false,
+        result: createCommandResult(
+          context,
+          'source',
+          executionResult.stdout || '',
+          executionResult.stderr || executionResult.error || 'Script execution failed',
+          executionResult.exitCode,
+        ),
+      }
+    }
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    consola.error('Script execution failed:', {
+      script: resolvedPath,
+      error: errorMessage,
+    })
+
+    return {
+      success: false,
+      result: createCommandResult(context, 'source', '', `source: ${resolvedPath}: ${errorMessage}`, 1),
+    }
+  }
+}
 
 /**
  * Base error class for shell command execution failures.
@@ -85,7 +240,7 @@ function createCommandResult(
       executionTime,
       processId: context.processId,
     })
-  } else if (executionTime > 1000) {
+  } else if (executionTime > COMMAND_EXECUTION_CONSTANTS.SLOW_COMMAND_THRESHOLD_MS) {
     // Log slow commands for performance monitoring
     consola.info(`Slow command execution: ${command} took ${executionTime}ms`, {
       command,
@@ -284,110 +439,29 @@ function createSourceCommand(
     execute: async (args: string[], context: ExecutionContext): Promise<CommandExecutionResult> => {
       const startTime = Date.now()
 
-      // Validate arguments
-      if (!args || args.length === 0) {
-        return createCommandResult(context, 'source', '', 'source: filename argument required', 1, startTime)
+      // Validate command arguments
+      const validation = validateSourceArguments(args)
+      if (!validation.valid) {
+        return createCommandResult(context, 'source', '', validation.error, 1, startTime)
       }
 
-      if (args.length > 1) {
-        return createCommandResult(context, 'source', '', 'source: too many arguments', 1, startTime)
+      // Load and parse the script file
+      const parseResult = await loadAndParseScript(fileSystem, validation.scriptPath, context.workingDirectory)
+      if (!parseResult.success) {
+        return createCommandResult(context, 'source', '', parseResult.error, 1, startTime)
       }
 
-      const scriptPath = args[0]
-      if (!scriptPath) {
-        return createCommandResult(context, 'source', '', 'source: filename argument required', 1, startTime)
-      }
+      // Execute the parsed script
+      const executionResult = await executeShellScript(
+        parseResult.statements,
+        context,
+        parseResult.resolvedPath,
+        fileSystem,
+        environment,
+        commands,
+      )
 
-      try {
-        // Resolve the script path relative to working directory
-        const resolvedPath = resolvePath(scriptPath, context.workingDirectory)
-
-        // Check if file exists
-        if (!(await fileSystem.exists(resolvedPath))) {
-          return createCommandResult(
-            context,
-            'source',
-            '',
-            `source: ${scriptPath}: No such file or directory`,
-            1,
-            startTime,
-          )
-        }
-
-        // Read script file from virtual filesystem
-        const scriptContent = await fileSystem.readFile(resolvedPath)
-
-        // Parse the script content
-        const parser = createShellScriptParser()
-        const parseResult = parser.parseScript(scriptContent)
-
-        if (!parseResult.success) {
-          const errorMessage = parseResult.error || 'Unknown parse error'
-          return createCommandResult(
-            context,
-            'source',
-            '',
-            `source: ${scriptPath}: Parse error: ${errorMessage}`,
-            1,
-            startTime,
-          )
-        }
-
-        // Execute the parsed script using the script executor
-        const statements = parseResult.statements || []
-        const statementCount = statements.length
-
-        consola.info(`Script parsing successful: ${statementCount} statements found`)
-
-        if (statementCount === 0) {
-          return createCommandResult(context, 'source', 'Script is empty', '', 0, startTime)
-        }
-
-        // Create script executor with access to all shell commands
-        const executor = createShellScriptExecutor(fileSystem, environment, commands)
-
-        // Create execution context for the script
-        const scriptContext = executor.createContext({
-          workingDirectory: context.workingDirectory,
-          environmentVariables: context.environmentVariables,
-          scriptPath: resolvedPath,
-          processId: context.processId,
-        })
-
-        // Execute the script
-        const executionResult = await executor.executeScript(statements, scriptContext, {
-          timeout: 30_000, // 30 second timeout
-          debug: false,
-        })
-
-        if (executionResult.success) {
-          return createCommandResult(
-            context,
-            'source',
-            executionResult.stdout || `Script executed successfully: ${statementCount} statements`,
-            executionResult.stderr || '',
-            executionResult.exitCode,
-            startTime,
-          )
-        } else {
-          return createCommandResult(
-            context,
-            'source',
-            executionResult.stdout || '',
-            executionResult.stderr || executionResult.error || 'Script execution failed',
-            executionResult.exitCode,
-            startTime,
-          )
-        }
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : String(error)
-        consola.error('Script execution failed:', {
-          script: scriptPath,
-          error: errorMessage,
-        })
-
-        return createCommandResult(context, 'source', '', `source: ${scriptPath}: ${errorMessage}`, 1, startTime)
-      }
+      return executionResult.result
     },
   }
 }

@@ -26,6 +26,18 @@ import {expandVariables, parseCommandPipeline} from './parser'
 import {executePipeline} from './pipeline'
 
 /**
+ * Configuration constants for script execution safety and performance.
+ */
+const SCRIPT_EXECUTION_CONSTANTS = {
+  /** Default timeout for script execution in milliseconds */
+  DEFAULT_TIMEOUT_MS: 30_000,
+  /** Maximum iterations allowed in loops to prevent infinite loops */
+  MAX_LOOP_ITERATIONS: 10_000,
+  /** Random range for generating process IDs */
+  MAX_PROCESS_ID: 10_000,
+} as const
+
+/**
  * Script execution error for script-specific failures.
  */
 export class ScriptExecutionError extends Error {
@@ -58,7 +70,7 @@ export function createShellScriptExecutor(
       let finalStdout = ''
       let finalStderr = ''
 
-      const timeout = options.timeout || 30_000 // 30 seconds default timeout
+      const timeout = options.timeout || SCRIPT_EXECUTION_CONSTANTS.DEFAULT_TIMEOUT_MS
       const timeoutPromise = new Promise<never>((_resolve, reject) => {
         setTimeout(() => {
           reject(new Error(`Script execution timeout after ${timeout}ms`))
@@ -123,7 +135,7 @@ export function createShellScriptExecutor(
         functions: new Map(options.functions || []),
         lastExitStatus: options.lastExitStatus || 0,
         scriptArguments: options.scriptArguments || [],
-        processId: options.processId || Math.floor(Math.random() * 10_000),
+        processId: options.processId || Math.floor(Math.random() * SCRIPT_EXECUTION_CONSTANTS.MAX_PROCESS_ID),
         callStack: [...(options.callStack || [])],
         shouldContinue: options.shouldContinue ?? true,
       }
@@ -415,7 +427,7 @@ export function createShellScriptExecutor(
         }
 
         let whileIterations = 0
-        const maxIterations = 10_000 // Prevent infinite loops
+        const maxIterations = SCRIPT_EXECUTION_CONSTANTS.MAX_LOOP_ITERATIONS
 
         while (whileIterations < maxIterations && currentContext.shouldContinue) {
           const conditionResult = await evaluateCondition(loopContent.condition, currentContext)
@@ -463,7 +475,7 @@ export function createShellScriptExecutor(
         }
 
         let untilIterations = 0
-        const maxUntilIterations = 10_000 // Prevent infinite loops
+        const maxUntilIterations = SCRIPT_EXECUTION_CONSTANTS.MAX_LOOP_ITERATIONS
 
         while (untilIterations < maxUntilIterations && currentContext.shouldContinue) {
           const conditionResult = await evaluateCondition(loopContent.condition, currentContext)
@@ -575,89 +587,108 @@ async function executeConditionalStatement(
 }
 
 /**
- * Evaluate a shell condition expression.
+ * Creates a variable context from execution context for variable expansion.
  *
- * Supports basic shell test operations like string comparisons,
- * numeric comparisons, file tests, and variable checks.
+ * Consolidates environment and local variables into a single object for
+ * consistent variable resolution across condition evaluations.
  */
-async function evaluateCondition(condition: string, context: ScriptExecutionContext): Promise<boolean> {
-  const expandedCondition = expandVariables(condition, {
+function createVariableContext(context: ScriptExecutionContext): Record<string, string> {
+  return {
     ...context.environmentVariables,
     ...Object.fromEntries(context.localVariables),
-  }).trim()
-
-  // Handle empty or whitespace conditions
-  if (!expandedCondition) {
-    return false
   }
+}
 
+/**
+ * Evaluates string equality and inequality operations.
+ *
+ * Handles both quoted string comparisons with = and != operators.
+ * Essential for shell script conditional logic that compares string values.
+ */
+function evaluateStringComparison(condition: string): boolean | null {
   // Handle string equality checks: "string1" = "string2"
-  const equalityMatch = expandedCondition.match(/^"([^"]*)"\s*=\s*"([^"]*)"$/)
+  const equalityMatch = condition.match(/^"([^"]*)"\s*=\s*"([^"]*)"$/)
   if (equalityMatch && equalityMatch[1] !== undefined && equalityMatch[2] !== undefined) {
     return equalityMatch[1] === equalityMatch[2]
   }
 
   // Handle string inequality checks: "string1" != "string2"
-  const inequalityMatch = expandedCondition.match(/^"([^"]*)"\s*!=\s*"([^"]*)"$/)
+  const inequalityMatch = condition.match(/^"([^"]*)"\s*!=\s*"([^"]*)"$/)
   if (inequalityMatch && inequalityMatch[1] !== undefined && inequalityMatch[2] !== undefined) {
     return inequalityMatch[1] !== inequalityMatch[2]
   }
 
-  // Handle numeric comparisons: num1 -eq num2, num1 -gt num2, etc.
-  const numericMatch = expandedCondition.match(/^(\d+|\$\w+)\s+(-eq|-ne|-gt|-ge|-lt|-le)\s+(\d+|\$\w+)$/)
-  if (numericMatch && numericMatch[1] && numericMatch[2] && numericMatch[3]) {
-    const leftStr = numericMatch[1].startsWith('$')
-      ? expandVariables(numericMatch[1], {
-          ...context.environmentVariables,
-          ...Object.fromEntries(context.localVariables),
-        })
-      : numericMatch[1]
-    const operator = numericMatch[2]
-    const rightStr = numericMatch[3].startsWith('$')
-      ? expandVariables(numericMatch[3], {
-          ...context.environmentVariables,
-          ...Object.fromEntries(context.localVariables),
-        })
-      : numericMatch[3]
+  return null
+}
 
-    const left = Number.parseInt(leftStr, 10)
-    const right = Number.parseInt(rightStr, 10)
-
-    if (!Number.isNaN(left) && !Number.isNaN(right)) {
-      switch (operator) {
-        case '-eq':
-          return left === right
-        case '-ne':
-          return left !== right
-        case '-gt':
-          return left > right
-        case '-ge':
-          return left >= right
-        case '-lt':
-          return left < right
-        case '-le':
-          return left <= right
-        default:
-          return false
-      }
-    }
+/**
+ * Evaluates numeric comparison operations.
+ *
+ * Supports shell numeric comparison operators (-eq, -ne, -gt, -ge, -lt, -le)
+ * with proper variable expansion for both operands.
+ */
+function evaluateNumericComparison(condition: string, variableContext: Record<string, string>): boolean | null {
+  const numericMatch = condition.match(/^(\d+|\$\w+)\s+(-eq|-ne|-gt|-ge|-lt|-le)\s+(\d+|\$\w+)$/)
+  if (!numericMatch || !numericMatch[1] || !numericMatch[2] || !numericMatch[3]) {
+    return null
   }
 
-  // Handle variable existence checks: -n "$var" or -z "$var"
-  const varCheckMatch = expandedCondition.match(/^(-n|-z)\s+"([^"]*)"$/)
-  if (varCheckMatch && varCheckMatch[1] && varCheckMatch[2] !== undefined) {
-    const operator = varCheckMatch[1]
-    const value = varCheckMatch[2]
+  const leftStr = numericMatch[1].startsWith('$') ? expandVariables(numericMatch[1], variableContext) : numericMatch[1]
+  const operator = numericMatch[2]
+  const rightStr = numericMatch[3].startsWith('$') ? expandVariables(numericMatch[3], variableContext) : numericMatch[3]
 
-    if (operator === '-n') {
-      return value.length > 0
-    } else if (operator === '-z') {
-      return value.length === 0
-    }
+  const left = Number.parseInt(leftStr, 10)
+  const right = Number.parseInt(rightStr, 10)
+
+  if (Number.isNaN(left) || Number.isNaN(right)) {
+    return null
   }
 
+  switch (operator) {
+    case '-eq':
+      return left === right
+    case '-ne':
+      return left !== right
+    case '-gt':
+      return left > right
+    case '-ge':
+      return left >= right
+    case '-lt':
+      return left < right
+    case '-le':
+      return left <= right
+    default:
+      return null
+  }
+}
+
+/**
+ * Evaluates variable existence and emptiness checks.
+ *
+ * Handles -n (non-empty) and -z (empty) tests that are fundamental
+ * to shell scripting for checking variable state.
+ */
+function evaluateVariableCheck(condition: string): boolean | null {
+  const varCheckMatch = condition.match(/^(-n|-z)\s+"([^"]*)"$/)
+  if (!varCheckMatch || !varCheckMatch[1] || varCheckMatch[2] === undefined) {
+    return null
+  }
+
+  const operator = varCheckMatch[1]
+  const value = varCheckMatch[2]
+
+  return operator === '-n' ? value.length > 0 : value.length === 0
+}
+
+/**
+ * Evaluates variable truthiness and string literal checks.
+ *
+ * Handles direct variable evaluation ($var, "$var") and quoted string
+ * truthiness, which are common in shell conditional expressions.
+ */
+function evaluateVariableTruthiness(condition: string, context: ScriptExecutionContext): boolean | null {
   // Handle simple variable truthiness: $var or "$var"
-  const varMatch = expandedCondition.match(/^\$(\w+)$|^"\$(\w+)"$/)
+  const varMatch = condition.match(/^\$(\w+)$|^"\$(\w+)"$/)
   if (varMatch) {
     const varName = varMatch[1] || varMatch[2]
     if (varName) {
@@ -667,24 +698,76 @@ async function evaluateCondition(condition: string, context: ScriptExecutionCont
   }
 
   // Handle simple string truthiness: "string"
-  const stringMatch = expandedCondition.match(/^"([^"]*)"$/)
+  const stringMatch = condition.match(/^"([^"]*)"$/)
   if (stringMatch && stringMatch[1] !== undefined) {
     return stringMatch[1].length > 0
   }
 
-  // Handle exit status checks: $? -eq 0
-  const exitStatusMatch = expandedCondition.match(/^\$\?\s*(-eq|-ne)\s*(\d+)$/)
-  if (exitStatusMatch && exitStatusMatch[1] && exitStatusMatch[2]) {
-    const operator = exitStatusMatch[1]
-    const expectedStatus = Number.parseInt(exitStatusMatch[2], 10)
+  return null
+}
 
-    if (!Number.isNaN(expectedStatus)) {
-      if (operator === '-eq') {
-        return context.lastExitStatus === expectedStatus
-      } else if (operator === '-ne') {
-        return context.lastExitStatus !== expectedStatus
-      }
-    }
+/**
+ * Evaluates exit status comparison operations.
+ *
+ * Handles $? comparisons for checking the success or failure of previous
+ * commands, which is essential for error handling in shell scripts.
+ */
+function evaluateExitStatusCheck(condition: string, context: ScriptExecutionContext): boolean | null {
+  const exitStatusMatch = condition.match(/^\$\?\s*(-eq|-ne)\s*(\d+)$/)
+  if (!exitStatusMatch || !exitStatusMatch[1] || !exitStatusMatch[2]) {
+    return null
+  }
+
+  const operator = exitStatusMatch[1]
+  const expectedStatus = Number.parseInt(exitStatusMatch[2], 10)
+
+  if (Number.isNaN(expectedStatus)) {
+    return null
+  }
+
+  return operator === '-eq' ? context.lastExitStatus === expectedStatus : context.lastExitStatus !== expectedStatus
+}
+
+/**
+ * Evaluate a shell condition expression using a chain of specialized evaluators.
+ *
+ * Breaks down complex condition evaluation into focused, testable functions
+ * that each handle a specific type of shell test operation. This modular
+ * approach improves maintainability and follows the single responsibility principle.
+ */
+async function evaluateCondition(condition: string, context: ScriptExecutionContext): Promise<boolean> {
+  const variableContext = createVariableContext(context)
+  const expandedCondition = expandVariables(condition, variableContext).trim()
+
+  // Handle empty or whitespace conditions
+  if (!expandedCondition) {
+    return false
+  }
+
+  // Try each evaluation strategy in order of specificity
+  const stringResult = evaluateStringComparison(expandedCondition)
+  if (stringResult !== null) {
+    return stringResult
+  }
+
+  const numericResult = evaluateNumericComparison(expandedCondition, variableContext)
+  if (numericResult !== null) {
+    return numericResult
+  }
+
+  const varCheckResult = evaluateVariableCheck(expandedCondition)
+  if (varCheckResult !== null) {
+    return varCheckResult
+  }
+
+  const truthinessResult = evaluateVariableTruthiness(expandedCondition, context)
+  if (truthinessResult !== null) {
+    return truthinessResult
+  }
+
+  const exitStatusResult = evaluateExitStatusCheck(expandedCondition, context)
+  if (exitStatusResult !== null) {
+    return exitStatusResult
   }
 
   // Default: treat non-empty strings as truthy
@@ -694,8 +777,9 @@ async function evaluateCondition(condition: string, context: ScriptExecutionCont
 /**
  * Execute a function definition statement.
  *
- * Stores the function definition in the execution context for later calls.
- * Functions can be called as regular commands within the script.
+ * Stores the function definition in the execution context for later invocation.
+ * Shell functions are first-class constructs that enable code reuse and
+ * modular script organization, essential for complex shell automation.
  */
 async function executeFunctionStatement(
   statement: ScriptStatement,
@@ -707,7 +791,7 @@ async function executeFunctionStatement(
     throw new ScriptExecutionError(statement.lineNumber, statement.line, 'Function definition requires a name')
   }
 
-  // Store the function definition in the context
+  // Store the function definition in the context for later execution
   const newFunctions = new Map(context.functions)
   newFunctions.set(functionContent.name, functionContent)
 
@@ -719,6 +803,10 @@ async function executeFunctionStatement(
 
 /**
  * Execute an exit statement.
+ *
+ * Terminates script execution with a successful exit status.
+ * Critical for controlled script termination and proper cleanup
+ * in shell automation workflows.
  */
 async function executeExitStatement(
   _statement: ScriptStatement,
@@ -726,25 +814,27 @@ async function executeExitStatement(
 ): Promise<ScriptExecutionContext> {
   return {
     ...context,
-    lastExitStatus: 0, // Default exit status
+    lastExitStatus: 0,
     shouldContinue: false,
   }
 }
 
 /**
  * Execute a return statement.
+ *
+ * Handles context-aware return behavior that differs between function
+ * and script contexts. In functions, return exits only the function;
+ * in script context, return exits the entire script.
  */
 async function executeReturnStatement(
   _statement: ScriptStatement,
   context: ScriptExecutionContext,
 ): Promise<ScriptExecutionContext> {
-  // In function context, return exits the function
-  // In script context, return exits the script
   const inFunction = context.callStack.length > 0
 
   return {
     ...context,
-    lastExitStatus: 0, // Default return status
-    shouldContinue: !inFunction, // Continue if not in function, stop if in function
+    lastExitStatus: 0,
+    shouldContinue: !inFunction, // Continue script if not in function
   }
 }
