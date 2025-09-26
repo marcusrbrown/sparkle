@@ -260,7 +260,8 @@ describe('Standard Shell Commands', () => {
 
       expect(result.exitCode).toBe(0)
       expect(result.stderr).toBe('')
-      expect(result.stdout).toContain('Available commands:')
+      expect(result.stdout).toContain('MOO-DANG - A WASM-based web shell')
+      expect(result.stdout).toContain('COMMON COMMANDS')
       expect(result.stdout).toContain('echo')
       expect(result.stdout).toContain('pwd')
       expect(result.stdout).toContain('ls')
@@ -272,8 +273,10 @@ describe('Standard Shell Commands', () => {
 
       expect(result.exitCode).toBe(0)
       expect(result.stderr).toBe('')
-      expect(result.stdout).toContain('echo:')
-      expect(result.stdout).toContain('Display a line of text')
+      expect(result.stdout).toContain('NAME')
+      expect(result.stdout).toContain('echo - Display text to output')
+      expect(result.stdout).toContain('USAGE')
+      expect(result.stdout).toContain('DESCRIPTION')
     })
 
     it('should handle help for non-existent command', async () => {
@@ -281,17 +284,18 @@ describe('Standard Shell Commands', () => {
       const result = await helpCommand.execute(['nonexistent'], executionContext)
 
       expect(result.exitCode).toBe(1)
-      expect(result.stderr).toContain('no help available')
       expect(result.stdout).toBe('')
+      expect(result.stderr).toContain("Command 'nonexistent' not found")
     })
 
     it('should handle empty command name', async () => {
       const helpCommand = commands.get('help')!
       const result = await helpCommand.execute([''], executionContext)
 
-      expect(result.exitCode).toBe(1)
-      expect(result.stderr).toContain('missing command name')
-      expect(result.stdout).toBe('')
+      expect(result.exitCode).toBe(0)
+      expect(result.stderr).toBe('')
+      expect(result.stdout).toContain('MOO-DANG - A WASM-based web shell')
+      expect(result.stdout).toContain('COMMON COMMANDS')
     })
   })
 
