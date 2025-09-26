@@ -113,92 +113,97 @@ function createWasmMemory(maxMemorySize: number): WebAssembly.Memory {
 }
 
 /**
- * Creates shell import functions for WASM module execution.
+ * Creates shell import functions for WASM module execution with smart memory detection.
  *
  * These functions provide the interface between WASM modules and the shell environment,
  * allowing modules to perform I/O operations, access arguments, and interact with
- * the environment.
+ * the environment. The smart memory detection automatically chooses between imported
+ * and exported memory based on where the actual data is located.
  */
-function createShellImports(context: WasmExecutionContext, memory: WebAssembly.Memory): ShellImports {
-  /**
-   * Safely read a string from WASM memory with bounds checking.
-   */
-  function readStringFromMemory(ptr: number, len: number): string {
-    try {
-      // Get current memory buffer (it might have grown)
-      const memoryArray = new Uint8Array(memory.buffer)
-      if (ptr < 0 || len < 0) {
-        consola.warn('WASM string read invalid parameters', {ptr, len, memorySize: memoryArray.length})
-        return ''
-      }
-
-      if (ptr + len > memoryArray.length) {
-        consola.warn('WASM string read out of bounds', {ptr, len, memorySize: memoryArray.length})
-        // Try to read what we can instead of returning empty string
-        const availableLen = Math.max(0, memoryArray.length - ptr)
-        if (availableLen > 0) {
-          const bytes = memoryArray.slice(ptr, ptr + availableLen)
-          return new TextDecoder('utf-8', {fatal: false}).decode(bytes)
-        }
-        return ''
-      }
-
-      const bytes = memoryArray.slice(ptr, ptr + len)
-      return new TextDecoder('utf-8', {fatal: false}).decode(bytes)
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : String(error)
-      consola.error('Failed to read string from WASM memory', {error: errorMessage, ptr, len})
-      return ''
-    }
-  }
-
-  /**
-   * Safely write a string to WASM memory with bounds checking.
-   */
-  function writeStringToMemory(ptr: number, maxLen: number, data: string): number {
-    try {
-      // Get current memory buffer (it might have grown)
-      const memoryArray = new Uint8Array(memory.buffer)
-      if (ptr < 0 || maxLen <= 0) {
-        consola.warn('WASM string write invalid parameters', {ptr, maxLen, memorySize: memoryArray.length})
-        return 0
-      }
-
-      if (ptr + maxLen > memoryArray.length) {
-        consola.warn('WASM string write out of bounds', {ptr, maxLen, memorySize: memoryArray.length})
-        return 0
-      }
-
-      const encoder = new TextEncoder()
-      const encoded = encoder.encode(data)
-      const writeLen = Math.min(encoded.length, maxLen - 1) // Reserve space for null terminator
-
-      memoryArray.set(encoded.slice(0, writeLen), ptr)
-      if (writeLen < maxLen) {
-        memoryArray[ptr + writeLen] = 0 // Null terminate
-      }
-
-      return writeLen
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : String(error)
-      consola.error('Failed to write string to WASM memory', {error: errorMessage, ptr, maxLen})
-      return 0
-    }
-  }
-
+function createShellImports(
+  context: WasmExecutionContext,
+  importedMemory: WebAssembly.Memory,
+  getInstance?: () => WebAssembly.Instance,
+): ShellImports {
   return {
     shell_write_stdout: (dataPtr: number, dataLen: number) => {
-      const data = readStringFromMemory(dataPtr, dataLen)
+      // Try to find the correct memory (either imported or exported)
+      let targetMemory = importedMemory
+
+      // Check if we should use exported memory instead
+      const instance = getInstance?.()
+      if (instance?.exports?.memory instanceof WebAssembly.Memory) {
+        const exportedMemory = instance.exports.memory as WebAssembly.Memory
+
+        // Check if the data pointer is valid in exported memory
+        if (dataPtr + dataLen <= exportedMemory.buffer.byteLength) {
+          const exportedBytes = new Uint8Array(exportedMemory.buffer).slice(dataPtr, dataPtr + Math.min(dataLen, 10))
+          const importedBytes = new Uint8Array(importedMemory.buffer).slice(dataPtr, dataPtr + Math.min(dataLen, 10))
+
+          // If exported memory has non-zero data and imported has zeros, use exported
+          const hasDataInExported = exportedBytes.some(b => b !== 0)
+          const hasDataInImported = importedBytes.some(b => b !== 0)
+
+          if (hasDataInExported && !hasDataInImported) {
+            targetMemory = exportedMemory
+          }
+        }
+      }
+
+      // Read from the target memory
+      const memoryArray = new Uint8Array(targetMemory.buffer)
+
+      if (dataPtr < 0 || dataLen < 0 || dataPtr + dataLen > memoryArray.length) {
+        consola.warn('WASM string read out of bounds', {dataPtr, dataLen, memorySize: memoryArray.length})
+        return
+      }
+
+      const bytes = memoryArray.slice(dataPtr, dataPtr + dataLen)
+      const data = new TextDecoder('utf-8', {fatal: false}).decode(bytes)
+
       context.stdout += data
     },
 
     shell_write_stderr: (dataPtr: number, dataLen: number) => {
-      const data = readStringFromMemory(dataPtr, dataLen)
+      // Similar logic for stderr...
+      let targetMemory = importedMemory
+      const instance = getInstance?.()
+      if (instance?.exports?.memory instanceof WebAssembly.Memory) {
+        targetMemory = instance.exports.memory as WebAssembly.Memory
+      }
+
+      const memoryArray = new Uint8Array(targetMemory.buffer)
+      if (dataPtr < 0 || dataLen < 0 || dataPtr + dataLen > memoryArray.length) {
+        return
+      }
+
+      const bytes = memoryArray.slice(dataPtr, dataPtr + dataLen)
+      const data = new TextDecoder('utf-8', {fatal: false}).decode(bytes)
       context.stderr += data
     },
 
     shell_read_stdin: (bufferPtr: number, bufferLen: number) => {
-      return writeStringToMemory(bufferPtr, bufferLen, context.stdin)
+      let targetMemory = importedMemory
+      const instance = getInstance?.()
+      if (instance?.exports?.memory instanceof WebAssembly.Memory) {
+        targetMemory = instance.exports.memory as WebAssembly.Memory
+      }
+
+      const memoryArray = new Uint8Array(targetMemory.buffer)
+      if (bufferPtr < 0 || bufferLen <= 0 || bufferPtr + bufferLen > memoryArray.length) {
+        return 0
+      }
+
+      const encoder = new TextEncoder()
+      const encoded = encoder.encode(context.stdin)
+      const writeLen = Math.min(encoded.length, bufferLen - 1)
+
+      memoryArray.set(encoded.slice(0, writeLen), bufferPtr)
+      if (writeLen < bufferLen) {
+        memoryArray[bufferPtr + writeLen] = 0
+      }
+
+      return writeLen
     },
 
     shell_get_argc: () => {
@@ -209,14 +214,64 @@ function createShellImports(context: WasmExecutionContext, memory: WebAssembly.M
       if (index < 0 || index >= context.args.length) {
         return 0
       }
+
+      let targetMemory = importedMemory
+      const instance = getInstance?.()
+      if (instance?.exports?.memory instanceof WebAssembly.Memory) {
+        targetMemory = instance.exports.memory as WebAssembly.Memory
+      }
+
+      const memoryArray = new Uint8Array(targetMemory.buffer)
+      if (bufferPtr < 0 || bufferLen <= 0 || bufferPtr + bufferLen > memoryArray.length) {
+        return 0
+      }
+
       const arg = context.args[index] || ''
-      return writeStringToMemory(bufferPtr, bufferLen, arg)
+      const encoder = new TextEncoder()
+      const encoded = encoder.encode(arg)
+      const writeLen = Math.min(encoded.length, bufferLen - 1)
+
+      memoryArray.set(encoded.slice(0, writeLen), bufferPtr)
+      if (writeLen < bufferLen) {
+        memoryArray[bufferPtr + writeLen] = 0
+      }
+
+      return writeLen
     },
 
     shell_get_env: (keyPtr: number, keyLen: number, bufferPtr: number, bufferLen: number) => {
-      const key = readStringFromMemory(keyPtr, keyLen)
+      let targetMemory = importedMemory
+      const instance = getInstance?.()
+      if (instance?.exports?.memory instanceof WebAssembly.Memory) {
+        targetMemory = instance.exports.memory as WebAssembly.Memory
+      }
+
+      const memoryArray = new Uint8Array(targetMemory.buffer)
+
+      // Read key
+      if (keyPtr < 0 || keyLen < 0 || keyPtr + keyLen > memoryArray.length) {
+        return 0
+      }
+      const keyBytes = memoryArray.slice(keyPtr, keyPtr + keyLen)
+      const key = new TextDecoder('utf-8', {fatal: false}).decode(keyBytes)
+
       const value = context.env[key] || ''
-      return writeStringToMemory(bufferPtr, bufferLen, value)
+
+      // Write value
+      if (bufferPtr < 0 || bufferLen <= 0 || bufferPtr + bufferLen > memoryArray.length) {
+        return 0
+      }
+
+      const encoder = new TextEncoder()
+      const encoded = encoder.encode(value)
+      const writeLen = Math.min(encoded.length, bufferLen - 1)
+
+      memoryArray.set(encoded.slice(0, writeLen), bufferPtr)
+      if (writeLen < bufferLen) {
+        memoryArray[bufferPtr + writeLen] = 0
+      }
+
+      return writeLen
     },
 
     shell_set_exit_code: (code: number) => {
@@ -276,23 +331,26 @@ export class WasmModuleLoaderImpl implements WasmModuleLoader {
       // Compile the module first to check its memory requirements
       const wasmModule = await WebAssembly.compile(bytes)
 
-      // Create memory with appropriate sizing for the module
-      const memory = createWasmMemory(fullConfig.maxMemorySize)
+      // Try to instantiate the module first without providing memory
+      // to see if it exports its own (common for Zig modules)
+      let instance: WebAssembly.Instance
 
-      // Create shell imports
-      const shellImports = createShellImports(executionContext, memory)
+      // Always provide our own memory, but create shell imports that can handle both
+      const actualMemory = createWasmMemory(fullConfig.maxMemorySize)
 
-      // Combine custom imports with shell imports
+      // Create shell imports with a closure to access instance when available
+      const shellImports = createShellImports(executionContext, actualMemory, () => instance)
+
       const imports = {
         env: {
           ...shellImports,
-          memory,
+          memory: actualMemory,
         },
         ...fullConfig.customImports,
       }
 
-      // Instantiate the module with our imports
-      const instance = await WebAssembly.instantiate(wasmModule, imports)
+      instance = await WebAssembly.instantiate(wasmModule, imports)
+      consola.debug('WASM using smart shell imports with memory detection')
 
       // Extract exports
       const moduleExports: WasmExports = {
@@ -306,9 +364,6 @@ export class WasmModuleLoaderImpl implements WasmModuleLoader {
           moduleExports[name] = value
         }
       }
-
-      // Use the memory we provided in imports, which is now shared with the module
-      const actualMemory = memory
 
       const module: WasmModule = {
         instance,
