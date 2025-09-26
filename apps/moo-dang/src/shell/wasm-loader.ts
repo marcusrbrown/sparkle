@@ -9,6 +9,7 @@
 import type {ExecutionContext} from './types'
 import type {
   ShellImports,
+  WasmErrorContext,
   WasmExecutionContext,
   WasmExecutionResult,
   WasmExports,
@@ -63,7 +64,6 @@ function createWasmModuleCache(maxSize = 10): WasmModuleCache {
     get(key: string): WasmModule | undefined {
       const module = cache.get(key)
       if (module) {
-        // Move to end (most recently used)
         cache.delete(key)
         cache.set(key, module)
       }
@@ -74,7 +74,6 @@ function createWasmModuleCache(maxSize = 10): WasmModuleCache {
       if (cache.has(key)) {
         cache.delete(key)
       } else if (cache.size >= maxSize) {
-        // Remove least recently used (first entry)
         const firstKey = cache.keys().next().value
         if (firstKey) {
           cache.delete(firstKey)
@@ -173,17 +172,41 @@ function validateMemoryBounds(ptr: number, len: number, memorySize: number): boo
 }
 
 /**
- * Output buffer management for enhanced streaming and memory efficiency.
+ * Buffer size limits to prevent browser memory issues with large WASM output.
  */
 const OUTPUT_BUFFER_CONFIG = {
-  /** Maximum buffer size before truncation (1MB) */
   MAX_BUFFER_SIZE: 1024 * 1024,
-  /** Size to truncate to when buffer exceeds maximum (512KB) */
   TRUNCATE_TO_SIZE: 512 * 1024,
 } as const
 
 /**
- * Safely append text to output buffer with size management.
+ * Creates error context for WASM execution failures with comprehensive diagnostic data.
+ */
+function createWasmErrorContext(
+  functionName: string,
+  moduleName: string,
+  processId: number,
+  startTime: number,
+  wasmContext: WasmExecutionContext,
+  memorySize: number,
+): WasmErrorContext {
+  return {
+    functionName,
+    moduleName,
+    processId,
+    executionTime: Date.now() - startTime,
+    memoryUsage: memorySize,
+    outputCapture: {
+      stdoutLength: wasmContext.stdout.length,
+      stderrLength: wasmContext.stderr.length,
+      partialStdout: wasmContext.stdout.slice(-100),
+      partialStderr: wasmContext.stderr.slice(-100),
+    },
+  }
+}
+
+/**
+ * Prevents buffer overflow by truncating output that exceeds browser memory limits.
  */
 function appendToOutputBuffer(buffer: string, newText: string, bufferName: string): string {
   // Handle empty or invalid input
@@ -227,7 +250,6 @@ function createShellImports(
   return {
     shell_write_stdout: (dataPtr: number, dataLen: number) => {
       try {
-        // Handle zero-length writes gracefully
         if (dataLen === 0) return
 
         const targetMemory = selectTargetMemory(importedMemory, getInstance, dataPtr, dataLen)
@@ -245,12 +267,11 @@ function createShellImports(
 
         const bytes = memoryArray.slice(dataPtr, dataPtr + dataLen)
 
-        // Enhanced UTF-8 decoding with error handling
+        // UTF-8 decode with fallback for invalid sequences from Zig modules
         let data: string
         try {
           data = new TextDecoder('utf-8', {fatal: true}).decode(bytes)
         } catch {
-          // Fallback to non-fatal decoding for invalid UTF-8
           data = new TextDecoder('utf-8', {fatal: false}).decode(bytes)
           consola.debug('WASM stdout contained invalid UTF-8, used fallback decoding')
         }
@@ -563,20 +584,14 @@ function createWasmModuleLoaderImpl(cacheSize = 10): WasmModuleLoader {
                 resolve()
               }
             } catch (error: unknown) {
-              // Capture detailed execution error context
-              const errorContext = {
+              const errorContext = createWasmErrorContext(
                 functionName,
                 moduleName,
-                processId: executionContext.processId,
-                executionTime: Date.now() - startTime,
-                memoryUsage: module.memory.buffer.byteLength,
-                outputCapture: {
-                  stdoutLength: module.context.stdout.length,
-                  stderrLength: module.context.stderr.length,
-                  partialStdout: module.context.stdout.slice(-100), // Last 100 chars for debugging
-                  partialStderr: module.context.stderr.slice(-100), // Last 100 chars for debugging
-                },
-              }
+                executionContext.processId,
+                startTime,
+                module.context,
+                module.memory.buffer.byteLength,
+              )
 
               const cause = error instanceof Error ? error : undefined
               const message = error instanceof Error ? error.message : String(error)
@@ -585,10 +600,8 @@ function createWasmModuleLoaderImpl(cacheSize = 10): WasmModuleLoader {
                 moduleName,
                 `Function '${functionName}' execution failed: ${message}`,
                 cause,
+                errorContext,
               )
-
-              // Attach execution context for debugging
-              Object.assign(execError, {executionContext: errorContext})
 
               reject(execError)
             }

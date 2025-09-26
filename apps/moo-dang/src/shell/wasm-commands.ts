@@ -51,7 +51,6 @@ export function createWasmExecutableCommand(
       let wasmModule: any = null
       let loadedSuccessfully = false
 
-      // Enhanced logging for WASM command execution
       consola.debug(`Starting WASM command execution: ${wasmName}`, {
         processId: context.processId,
         args,
@@ -60,7 +59,6 @@ export function createWasmExecutableCommand(
       })
 
       try {
-        // Load WASM file with detailed error handling
         let response: Response
         try {
           response = await fetch(wasmPath)
@@ -81,27 +79,25 @@ export function createWasmExecutableCommand(
           processId: context.processId,
         })
 
-        // Load the WASM module with enhanced configuration
         wasmModule = await wasmLoader.loadModule(wasmBytes, {
           name: wasmName,
           maxMemorySize: WASM_COMMAND_CONFIG.MAX_MEMORY_SIZE,
           executionTimeout: WASM_COMMAND_CONFIG.EXECUTION_TIMEOUT,
-          enableDebugLogging: true, // Enable debug logging for better error tracking
+          enableDebugLogging: true,
         })
         loadedSuccessfully = true
 
-        // Determine which function to call based on arguments
+        // Support calling specific functions: "hello hello_name John"
         let functionName = 'main'
         let actualArgs = args
 
-        // Check if first argument is a function name (if it exists as export)
+        // Allow first argument to override function if it exists as export
         if (args.length > 0 && args[0] && wasmModule.exports[args[0]]) {
           functionName = args[0]
           actualArgs = args.slice(1)
           consola.debug(`Using custom WASM function: ${functionName}`, {wasmName, actualArgs})
         }
 
-        // Create execution context for WASM with proper arguments
         const wasmExecutionContext: ExecutionContext = {
           ...context,
           args: actualArgs,
@@ -113,7 +109,6 @@ export function createWasmExecutableCommand(
           availableExports: Object.keys(wasmModule.exports),
         })
 
-        // Execute the WASM function with enhanced error handling
         const result = await wasmLoader.executeFunction(wasmModule, functionName, wasmExecutionContext)
 
         consola.debug(`WASM execution completed: ${wasmName}.${functionName}`, {
