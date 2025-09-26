@@ -9,51 +9,27 @@
 
 import type {CommandExecutionResult, ExecutionContext} from './types'
 
-/**
- * WASM module instance with managed execution context and imports.
- */
 export interface WasmModule {
-  /** WebAssembly instance with exported functions */
   readonly instance: WebAssembly.Instance
-  /** Module memory for reading/writing data */
   readonly memory: WebAssembly.Memory
-  /** Execution context for this module instance */
   readonly context: WasmExecutionContext
-  /** Available exported functions from the module */
   readonly exports: WasmExports
 }
 
-/**
- * Available exports from a WASM module.
- */
 export interface WasmExports {
-  /** Main entry point function */
   main?: () => void
-  /** Memory export for data access */
   memory?: WebAssembly.Memory
-  /** Additional exported functions by name */
   [key: string]: WebAssembly.ExportValue | undefined
 }
 
-/**
- * Execution context for WASM module instances.
- */
 export interface WasmExecutionContext {
-  /** Command-line arguments passed to the executable */
   args: string[]
-  /** Environment variables available to the module */
   env: Record<string, string>
-  /** Standard input data for the module */
   stdin: string
-  /** Standard output buffer */
   stdout: string
-  /** Standard error buffer */
   stderr: string
-  /** Exit code set by the module */
   exitCode: number
-  /** Working directory for file operations */
   workingDirectory: string
-  /** Process ID for this execution */
   processId: number
 }
 
@@ -67,61 +43,175 @@ export type WasmExecutableName = (typeof WASM_EXECUTABLES)[number]
  * Configuration for WASM module loading and execution.
  */
 export interface WasmModuleConfig {
-  /** Module name for debugging and error reporting */
   readonly name: string
-  /** Maximum memory size in bytes (default: 32MB for Zig modules) */
+  // Zig-compiled modules require 32MB due to runtime overhead
   readonly maxMemorySize?: number
-  /** Execution timeout in milliseconds (default: 15s) */
   readonly executionTimeout?: number
-  /** Enable debug logging for module execution */
   readonly enableDebugLogging?: boolean
-  /** Custom import functions to provide to the module */
   readonly customImports?: Record<string, Record<string, WebAssembly.ImportValue>>
 }
 
-/**
- * Required subset of WasmModuleConfig with defaults applied.
- */
 export type WasmModuleOptions = Required<WasmModuleConfig>
 
-/**
- * Result of WASM module execution.
- */
 export interface WasmExecutionResult extends CommandExecutionResult {
-  /** Name of the WASM module that was executed */
   readonly moduleName: string
-  /** Function name that was called (e.g., 'main', 'hello_name') */
   readonly functionName: string
-  /** Peak memory usage during execution in bytes */
   readonly peakMemoryUsage: number
 }
 
 /**
- * Error types for WASM module operations.
+ * Error context for WASM diagnostics and debugging complex runtime issues.
+ */
+export interface WasmErrorContext {
+  readonly processId?: number
+  readonly executionTime?: number
+  readonly memoryUsage?: number
+  readonly functionName?: string
+  readonly moduleName?: string
+  readonly args?: string[]
+  readonly outputCapture?: {
+    readonly stdoutLength: number
+    readonly stderrLength: number
+    readonly partialStdout?: string
+    readonly partialStderr?: string
+  }
+  readonly moduleInfo?: {
+    readonly exports: string[]
+    readonly memorySize: number
+    readonly compilationTime?: number
+  }
+}
+
+/**
+ * Creates enhanced stack trace with WASM diagnostic context.
+ *
+ * Extends error stack traces with contextual information about WASM module
+ * execution state to assist with debugging complex WASM runtime issues.
+ */
+function buildWasmEnhancedStack(
+  originalStack: string,
+  moduleName: string,
+  operation: string,
+  context?: WasmErrorContext,
+): string {
+  if (!context) return originalStack
+
+  const contextLines: string[] = [`    WASM Context:`, `      Module: ${moduleName}`, `      Operation: ${operation}`]
+
+  if (context.processId != null) {
+    contextLines.push(`      Process ID: ${context.processId}`)
+  }
+
+  if (context.executionTime != null) {
+    contextLines.push(`      Execution Time: ${context.executionTime}ms`)
+  }
+
+  if (context.memoryUsage != null) {
+    contextLines.push(`      Memory Usage: ${context.memoryUsage} bytes`)
+  }
+
+  if (context.functionName != null) {
+    contextLines.push(`      Function: ${context.functionName}`)
+  }
+
+  if (context.args != null && context.args.length > 0) {
+    contextLines.push(`      Arguments: ${context.args.join(' ')}`)
+  }
+
+  if (context.outputCapture != null) {
+    const {stdoutLength, stderrLength, partialStdout, partialStderr} = context.outputCapture
+    contextLines.push(`      Output: stdout=${stdoutLength} chars, stderr=${stderrLength} chars`)
+
+    if (partialStdout != null) {
+      contextLines.push(`      Last stdout: ${JSON.stringify(partialStdout)}`)
+    }
+
+    if (partialStderr != null) {
+      contextLines.push(`      Last stderr: ${JSON.stringify(partialStderr)}`)
+    }
+  }
+
+  return `${originalStack}\n${contextLines.join('\n')}`
+}
+
+/**
+ * Creates diagnostic information object for WASM errors.
+ *
+ * Provides structured error context for logging and debugging purposes,
+ * including sanitized error cause information to prevent sensitive data exposure.
+ */
+function createWasmErrorDiagnostics(
+  name: string,
+  moduleName: string,
+  operation: string,
+  message: string,
+  timestamp: number,
+  context?: WasmErrorContext,
+  cause?: Error,
+): Record<string, unknown> {
+  return {
+    error: name,
+    module: moduleName,
+    operation,
+    message,
+    timestamp: new Date(timestamp).toISOString(),
+    context,
+    cause:
+      cause instanceof Error
+        ? {
+            name: cause.name,
+            message: cause.message,
+          }
+        : undefined,
+  }
+}
+
+/**
+ * Error types for WASM module operations with enhanced diagnostics.
  */
 export class WasmModuleError extends Error {
   readonly moduleName: string
   readonly operation: string
+  readonly context?: WasmErrorContext
+  readonly timestamp: number
 
-  constructor(moduleName: string, operation: string, message: string, cause?: Error) {
+  constructor(moduleName: string, operation: string, message: string, cause?: Error, context?: WasmErrorContext) {
     super(`WASM module '${moduleName}' ${operation}: ${message}`)
     this.name = 'WasmModuleError'
     this.moduleName = moduleName
     this.operation = operation
+    this.context = context
+    this.timestamp = Date.now()
     this.cause = cause
+
+    if (context != null) {
+      this.stack = buildWasmEnhancedStack(this.stack || this.message, moduleName, operation, context)
+    }
+  }
+
+  getDiagnostics(): Record<string, unknown> {
+    return createWasmErrorDiagnostics(
+      this.name,
+      this.moduleName,
+      this.operation,
+      this.message,
+      this.timestamp,
+      this.context,
+      this.cause instanceof Error ? this.cause : undefined,
+    )
   }
 }
 
 export class WasmLoadError extends WasmModuleError {
-  constructor(moduleName: string, message: string, cause?: Error) {
-    super(moduleName, 'load failed', message, cause)
+  constructor(moduleName: string, message: string, cause?: Error, context?: WasmErrorContext) {
+    super(moduleName, 'load failed', message, cause, context)
     this.name = 'WasmLoadError'
   }
 }
 
 export class WasmExecutionError extends WasmModuleError {
-  constructor(moduleName: string, message: string, cause?: Error) {
-    super(moduleName, 'execution failed', message, cause)
+  constructor(moduleName: string, message: string, cause?: Error, context?: WasmErrorContext) {
+    super(moduleName, 'execution failed', message, cause, context)
     this.name = 'WasmExecutionError'
   }
 }
@@ -129,10 +219,28 @@ export class WasmExecutionError extends WasmModuleError {
 export class WasmTimeoutError extends WasmModuleError {
   readonly timeoutMs: number
 
-  constructor(moduleName: string, timeoutMs: number) {
-    super(moduleName, 'execution timeout', `Execution exceeded ${timeoutMs}ms timeout`)
+  constructor(moduleName: string, timeoutMs: number, context?: WasmErrorContext) {
+    super(moduleName, 'execution timeout', `Execution exceeded ${timeoutMs}ms timeout`, undefined, context)
     this.name = 'WasmTimeoutError'
     this.timeoutMs = timeoutMs
+  }
+}
+
+export class WasmMemoryError extends WasmModuleError {
+  readonly requestedSize?: number
+  readonly availableSize?: number
+
+  constructor(
+    moduleName: string,
+    message: string,
+    requestedSize?: number,
+    availableSize?: number,
+    context?: WasmErrorContext,
+  ) {
+    super(moduleName, 'memory error', message, undefined, context)
+    this.name = 'WasmMemoryError'
+    this.requestedSize = requestedSize
+    this.availableSize = availableSize
   }
 }
 
@@ -191,45 +299,25 @@ export interface WasmModuleCache {
    */
   readonly set: (key: string, module: WasmModule) => void
 
-  /**
-   * Remove a module from the cache.
-   *
-   * @param key - Module cache key to remove
-   */
   readonly delete: (key: string) => void
-
-  /**
-   * Clear all cached modules.
-   */
   readonly clear: () => void
-
-  /**
-   * Get current cache size (number of modules).
-   */
   readonly size: () => number
 }
 
 /**
- * Shell imports provided to WASM modules for system interaction.
+ * Shell API functions exposed to WASM modules via WebAssembly imports.
+ *
+ * These functions bridge the gap between WASM modules and the shell environment,
+ * allowing WASM executables to behave like native command-line tools.
  */
 export interface ShellImports {
-  /** Write data to stdout */
   readonly shell_write_stdout: (dataPtr: number, dataLen: number) => void
-  /** Write data to stderr */
   readonly shell_write_stderr: (dataPtr: number, dataLen: number) => void
-  /** Read data from stdin */
   readonly shell_read_stdin: (bufferPtr: number, bufferLen: number) => number
-  /** Get number of command-line arguments */
   readonly shell_get_argc: () => number
-  /** Get command-line argument by index */
   readonly shell_get_arg: (index: number, bufferPtr: number, bufferLen: number) => number
-  /** Get environment variable value */
   readonly shell_get_env: (keyPtr: number, keyLen: number, bufferPtr: number, bufferLen: number) => number
-  /** Set exit code for the module */
   readonly shell_set_exit_code: (code: number) => void
 }
 
-/**
- * Factory function type for creating shell imports for a WASM execution context.
- */
 export type CreateShellImports = (context: WasmExecutionContext, memory: WebAssembly.Memory) => ShellImports

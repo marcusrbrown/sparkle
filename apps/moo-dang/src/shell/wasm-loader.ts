@@ -9,6 +9,7 @@
 import type {ExecutionContext} from './types'
 import type {
   ShellImports,
+  WasmErrorContext,
   WasmExecutionContext,
   WasmExecutionResult,
   WasmExports,
@@ -63,7 +64,6 @@ function createWasmModuleCache(maxSize = 10): WasmModuleCache {
     get(key: string): WasmModule | undefined {
       const module = cache.get(key)
       if (module) {
-        // Move to end (most recently used)
         cache.delete(key)
         cache.set(key, module)
       }
@@ -74,7 +74,6 @@ function createWasmModuleCache(maxSize = 10): WasmModuleCache {
       if (cache.has(key)) {
         cache.delete(key)
       } else if (cache.size >= maxSize) {
-        // Remove least recently used (first entry)
         const firstKey = cache.keys().next().value
         if (firstKey) {
           cache.delete(firstKey)
@@ -173,12 +172,75 @@ function validateMemoryBounds(ptr: number, len: number, memorySize: number): boo
 }
 
 /**
- * Creates shell import functions for WASM module execution with smart memory detection.
+ * Buffer size limits to prevent browser memory issues with large WASM output.
+ */
+const OUTPUT_BUFFER_CONFIG = {
+  MAX_BUFFER_SIZE: 1024 * 1024,
+  TRUNCATE_TO_SIZE: 512 * 1024,
+} as const
+
+/**
+ * Creates error context for WASM execution failures with comprehensive diagnostic data.
+ */
+function createWasmErrorContext(
+  functionName: string,
+  moduleName: string,
+  processId: number,
+  startTime: number,
+  wasmContext: WasmExecutionContext,
+  memorySize: number,
+): WasmErrorContext {
+  return {
+    functionName,
+    moduleName,
+    processId,
+    executionTime: Date.now() - startTime,
+    memoryUsage: memorySize,
+    outputCapture: {
+      stdoutLength: wasmContext.stdout.length,
+      stderrLength: wasmContext.stderr.length,
+      partialStdout: wasmContext.stdout.slice(-100),
+      partialStderr: wasmContext.stderr.slice(-100),
+    },
+  }
+}
+
+/**
+ * Prevents buffer overflow by truncating output that exceeds browser memory limits.
+ */
+function appendToOutputBuffer(buffer: string, newText: string, bufferName: string): string {
+  // Handle empty or invalid input
+  if (!newText) return buffer
+
+  const combinedLength = buffer.length + newText.length
+
+  // If combined length exceeds maximum, truncate the existing buffer
+  if (combinedLength > OUTPUT_BUFFER_CONFIG.MAX_BUFFER_SIZE) {
+    const truncatedBuffer =
+      buffer.length > OUTPUT_BUFFER_CONFIG.TRUNCATE_TO_SIZE
+        ? buffer.slice(-OUTPUT_BUFFER_CONFIG.TRUNCATE_TO_SIZE)
+        : buffer
+
+    consola.debug(`Output buffer truncated: ${bufferName}`, {
+      originalSize: buffer.length,
+      newTextSize: newText.length,
+      truncatedSize: truncatedBuffer.length,
+      finalSize: truncatedBuffer.length + newText.length,
+    })
+
+    return truncatedBuffer + newText
+  }
+
+  return buffer + newText
+}
+
+/**
+ * Creates shell import functions for WASM module execution with enhanced output capture.
  *
  * These functions provide the interface between WASM modules and the shell environment,
  * allowing modules to perform I/O operations, access arguments, and interact with
- * the environment. The smart memory detection automatically chooses between imported
- * and exported memory based on where the actual data is located.
+ * the environment. Enhanced with better memory management, output buffering, and
+ * error handling for production use.
  */
 function createShellImports(
   context: WasmExecutionContext,
@@ -187,31 +249,77 @@ function createShellImports(
 ): ShellImports {
   return {
     shell_write_stdout: (dataPtr: number, dataLen: number) => {
-      const targetMemory = selectTargetMemory(importedMemory, getInstance, dataPtr, dataLen)
-      const memoryArray = new Uint8Array(targetMemory.buffer)
+      try {
+        if (dataLen === 0) return
 
-      if (!validateMemoryBounds(dataPtr, dataLen, memoryArray.length)) {
-        consola.warn('WASM stdout write out of bounds', {dataPtr, dataLen, memorySize: memoryArray.length})
-        return
+        const targetMemory = selectTargetMemory(importedMemory, getInstance, dataPtr, dataLen)
+        const memoryArray = new Uint8Array(targetMemory.buffer)
+
+        if (!validateMemoryBounds(dataPtr, dataLen, memoryArray.length)) {
+          consola.warn('WASM stdout write out of bounds', {dataPtr, dataLen, memorySize: memoryArray.length})
+          context.stderr = appendToOutputBuffer(
+            context.stderr,
+            `[WASM Error] stdout write failed: invalid memory bounds (ptr=${dataPtr}, len=${dataLen})\n`,
+            'stderr',
+          )
+          return
+        }
+
+        const bytes = memoryArray.slice(dataPtr, dataPtr + dataLen)
+
+        // UTF-8 decode with fallback for invalid sequences from Zig modules
+        let data: string
+        try {
+          data = new TextDecoder('utf-8', {fatal: true}).decode(bytes)
+        } catch {
+          data = new TextDecoder('utf-8', {fatal: false}).decode(bytes)
+          consola.debug('WASM stdout contained invalid UTF-8, used fallback decoding')
+        }
+
+        context.stdout = appendToOutputBuffer(context.stdout, data, 'stdout')
+      } catch (error: unknown) {
+        const errorMsg = `[WASM Error] stdout write failed: ${error instanceof Error ? error.message : String(error)}\n`
+        context.stderr = appendToOutputBuffer(context.stderr, errorMsg, 'stderr')
+        consola.error('WASM stdout write failed', {error, dataPtr, dataLen})
       }
-
-      const bytes = memoryArray.slice(dataPtr, dataPtr + dataLen)
-      const data = new TextDecoder('utf-8', {fatal: false}).decode(bytes)
-      context.stdout += data
     },
 
     shell_write_stderr: (dataPtr: number, dataLen: number) => {
-      const targetMemory = selectTargetMemory(importedMemory, getInstance, dataPtr, dataLen)
-      const memoryArray = new Uint8Array(targetMemory.buffer)
+      try {
+        // Handle zero-length writes gracefully
+        if (dataLen === 0) return
 
-      if (!validateMemoryBounds(dataPtr, dataLen, memoryArray.length)) {
-        consola.warn('WASM stderr write out of bounds', {dataPtr, dataLen, memorySize: memoryArray.length})
-        return
+        const targetMemory = selectTargetMemory(importedMemory, getInstance, dataPtr, dataLen)
+        const memoryArray = new Uint8Array(targetMemory.buffer)
+
+        if (!validateMemoryBounds(dataPtr, dataLen, memoryArray.length)) {
+          consola.warn('WASM stderr write out of bounds', {dataPtr, dataLen, memorySize: memoryArray.length})
+          context.stderr = appendToOutputBuffer(
+            context.stderr,
+            `[WASM Error] stderr write failed: invalid memory bounds (ptr=${dataPtr}, len=${dataLen})\n`,
+            'stderr',
+          )
+          return
+        }
+
+        const bytes = memoryArray.slice(dataPtr, dataPtr + dataLen)
+
+        // Enhanced UTF-8 decoding with error handling
+        let data: string
+        try {
+          data = new TextDecoder('utf-8', {fatal: true}).decode(bytes)
+        } catch {
+          // Fallback to non-fatal decoding for invalid UTF-8
+          data = new TextDecoder('utf-8', {fatal: false}).decode(bytes)
+          consola.debug('WASM stderr contained invalid UTF-8, used fallback decoding')
+        }
+
+        context.stderr = appendToOutputBuffer(context.stderr, data, 'stderr')
+      } catch (error: unknown) {
+        const errorMsg = `[WASM Error] stderr write failed: ${error instanceof Error ? error.message : String(error)}\n`
+        context.stderr = appendToOutputBuffer(context.stderr, errorMsg, 'stderr')
+        consola.error('WASM stderr write failed', {error, dataPtr, dataLen})
       }
-
-      const bytes = memoryArray.slice(dataPtr, dataPtr + dataLen)
-      const data = new TextDecoder('utf-8', {fatal: false}).decode(bytes)
-      context.stderr += data
     },
 
     shell_read_stdin: (bufferPtr: number, bufferLen: number) => {
@@ -428,8 +536,9 @@ function createWasmModuleLoaderImpl(cacheSize = 10): WasmModuleLoader {
       executionContext: ExecutionContext,
     ): Promise<WasmExecutionResult> {
       const startTime = Date.now()
+      const moduleName = 'WASM'
 
-      // Update module execution context - use proper arguments if available
+      // Reset execution context for clean state
       module.context.args = executionContext.args ? [functionName, ...executionContext.args] : [functionName]
       module.context.env = {...executionContext.environmentVariables}
       module.context.stdin = executionContext.stdin || ''
@@ -439,38 +548,82 @@ function createWasmModuleLoaderImpl(cacheSize = 10): WasmModuleLoader {
       module.context.workingDirectory = executionContext.workingDirectory
       module.context.processId = executionContext.processId
 
+      // Debug logging for function execution start
+      consola.debug(`Executing WASM function: ${moduleName}.${functionName}`, {
+        processId: executionContext.processId,
+        args: module.context.args,
+        workingDirectory: executionContext.workingDirectory,
+        stdinLength: (executionContext.stdin || '').length,
+      })
+
+      let executionError: Error | undefined
+      const initialMemoryUsage = module.memory.buffer.byteLength
+
       try {
         const exportedFunction = module.exports[functionName]
 
         if (!exportedFunction || typeof exportedFunction !== 'function') {
+          const availableExports = Object.keys(module.exports).filter(key => typeof module.exports[key] === 'function')
           throw new WasmExecutionError(
-            'unknown',
-            `Function '${functionName}' not found or not callable. Available exports: ${Object.keys(module.exports).join(', ')}`,
+            moduleName,
+            `Function '${functionName}' not found or not callable. Available functions: ${availableExports.length > 0 ? availableExports.join(', ') : 'none'}`,
           )
         }
 
-        // Execute with timeout protection to prevent hanging
+        // Execute with timeout protection and better error capture
         const timeoutMs = DEFAULT_CONFIG.executionTimeout
         await Promise.race([
-          new Promise<void>(resolve => {
+          new Promise<void>((resolve, reject) => {
             try {
-              exportedFunction()
-              resolve()
+              const result = exportedFunction()
+
+              // Check if function returned a promise (async function)
+              if (result instanceof Promise) {
+                result.then(() => resolve()).catch(reject)
+              } else {
+                resolve()
+              }
             } catch (error: unknown) {
+              const errorContext = createWasmErrorContext(
+                functionName,
+                moduleName,
+                executionContext.processId,
+                startTime,
+                module.context,
+                module.memory.buffer.byteLength,
+              )
+
               const cause = error instanceof Error ? error : undefined
               const message = error instanceof Error ? error.message : String(error)
 
-              throw new WasmExecutionError('unknown', `Function execution failed: ${message}`, cause)
+              const execError = new WasmExecutionError(
+                moduleName,
+                `Function '${functionName}' execution failed: ${message}`,
+                cause,
+                errorContext,
+              )
+
+              reject(execError)
             }
           }),
           new Promise<never>((_resolve, reject) => {
             setTimeout(() => {
-              reject(new WasmTimeoutError('unknown', timeoutMs))
+              reject(new WasmTimeoutError(moduleName, timeoutMs))
             }, timeoutMs)
           }),
         ])
 
         const executionTime = Date.now() - startTime
+        const peakMemoryUsage = Math.max(initialMemoryUsage, module.memory.buffer.byteLength)
+
+        // Debug logging for successful completion
+        consola.debug(`WASM function completed successfully: ${moduleName}.${functionName}`, {
+          executionTime,
+          exitCode: module.context.exitCode,
+          stdoutLength: module.context.stdout.length,
+          stderrLength: module.context.stderr.length,
+          memoryUsage: peakMemoryUsage,
+        })
 
         return {
           processId: executionContext.processId,
@@ -479,11 +632,30 @@ function createWasmModuleLoaderImpl(cacheSize = 10): WasmModuleLoader {
           stderr: module.context.stderr,
           exitCode: module.context.exitCode,
           executionTime,
-          moduleName: 'unknown',
+          moduleName,
           functionName,
-          peakMemoryUsage: module.memory.buffer.byteLength,
+          peakMemoryUsage,
         }
       } catch (error: unknown) {
+        executionError = error instanceof Error ? error : new Error(String(error))
+
+        // Enhanced error logging with context
+        consola.error(`WASM function execution failed: ${moduleName}.${functionName}`, {
+          error: executionError.message,
+          processId: executionContext.processId,
+          executionTime: Date.now() - startTime,
+          memoryUsage: module.memory.buffer.byteLength,
+          outputCapture: {
+            stdoutLength: module.context.stdout.length,
+            stderrLength: module.context.stderr.length,
+            partialOutput: {
+              stdout: module.context.stdout.slice(-50),
+              stderr: module.context.stderr.slice(-50),
+            },
+          },
+        })
+
+        // Re-throw specialized WASM errors as-is
         if (error instanceof WasmTimeoutError || error instanceof WasmExecutionError) {
           throw error
         }
@@ -491,7 +663,40 @@ function createWasmModuleLoaderImpl(cacheSize = 10): WasmModuleLoader {
         const cause = error instanceof Error ? error : undefined
         const message = error instanceof Error ? error.message : String(error)
 
-        throw new WasmExecutionError('unknown', `Unexpected error during execution: ${message}`, cause)
+        throw new WasmExecutionError(
+          moduleName,
+          `Unexpected error during '${functionName}' execution: ${message}`,
+          cause,
+        )
+      } finally {
+        // Ensure cleanup happens regardless of success or failure
+        if (executionError) {
+          try {
+            // Capture final output state before cleanup
+            const finalOutputState = {
+              stdout: module.context.stdout,
+              stderr: module.context.stderr,
+              exitCode: module.context.exitCode,
+            }
+
+            // Reset context to prevent contamination of future executions
+            module.context.stdout = ''
+            module.context.stderr = ''
+            module.context.exitCode = 0
+
+            consola.debug('Performed error cleanup for WASM module', {
+              error: executionError.message,
+              finalOutputState,
+              memorySize: module.memory.buffer.byteLength,
+            })
+          } catch (cleanupError: unknown) {
+            // Log cleanup errors but don't throw to avoid masking original error
+            consola.warn('WASM error cleanup failed', {
+              originalError: executionError.message,
+              cleanupError: cleanupError instanceof Error ? cleanupError.message : String(cleanupError),
+            })
+          }
+        }
       }
     },
 
