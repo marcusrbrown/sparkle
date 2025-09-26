@@ -48,23 +48,47 @@ export function createWasmExecutableCommand(
     description: `WASM executable: ${wasmName}`,
     execute: async (args: string[], context: ExecutionContext): Promise<CommandExecutionResult> => {
       const startTime = Date.now()
+      let wasmModule: any = null
+      let loadedSuccessfully = false
+
+      // Enhanced logging for WASM command execution
+      consola.debug(`Starting WASM command execution: ${wasmName}`, {
+        processId: context.processId,
+        args,
+        wasmPath,
+        workingDirectory: context.workingDirectory,
+      })
 
       try {
-        // Load WASM file
-        const response = await fetch(wasmPath)
+        // Load WASM file with detailed error handling
+        let response: Response
+        try {
+          response = await fetch(wasmPath)
+        } catch (fetchError: unknown) {
+          throw new Error(
+            `Network error loading WASM file '${wasmPath}': ${fetchError instanceof Error ? fetchError.message : String(fetchError)}`,
+          )
+        }
+
         if (!response.ok) {
-          throw new Error(`Failed to load WASM file: ${response.status} ${response.statusText}`)
+          throw new Error(`Failed to load WASM file '${wasmPath}': HTTP ${response.status} ${response.statusText}`)
         }
 
         const wasmBytes = await response.arrayBuffer()
+        consola.debug(`Loaded WASM file: ${wasmName}`, {
+          filePath: wasmPath,
+          fileSize: wasmBytes.byteLength,
+          processId: context.processId,
+        })
 
-        // Load the WASM module
-        const wasmModule = await wasmLoader.loadModule(wasmBytes, {
+        // Load the WASM module with enhanced configuration
+        wasmModule = await wasmLoader.loadModule(wasmBytes, {
           name: wasmName,
           maxMemorySize: WASM_COMMAND_CONFIG.MAX_MEMORY_SIZE,
           executionTimeout: WASM_COMMAND_CONFIG.EXECUTION_TIMEOUT,
-          enableDebugLogging: false,
+          enableDebugLogging: true, // Enable debug logging for better error tracking
         })
+        loadedSuccessfully = true
 
         // Determine which function to call based on arguments
         let functionName = 'main'
@@ -74,6 +98,7 @@ export function createWasmExecutableCommand(
         if (args.length > 0 && args[0] && wasmModule.exports[args[0]]) {
           functionName = args[0]
           actualArgs = args.slice(1)
+          consola.debug(`Using custom WASM function: ${functionName}`, {wasmName, actualArgs})
         }
 
         // Create execution context for WASM with proper arguments
@@ -82,11 +107,23 @@ export function createWasmExecutableCommand(
           args: actualArgs,
         }
 
-        // Execute the WASM function
+        consola.debug(`Executing WASM function: ${wasmName}.${functionName}`, {
+          processId: context.processId,
+          memorySize: wasmModule.memory.buffer.byteLength,
+          availableExports: Object.keys(wasmModule.exports),
+        })
+
+        // Execute the WASM function with enhanced error handling
         const result = await wasmLoader.executeFunction(wasmModule, functionName, wasmExecutionContext)
 
-        // Clean up the module
-        wasmLoader.unloadModule(wasmModule)
+        consola.debug(`WASM execution completed: ${wasmName}.${functionName}`, {
+          processId: context.processId,
+          exitCode: result.exitCode,
+          executionTime: result.executionTime,
+          stdoutLength: result.stdout.length,
+          stderrLength: result.stderr.length,
+          peakMemoryUsage: result.peakMemoryUsage,
+        })
 
         return {
           processId: context.processId,
@@ -97,16 +134,77 @@ export function createWasmExecutableCommand(
           executionTime: Date.now() - startTime,
         }
       } catch (error: unknown) {
-        const errorMessage = error instanceof Error ? error.message : String(error)
-        consola.error(`WASM execution failed: ${wasmName}`, {error: errorMessage, args})
+        const executionTime = Date.now() - startTime
+
+        // Create comprehensive error context
+        const errorContext = {
+          wasmName,
+          wasmPath,
+          args,
+          processId: context.processId,
+          executionTime,
+          loadedSuccessfully,
+          moduleInfo: wasmModule
+            ? {
+                memorySize: wasmModule.memory?.buffer?.byteLength,
+                exports: Object.keys(wasmModule.exports || {}),
+              }
+            : null,
+        }
+
+        // Format error message based on error type
+        let errorMessage: string
+        let detailedError: string
+
+        if (error instanceof Error) {
+          errorMessage = error.message
+          detailedError = error.stack || error.message
+
+          // Add specific error context for known error types
+          if (error.name === 'WasmLoadError') {
+            errorMessage = `Module loading failed: ${error.message}`
+          } else if (error.name === 'WasmExecutionError') {
+            errorMessage = `Execution failed: ${error.message}`
+          } else if (error.name === 'WasmTimeoutError') {
+            errorMessage = `Execution timeout: ${error.message}`
+          }
+        } else {
+          errorMessage = String(error)
+          detailedError = String(error)
+        }
+
+        // Log comprehensive error information
+        consola.error(`WASM command failed: ${wasmName}`, {
+          ...errorContext,
+          error: errorMessage,
+          detailedError,
+        })
+
+        // Create user-friendly error output
+        const userErrorMessage = `${wasmName}: ${errorMessage}`
+        const debugInfo = loadedSuccessfully
+          ? `\nDebug: Module loaded successfully but execution failed.`
+          : `\nDebug: Module failed to load from '${wasmPath}'.`
 
         return {
           processId: context.processId,
           command: `${wasmName} ${args.join(' ')}`,
           stdout: '',
-          stderr: `${wasmName}: ${errorMessage}`,
+          stderr: userErrorMessage + debugInfo,
           exitCode: 1,
-          executionTime: Date.now() - startTime,
+          executionTime,
+        }
+      } finally {
+        // Ensure proper cleanup regardless of success or failure
+        if (wasmModule && loadedSuccessfully) {
+          try {
+            wasmLoader.unloadModule(wasmModule)
+            consola.debug(`Cleaned up WASM module: ${wasmName}`)
+          } catch (cleanupError: unknown) {
+            consola.warn(`Failed to clean up WASM module: ${wasmName}`, {
+              error: cleanupError instanceof Error ? cleanupError.message : String(cleanupError),
+            })
+          }
         }
       }
     },

@@ -97,31 +97,128 @@ export interface WasmExecutionResult extends CommandExecutionResult {
 }
 
 /**
- * Error types for WASM module operations.
+ * Enhanced error context for WASM operations diagnostics.
+ */
+export interface WasmErrorContext {
+  readonly processId?: number
+  readonly executionTime?: number
+  readonly memoryUsage?: number
+  readonly functionName?: string
+  readonly args?: string[]
+  readonly outputCapture?: {
+    readonly stdoutLength: number
+    readonly stderrLength: number
+    readonly partialStdout?: string
+    readonly partialStderr?: string
+  }
+  readonly moduleInfo?: {
+    readonly exports: string[]
+    readonly memorySize: number
+    readonly compilationTime?: number
+  }
+}
+
+/**
+ * Error types for WASM module operations with enhanced diagnostics.
  */
 export class WasmModuleError extends Error {
   readonly moduleName: string
   readonly operation: string
+  readonly context?: WasmErrorContext
+  readonly timestamp: number
 
-  constructor(moduleName: string, operation: string, message: string, cause?: Error) {
+  constructor(moduleName: string, operation: string, message: string, cause?: Error, context?: WasmErrorContext) {
     super(`WASM module '${moduleName}' ${operation}: ${message}`)
     this.name = 'WasmModuleError'
     this.moduleName = moduleName
     this.operation = operation
+    this.context = context
+    this.timestamp = Date.now()
     this.cause = cause
+
+    // Enhance stack trace with WASM-specific information
+    if (context) {
+      this.stack = this.buildEnhancedStack(this.stack || this.message)
+    }
+  }
+
+  private buildEnhancedStack(originalStack: string): string {
+    if (!this.context) return originalStack
+
+    const contextLines: string[] = [
+      `    WASM Context:`,
+      `      Module: ${this.moduleName}`,
+      `      Operation: ${this.operation}`,
+    ]
+
+    if (this.context.processId) {
+      contextLines.push(`      Process ID: ${this.context.processId}`)
+    }
+
+    if (this.context.executionTime) {
+      contextLines.push(`      Execution Time: ${this.context.executionTime}ms`)
+    }
+
+    if (this.context.memoryUsage) {
+      contextLines.push(`      Memory Usage: ${this.context.memoryUsage} bytes`)
+    }
+
+    if (this.context.functionName) {
+      contextLines.push(`      Function: ${this.context.functionName}`)
+    }
+
+    if (this.context.args && this.context.args.length > 0) {
+      contextLines.push(`      Arguments: ${this.context.args.join(' ')}`)
+    }
+
+    if (this.context.outputCapture) {
+      const {stdoutLength, stderrLength, partialStdout, partialStderr} = this.context.outputCapture
+      contextLines.push(`      Output: stdout=${stdoutLength} chars, stderr=${stderrLength} chars`)
+
+      if (partialStdout) {
+        contextLines.push(`      Last stdout: ${JSON.stringify(partialStdout)}`)
+      }
+
+      if (partialStderr) {
+        contextLines.push(`      Last stderr: ${JSON.stringify(partialStderr)}`)
+      }
+    }
+
+    return `${originalStack}\n${contextLines.join('\n')}`
+  }
+
+  /**
+   * Get diagnostic information for debugging.
+   */
+  getDiagnostics(): Record<string, unknown> {
+    return {
+      error: this.name,
+      module: this.moduleName,
+      operation: this.operation,
+      message: this.message,
+      timestamp: new Date(this.timestamp).toISOString(),
+      context: this.context,
+      cause:
+        this.cause instanceof Error
+          ? {
+              name: this.cause.name,
+              message: this.cause.message,
+            }
+          : undefined,
+    }
   }
 }
 
 export class WasmLoadError extends WasmModuleError {
-  constructor(moduleName: string, message: string, cause?: Error) {
-    super(moduleName, 'load failed', message, cause)
+  constructor(moduleName: string, message: string, cause?: Error, context?: WasmErrorContext) {
+    super(moduleName, 'load failed', message, cause, context)
     this.name = 'WasmLoadError'
   }
 }
 
 export class WasmExecutionError extends WasmModuleError {
-  constructor(moduleName: string, message: string, cause?: Error) {
-    super(moduleName, 'execution failed', message, cause)
+  constructor(moduleName: string, message: string, cause?: Error, context?: WasmErrorContext) {
+    super(moduleName, 'execution failed', message, cause, context)
     this.name = 'WasmExecutionError'
   }
 }
@@ -129,10 +226,28 @@ export class WasmExecutionError extends WasmModuleError {
 export class WasmTimeoutError extends WasmModuleError {
   readonly timeoutMs: number
 
-  constructor(moduleName: string, timeoutMs: number) {
-    super(moduleName, 'execution timeout', `Execution exceeded ${timeoutMs}ms timeout`)
+  constructor(moduleName: string, timeoutMs: number, context?: WasmErrorContext) {
+    super(moduleName, 'execution timeout', `Execution exceeded ${timeoutMs}ms timeout`, undefined, context)
     this.name = 'WasmTimeoutError'
     this.timeoutMs = timeoutMs
+  }
+}
+
+export class WasmMemoryError extends WasmModuleError {
+  readonly requestedSize?: number
+  readonly availableSize?: number
+
+  constructor(
+    moduleName: string,
+    message: string,
+    requestedSize?: number,
+    availableSize?: number,
+    context?: WasmErrorContext,
+  ) {
+    super(moduleName, 'memory error', message, undefined, context)
+    this.name = 'WasmMemoryError'
+    this.requestedSize = requestedSize
+    this.availableSize = availableSize
   }
 }
 
