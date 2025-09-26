@@ -76,10 +76,10 @@ export function createWasmExecutableCommand(
           actualArgs = args.slice(1)
         }
 
-        // Create execution context for WASM
+        // Create execution context for WASM with proper arguments
         const wasmExecutionContext: ExecutionContext = {
           ...context,
-          stdin: actualArgs.join(' '), // Pass args as stdin for now
+          args: actualArgs,
         }
 
         // Execute the WASM function

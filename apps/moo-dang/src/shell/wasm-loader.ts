@@ -343,8 +343,8 @@ export class WasmModuleLoaderImpl implements WasmModuleLoader {
   ): Promise<WasmExecutionResult> {
     const startTime = Date.now()
 
-    // Update module execution context
-    module.context.args = [functionName, ...(executionContext.stdin?.split(' ') || [])]
+    // Update module execution context - use proper arguments if available
+    module.context.args = executionContext.args ? [functionName, ...executionContext.args] : [functionName]
     module.context.env = {...executionContext.environmentVariables}
     module.context.stdin = executionContext.stdin || ''
     module.context.stdout = ''
