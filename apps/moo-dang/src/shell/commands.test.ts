@@ -45,7 +45,7 @@ describe('Standard Shell Commands', () => {
 
   describe('command registry', () => {
     it('should register all expected built-in commands', () => {
-      const expectedCommands = ['echo', 'pwd', 'ls', 'cat', 'clear', 'help']
+      const expectedCommands = ['echo', 'pwd', 'ls', 'cat', 'clear', 'help', 'source']
 
       for (const commandName of expectedCommands) {
         expect(commands.has(commandName)).toBe(true)
@@ -296,6 +296,49 @@ describe('Standard Shell Commands', () => {
       expect(result.stderr).toBe('')
       expect(result.stdout).toContain('MOO-DANG - A WASM-based web shell')
       expect(result.stdout).toContain('COMMON COMMANDS')
+    })
+  })
+
+  describe('source command', () => {
+    it('should require a filename argument', async () => {
+      const sourceCommand = commands.get('source')!
+      const result = await sourceCommand.execute([], executionContext)
+
+      expect(result.exitCode).toBe(1)
+      expect(result.stdout).toBe('')
+      expect(result.stderr).toBe('source: filename argument required')
+    })
+
+    it('should handle too many arguments', async () => {
+      const sourceCommand = commands.get('source')!
+      const result = await sourceCommand.execute(['file1.sh', 'file2.sh'], executionContext)
+
+      expect(result.exitCode).toBe(1)
+      expect(result.stdout).toBe('')
+      expect(result.stderr).toBe('source: too many arguments')
+    })
+
+    it('should handle non-existent files', async () => {
+      const sourceCommand = commands.get('source')!
+      const result = await sourceCommand.execute(['nonexistent.sh'], executionContext)
+
+      expect(result.exitCode).toBe(1)
+      expect(result.stdout).toBe('')
+      expect(result.stderr).toBe('source: nonexistent.sh: No such file or directory')
+    })
+
+    it('should execute valid shell scripts', async () => {
+      // Create a simple shell script in the working directory
+      const scriptPath = `${executionContext.workingDirectory}/script.sh`
+      await fileSystem.writeFile(scriptPath, '#!/bin/bash\necho "hello world"\nls -la\n')
+
+      const sourceCommand = commands.get('source')!
+      const result = await sourceCommand.execute(['script.sh'], executionContext)
+
+      expect(result.exitCode).toBe(0)
+      expect(result.stderr).toBe('')
+      expect(result.stdout).toContain('Script executed successfully')
+      expect(result.stdout).toContain('statements')
     })
   })
 
