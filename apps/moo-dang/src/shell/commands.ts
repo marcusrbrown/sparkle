@@ -11,6 +11,8 @@ import type {ShellEnvironment} from './environment'
 import type {CommandExecutionResult, ExecutionContext, ShellCommand, VirtualFileSystem} from './types'
 
 import {consola} from 'consola'
+import {COMMAND_HELP_REGISTRY} from './command-help'
+import {createHelpSystem} from './help-system'
 
 /**
  * Base error class for shell command execution failures.
@@ -262,52 +264,154 @@ function createCatCommand(fileSystem: VirtualFileSystem): ShellCommand {
 }
 
 /**
- * Creates help command for displaying command information and usage.
+ * Enhanced help command with comprehensive documentation and search capabilities.
  */
-function createHelpCommand(commands: Map<string, ShellCommand>): ShellCommand {
+export function createHelpCommand(_commands: Map<string, ShellCommand>): ShellCommand {
+  // Initialize help system with all command documentation
+  const helpSystem = createHelpSystem()
+
+  // Register help information for all commands
+  for (const [_name, helpInfo] of COMMAND_HELP_REGISTRY) {
+    helpSystem.registerCommand(helpInfo)
+  }
+
   return {
     name: 'help',
-    description: 'Show help information',
+    description: 'Show comprehensive help information for commands and topics',
     execute: async (args: string[], context: ExecutionContext): Promise<CommandExecutionResult> => {
       const startTime = Date.now()
 
-      if (args.length > 0) {
-        const commandName = args[0]
-        if (!commandName) {
-          return createCommandResult(context, 'help', '', 'help: missing command name', 1, startTime)
+      try {
+        // Parse help command arguments
+        const result = parseHelpArguments(args)
+
+        // Route to appropriate help function
+        let helpResult
+
+        switch (result.type) {
+          case 'general':
+            helpResult = helpSystem.getGeneralHelp()
+            break
+
+          case 'command':
+            if (result.target == null) {
+              return createCommandResult(context, 'help', '', 'help: missing command name', 1, startTime)
+            }
+            helpResult = helpSystem.getCommandHelp(result.target)
+            break
+
+          case 'topic':
+            if (result.target == null) {
+              helpResult = helpSystem.listTopics()
+            } else {
+              helpResult = helpSystem.getTopicHelp(result.target)
+            }
+            break
+
+          case 'topics':
+            helpResult = helpSystem.listTopics()
+            break
+
+          case 'search':
+            if (result.target == null) {
+              return createCommandResult(context, 'help search', '', 'help search: missing search query', 1, startTime)
+            }
+            helpResult = helpSystem.searchHelp(result.target)
+            break
+
+          case 'list':
+            helpResult = helpSystem.listCommands()
+            break
+
+          default:
+            return createCommandResult(
+              context,
+              `help ${args.join(' ')}`,
+              '',
+              `help: unknown option: ${args[0]}`,
+              1,
+              startTime,
+            )
         }
 
-        const command = commands.get(commandName)
-        if (!command) {
+        // Handle help result
+        if (helpResult.success) {
+          return createCommandResult(context, `help ${args.join(' ')}`, helpResult.content, '', 0, startTime)
+        } else {
           return createCommandResult(
             context,
-            `help ${commandName}`,
+            `help ${args.join(' ')}`,
             '',
-            `help: no help available for '${commandName}'`,
+            helpResult.error || 'Help system error',
             1,
             startTime,
           )
         }
-
-        const output = `${command.name}: ${command.description}`
-        return createCommandResult(context, `help ${commandName}`, output, '', 0, startTime)
+      } catch (error) {
+        consola.error('Help command execution failed:', error)
+        return createCommandResult(
+          context,
+          `help ${args.join(' ')}`,
+          '',
+          `help: internal error: ${error instanceof Error ? error.message : String(error)}`,
+          1,
+          startTime,
+        )
       }
-
-      const commandList = Array.from(commands.values())
-        .filter(cmd => cmd.name !== 'help')
-        .map(cmd => `  ${cmd.name.padEnd(12)} ${cmd.description}`)
-        .join('\n')
-
-      const output = [
-        'Available commands:',
-        commandList,
-        '',
-        'Use "help [command]" for more information about a specific command.',
-      ].join('\n')
-
-      return createCommandResult(context, 'help', output, '', 0, startTime)
     },
   }
+}
+
+/**
+ * Parse help command arguments to determine the type of help request.
+ */
+function parseHelpArguments(args: string[]): HelpRequest {
+  if (args.length === 0) {
+    return {type: 'general'}
+  }
+
+  const firstArg = args[0]
+  if (!firstArg) {
+    return {type: 'general'}
+  }
+
+  switch (firstArg.toLowerCase()) {
+    case 'topics':
+      return {type: 'topics'}
+
+    case 'topic':
+      return {
+        type: 'topic',
+        target: args[1],
+      }
+
+    case 'search':
+      return {
+        type: 'search',
+        target: args.slice(1).join(' '),
+      }
+
+    case 'list':
+    case 'commands':
+      return {type: 'list'}
+
+    default:
+      // Assume it's a command name
+      return {
+        type: 'command',
+        target: firstArg,
+      }
+  }
+}
+
+/**
+ * Help request type and target information.
+ */
+interface HelpRequest {
+  /** Type of help request */
+  readonly type: 'general' | 'command' | 'topic' | 'topics' | 'search' | 'list'
+  /** Target command name, topic ID, or search query */
+  readonly target?: string
 }
 
 /**
