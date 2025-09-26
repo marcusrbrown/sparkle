@@ -29,8 +29,13 @@ const DEFAULT_ENVIRONMENT_VARIABLES: Record<string, string> = {
   HOME: '/home/user',
   USER: 'user',
   SHELL: '/bin/moo-dang',
-  PATH: '/bin:/usr/bin:/usr/local/bin',
+  PATH: '/bin:/usr/bin:/usr/local/bin:/wasm',
   PWD: '/home/user',
+  TERM: 'moo-dang-web',
+  LANG: 'en_US.UTF-8',
+  LC_ALL: 'en_US.UTF-8',
+  COLUMNS: '80',
+  LINES: '24',
 }
 
 /**
@@ -117,6 +122,22 @@ export class ShellEnvironment {
   }
 
   /**
+   * Update terminal dimensions (COLUMNS and LINES environment variables).
+   */
+  setTerminalSize(columns: number, lines: number): void {
+    this.state = {
+      ...this.state,
+      environmentVariables: {
+        ...this.state.environmentVariables,
+        COLUMNS: columns.toString(),
+        LINES: lines.toString(),
+      },
+    }
+
+    this.logDebug('Terminal dimensions updated', {columns, lines})
+  }
+
+  /**
    * Get environment variable value.
    */
   getEnvironmentVariable(key: string): string | undefined {
@@ -126,7 +147,7 @@ export class ShellEnvironment {
   /**
    * Create isolated execution context for command execution.
    */
-  createExecutionContext(stdin?: string): ExecutionContext {
+  createExecutionContext(stdin?: string, args?: string[]): ExecutionContext {
     const processId = this.state.nextProcessId
 
     this.state = {
@@ -139,6 +160,7 @@ export class ShellEnvironment {
       environmentVariables: {...this.state.environmentVariables},
       stdin,
       processId,
+      args,
     }
   }
 

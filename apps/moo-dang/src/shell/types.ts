@@ -126,6 +126,8 @@ export interface ExecutionContext {
   readonly stdin?: string
   /** Process ID for this execution */
   readonly processId: number
+  /** Command-line arguments (argv-style array) */
+  readonly args?: string[]
 }
 
 /**

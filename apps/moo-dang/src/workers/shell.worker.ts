@@ -284,7 +284,7 @@ async function handleExecuteCommand(
     }
   }
 
-  const context = state.environment.createExecutionContext(stdin)
+  const context = state.environment.createExecutionContext(stdin, args)
   const processInfo = state.environment.startProcess(trimmedCommand, context)
 
   try {

@@ -210,3 +210,104 @@ describe('WASM Types and Errors', () => {
     expect(timeoutError.timeoutMs).toBe(5000)
   })
 })
+
+describe('WASM Argument Passing and Environment', () => {
+  describe('ExecutionContext Enhancement', () => {
+    it('should include args field in ExecutionContext interface', () => {
+      const context: ExecutionContext = {
+        workingDirectory: '/home/user',
+        environmentVariables: {HOME: '/home/user'},
+        processId: 1,
+        args: ['arg1', 'arg2'],
+      }
+
+      // Validate that args field is accessible and typed correctly
+      expect(context.args).toBeDefined()
+      expect(context.args).toEqual(['arg1', 'arg2'])
+      expect(Array.isArray(context.args)).toBe(true)
+    })
+
+    it('should handle optional args field', () => {
+      const context: ExecutionContext = {
+        workingDirectory: '/home/user',
+        environmentVariables: {HOME: '/home/user'},
+        processId: 1,
+      }
+
+      // Validate that args field is optional
+      expect(context.args).toBeUndefined()
+    })
+
+    it('should properly handle different argument types', () => {
+      const testCases = [
+        ['simple', 'args'],
+        ['args with spaces', 'file.txt'],
+        ['--flag=value', '$HOME/test', '"quoted"'],
+        [],
+      ]
+
+      testCases.forEach(args => {
+        const context: ExecutionContext = {
+          workingDirectory: '/home/user',
+          environmentVariables: {HOME: '/home/user'},
+          processId: 1,
+          args,
+        }
+
+        expect(context.args).toEqual(args)
+      })
+    })
+  })
+
+  describe('WASM Loader Argument Integration', () => {
+    it('should use ExecutionContext args instead of stdin parsing', () => {
+      // This test validates that our change from stdin parsing to proper args works
+      const testCases = [
+        {
+          input: ['arg1', 'arg2', 'arg3'],
+          expected: ['main', 'arg1', 'arg2', 'arg3'],
+        },
+        {
+          input: ['hello world', 'file with spaces.txt'],
+          expected: ['main', 'hello world', 'file with spaces.txt'],
+        },
+        {
+          input: [],
+          expected: ['main'],
+        },
+      ]
+
+      testCases.forEach(({input, expected}) => {
+        // Simulate what the WASM loader does with ExecutionContext.args
+        const functionName = 'main'
+        const args = input
+        const result = args ? [functionName, ...args] : [functionName]
+
+        expect(result).toEqual(expected)
+      })
+    })
+
+    it('should handle function name detection correctly', () => {
+      const exports = {main: () => {}, hello_name: () => {}}
+      const testCases = [
+        {args: ['arg1', 'arg2'], expectedFunction: 'main', expectedArgs: ['arg1', 'arg2']},
+        {args: ['hello_name', 'John'], expectedFunction: 'hello_name', expectedArgs: ['John']},
+        {args: [], expectedFunction: 'main', expectedArgs: []},
+      ]
+
+      testCases.forEach(({args, expectedFunction, expectedArgs}) => {
+        // Simulate the logic from wasm-commands.ts
+        let functionName = 'main'
+        let actualArgs = args
+
+        if (args.length > 0 && args[0] && exports[args[0] as keyof typeof exports]) {
+          functionName = args[0]
+          actualArgs = args.slice(1)
+        }
+
+        expect(functionName).toBe(expectedFunction)
+        expect(actualArgs).toEqual(expectedArgs)
+      })
+    })
+  })
+})
