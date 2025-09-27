@@ -7,14 +7,24 @@
  */
 
 /**
+ * Available completion types for categorizing different kinds of suggestions.
+ */
+export const COMPLETION_TYPES = ['command', 'file', 'directory', 'argument', 'option', 'environment', 'alias'] as const
+
+/**
  * Types of completions that can be suggested to users.
  */
-export type CompletionType = 'command' | 'file' | 'directory' | 'argument' | 'option' | 'environment' | 'alias'
+export type CompletionType = (typeof COMPLETION_TYPES)[number]
+
+/**
+ * Available priority levels for ordering completion suggestions.
+ */
+export const COMPLETION_PRIORITIES = ['high', 'medium', 'low'] as const
 
 /**
  * Priority levels for completion suggestions ordering.
  */
-export type CompletionPriority = 'high' | 'medium' | 'low'
+export type CompletionPriority = (typeof COMPLETION_PRIORITIES)[number]
 
 /**
  * Individual completion suggestion with metadata.

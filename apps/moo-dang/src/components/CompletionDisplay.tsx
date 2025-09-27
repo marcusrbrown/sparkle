@@ -5,79 +5,84 @@
  * with keyboard navigation support, styled to match the terminal theme.
  */
 
-import type {CompletionResult, CompletionSuggestion} from '../shell/completion-types'
+import type {CompletionResult, CompletionType} from '../shell/completion-types'
 
 import {cx} from '@sparkle/ui'
+
+/**
+ * Position coordinates for the completion overlay.
+ */
+export interface CompletionPosition {
+  /** Horizontal position in pixels */
+  readonly left: number
+  /** Vertical position in pixels */
+  readonly top: number
+}
 
 /**
  * Props for the CompletionDisplay component.
  */
 export interface CompletionDisplayProps {
   /** Current completion result to display */
-  result: CompletionResult | null
+  readonly result: CompletionResult | null
   /** Index of currently selected suggestion */
-  selectedIndex: number
+  readonly selectedIndex: number
   /** Whether to show type icons */
-  showIcons?: boolean
+  readonly showIcons?: boolean
   /** Whether to show descriptions */
-  showDescriptions?: boolean
+  readonly showDescriptions?: boolean
   /** Maximum number of visible suggestions */
-  maxVisible?: number
+  readonly maxVisible?: number
   /** Custom CSS class names */
-  className?: string
+  readonly className?: string
   /** Position for the completion overlay */
-  position?: {
-    left: number
-    top: number
-  }
+  readonly position?: CompletionPosition
 }
+
+/**
+ * Icon mapping for different completion types.
+ *
+ * These icons provide visual cues to help users quickly identify
+ * the type of completion being suggested.
+ */
+const COMPLETION_TYPE_ICONS = {
+  command: '⚡',
+  file: '📄',
+  directory: '📁',
+  environment: '🌍',
+  option: '⚙️',
+  argument: '📝',
+  alias: '🔗',
+} as const satisfies Record<CompletionType, string>
 
 /**
  * Get icon for completion type.
  */
-function getCompletionIcon(type: CompletionSuggestion['type']): string {
-  switch (type) {
-    case 'command':
-      return '⚡'
-    case 'file':
-      return '📄'
-    case 'directory':
-      return '📁'
-    case 'environment':
-      return '🌍'
-    case 'option':
-      return '⚙️'
-    case 'argument':
-      return '📝'
-    case 'alias':
-      return '🔗'
-    default:
-      return '•'
-  }
+function getCompletionIcon(type: CompletionType): string {
+  return COMPLETION_TYPE_ICONS[type as keyof typeof COMPLETION_TYPE_ICONS] ?? '•'
 }
+
+/**
+ * CSS class mapping for different completion types.
+ *
+ * These colors help users distinguish between different types of completions
+ * and align with common terminal color conventions.
+ */
+const COMPLETION_TYPE_CLASSES = {
+  command: 'text-blue-400',
+  file: 'text-gray-300',
+  directory: 'text-yellow-400',
+  environment: 'text-green-400',
+  option: 'text-purple-400',
+  argument: 'text-cyan-400',
+  alias: 'text-orange-400',
+} as const satisfies Record<CompletionType, string>
 
 /**
  * Get CSS class for completion type.
  */
-function getCompletionTypeClass(type: CompletionSuggestion['type']): string {
-  switch (type) {
-    case 'command':
-      return 'text-blue-400'
-    case 'file':
-      return 'text-gray-300'
-    case 'directory':
-      return 'text-yellow-400'
-    case 'environment':
-      return 'text-green-400'
-    case 'option':
-      return 'text-purple-400'
-    case 'argument':
-      return 'text-cyan-400'
-    case 'alias':
-      return 'text-orange-400'
-    default:
-      return 'text-gray-400'
-  }
+function getCompletionTypeClass(type: CompletionType): string {
+  return COMPLETION_TYPE_CLASSES[type as keyof typeof COMPLETION_TYPE_CLASSES] ?? 'text-gray-400'
 }
 
 /**

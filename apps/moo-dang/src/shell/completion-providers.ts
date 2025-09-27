@@ -20,36 +20,31 @@ import {consola} from 'consola'
 import {COMMAND_HELP_REGISTRY} from './command-help'
 
 /**
- * Provider for completing shell command names.
+ * Determines if command completion should be active for the given context.
  *
- * Suggests available built-in commands, executables in PATH, and aliases.
- * Only activates when completing the first word of a command.
+ * Commands are only completed at the start of the line to avoid suggesting
+ * commands when arguments are expected.
  */
-export class CommandCompletionProvider implements CompletionProvider {
-  readonly id = 'commands'
-  readonly name = 'Shell Commands'
-  readonly supportedTypes: CompletionType[] = ['command']
-  readonly priority = 'high' as const
+function canCompleteCommands(context: CompletionContext): boolean {
+  return context.isNewCommand
+}
 
-  constructor(
-    private readonly commands: Map<string, unknown>,
-    private readonly fileSystem: VirtualFileSystem,
-  ) {}
-
-  readonly canComplete = (context: CompletionContext): boolean => {
-    // Only complete commands at the start of the line
-    return context.isNewCommand
-  }
-
-  readonly getCompletions = async (
-    context: CompletionContext,
-    config: CompletionConfig,
-  ): Promise<CompletionSuggestion[]> => {
+/**
+ * Creates a completion provider for shell command names.
+ *
+ * This provider suggests available built-in commands, executables in PATH,
+ * and aliases to improve command discovery and typing efficiency.
+ */
+function createCommandCompletionProvider(
+  commands: Map<string, unknown>,
+  fileSystem: VirtualFileSystem,
+): CompletionProvider {
+  async function getCompletions(context: CompletionContext, config: CompletionConfig): Promise<CompletionSuggestion[]> {
     const suggestions: CompletionSuggestion[] = []
     const currentPart = context.currentPart.toLowerCase()
 
     // Get built-in commands
-    for (const [commandName] of this.commands) {
+    for (const [commandName] of commands) {
       if (!config.caseSensitive && commandName.toLowerCase().includes(currentPart)) {
         const helpEntry = COMMAND_HELP_REGISTRY.get(commandName)
 
@@ -80,8 +75,8 @@ export class CommandCompletionProvider implements CompletionProvider {
 
       for (const dir of pathDirs) {
         try {
-          if ((await this.fileSystem.exists(dir)) && (await this.fileSystem.isDirectory(dir))) {
-            const entries = await this.fileSystem.getDetailedListing(dir)
+          if ((await fileSystem.exists(dir)) && (await fileSystem.isDirectory(dir))) {
+            const entries = await fileSystem.getDetailedListing(dir)
 
             for (const entry of entries) {
               if (entry.type === 'file') {
@@ -103,14 +98,23 @@ export class CommandCompletionProvider implements CompletionProvider {
           }
         } catch (error) {
           // Skip directories that can't be read
-          consola.debug(`Unable to read PATH directory ${dir}:`, error)
+          consola.debug(`Unable to read PATH directory '${dir}' due to access restrictions:`, error)
         }
       }
     } catch (error) {
-      consola.debug('Error reading PATH directories:', error)
+      consola.debug('Error accessing PATH directories during command completion:', error)
     }
 
     return suggestions
+  }
+
+  return {
+    id: 'commands',
+    name: 'Shell Commands',
+    supportedTypes: ['command'],
+    priority: 'high',
+    canComplete: canCompleteCommands,
+    getCompletions,
   }
 }
 
@@ -359,6 +363,9 @@ export class OptionCompletionProvider implements CompletionProvider {
 
 /**
  * Creates all standard completion providers for the shell.
+ *
+ * These providers work together to provide comprehensive completion
+ * functionality covering commands, files, environment variables, and options.
  */
 export function createCompletionProviders(
   commands: Map<string, unknown>,
@@ -366,7 +373,7 @@ export function createCompletionProviders(
   _environment: ShellEnvironment,
 ): CompletionProvider[] {
   return [
-    new CommandCompletionProvider(commands, fileSystem),
+    createCommandCompletionProvider(commands, fileSystem),
     new FileCompletionProvider(fileSystem),
     new EnvironmentCompletionProvider(),
     new OptionCompletionProvider(),

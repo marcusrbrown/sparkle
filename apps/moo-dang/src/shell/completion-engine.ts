@@ -12,6 +12,7 @@ import type {
   CompletionEngine,
   CompletionEvent,
   CompletionEventListener,
+  CompletionPriority,
   CompletionProvider,
   CompletionResult,
   CompletionSuggestion,
@@ -21,15 +22,18 @@ import {consola} from 'consola'
 
 /**
  * Default configuration for completion behavior.
+ *
+ * These defaults provide sensible completion behavior while allowing
+ * customization for different terminal environments and user preferences.
  */
-const DEFAULT_COMPLETION_CONFIG: CompletionConfig = {
+const DEFAULT_COMPLETION_CONFIG = {
   maxSuggestions: 20,
   minInputLength: 0,
   showDescriptions: true,
   autoCompletePrefix: true,
   caseSensitive: false,
   includeHiddenFiles: false,
-}
+} as const satisfies CompletionConfig
 
 /**
  * Creates a completion context from input parameters.
@@ -91,9 +95,10 @@ function createCompletionContext(
 /**
  * Finds the common prefix among completion suggestions.
  *
- * Used for auto-completion when multiple suggestions share a common start.
+ * This enables Tab completion to auto-fill the longest common text
+ * shared by all suggestions, improving typing efficiency for users.
  */
-function findCommonPrefix(suggestions: CompletionSuggestion[]): string {
+function findCommonPrefix(suggestions: readonly CompletionSuggestion[]): string {
   if (suggestions.length === 0) {
     return ''
   }
@@ -131,17 +136,27 @@ function findCommonPrefix(suggestions: CompletionSuggestion[]): string {
 }
 
 /**
+ * Priority order mapping for consistent suggestion sorting.
+ */
+const PRIORITY_ORDER = {
+  high: 0,
+  medium: 1,
+  low: 2,
+} as const satisfies Record<CompletionPriority, number>
+
+/**
  * Sorts completion suggestions by priority and relevance.
  *
- * Uses a multi-criteria sorting algorithm considering priority, type,
- * and alphabetical order for consistent results.
+ * Prioritizes exact matches to improve user experience by showing
+ * the most likely intended completions first.
  */
-function sortSuggestions(suggestions: CompletionSuggestion[], context: CompletionContext): CompletionSuggestion[] {
-  const priorityOrder = {high: 0, medium: 1, low: 2}
-
+function sortSuggestions(
+  suggestions: readonly CompletionSuggestion[],
+  context: CompletionContext,
+): CompletionSuggestion[] {
   return [...suggestions].sort((a, b) => {
     // First sort by priority
-    const priorityDiff = priorityOrder[a.priority] - priorityOrder[b.priority]
+    const priorityDiff = PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority]
     if (priorityDiff !== 0) {
       return priorityDiff
     }
@@ -163,66 +178,73 @@ function sortSuggestions(suggestions: CompletionSuggestion[], context: Completio
 }
 
 /**
- * Main completion engine implementation.
+ * Creates a completion engine implementation using function-based architecture.
+ *
+ * This approach provides better composability and testability compared to
+ * class-based implementations while maintaining all required functionality.
  */
-export class CompletionEngineImpl implements CompletionEngine {
-  private readonly providers = new Map<string, CompletionProvider>()
-  private readonly eventListeners = new Set<CompletionEventListener>()
+function createCompletionEngineImpl(config: CompletionConfig): CompletionEngine {
+  const providers = new Map<string, CompletionProvider>()
+  const eventListeners = new Set<CompletionEventListener>()
 
-  readonly config: CompletionConfig
-
-  constructor(config: CompletionConfig = DEFAULT_COMPLETION_CONFIG) {
-    this.config = config
+  function emitEvent(event: CompletionEvent): void {
+    for (const listener of eventListeners) {
+      try {
+        listener(event)
+      } catch (error) {
+        consola.error('Completion event listener failed with unexpected error:', error)
+      }
+    }
   }
 
-  readonly registerProvider = (provider: CompletionProvider): void => {
-    if (this.providers.has(provider.id)) {
-      consola.warn(`Completion provider with id '${provider.id}' is already registered`)
+  function registerProvider(provider: CompletionProvider): void {
+    if (providers.has(provider.id)) {
+      consola.warn(`Completion provider '${provider.id}' is already registered - skipping duplicate registration`)
       return
     }
 
-    this.providers.set(provider.id, provider)
+    providers.set(provider.id, provider)
     consola.debug(`Registered completion provider: ${provider.name} (${provider.id})`)
   }
 
-  readonly unregisterProvider = (providerId: string): void => {
-    if (!this.providers.has(providerId)) {
-      consola.warn(`Completion provider with id '${providerId}' is not registered`)
+  function unregisterProvider(providerId: string): void {
+    if (!providers.has(providerId)) {
+      consola.warn(`Cannot unregister completion provider '${providerId}' - provider not found`)
       return
     }
 
-    this.providers.delete(providerId)
+    providers.delete(providerId)
     consola.debug(`Unregistered completion provider: ${providerId}`)
   }
 
-  readonly getProviders = (): CompletionProvider[] => {
-    return Array.from(this.providers.values())
+  function getProviders(): CompletionProvider[] {
+    return Array.from(providers.values())
   }
 
-  readonly getCompletions = async (
+  async function getCompletions(
     input: string,
     cursorPosition: number,
     workingDirectory: string,
     environmentVariables: Record<string, string>,
-  ): Promise<CompletionResult> => {
+  ): Promise<CompletionResult> {
     const context = createCompletionContext(input, cursorPosition, workingDirectory, environmentVariables)
 
     // Emit request event
-    this.emitEvent({
+    emitEvent({
       type: 'request',
       context,
     })
 
     try {
       // Skip completion if input is too short
-      if (context.currentPart.length < this.config.minInputLength) {
+      if (context.currentPart.length < config.minInputLength) {
         const result: CompletionResult = {
           suggestions: [],
           hasMore: false,
           context,
         }
 
-        this.emitEvent({
+        emitEvent({
           type: 'result',
           context,
           suggestions: result.suggestions,
@@ -234,26 +256,26 @@ export class CompletionEngineImpl implements CompletionEngine {
       // Collect suggestions from all applicable providers
       const allSuggestions: CompletionSuggestion[] = []
 
-      for (const provider of this.providers.values()) {
+      for (const provider of providers.values()) {
         try {
           if (!provider.canComplete(context)) {
             continue
           }
 
-          const suggestions = await provider.getCompletions(context, this.config)
+          const suggestions = await provider.getCompletions(context, config)
           allSuggestions.push(...suggestions)
         } catch (error) {
-          consola.error(`Completion provider ${provider.id} failed:`, error)
+          consola.error(`Completion provider '${provider.id}' failed with error:`, error)
         }
       }
 
       // Sort and limit suggestions
       const sortedSuggestions = sortSuggestions(allSuggestions, context)
-      const limitedSuggestions = sortedSuggestions.slice(0, this.config.maxSuggestions)
-      const hasMore = sortedSuggestions.length > this.config.maxSuggestions
+      const limitedSuggestions = sortedSuggestions.slice(0, config.maxSuggestions)
+      const hasMore = sortedSuggestions.length > config.maxSuggestions
 
       // Find common prefix for auto-completion
-      const commonPrefix = this.config.autoCompletePrefix ? findCommonPrefix(limitedSuggestions) : undefined
+      const commonPrefix = config.autoCompletePrefix ? findCommonPrefix(limitedSuggestions) : undefined
 
       const result: CompletionResult = {
         suggestions: limitedSuggestions,
@@ -263,7 +285,7 @@ export class CompletionEngineImpl implements CompletionEngine {
       }
 
       // Emit result event
-      this.emitEvent({
+      emitEvent({
         type: 'result',
         context,
         suggestions: result.suggestions,
@@ -271,7 +293,7 @@ export class CompletionEngineImpl implements CompletionEngine {
 
       return result
     } catch (error) {
-      consola.error('Completion generation failed:', error)
+      consola.error('Completion generation failed with unexpected error:', error)
 
       const result: CompletionResult = {
         suggestions: [],
@@ -279,7 +301,7 @@ export class CompletionEngineImpl implements CompletionEngine {
         context,
       }
 
-      this.emitEvent({
+      emitEvent({
         type: 'result',
         context,
         suggestions: result.suggestions,
@@ -289,11 +311,11 @@ export class CompletionEngineImpl implements CompletionEngine {
     }
   }
 
-  readonly applySuggestion = (
+  function applySuggestion(
     input: string,
     suggestion: CompletionSuggestion,
     cursorPosition: number,
-  ): {newInput: string; newCursorPosition: number} => {
+  ): {newInput: string; newCursorPosition: number} {
     const context = createCompletionContext(input, cursorPosition, '', {})
 
     try {
@@ -334,7 +356,7 @@ export class CompletionEngineImpl implements CompletionEngine {
       }
 
       // Emit apply event
-      this.emitEvent({
+      emitEvent({
         type: 'apply',
         context,
         appliedSuggestion: suggestion,
@@ -342,42 +364,30 @@ export class CompletionEngineImpl implements CompletionEngine {
 
       return {newInput, newCursorPosition}
     } catch (error) {
-      consola.error('Failed to apply completion suggestion:', error)
+      consola.error('Failed to apply completion suggestion due to unexpected error:', error)
 
       // Return original input on error
       return {newInput: input, newCursorPosition: cursorPosition}
     }
   }
 
-  /**
-   * Add an event listener for completion events.
-   */
-  readonly addEventListener = (listener: CompletionEventListener): void => {
-    this.eventListeners.add(listener)
-  }
-
-  /**
-   * Remove an event listener for completion events.
-   */
-  readonly removeEventListener = (listener: CompletionEventListener): void => {
-    this.eventListeners.delete(listener)
-  }
-
-  private emitEvent(event: CompletionEvent): void {
-    for (const listener of this.eventListeners) {
-      try {
-        listener(event)
-      } catch (error) {
-        consola.error('Completion event listener failed:', error)
-      }
-    }
+  return {
+    config,
+    registerProvider,
+    unregisterProvider,
+    getProviders,
+    getCompletions,
+    applySuggestion,
   }
 }
 
 /**
- * Creates a new completion engine with default configuration.
+ * Creates a new completion engine with optional configuration overrides.
+ *
+ * Uses function-based architecture for better composability and testability
+ * while providing all required completion engine functionality.
  */
 export function createCompletionEngine(config?: Partial<CompletionConfig>): CompletionEngine {
-  const fullConfig = {...DEFAULT_COMPLETION_CONFIG, ...config}
-  return new CompletionEngineImpl(fullConfig)
+  const fullConfig: CompletionConfig = {...DEFAULT_COMPLETION_CONFIG, ...config}
+  return createCompletionEngineImpl(fullConfig)
 }
