@@ -1251,7 +1251,7 @@ function createHistoryCommand(): ShellCommand {
     allowDuplicates: false,
     enableSearch: true,
     maxAgeDays: 30,
-  })
+  } as const)
 
   return {
     name: 'history',
@@ -1366,7 +1366,7 @@ function parseHistoryOptions(args: string[]): HistoryOptions {
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i]
-    if (!arg) continue
+    if (arg == null || arg.trim().length === 0) continue
 
     switch (arg) {
       case '-h':
@@ -1394,7 +1394,7 @@ function parseHistoryOptions(args: string[]): HistoryOptions {
         options.recent = true
         if (i + 1 < args.length) {
           const nextArg = args[i + 1]
-          if (nextArg && /^\d+$/.test(nextArg)) {
+          if (nextArg != null && /^\d+$/.test(nextArg)) {
             options.count = Number.parseInt(nextArg, 10)
             i++
           }
@@ -1404,7 +1404,7 @@ function parseHistoryOptions(args: string[]): HistoryOptions {
       case '--max-results':
         if (i + 1 < args.length) {
           const nextArg = args[i + 1]
-          if (nextArg) {
+          if (nextArg != null && nextArg.trim().length > 0) {
             options.maxResults = Number.parseInt(nextArg, 10)
             i++
           }

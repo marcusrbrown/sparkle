@@ -180,14 +180,14 @@ export function useCommandInput(
 
   // Initialize history manager
   useEffect(() => {
-    if (!historyManagerRef.current) {
+    if (historyManagerRef.current == null) {
       historyManagerRef.current = createHistoryManager({
         maxHistorySize,
         persist: true,
         allowDuplicates,
         enableSearch: true,
         maxAgeDays: 30,
-      })
+      } as const)
 
       // Load persisted history
       historyManagerRef.current

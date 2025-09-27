@@ -1,4 +1,5 @@
 import type {HistoryConfig, HistoryEntry} from './history-types.js'
+
 import {beforeEach, describe, expect, it, vi} from 'vitest'
 import {createHistoryManager} from './history-manager.js'
 

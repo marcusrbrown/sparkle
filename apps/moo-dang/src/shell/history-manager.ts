@@ -21,9 +21,47 @@ import type {
 import {consola} from 'consola'
 
 /**
+ * Stored history entry as it appears in localStorage (with string timestamp).
+ */
+interface StoredHistoryEntry {
+  id: string
+  command: string
+  timestamp: string
+  workingDirectory: string
+  exitCode?: number
+  duration?: number
+  success?: boolean
+  metadata?: HistoryEntry['metadata']
+}
+
+/**
+ * Structure of data stored in localStorage.
+ */
+interface StoredHistoryData {
+  entries: StoredHistoryEntry[]
+  entryIdCounter: number
+  sessionId?: string
+  savedAt?: string
+  version?: string
+}
+
+/**
+ * Type guard to validate stored history data structure.
+ */
+function isStoredHistoryData(value: unknown): value is StoredHistoryData {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'entries' in value &&
+    Array.isArray((value as StoredHistoryData).entries) &&
+    typeof (value as StoredHistoryData).entryIdCounter === 'number'
+  )
+}
+
+/**
  * Default configuration for history management.
  */
-const DEFAULT_HISTORY_CONFIG: Required<HistoryConfig> = {
+const DEFAULT_HISTORY_CONFIG = {
   maxHistorySize: 1000,
   persist: true,
   storageKey: 'moo-dang-history',
@@ -31,7 +69,7 @@ const DEFAULT_HISTORY_CONFIG: Required<HistoryConfig> = {
   enableSearch: true,
   maxAgeDays: 30,
   saveSensitive: false,
-}
+} as const satisfies Required<HistoryConfig>
 
 /**
  * Loads command history from browser localStorage.
@@ -43,10 +81,10 @@ function loadFromStorage(config: Required<HistoryConfig>): Pick<HistoryState, 'e
 
   try {
     const stored = localStorage.getItem(config.storageKey)
-    if (stored) {
-      const data = JSON.parse(stored)
-      if (Array.isArray(data.entries)) {
-        const entries = data.entries.map((entry: any) => ({
+    if (stored != null && stored.trim().length > 0) {
+      const data: unknown = JSON.parse(stored)
+      if (isStoredHistoryData(data)) {
+        const entries = data.entries.map((entry: StoredHistoryEntry) => ({
           ...entry,
           timestamp: new Date(entry.timestamp),
         }))
@@ -200,7 +238,6 @@ function performSearch(entries: HistoryEntry[], options: HistorySearchOptions): 
   const maxResults = options.maxResults || 100
   const truncated = totalMatches > maxResults
 
-  // Limit results and return most recent first
   const resultEntries = matchingEntries
     .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
     .slice(0, maxResults)
@@ -534,13 +571,21 @@ export function createHistoryManager(config: HistoryConfig = {}): HistoryManager
       try {
         switch (format) {
           case 'json': {
-            const parsed = JSON.parse(data)
+            const parsed: unknown = JSON.parse(data)
             if (Array.isArray(parsed)) {
-              importedEntries = parsed.map((entry: any) => ({
-                ...entry,
-                timestamp: new Date(entry.timestamp),
-                id: entry.id || generateEntryId(state.entryIdCounter++),
-              }))
+              importedEntries = parsed
+                .filter(
+                  (entry): entry is StoredHistoryEntry =>
+                    typeof entry === 'object' &&
+                    entry !== null &&
+                    typeof entry.command === 'string' &&
+                    typeof entry.timestamp === 'string',
+                )
+                .map((entry: StoredHistoryEntry) => ({
+                  ...entry,
+                  timestamp: new Date(entry.timestamp),
+                  id: entry.id || generateEntryId(state.entryIdCounter++),
+                }))
             }
             break
           }
