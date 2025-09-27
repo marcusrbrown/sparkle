@@ -176,7 +176,6 @@ export function useCommandInput(
     setHistoryIndex(-1)
     setIsBrowsingHistory(false)
 
-    // Execute callback
     if (onCommandExecute) {
       try {
         onCommandExecute(command)

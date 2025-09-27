@@ -243,7 +243,6 @@ export function createVirtualFileSystem(enableDebugLogging = false): VirtualFile
     return totalSize
   }
 
-  // Return the VirtualFileSystem interface implementation
   return {
     getCurrentDirectory(): string {
       return currentDirectory
@@ -321,7 +320,6 @@ export function createVirtualFileSystem(enableDebugLogging = false): VirtualFile
         throw new DirectoryError(parentPath, 'Parent directory not found')
       }
 
-      // Create or update file using the helper function
       const fileNode = createFile(fileName, content)
       parentNode.children.set(fileName, fileNode)
 

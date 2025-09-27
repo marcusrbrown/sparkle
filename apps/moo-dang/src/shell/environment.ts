@@ -2,6 +2,7 @@
  * Shell environment implementation providing isolated execution contexts for commands.
  */
 
+import type {JobController} from './job-types'
 import type {
   CommandExecutionResult,
   ExecutionContext,
@@ -11,6 +12,8 @@ import type {
   ShellOptions,
   VirtualFileSystem,
 } from './types'
+
+import {createJobController} from './job-controller'
 
 /**
  * Default shell configuration options.
@@ -47,6 +50,7 @@ const DEFAULT_ENVIRONMENT_VARIABLES: Record<string, string> = {
 export class ShellEnvironment {
   private state: ShellEnvironmentState
   private readonly fileSystem: VirtualFileSystem
+  private readonly jobController: JobController
 
   constructor(fileSystem: VirtualFileSystem, options: Partial<ShellOptions> = {}) {
     this.fileSystem = fileSystem
@@ -63,6 +67,11 @@ export class ShellEnvironment {
       processes: new Map(),
       nextProcessId: 1,
     }
+
+    this.jobController = createJobController({
+      maxJobs: shellOptions.maxProcesses,
+      enableNotifications: true,
+    })
 
     this.logDebug('Shell environment initialized', {
       workingDirectory: this.state.workingDirectory,
@@ -202,6 +211,15 @@ export class ShellEnvironment {
       return
     }
 
+    // Update job controller with completion status
+    this.jobController.updateJobStatus(
+      processId,
+      result.exitCode === 0 ? 'completed' : 'failed',
+      result.exitCode,
+      result.stdout,
+      result.stderr,
+    )
+
     const status: ProcessStatus = result.exitCode === 0 ? 'completed' : 'failed'
     const updatedProcess: ProcessInfo = {
       ...process,
@@ -235,6 +253,9 @@ export class ShellEnvironment {
     if (!process || process.status !== 'running') {
       return false
     }
+
+    // Update job controller with kill status
+    this.jobController.updateJobStatus(processId, 'killed')
 
     const killedProcess: ProcessInfo = {
       ...process,
@@ -310,6 +331,30 @@ export class ShellEnvironment {
 
       this.logDebug('Process removed from table', {processId})
     }
+  }
+
+  /**
+   * Get job controller for background job management.
+   */
+  getJobController(): JobController {
+    return this.jobController
+  }
+
+  /**
+   * Start a job (integrates with existing process creation).
+   */
+  startJob(command: string, background: boolean): ProcessInfo {
+    const context = this.createExecutionContext()
+    const processInfo = this.startProcess(command, context)
+
+    // Register with job controller
+    this.jobController.startJob(command, processInfo.id, {
+      background,
+      timeout: this.state.shellOptions.commandTimeout,
+      notify: true,
+    })
+
+    return processInfo
   }
 
   /**

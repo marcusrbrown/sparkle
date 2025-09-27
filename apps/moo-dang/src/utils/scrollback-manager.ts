@@ -208,7 +208,6 @@ export function createScrollbackManager(config: ScrollbackConfig = {}): Scrollba
     maxAgeMinutes: config.maxAgeMinutes ?? 1440, // 24 hours
   }
 
-  // Initialize state
   const persistedData = resolvedConfig.persist ? loadFromStorage(resolvedConfig) : {lines: [], lineIdCounter: 0}
 
   const state: ScrollbackState = {

@@ -1068,6 +1068,178 @@ export async function resolveCommandWithPath(
 /**
  * Creates the standard set of shell commands (echo, pwd, ls, cat, cd, clear, help, env, export, printenv, unset, which).
  */
+
+/**
+ * Create the jobs command for listing background jobs.
+ */
+function createJobsCommand(environment: ShellEnvironment): ShellCommand {
+  return {
+    name: 'jobs',
+    description: 'List active background jobs',
+    execute: async (_args: string[], context: ExecutionContext) => {
+      const jobController = environment.getJobController()
+      const jobs = jobController.listJobs()
+
+      if (jobs.length === 0) {
+        return createCommandResult(context, 'jobs', 'No active jobs\n')
+      }
+
+      let output = ''
+      for (const job of jobs) {
+        const statusIndicator = job.foreground ? '+' : '-'
+        const statusText =
+          job.status === 'running'
+            ? 'Running'
+            : job.status === 'stopped'
+              ? 'Stopped'
+              : job.status === 'completed'
+                ? 'Done'
+                : job.status === 'killed'
+                  ? 'Terminated'
+                  : 'Failed'
+
+        output += `[${job.jobId}]${statusIndicator}  ${statusText}                ${job.command}\n`
+      }
+
+      return createCommandResult(context, 'jobs', output)
+    },
+  }
+}
+
+/**
+ * Create the fg command for bringing jobs to foreground.
+ */
+function createForegroundCommand(environment: ShellEnvironment): ShellCommand {
+  return {
+    name: 'fg',
+    description: 'Bring a job to the foreground',
+    execute: async (args: string[], context: ExecutionContext) => {
+      const jobController = environment.getJobController()
+
+      if (args.length === 0) {
+        // Bring most recent job to foreground
+        const jobs = jobController.listJobs().filter(j => j.status === 'running' || j.status === 'stopped')
+        if (jobs.length === 0) {
+          return createCommandResult(context, 'fg', '', 'fg: no current job\n', 1)
+        }
+
+        const mostRecentJob = jobs.at(-1)
+        if (mostRecentJob) {
+          const success = jobController.foregroundJob(mostRecentJob.jobId)
+          if (success) {
+            return createCommandResult(context, 'fg', `${mostRecentJob.command}\n`)
+          } else {
+            return createCommandResult(context, 'fg', '', 'fg: job has terminated\n', 1)
+          }
+        }
+      } else {
+        const jobId = Number.parseInt(args[0] || '', 10)
+        if (Number.isNaN(jobId)) {
+          return createCommandResult(context, 'fg', '', 'fg: invalid job number\n', 1)
+        }
+
+        const job = jobController.getJob(jobId)
+        if (!job) {
+          return createCommandResult(context, 'fg', '', `fg: ${jobId}: no such job\n`, 1)
+        }
+
+        const success = jobController.foregroundJob(jobId)
+        if (success) {
+          return createCommandResult(context, 'fg', `${job.command}\n`)
+        } else {
+          return createCommandResult(context, 'fg', '', 'fg: job has terminated\n', 1)
+        }
+      }
+
+      return createCommandResult(context, 'fg', '', 'fg: no current job\n', 1)
+    },
+  }
+}
+
+/**
+ * Create the bg command for sending jobs to background.
+ */
+function createBackgroundCommand(environment: ShellEnvironment): ShellCommand {
+  return {
+    name: 'bg',
+    description: 'Put jobs in the background',
+    execute: async (args: string[], context: ExecutionContext) => {
+      const jobController = environment.getJobController()
+
+      if (args.length === 0) {
+        // Send most recent stopped job to background
+        const jobs = jobController.listJobs().filter(j => j.status === 'stopped')
+        if (jobs.length === 0) {
+          return createCommandResult(context, 'bg', '', 'bg: no current job\n', 1)
+        }
+
+        const mostRecentJob = jobs.at(-1)
+        if (mostRecentJob) {
+          const success = jobController.backgroundJob(mostRecentJob.jobId)
+          if (success) {
+            return createCommandResult(context, 'bg', `[${mostRecentJob.jobId}]+ ${mostRecentJob.command} &\n`)
+          } else {
+            return createCommandResult(context, 'bg', '', 'bg: job has terminated\n', 1)
+          }
+        }
+      } else {
+        const jobId = Number.parseInt(args[0] || '', 10)
+        if (Number.isNaN(jobId)) {
+          return createCommandResult(context, 'bg', '', 'bg: invalid job number\n', 1)
+        }
+
+        const job = jobController.getJob(jobId)
+        if (!job) {
+          return createCommandResult(context, 'bg', '', `bg: ${jobId}: no such job\n`, 1)
+        }
+
+        const success = jobController.backgroundJob(jobId)
+        if (success) {
+          return createCommandResult(context, 'bg', `[${job.jobId}]+ ${job.command} &\n`)
+        } else {
+          return createCommandResult(context, 'bg', '', 'bg: job has terminated\n', 1)
+        }
+      }
+
+      return createCommandResult(context, 'bg', '', 'bg: no current job\n', 1)
+    },
+  }
+}
+
+/**
+ * Create the disown command for removing jobs from job control.
+ */
+function createDisownCommand(environment: ShellEnvironment): ShellCommand {
+  return {
+    name: 'disown',
+    description: 'Remove jobs from the active job list',
+    execute: async (args: string[], context: ExecutionContext) => {
+      const jobController = environment.getJobController()
+
+      if (args.length === 0) {
+        return createCommandResult(context, 'disown', '', 'disown: usage: disown [job_spec]\n', 1)
+      }
+
+      const jobId = Number.parseInt(args[0] || '', 10)
+      if (Number.isNaN(jobId)) {
+        return createCommandResult(context, 'disown', '', 'disown: invalid job number\n', 1)
+      }
+
+      const job = jobController.getJob(jobId)
+      if (!job) {
+        return createCommandResult(context, 'disown', '', `disown: ${jobId}: no such job\n`, 1)
+      }
+
+      const success = jobController.removeJob(jobId)
+      if (success) {
+        return createCommandResult(context, 'disown', `Job ${jobId} disowned\n`)
+      } else {
+        return createCommandResult(context, 'disown', '', `disown: failed to disown job ${jobId}\n`, 1)
+      }
+    },
+  }
+}
+
 export function createStandardCommands(
   fileSystem: VirtualFileSystem,
   environment: ShellEnvironment,
@@ -1102,6 +1274,17 @@ export function createStandardCommands(
 
   const sourceCommand = createSourceCommand(fileSystem, environment, commands)
   commands.set(sourceCommand.name, sourceCommand)
+
+  // Job control commands
+  const jobsCommand = createJobsCommand(environment)
+  const fgCommand = createForegroundCommand(environment)
+  const bgCommand = createBackgroundCommand(environment)
+  const disownCommand = createDisownCommand(environment)
+
+  commands.set(jobsCommand.name, jobsCommand)
+  commands.set(fgCommand.name, fgCommand)
+  commands.set(bgCommand.name, bgCommand)
+  commands.set(disownCommand.name, disownCommand)
 
   const helpCommand = createHelpCommand(commands)
   commands.set(helpCommand.name, helpCommand)

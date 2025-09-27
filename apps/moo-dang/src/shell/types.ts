@@ -159,6 +159,11 @@ export type ShellWorkerRequest =
   | ChangeDirectoryRequest
   | KillProcessRequest
   | ListProcessesRequest
+  | ListJobsRequest
+  | ForegroundJobRequest
+  | BackgroundJobRequest
+  | KillJobRequest
+  | GetJobNotificationsRequest
 
 /**
  * Request to execute a command in the shell.
@@ -220,6 +225,44 @@ export interface ListProcessesRequest {
 }
 
 /**
+ * Request to list background jobs.
+ */
+export interface ListJobsRequest {
+  readonly type: 'list-jobs'
+}
+
+/**
+ * Request to bring job to foreground.
+ */
+export interface ForegroundJobRequest {
+  readonly type: 'foreground-job'
+  readonly jobId: number
+}
+
+/**
+ * Request to send job to background.
+ */
+export interface BackgroundJobRequest {
+  readonly type: 'background-job'
+  readonly jobId: number
+}
+
+/**
+ * Request to kill a job.
+ */
+export interface KillJobRequest {
+  readonly type: 'kill-job'
+  readonly jobId: number
+}
+
+/**
+ * Request to get job notifications.
+ */
+export interface GetJobNotificationsRequest {
+  readonly type: 'get-job-notifications'
+}
+
+/**
  * Enhanced shell worker response types.
  */
 export type ShellWorkerResponse =
@@ -230,6 +273,9 @@ export type ShellWorkerResponse =
   | DirectoryChangedResponse
   | ProcessKilledResponse
   | ProcessListResponse
+  | JobListResponse
+  | JobControlResponse
+  | JobNotificationsResponse
   | ErrorResponse
   | LogResponse
   | DebugResponse
@@ -289,6 +335,31 @@ export interface ProcessKilledResponse {
 export interface ProcessListResponse {
   readonly type: 'process-list'
   readonly processes: ProcessInfo[]
+}
+
+/**
+ * Response to job list request.
+ */
+export interface JobListResponse {
+  readonly type: 'job-list'
+  readonly jobs: import('./job-types').Job[]
+}
+
+/**
+ * Response to job control operations (fg, bg, kill).
+ */
+export interface JobControlResponse {
+  readonly type: 'job-control'
+  readonly success: boolean
+  readonly message?: string
+}
+
+/**
+ * Response to job notifications request.
+ */
+export interface JobNotificationsResponse {
+  readonly type: 'job-notifications'
+  readonly notifications: import('./job-types').JobNotification[]
 }
 
 /**
