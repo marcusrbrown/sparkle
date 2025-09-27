@@ -516,6 +516,128 @@ export const HELP_HELP: CommandHelpInfo = {
 }
 
 /**
+ * Complete help information for the 'jobs' command.
+ */
+export const JOBS_HELP: CommandHelpInfo = {
+  name: 'jobs',
+  summary: 'List active background jobs',
+  description: [
+    'Display information about active jobs. Shows job numbers, status,',
+    'and commands for all jobs in the current session. Jobs are background',
+    'processes started with & or moved to background with bg command.',
+  ].join(' '),
+  usage: [
+    {
+      pattern: 'jobs',
+      description: 'List all active jobs with their status',
+    },
+  ],
+  options: [],
+  examples: [
+    {
+      command: 'jobs',
+      description: 'Show all active background jobs',
+      expectedOutput: '[1]+  Running                 sleep 30 &\n[2]-  Stopped                 vim file.txt',
+    },
+  ],
+  seeAlso: ['fg', 'bg', 'disown'],
+}
+
+/**
+ * Complete help information for the 'fg' command.
+ */
+export const FG_HELP: CommandHelpInfo = {
+  name: 'fg',
+  summary: 'Bring a job to the foreground',
+  description: [
+    'Move a background or stopped job to the foreground. If no job number is',
+    'specified, brings the most recent job to the foreground. The job will',
+    'resume execution and receive terminal input.',
+  ].join(' '),
+  usage: [
+    {
+      pattern: 'fg [job_spec]',
+      description: 'Bring specified job or most recent job to foreground',
+    },
+  ],
+  options: [],
+  examples: [
+    {
+      command: 'fg',
+      description: 'Bring most recent job to foreground',
+      expectedOutput: 'sleep 30',
+    },
+    {
+      command: 'fg %1',
+      description: 'Bring job 1 to foreground',
+      expectedOutput: 'vim file.txt',
+    },
+  ],
+  seeAlso: ['jobs', 'bg', 'disown'],
+}
+
+/**
+ * Complete help information for the 'bg' command.
+ */
+export const BG_HELP: CommandHelpInfo = {
+  name: 'bg',
+  summary: 'Put jobs in the background',
+  description: [
+    'Move stopped jobs to the background where they will continue running.',
+    'If no job number is specified, operates on the most recent stopped job.',
+    'Background jobs can continue executing while you use the shell.',
+  ].join(' '),
+  usage: [
+    {
+      pattern: 'bg [job_spec]',
+      description: 'Move specified job or most recent stopped job to background',
+    },
+  ],
+  options: [],
+  examples: [
+    {
+      command: 'bg',
+      description: 'Resume most recent stopped job in background',
+      expectedOutput: '[1]+ sleep 30 &',
+    },
+    {
+      command: 'bg %2',
+      description: 'Resume job 2 in background',
+      expectedOutput: '[2]+ vim file.txt &',
+    },
+  ],
+  seeAlso: ['jobs', 'fg', 'disown'],
+}
+
+/**
+ * Complete help information for the 'disown' command.
+ */
+export const DISOWN_HELP: CommandHelpInfo = {
+  name: 'disown',
+  summary: 'Remove jobs from the active job list',
+  description: [
+    'Remove jobs from the shell job table. Disowned jobs will continue',
+    'running but will no longer be tracked by the shell. They cannot be',
+    'brought back to foreground or managed with job control commands.',
+  ].join(' '),
+  usage: [
+    {
+      pattern: 'disown job_spec',
+      description: 'Remove the specified job from job control',
+    },
+  ],
+  options: [],
+  examples: [
+    {
+      command: 'disown %1',
+      description: 'Remove job 1 from job control',
+      expectedOutput: 'Job 1 disowned',
+    },
+  ],
+  seeAlso: ['jobs', 'fg', 'bg'],
+}
+
+/**
  * Registry of all command help information.
  */
 export const COMMAND_HELP_REGISTRY = new Map<string, CommandHelpInfo>([
@@ -531,6 +653,10 @@ export const COMMAND_HELP_REGISTRY = new Map<string, CommandHelpInfo>([
   ['unset', UNSET_HELP],
   ['which', WHICH_HELP],
   ['help', HELP_HELP],
+  ['jobs', JOBS_HELP],
+  ['fg', FG_HELP],
+  ['bg', BG_HELP],
+  ['disown', DISOWN_HELP],
 ])
 
 /**

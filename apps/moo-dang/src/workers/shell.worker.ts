@@ -6,11 +6,18 @@
  */
 
 import type {
+  BackgroundJobRequest,
   ChangeDirectoryRequest,
+  CommandPipeline,
   ExecuteCommandRequest,
   ExecutePipelineRequest,
+  ExecutionContext,
+  ForegroundJobRequest,
   GetEnvironmentRequest,
+  GetJobNotificationsRequest,
+  KillJobRequest,
   KillProcessRequest,
+  ListJobsRequest,
   ListProcessesRequest,
   SetEnvironmentRequest,
   ShellCommand,
@@ -88,6 +95,16 @@ async function handleMessage(state: ShellWorkerState, request: ShellWorkerReques
         return handleKillProcess(state, request)
       case 'list-processes':
         return handleListProcesses(state, request)
+      case 'list-jobs':
+        return handleListJobs(state, request)
+      case 'foreground-job':
+        return handleForegroundJob(state, request)
+      case 'background-job':
+        return handleBackgroundJob(state, request)
+      case 'kill-job':
+        return handleKillJob(state, request)
+      case 'get-job-notifications':
+        return handleGetJobNotifications(state, request)
       default:
         return {
           type: 'error',
@@ -110,6 +127,7 @@ async function handleMessage(state: ShellWorkerState, request: ShellWorkerReques
  *
  * Handles multi-command pipelines with I/O redirection, managing the flow of data
  * between commands and integrating with the virtual file system for file operations.
+ * Supports background execution for commands ending with '&'.
  */
 async function handleExecutePipeline(
   state: ShellWorkerState,
@@ -132,11 +150,32 @@ async function handleExecutePipeline(
   }
 
   const context = state.environment.createExecutionContext(stdin)
-  const processInfo = state.environment.startProcess(
-    pipeline.commands.map(cmd => `${cmd.command} ${cmd.args.join(' ')}`).join(' | '),
-    context,
-  )
+  const commandString = pipeline.commands.map(cmd => `${cmd.command} ${cmd.args.join(' ')}`).join(' | ')
 
+  // Use environment's startJob method for job control integration
+  const processInfo = state.environment.startJob(commandString, pipeline.background)
+
+  // Handle background processes
+  if (pipeline.background) {
+    // Start background execution - don't wait for completion
+    executeBackgroundPipeline(pipeline, state, context, processInfo.id, timeout || 15000)
+
+    // Return immediately with background job information
+    return {
+      type: 'pipeline-result',
+      result: {
+        processId: processInfo.id,
+        command: commandString,
+        commandResults: [],
+        stdout: `[${processInfo.id}] ${processInfo.id}\n`, // Job started message
+        stderr: '',
+        exitCode: 0,
+        executionTime: 0,
+      },
+    }
+  }
+
+  // Handle foreground processes (existing synchronous behavior)
   try {
     const result = await executeWithTimeout(
       () => executePipeline(pipeline, state.commands, context, state.fileSystem),
@@ -159,7 +198,7 @@ async function handleExecutePipeline(
   } catch (error) {
     const errorResult = {
       processId: context.processId,
-      command: pipeline.commands.map(cmd => `${cmd.command} ${cmd.args.join(' ')}`).join(' | '),
+      command: commandString,
       stdout: '',
       stderr: error instanceof Error ? error.message : String(error),
       exitCode: 1,
@@ -181,6 +220,69 @@ async function handleExecutePipeline(
       },
     }
   }
+}
+
+/**
+ * Execute a pipeline in the background asynchronously.
+ *
+ * This function simulates background process execution by running the pipeline
+ * asynchronously and updating the process status when complete.
+ */
+function executeBackgroundPipeline(
+  pipeline: CommandPipeline,
+  state: ShellWorkerState,
+  context: ExecutionContext,
+  processId: number,
+  timeout: number,
+): void {
+  // Execute pipeline asynchronously
+  ;(async () => {
+    try {
+      const result = await executeWithTimeout(
+        () => executePipeline(pipeline, state.commands, context, state.fileSystem),
+        timeout,
+      )
+
+      // Complete the background process
+      state.environment.completeProcess(processId, {
+        processId: result.processId,
+        command: result.command,
+        stdout: result.stdout,
+        stderr: result.stderr,
+        exitCode: result.exitCode,
+        executionTime: result.executionTime,
+      })
+
+      consola.debug('[ShellWorker] Background job completed', {
+        processId,
+        exitCode: result.exitCode,
+        executionTime: result.executionTime,
+      })
+    } catch (error) {
+      // Handle background process errors
+      const errorResult = {
+        processId: context.processId,
+        command: pipeline.commands.map(cmd => `${cmd.command} ${cmd.args.join(' ')}`).join(' | '),
+        stdout: '',
+        stderr: error instanceof Error ? error.message : String(error),
+        exitCode: 1,
+        executionTime: Date.now() - Date.now(), // This will be overwritten by process tracking
+      }
+
+      state.environment.completeProcess(processId, errorResult)
+
+      consola.debug('[ShellWorker] Background job failed', {
+        processId,
+        error: error instanceof Error ? error.message : String(error),
+      })
+    }
+  })().catch(error => {
+    // Final error handler for any uncaught errors
+    consola.error('[ShellWorker] Uncaught error in background job execution', {
+      processId,
+      error: error instanceof Error ? error.message : String(error),
+    })
+  })
 }
 
 /**
@@ -386,6 +488,74 @@ function handleListProcesses(state: ShellWorkerState, _request: ListProcessesReq
   return {
     type: 'process-list',
     processes,
+  }
+}
+
+/**
+ * List all background jobs.
+ */
+function handleListJobs(state: ShellWorkerState, _request: ListJobsRequest): ShellWorkerResponse {
+  const jobController = state.environment.getJobController()
+  const jobs = jobController.listJobs()
+  return {
+    type: 'job-list',
+    jobs,
+  }
+}
+
+/**
+ * Bring a background job to the foreground.
+ */
+function handleForegroundJob(state: ShellWorkerState, request: ForegroundJobRequest): ShellWorkerResponse {
+  const jobController = state.environment.getJobController()
+  const success = jobController.foregroundJob(request.jobId)
+  return {
+    type: 'job-control',
+    success,
+    message: success
+      ? `Job ${request.jobId} brought to foreground`
+      : `Job ${request.jobId} not found or cannot be foregrounded`,
+  }
+}
+
+/**
+ * Send a job to the background.
+ */
+function handleBackgroundJob(state: ShellWorkerState, request: BackgroundJobRequest): ShellWorkerResponse {
+  const jobController = state.environment.getJobController()
+  const success = jobController.backgroundJob(request.jobId)
+  return {
+    type: 'job-control',
+    success,
+    message: success
+      ? `Job ${request.jobId} sent to background`
+      : `Job ${request.jobId} not found or cannot be backgrounded`,
+  }
+}
+
+/**
+ * Kill a background job.
+ */
+function handleKillJob(state: ShellWorkerState, request: KillJobRequest): ShellWorkerResponse {
+  const jobController = state.environment.getJobController()
+  const success = jobController.killJob(request.jobId)
+  return {
+    type: 'job-control',
+    success,
+    message: success ? `Job ${request.jobId} terminated` : `Job ${request.jobId} not found`,
+  }
+}
+
+/**
+ * Get job notifications for completed or status-changed jobs.
+ */
+function handleGetJobNotifications(state: ShellWorkerState, _request: GetJobNotificationsRequest): ShellWorkerResponse {
+  const jobController = state.environment.getJobController()
+  const notifications = jobController.getNotifications()
+  jobController.clearNotifications() // Clear after reading
+  return {
+    type: 'job-notifications',
+    notifications,
   }
 }
 
