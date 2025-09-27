@@ -1,8 +1,10 @@
 import type {CompletionEngine, CompletionResult, CompletionSuggestion} from '../shell/completion-types'
+import type {HistoryManager} from '../shell/history-types'
 
 import {useDebounce} from '@sparkle/utils'
 import {consola} from 'consola'
 import {useCallback, useEffect, useRef, useState} from 'react'
+import {createHistoryManager} from '../shell/history-manager'
 
 /**
  * Represents a command in the command history.
@@ -172,6 +174,37 @@ export function useCommandInput(
   const [commandHistory, setCommandHistory] = useState<CommandHistoryEntry[]>([])
   const [historyIndex, setHistoryIndex] = useState(-1)
   const [isBrowsingHistory, setIsBrowsingHistory] = useState(false)
+
+  // History manager for persistence and advanced features
+  const historyManagerRef = useRef<HistoryManager | null>(null)
+
+  // Initialize history manager
+  useEffect(() => {
+    if (historyManagerRef.current == null) {
+      historyManagerRef.current = createHistoryManager({
+        maxHistorySize,
+        persist: true,
+        allowDuplicates,
+        enableSearch: true,
+        maxAgeDays: 30,
+      } as const)
+
+      // Load persisted history
+      historyManagerRef.current
+        .getHistory()
+        .then(entries => {
+          const historyEntries: CommandHistoryEntry[] = entries.map(entry => ({
+            id: entry.id,
+            command: entry.command,
+            timestamp: entry.timestamp,
+          }))
+          setCommandHistory(historyEntries)
+        })
+        .catch(error => {
+          consola.error('Failed to load command history:', error)
+        })
+    }
+  }, [maxHistorySize, allowDuplicates])
   const [currentPrompt, setCurrentPrompt] = useState(prompt)
   const [cursorPosition, setCursorPosition] = useState(0)
   const [isReady] = useState(true)
@@ -368,7 +401,7 @@ export function useCommandInput(
    * Adds a command to the history with deduplication and size management.
    */
   const addToHistory = useCallback(
-    (command: string) => {
+    async (command: string) => {
       if (!command.trim()) return
 
       const entry: CommandHistoryEntry = {
@@ -377,27 +410,74 @@ export function useCommandInput(
         id: `cmd-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
       }
 
-      setCommandHistory(prev => {
-        let newHistory = [...prev]
+      // Add to persistent history manager
+      if (historyManagerRef.current) {
+        try {
+          await historyManagerRef.current.addCommand(entry.command, {
+            workingDirectory,
+            metadata: {
+              sessionId: `session-${Date.now()}`,
+              interactive: true,
+            },
+          })
 
-        // Remove duplicate if not allowing duplicates
-        if (!allowDuplicates) {
-          newHistory = newHistory.filter(cmd => cmd.command !== entry.command)
+          // Update local history state
+          const updatedHistory = await historyManagerRef.current.getHistory()
+          const historyEntries: CommandHistoryEntry[] = updatedHistory.map(historyEntry => ({
+            id: historyEntry.id,
+            command: historyEntry.command,
+            timestamp: historyEntry.timestamp,
+          }))
+          setCommandHistory(historyEntries)
+
+          consola.debug(`Added command to persistent history: "${entry.command}"`)
+        } catch (error) {
+          consola.error('Failed to add command to history:', error)
+
+          // Fall back to local-only history
+          setCommandHistory(prev => {
+            let newHistory = [...prev]
+
+            // Remove duplicate if not allowing duplicates
+            if (!allowDuplicates) {
+              newHistory = newHistory.filter(cmd => cmd.command !== entry.command)
+            }
+
+            // Add new command to the end
+            newHistory.push(entry)
+
+            // Trim to max size if necessary
+            if (newHistory.length > maxHistorySize) {
+              newHistory = newHistory.slice(-maxHistorySize)
+            }
+
+            return newHistory
+          })
         }
+      } else {
+        // Fall back to local-only history if manager not available
+        setCommandHistory(prev => {
+          let newHistory = [...prev]
 
-        // Add new command to the end
-        newHistory.push(entry)
+          // Remove duplicate if not allowing duplicates
+          if (!allowDuplicates) {
+            newHistory = newHistory.filter(cmd => cmd.command !== entry.command)
+          }
 
-        // Trim to max size if necessary
-        if (newHistory.length > maxHistorySize) {
-          newHistory = newHistory.slice(-maxHistorySize)
-        }
+          // Add new command to the end
+          newHistory.push(entry)
 
-        consola.debug(`Added command to history: "${entry.command}" (history size: ${newHistory.length})`)
-        return newHistory
-      })
+          // Trim to max size if necessary
+          if (newHistory.length > maxHistorySize) {
+            newHistory = newHistory.slice(-maxHistorySize)
+          }
+
+          consola.debug(`Added command to local history: "${entry.command}" (history size: ${newHistory.length})`)
+          return newHistory
+        })
+      }
     },
-    [allowDuplicates, maxHistorySize],
+    [allowDuplicates, maxHistorySize, workingDirectory],
   )
 
   /**
@@ -443,8 +523,10 @@ export function useCommandInput(
 
     consola.debug(`Executing command: "${command}"`)
 
-    // Add to history
-    addToHistory(command)
+    // Add to history (async but don't wait)
+    addToHistory(command).catch(error => {
+      consola.error('Failed to add command to history:', error)
+    })
 
     // Reset state
     setCurrentCommand('')
@@ -607,7 +689,16 @@ export function useCommandInput(
   /**
    * Clear the entire command history.
    */
-  const clearHistory = useCallback(() => {
+  const clearHistory = useCallback(async () => {
+    if (historyManagerRef.current) {
+      try {
+        const removedCount = await historyManagerRef.current.clearHistory()
+        consola.debug(`Cleared ${removedCount} commands from persistent history`)
+      } catch (error) {
+        consola.error('Failed to clear persistent history:', error)
+      }
+    }
+
     setCommandHistory([])
     setHistoryIndex(-1)
     setIsBrowsingHistory(false)
