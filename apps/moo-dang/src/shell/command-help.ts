@@ -451,6 +451,128 @@ export const WHICH_HELP: CommandHelpInfo = {
 }
 
 /**
+ * Complete help information for the 'history' command.
+ */
+export const HISTORY_HELP: CommandHelpInfo = {
+  name: 'history',
+  summary: 'Display, search, or manage command history',
+  description: [
+    'Display shell command history with various options for viewing, searching,',
+    'and managing previously executed commands. History is automatically saved',
+    'and persisted across browser sessions for convenient command recall.',
+  ].join(' '),
+  usage: [
+    {
+      pattern: 'history',
+      description: 'Show all command history',
+    },
+    {
+      pattern: 'history COUNT',
+      description: 'Show last COUNT commands',
+    },
+    {
+      pattern: 'history -s QUERY',
+      description: 'Search history for matching commands',
+    },
+    {
+      pattern: 'history -c',
+      description: 'Clear all command history',
+    },
+  ],
+  options: [
+    {
+      shortForm: '-h',
+      longForm: '--help',
+      description: 'Show detailed help information',
+    },
+    {
+      shortForm: '-c',
+      longForm: '--clear',
+      description: 'Clear all history entries',
+    },
+    {
+      shortForm: '-s',
+      longForm: '--search',
+      description: 'Search history for matching commands',
+    },
+    {
+      shortForm: '-r',
+      longForm: '--recent',
+      description: 'Show recent commands (default: 10)',
+    },
+    {
+      shortForm: '-n',
+      longForm: '--max-results',
+      description: 'Maximum number of search results',
+    },
+    {
+      shortForm: '-i',
+      longForm: '--case-sensitive',
+      description: 'Use case-sensitive search',
+    },
+    {
+      shortForm: '-e',
+      longForm: '--regex',
+      description: 'Use regular expression search',
+    },
+    {
+      longForm: '--stats',
+      description: 'Show history statistics and analytics',
+    },
+    {
+      longForm: '--export',
+      description: 'Export history in specified format',
+    },
+    {
+      longForm: '--format',
+      description: 'Export format: json, csv, txt (default: txt)',
+    },
+  ],
+  examples: [
+    {
+      command: 'history',
+      description: 'Show all command history with timestamps',
+    },
+    {
+      command: 'history 20',
+      description: 'Show last 20 commands',
+    },
+    {
+      command: 'history -s "git"',
+      description: 'Search for commands containing "git"',
+    },
+    {
+      command: 'history -s "ls.*-l" -e',
+      description: 'Regex search for "ls" commands with "-l" flag',
+    },
+    {
+      command: 'history -r 5',
+      description: 'Show 5 most recent commands',
+    },
+    {
+      command: 'history --stats',
+      description: 'Display usage statistics and top commands',
+    },
+    {
+      command: 'history --export --format json',
+      description: 'Export history as JSON format',
+    },
+    {
+      command: 'history -c',
+      description: 'Clear all command history',
+    },
+  ],
+  notes: [
+    'History is automatically saved and persists across browser sessions',
+    'Duplicate commands are not stored by default',
+    'Use Ctrl+R for interactive reverse history search',
+    'Commands starting with space are not saved (if configured)',
+    'Maximum history size is configurable (default: 1000 entries)',
+  ],
+  seeAlso: ['alias', 'source', 'export'],
+}
+
+/**
  * Complete help information for the 'help' command.
  */
 export const HELP_HELP: CommandHelpInfo = {
@@ -652,6 +774,7 @@ export const COMMAND_HELP_REGISTRY = new Map<string, CommandHelpInfo>([
   ['printenv', PRINTENV_HELP],
   ['unset', UNSET_HELP],
   ['which', WHICH_HELP],
+  ['history', HISTORY_HELP],
   ['help', HELP_HELP],
   ['jobs', JOBS_HELP],
   ['fg', FG_HELP],

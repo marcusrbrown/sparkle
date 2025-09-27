@@ -14,6 +14,7 @@ import type {CommandExecutionResult, ExecutionContext, ShellCommand, VirtualFile
 import {consola} from 'consola'
 import {COMMAND_HELP_REGISTRY} from './command-help'
 import {createHelpSystem} from './help-system'
+import {createHistoryManager} from './history-manager'
 
 import {createShellScriptExecutor} from './script-executor'
 import {createShellScriptParser} from './script-parser'
@@ -1240,6 +1241,285 @@ function createDisownCommand(environment: ShellEnvironment): ShellCommand {
   }
 }
 
+/**
+ * Creates history command for managing shell command history.
+ */
+function createHistoryCommand(): ShellCommand {
+  const historyManager = createHistoryManager({
+    maxHistorySize: 1000,
+    persist: true,
+    allowDuplicates: false,
+    enableSearch: true,
+    maxAgeDays: 30,
+  })
+
+  return {
+    name: 'history',
+    description: 'Display, search, or manage command history',
+    execute: async (args: string[], context: ExecutionContext): Promise<CommandExecutionResult> => {
+      const startTime = Date.now()
+
+      try {
+        // Parse command options
+        const options = parseHistoryOptions(args)
+
+        if (options.help) {
+          const helpOutput = getHistoryHelpText()
+          return createCommandResult(context, 'history', helpOutput, '', 0, startTime)
+        }
+
+        if (options.clear) {
+          const removedCount = await historyManager.clearHistory()
+          const output = `Cleared ${removedCount} history entries\n`
+          return createCommandResult(context, 'history -c', output, '', 0, startTime)
+        }
+
+        if (options.search) {
+          const searchResult = await historyManager.searchHistory({
+            query: options.search,
+            caseSensitive: options.caseSensitive,
+            useRegex: options.regex,
+            maxResults: options.maxResults || 100,
+          })
+
+          if (searchResult.entries.length === 0) {
+            const output = `No history entries found matching "${options.search}"\n`
+            return createCommandResult(context, `history -s "${options.search}"`, output, '', 0, startTime)
+          }
+
+          const output = formatHistoryEntries(searchResult.entries, options)
+          const summary = searchResult.truncated
+            ? `\nShowing ${searchResult.entries.length} of ${searchResult.totalMatches} matches (search time: ${searchResult.searchTime}ms)\n`
+            : `\nFound ${searchResult.totalMatches} matches (search time: ${searchResult.searchTime}ms)\n`
+
+          return createCommandResult(context, `history -s "${options.search}"`, output + summary, '', 0, startTime)
+        }
+
+        if (options.stats) {
+          const stats = await historyManager.getStats()
+          const output = formatHistoryStats(stats)
+          return createCommandResult(context, 'history --stats', output, '', 0, startTime)
+        }
+
+        if (options.export) {
+          const exportData = await historyManager.exportHistory({
+            format: options.format || 'txt',
+            includeMetadata: options.includeMetadata,
+          })
+          return createCommandResult(context, `history --export`, exportData, '', 0, startTime)
+        }
+
+        if (options.recent) {
+          const recentEntries = await historyManager.getRecent(options.count || 10)
+          const output = formatHistoryEntries(recentEntries, options)
+          return createCommandResult(context, `history -r ${options.count || 10}`, output, '', 0, startTime)
+        }
+
+        // Default: show all history
+        const allEntries = await historyManager.getHistory()
+        const entriesToShow = options.count ? allEntries.slice(0, options.count) : allEntries
+        const output = formatHistoryEntries(entriesToShow, options)
+
+        return createCommandResult(context, 'history', output, '', 0, startTime)
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : String(error)
+        return createCommandResult(context, `history ${args.join(' ')}`, '', `history: ${errorMessage}`, 1, startTime)
+      }
+    },
+  }
+}
+
+/**
+ * Options for history command parsing.
+ */
+interface HistoryOptions {
+  help: boolean
+  clear: boolean
+  search?: string
+  stats: boolean
+  export: boolean
+  recent: boolean
+  count?: number
+  maxResults?: number
+  caseSensitive: boolean
+  regex: boolean
+  format?: 'json' | 'csv' | 'txt'
+  includeMetadata: boolean
+  showNumbers: boolean
+}
+
+/**
+ * Parses command line arguments for the history command.
+ */
+function parseHistoryOptions(args: string[]): HistoryOptions {
+  const options: HistoryOptions = {
+    help: false,
+    clear: false,
+    stats: false,
+    export: false,
+    recent: false,
+    caseSensitive: false,
+    regex: false,
+    includeMetadata: true,
+    showNumbers: true,
+  }
+
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i]
+    if (!arg) continue
+
+    switch (arg) {
+      case '-h':
+      case '--help':
+        options.help = true
+        break
+      case '-c':
+      case '--clear':
+        options.clear = true
+        break
+      case '-s':
+      case '--search':
+        if (i + 1 < args.length) {
+          options.search = args[++i]
+        }
+        break
+      case '--stats':
+        options.stats = true
+        break
+      case '--export':
+        options.export = true
+        break
+      case '-r':
+      case '--recent':
+        options.recent = true
+        if (i + 1 < args.length) {
+          const nextArg = args[i + 1]
+          if (nextArg && /^\d+$/.test(nextArg)) {
+            options.count = Number.parseInt(nextArg, 10)
+            i++
+          }
+        }
+        break
+      case '-n':
+      case '--max-results':
+        if (i + 1 < args.length) {
+          const nextArg = args[i + 1]
+          if (nextArg) {
+            options.maxResults = Number.parseInt(nextArg, 10)
+            i++
+          }
+        }
+        break
+      case '-i':
+      case '--case-sensitive':
+        options.caseSensitive = true
+        break
+      case '-e':
+      case '--regex':
+        options.regex = true
+        break
+      case '--format':
+        if (i + 1 < args.length) {
+          const format = args[++i]
+          if (format === 'json' || format === 'csv' || format === 'txt') {
+            options.format = format
+          }
+        }
+        break
+      case '--no-metadata':
+        options.includeMetadata = false
+        break
+      case '--no-numbers':
+        options.showNumbers = false
+        break
+      default:
+        // Check if it's a number (count)
+        if (/^\d+$/.test(arg)) {
+          options.count = Number.parseInt(arg, 10)
+        }
+        break
+    }
+  }
+
+  return options
+}
+
+/**
+ * Formats history entries for display.
+ */
+function formatHistoryEntries(
+  entries: {command: string; timestamp: Date; id: string}[],
+  options: HistoryOptions,
+): string {
+  if (entries.length === 0) {
+    return 'No history entries found\n'
+  }
+
+  return `${entries
+    .map((entry, index) => {
+      const timestamp = entry.timestamp.toLocaleString()
+      const number = options.showNumbers ? `${index + 1}`.padStart(4).concat('  ') : ''
+      return `${number}${timestamp}  ${entry.command}`
+    })
+    .join('\n')}\n`
+}
+
+/**
+ * Formats history statistics for display.
+ */
+function formatHistoryStats(stats: {
+  totalCommands: number
+  uniqueCommands: number
+  topCommands: {command: string; count: number}[]
+}): string {
+  const lines = [
+    'History Statistics:',
+    '==================',
+    `Total commands: ${stats.totalCommands}`,
+    `Unique commands: ${stats.uniqueCommands}`,
+    '',
+    'Most frequently used commands:',
+  ]
+
+  stats.topCommands.forEach((cmd, index) => {
+    lines.push(`${(index + 1).toString().padStart(2)}. ${cmd.command.padEnd(20)} (${cmd.count} times)`)
+  })
+
+  return lines.join('\n').concat('\n')
+}
+
+/**
+ * Returns help text for the history command.
+ */
+function getHistoryHelpText(): string {
+  return `Usage: history [OPTION]... [COUNT]
+
+Display, search, or manage shell command history.
+
+Options:
+  -h, --help              Show this help message
+  -c, --clear             Clear all history entries
+  -s, --search QUERY      Search history for matching commands
+  -r, --recent [COUNT]    Show recent commands (default: 10)
+  -n, --max-results NUM   Maximum search results (default: 100)
+  -i, --case-sensitive    Use case-sensitive search
+  -e, --regex             Use regular expression search
+  --stats                 Show history statistics
+  --export                Export history
+  --format FORMAT         Export format: json, csv, txt (default: txt)
+  --no-metadata           Exclude metadata from export
+  --no-numbers            Don't show line numbers
+
+Examples:
+  history                 Show all history
+  history 20              Show last 20 commands
+  history -s "git"        Search for commands containing "git"
+  history -c              Clear all history
+  history --stats         Show usage statistics
+  history --export --format json  Export history as JSON
+`
+}
+
 export function createStandardCommands(
   fileSystem: VirtualFileSystem,
   environment: ShellEnvironment,
@@ -1260,6 +1540,9 @@ export function createStandardCommands(
   const unsetCommand = createUnsetCommand(environment)
   const whichCommand = createWhichCommand(fileSystem)
 
+  // History management command
+  const historyCommand = createHistoryCommand()
+
   commands.set(echoCommand.name, echoCommand)
   commands.set(pwdCommand.name, pwdCommand)
   commands.set(lsCommand.name, lsCommand)
@@ -1271,6 +1554,7 @@ export function createStandardCommands(
   commands.set(printenvCommand.name, printenvCommand)
   commands.set(unsetCommand.name, unsetCommand)
   commands.set(whichCommand.name, whichCommand)
+  commands.set(historyCommand.name, historyCommand)
 
   const sourceCommand = createSourceCommand(fileSystem, environment, commands)
   commands.set(sourceCommand.name, sourceCommand)
