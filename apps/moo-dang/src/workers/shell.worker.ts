@@ -13,6 +13,7 @@ import type {
   ExecutePipelineRequest,
   ExecutionContext,
   ForegroundJobRequest,
+  GetCompletionsRequest,
   GetEnvironmentRequest,
   GetJobNotificationsRequest,
   KillJobRequest,
@@ -28,6 +29,8 @@ import type {WasmModuleLoader} from '../shell/wasm-types'
 
 import {consola} from 'consola'
 import {createStandardCommands, resolveCommandWithPath} from '../shell/commands'
+import {createCompletionEngine} from '../shell/completion-engine'
+import {createCompletionProviders} from '../shell/completion-providers'
 import {ShellEnvironment} from '../shell/environment'
 import {parseCommand, parseCommandPipeline} from '../shell/parser'
 import {executePipeline} from '../shell/pipeline'
@@ -40,6 +43,7 @@ interface ShellWorkerState {
   readonly fileSystem: VirtualFileSystemImpl
   readonly commands: Map<string, ShellCommand>
   readonly wasmLoader: WasmModuleLoader
+  readonly completionEngine: import('../shell/completion-types').CompletionEngine
 }
 
 /**
@@ -65,7 +69,15 @@ function createShellWorkerState(): ShellWorkerState {
     commands.set(name, command)
   }
 
-  return {environment, fileSystem, commands, wasmLoader}
+  // Create completion engine with providers
+  const completionEngine = createCompletionEngine()
+  const completionProviders = createCompletionProviders(commands, fileSystem, environment)
+
+  for (const provider of completionProviders) {
+    completionEngine.registerProvider(provider)
+  }
+
+  return {environment, fileSystem, commands, wasmLoader, completionEngine}
 }
 
 /**
@@ -101,6 +113,8 @@ async function handleMessage(state: ShellWorkerState, request: ShellWorkerReques
         return handleKillJob(state, request)
       case 'get-job-notifications':
         return handleGetJobNotifications(state, request)
+      case 'get-completions':
+        return await handleGetCompletions(state, request)
       default:
         return {
           type: 'error',
@@ -551,6 +565,35 @@ function handleGetJobNotifications(state: ShellWorkerState, _request: GetJobNoti
   return {
     type: 'job-notifications',
     notifications,
+  }
+}
+
+/**
+ * Handle completion request.
+ */
+async function handleGetCompletions(
+  state: ShellWorkerState,
+  request: GetCompletionsRequest,
+): Promise<ShellWorkerResponse> {
+  try {
+    const result = await state.completionEngine.getCompletions(
+      request.input,
+      request.cursorPosition,
+      request.workingDirectory,
+      request.environmentVariables,
+    )
+
+    return {
+      type: 'completions',
+      result,
+    }
+  } catch (error) {
+    logError('Completion request failed', error)
+    return {
+      type: 'error',
+      message: error instanceof Error ? error.message : String(error),
+      code: 'COMPLETION_FAILED',
+    }
   }
 }
 

@@ -4,6 +4,7 @@ export {
   type CommandInputActions,
   type CommandInputConfig,
   type CommandInputState,
+  type CompletionState,
 } from './use-command-input'
 
 export {

@@ -164,6 +164,7 @@ export type ShellWorkerRequest =
   | BackgroundJobRequest
   | KillJobRequest
   | GetJobNotificationsRequest
+  | GetCompletionsRequest
 
 /**
  * Request to execute a command in the shell.
@@ -263,6 +264,17 @@ export interface GetJobNotificationsRequest {
 }
 
 /**
+ * Request to get command completion suggestions.
+ */
+export interface GetCompletionsRequest {
+  readonly type: 'get-completions'
+  readonly input: string
+  readonly cursorPosition: number
+  readonly workingDirectory: string
+  readonly environmentVariables: Record<string, string>
+}
+
+/**
  * Enhanced shell worker response types.
  */
 export type ShellWorkerResponse =
@@ -276,6 +288,7 @@ export type ShellWorkerResponse =
   | JobListResponse
   | JobControlResponse
   | JobNotificationsResponse
+  | CompletionsResponse
   | ErrorResponse
   | LogResponse
   | DebugResponse
@@ -360,6 +373,14 @@ export interface JobControlResponse {
 export interface JobNotificationsResponse {
   readonly type: 'job-notifications'
   readonly notifications: import('./job-types').JobNotification[]
+}
+
+/**
+ * Response to completion request.
+ */
+export interface CompletionsResponse {
+  readonly type: 'completions'
+  readonly result: import('./completion-types').CompletionResult
 }
 
 /**
