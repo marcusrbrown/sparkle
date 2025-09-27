@@ -1,7 +1,9 @@
 /**
  * Tests for shell command execution and dispatching functionality.
  *
- * Validates command registration, execution context creation,
+ * Validates command registration,    it('should ignore command arguments', async () => {
+      const pwdCommand = getCommand('pwd')
+      const result = await pwdCommand.execute(['ignored', 'args'], executionContext)ecution context creation,
  * and command result handling in the shell environment.
  */
 
@@ -79,7 +81,7 @@ describe('Standard Shell Commands', () => {
     })
 
     it('should handle empty arguments', async () => {
-      const echoCommand = commands.get('echo')!
+      const echoCommand = getCommand('echo')
       const result = await echoCommand.execute([], executionContext)
 
       expect(result.stdout).toBe('')
@@ -88,7 +90,7 @@ describe('Standard Shell Commands', () => {
     })
 
     it('should handle special characters', async () => {
-      const echoCommand = commands.get('echo')!
+      const echoCommand = getCommand('echo')
       const result = await echoCommand.execute(['!@#$%^&*()', 'test'], executionContext)
 
       expect(result.stdout).toBe('!@#$%^&*() test')
@@ -98,7 +100,7 @@ describe('Standard Shell Commands', () => {
 
   describe('pwd command', () => {
     it('should return current working directory', async () => {
-      const pwdCommand = commands.get('pwd')!
+      const pwdCommand = getCommand('pwd')
       const result = await pwdCommand.execute([], executionContext)
 
       expect(result.stdout).toBe('/home/user')
@@ -108,7 +110,7 @@ describe('Standard Shell Commands', () => {
     })
 
     it('should ignore arguments', async () => {
-      const pwdCommand = commands.get('pwd')!
+      const pwdCommand = getCommand('pwd')
       const result = await pwdCommand.execute(['ignored', 'args'], executionContext)
 
       expect(result.stdout).toBe('/home/user')
@@ -118,7 +120,7 @@ describe('Standard Shell Commands', () => {
 
   describe('clear command', () => {
     it('should return clear screen escape sequences', async () => {
-      const clearCommand = commands.get('clear')!
+      const clearCommand = getCommand('clear')
       const result = await clearCommand.execute([], executionContext)
 
       expect(result.stdout).toBe('\u001B[2J\u001B[H')
@@ -127,7 +129,7 @@ describe('Standard Shell Commands', () => {
     })
 
     it('should ignore arguments', async () => {
-      const clearCommand = commands.get('clear')!
+      const clearCommand = getCommand('clear')
       const result = await clearCommand.execute(['ignored'], executionContext)
 
       expect(result.stdout).toBe('\u001B[2J\u001B[H')
@@ -140,7 +142,7 @@ describe('Standard Shell Commands', () => {
       // Create a test directory first
       await fileSystem.createDirectory('/home/user/testdir')
 
-      const cdCommand = commands.get('cd')!
+      const cdCommand = getCommand('cd')
       const result = await cdCommand.execute(['testdir'], executionContext)
 
       expect(result.stdout).toBe('')
@@ -149,21 +151,21 @@ describe('Standard Shell Commands', () => {
     })
 
     it('should change to home directory when no arguments', async () => {
-      const cdCommand = commands.get('cd')!
+      const cdCommand = getCommand('cd')
       const result = await cdCommand.execute([], executionContext)
 
       expect(result.exitCode).toBe(0)
     })
 
     it('should handle tilde (~) for home directory', async () => {
-      const cdCommand = commands.get('cd')!
+      const cdCommand = getCommand('cd')
       const result = await cdCommand.execute(['~'], executionContext)
 
       expect(result.exitCode).toBe(0)
     })
 
     it('should return error for non-existent directory', async () => {
-      const cdCommand = commands.get('cd')!
+      const cdCommand = getCommand('cd')
       const result = await cdCommand.execute(['/nonexistent'], executionContext)
 
       expect(result.exitCode).toBe(1)
@@ -173,7 +175,7 @@ describe('Standard Shell Commands', () => {
 
   describe('ls command', () => {
     it('should list directory contents', async () => {
-      const lsCommand = commands.get('ls')!
+      const lsCommand = getCommand('ls')
       const result = await lsCommand.execute([], executionContext)
 
       expect(result.exitCode).toBe(0)
@@ -183,7 +185,7 @@ describe('Standard Shell Commands', () => {
     })
 
     it('should handle long format listing', async () => {
-      const lsCommand = commands.get('ls')!
+      const lsCommand = getCommand('ls')
       const result = await lsCommand.execute(['-l'], executionContext)
 
       expect(result.exitCode).toBe(0)
@@ -193,7 +195,7 @@ describe('Standard Shell Commands', () => {
     })
 
     it('should handle show all flag', async () => {
-      const lsCommand = commands.get('ls')!
+      const lsCommand = getCommand('ls')
       const resultNormal = await lsCommand.execute([], executionContext)
       const resultAll = await lsCommand.execute(['-a'], executionContext)
 
@@ -203,7 +205,7 @@ describe('Standard Shell Commands', () => {
     })
 
     it('should handle non-existent directory', async () => {
-      const lsCommand = commands.get('ls')!
+      const lsCommand = getCommand('ls')
       const result = await lsCommand.execute(['/nonexistent'], executionContext)
 
       expect(result.exitCode).toBe(1)
@@ -214,7 +216,7 @@ describe('Standard Shell Commands', () => {
 
   describe('cat command', () => {
     it('should display file contents', async () => {
-      const catCommand = commands.get('cat')!
+      const catCommand = getCommand('cat')
       const result = await catCommand.execute(['README.md'], executionContext)
 
       expect(result.exitCode).toBe(0)
@@ -226,7 +228,7 @@ describe('Standard Shell Commands', () => {
       // First write a test file
       await fileSystem.writeFile('/home/user/test.txt', 'test content')
 
-      const catCommand = commands.get('cat')!
+      const catCommand = getCommand('cat')
       const result = await catCommand.execute(['README.md', 'test.txt'], executionContext)
 
       expect(result.exitCode).toBe(0)
@@ -235,7 +237,7 @@ describe('Standard Shell Commands', () => {
     })
 
     it('should handle missing file operand', async () => {
-      const catCommand = commands.get('cat')!
+      const catCommand = getCommand('cat')
       const result = await catCommand.execute([], executionContext)
 
       expect(result.exitCode).toBe(1)
@@ -244,7 +246,7 @@ describe('Standard Shell Commands', () => {
     })
 
     it('should handle non-existent file', async () => {
-      const catCommand = commands.get('cat')!
+      const catCommand = getCommand('cat')
       const result = await catCommand.execute(['nonexistent.txt'], executionContext)
 
       expect(result.exitCode).toBe(1)
@@ -255,7 +257,7 @@ describe('Standard Shell Commands', () => {
 
   describe('help command', () => {
     it('should display general help when no arguments', async () => {
-      const helpCommand = commands.get('help')!
+      const helpCommand = getCommand('help')
       const result = await helpCommand.execute([], executionContext)
 
       expect(result.exitCode).toBe(0)
@@ -268,7 +270,7 @@ describe('Standard Shell Commands', () => {
     })
 
     it('should display specific command help', async () => {
-      const helpCommand = commands.get('help')!
+      const helpCommand = getCommand('help')
       const result = await helpCommand.execute(['echo'], executionContext)
 
       expect(result.exitCode).toBe(0)
@@ -280,7 +282,7 @@ describe('Standard Shell Commands', () => {
     })
 
     it('should handle help for non-existent command', async () => {
-      const helpCommand = commands.get('help')!
+      const helpCommand = getCommand('help')
       const result = await helpCommand.execute(['nonexistent'], executionContext)
 
       expect(result.exitCode).toBe(1)
@@ -289,7 +291,7 @@ describe('Standard Shell Commands', () => {
     })
 
     it('should handle empty command name', async () => {
-      const helpCommand = commands.get('help')!
+      const helpCommand = getCommand('help')
       const result = await helpCommand.execute([''], executionContext)
 
       expect(result.exitCode).toBe(0)
@@ -301,7 +303,7 @@ describe('Standard Shell Commands', () => {
 
   describe('source command', () => {
     it('should require a filename argument', async () => {
-      const sourceCommand = commands.get('source')!
+      const sourceCommand = getCommand('source')
       const result = await sourceCommand.execute([], executionContext)
 
       expect(result.exitCode).toBe(1)
@@ -310,7 +312,7 @@ describe('Standard Shell Commands', () => {
     })
 
     it('should handle too many arguments', async () => {
-      const sourceCommand = commands.get('source')!
+      const sourceCommand = getCommand('source')
       const result = await sourceCommand.execute(['file1.sh', 'file2.sh'], executionContext)
 
       expect(result.exitCode).toBe(1)
@@ -319,7 +321,7 @@ describe('Standard Shell Commands', () => {
     })
 
     it('should handle non-existent files', async () => {
-      const sourceCommand = commands.get('source')!
+      const sourceCommand = getCommand('source')
       const result = await sourceCommand.execute(['nonexistent.sh'], executionContext)
 
       expect(result.exitCode).toBe(1)
@@ -332,7 +334,7 @@ describe('Standard Shell Commands', () => {
       const scriptPath = `${executionContext.workingDirectory}/script.sh`
       await fileSystem.writeFile(scriptPath, '#!/bin/bash\necho "hello world"\nls -la\n')
 
-      const sourceCommand = commands.get('source')!
+      const sourceCommand = getCommand('source')
       const result = await sourceCommand.execute(['script.sh'], executionContext)
 
       expect(result.exitCode).toBe(0)
@@ -344,7 +346,7 @@ describe('Standard Shell Commands', () => {
 
   describe('command execution result format', () => {
     it('should include timing information', async () => {
-      const echoCommand = commands.get('echo')!
+      const echoCommand = getCommand('echo')
       const startTime = Date.now()
       const result = await echoCommand.execute(['test'], executionContext)
       const endTime = Date.now()
@@ -354,7 +356,7 @@ describe('Standard Shell Commands', () => {
     })
 
     it('should include process ID', async () => {
-      const echoCommand = commands.get('echo')!
+      const echoCommand = getCommand('echo')
       const customContext = {...executionContext, processId: 42}
       const result = await echoCommand.execute(['test'], customContext)
 
@@ -362,7 +364,7 @@ describe('Standard Shell Commands', () => {
     })
 
     it('should include full command in result', async () => {
-      const echoCommand = commands.get('echo')!
+      const echoCommand = getCommand('echo')
       const result = await echoCommand.execute(['hello', 'world'], executionContext)
 
       expect(result.command).toBe('echo hello world')
@@ -411,7 +413,10 @@ describe('Standard Shell Commands', () => {
 
       const errorEnvironment = new ShellEnvironment(errorFileSystem)
       const errorCommands = createStandardCommands(errorFileSystem, errorEnvironment)
-      const lsCommand = errorCommands.get('ls')!
+      const lsCommand = errorCommands.get('ls')
+      if (!lsCommand) {
+        throw new Error('ls command not found in error commands')
+      }
 
       const result = await lsCommand.execute([], executionContext)
       expect(result.exitCode).toBe(1)
@@ -419,8 +424,8 @@ describe('Standard Shell Commands', () => {
     })
 
     it('should maintain consistent error format across commands', async () => {
-      const lsCommand = commands.get('ls')!
-      const catCommand = commands.get('cat')!
+      const lsCommand = getCommand('ls')
+      const catCommand = getCommand('cat')
 
       const lsResult = await lsCommand.execute(['/nonexistent'], executionContext)
       const catResult = await catCommand.execute(['nonexistent.txt'], executionContext)
@@ -435,7 +440,7 @@ describe('Standard Shell Commands', () => {
   describe('Environment Variable Commands', () => {
     describe('env command', () => {
       it('should display all environment variables when no arguments', async () => {
-        const envCommand = commands.get('env')!
+        const envCommand = getCommand('env')
         const result = await envCommand.execute([], executionContext)
 
         expect(result.exitCode).toBe(0)
@@ -446,7 +451,7 @@ describe('Standard Shell Commands', () => {
       })
 
       it('should handle variable assignments', async () => {
-        const envCommand = commands.get('env')!
+        const envCommand = getCommand('env')
         const result = await envCommand.execute(['TEST_VAR=test_value'], executionContext)
 
         expect(result.exitCode).toBe(0)
@@ -454,7 +459,7 @@ describe('Standard Shell Commands', () => {
       })
 
       it('should show what would happen with command execution', async () => {
-        const envCommand = commands.get('env')!
+        const envCommand = getCommand('env')
         const result = await envCommand.execute(['TEST_VAR=value', 'echo', 'hello'], executionContext)
 
         expect(result.exitCode).toBe(0)
@@ -465,7 +470,7 @@ describe('Standard Shell Commands', () => {
 
     describe('export command', () => {
       it('should display exported variables when no arguments', async () => {
-        const exportCommand = commands.get('export')!
+        const exportCommand = getCommand('export')
         const result = await exportCommand.execute([], executionContext)
 
         expect(result.exitCode).toBe(0)
@@ -474,7 +479,7 @@ describe('Standard Shell Commands', () => {
       })
 
       it('should set environment variable', async () => {
-        const exportCommand = commands.get('export')!
+        const exportCommand = getCommand('export')
         const result = await exportCommand.execute(['TEST_VAR=exported_value'], executionContext)
 
         expect(result.exitCode).toBe(0)
@@ -485,7 +490,7 @@ describe('Standard Shell Commands', () => {
       })
 
       it('should handle variable names without values', async () => {
-        const exportCommand = commands.get('export')!
+        const exportCommand = getCommand('export')
         const result = await exportCommand.execute(['EXISTING_VAR'], executionContext)
 
         expect(result.exitCode).toBe(0)
@@ -493,7 +498,7 @@ describe('Standard Shell Commands', () => {
       })
 
       it('should reject invalid variable names', async () => {
-        const exportCommand = commands.get('export')!
+        const exportCommand = getCommand('export')
         const result = await exportCommand.execute(['123_INVALID=value'], executionContext)
 
         expect(result.exitCode).toBe(1)
@@ -503,7 +508,7 @@ describe('Standard Shell Commands', () => {
 
     describe('printenv command', () => {
       it('should print all environment variables when no arguments', async () => {
-        const printenvCommand = commands.get('printenv')!
+        const printenvCommand = getCommand('printenv')
         const result = await printenvCommand.execute([], executionContext)
 
         expect(result.exitCode).toBe(0)
@@ -512,7 +517,7 @@ describe('Standard Shell Commands', () => {
       })
 
       it('should print specific environment variables', async () => {
-        const printenvCommand = commands.get('printenv')!
+        const printenvCommand = getCommand('printenv')
         const result = await printenvCommand.execute(['HOME', 'USER'], executionContext)
 
         expect(result.exitCode).toBe(0)
@@ -521,7 +526,7 @@ describe('Standard Shell Commands', () => {
       })
 
       it('should handle missing environment variables gracefully', async () => {
-        const printenvCommand = commands.get('printenv')!
+        const printenvCommand = getCommand('printenv')
         const result = await printenvCommand.execute(['NONEXISTENT_VAR'], executionContext)
 
         expect(result.exitCode).toBe(1)
@@ -529,7 +534,7 @@ describe('Standard Shell Commands', () => {
       })
 
       it('should handle mixed existing and missing variables', async () => {
-        const printenvCommand = commands.get('printenv')!
+        const printenvCommand = getCommand('printenv')
         const result = await printenvCommand.execute(['HOME', 'NONEXISTENT', 'USER'], executionContext)
 
         expect(result.exitCode).toBe(0) // Should succeed if any variables found
@@ -540,7 +545,7 @@ describe('Standard Shell Commands', () => {
 
     describe('unset command', () => {
       it('should require variable name', async () => {
-        const unsetCommand = commands.get('unset')!
+        const unsetCommand = getCommand('unset')
         const result = await unsetCommand.execute([], executionContext)
 
         expect(result.exitCode).toBe(1)
@@ -552,7 +557,7 @@ describe('Standard Shell Commands', () => {
         environment.setEnvironmentVariable('TEST_UNSET', 'test_value')
         expect(environment.getEnvironmentVariable('TEST_UNSET')).toBe('test_value')
 
-        const unsetCommand = commands.get('unset')!
+        const unsetCommand = getCommand('unset')
         const result = await unsetCommand.execute(['TEST_UNSET'], executionContext)
 
         expect(result.exitCode).toBe(0)
@@ -563,7 +568,7 @@ describe('Standard Shell Commands', () => {
       })
 
       it('should reject invalid variable names', async () => {
-        const unsetCommand = commands.get('unset')!
+        const unsetCommand = getCommand('unset')
         const result = await unsetCommand.execute(['123_INVALID'], executionContext)
 
         expect(result.exitCode).toBe(1)
@@ -574,7 +579,7 @@ describe('Standard Shell Commands', () => {
         environment.setEnvironmentVariable('TEST_A', 'value_a')
         environment.setEnvironmentVariable('TEST_B', 'value_b')
 
-        const unsetCommand = commands.get('unset')!
+        const unsetCommand = getCommand('unset')
         const result = await unsetCommand.execute(['TEST_A', 'TEST_B'], executionContext)
 
         expect(result.exitCode).toBe(0)
@@ -599,7 +604,7 @@ describe('Standard Shell Commands', () => {
       })
 
       it('should require command name', async () => {
-        const whichCommand = commands.get('which')!
+        const whichCommand = getCommand('which')
         const result = await whichCommand.execute([], executionContext)
 
         expect(result.exitCode).toBe(1)
@@ -607,7 +612,7 @@ describe('Standard Shell Commands', () => {
       })
 
       it('should find executables in PATH', async () => {
-        const whichCommand = commands.get('which')!
+        const whichCommand = getCommand('which')
         const result = await whichCommand.execute(['test_executable'], executionContext)
 
         expect(result.exitCode).toBe(0)
@@ -615,7 +620,7 @@ describe('Standard Shell Commands', () => {
       })
 
       it('should find executables in different PATH directories', async () => {
-        const whichCommand = commands.get('which')!
+        const whichCommand = getCommand('which')
         const result = await whichCommand.execute(['another_executable'], executionContext)
 
         expect(result.exitCode).toBe(0)
@@ -623,7 +628,7 @@ describe('Standard Shell Commands', () => {
       })
 
       it('should handle non-existent commands', async () => {
-        const whichCommand = commands.get('which')!
+        const whichCommand = getCommand('which')
         const result = await whichCommand.execute(['nonexistent_command'], executionContext)
 
         expect(result.exitCode).toBe(1)
@@ -631,7 +636,7 @@ describe('Standard Shell Commands', () => {
       })
 
       it('should handle multiple commands', async () => {
-        const whichCommand = commands.get('which')!
+        const whichCommand = getCommand('which')
         const result = await whichCommand.execute(['test_executable', 'another_executable'], executionContext)
 
         expect(result.exitCode).toBe(0)
@@ -640,7 +645,7 @@ describe('Standard Shell Commands', () => {
       })
 
       it('should handle mixed existing and non-existent commands', async () => {
-        const whichCommand = commands.get('which')!
+        const whichCommand = getCommand('which')
         const result = await whichCommand.execute(['test_executable', 'nonexistent'], executionContext)
 
         expect(result.exitCode).toBe(0) // Should succeed if any commands found

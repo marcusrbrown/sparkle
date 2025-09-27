@@ -57,13 +57,9 @@ function createShellWorkerState(): ShellWorkerState {
     commandTimeout: 15000, // 15 second timeout for commands
   })
 
-  // Create WASM module loader
   const wasmLoader = createWasmModuleLoader(5) // Cache up to 5 WASM modules
-
-  // Create standard commands
   const commands = createStandardCommands(fileSystem, environment)
 
-  // Add WASM executable commands
   const wasmCommands = createWasmExecutableCommands(wasmLoader)
   for (const [name, command] of wasmCommands) {
     commands.set(name, command)
@@ -235,7 +231,6 @@ function executeBackgroundPipeline(
   processId: number,
   timeout: number,
 ): void {
-  // Execute pipeline asynchronously
   ;(async () => {
     try {
       const result = await executeWithTimeout(
@@ -590,7 +585,6 @@ function logError(message: string, error?: unknown): void {
   consola.error(`[ShellWorker] ${message}`, error instanceof Error ? error.message : String(error))
 }
 
-// Initialize shell worker state
 const shellWorkerState = createShellWorkerState()
 
 // Listen for messages from main thread
