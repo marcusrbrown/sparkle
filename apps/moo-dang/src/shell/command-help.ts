@@ -760,6 +760,103 @@ export const DISOWN_HELP: CommandHelpInfo = {
 }
 
 /**
+ * Complete help information for the 'config' command.
+ */
+export const CONFIG_HELP: CommandHelpInfo = {
+  name: 'config',
+  summary: 'Manage shell configuration and preferences',
+  description: [
+    'Manage shell configuration settings including appearance, behavior, security,',
+    'and accessibility options. Configuration is automatically persisted across',
+    'browser sessions and can be exported/imported as JSON.',
+  ].join(' '),
+  usage: [
+    {
+      pattern: 'config [SUBCOMMAND] [OPTIONS]',
+      description: 'Manage configuration with various subcommands',
+    },
+    {
+      pattern: 'config get <path>',
+      description: 'Get configuration value at specified path',
+    },
+    {
+      pattern: 'config set <path> <value>',
+      description: 'Set configuration value at specified path',
+    },
+    {
+      pattern: 'config list [--section SECTION]',
+      description: 'List all or section-specific configuration',
+    },
+    {
+      pattern: 'config reset [SECTION]',
+      description: 'Reset configuration to defaults',
+    },
+  ],
+  options: [
+    {
+      shortForm: '-h',
+      longForm: '--help',
+      description: 'Show detailed help information',
+    },
+    {
+      longForm: '--section',
+      hasParameter: true,
+      parameterName: 'NAME',
+      description: 'Target specific configuration section (appearance, behavior, etc.)',
+    },
+    {
+      longForm: '--format',
+      hasParameter: true,
+      parameterName: 'FORMAT',
+      description: 'Output format: text, json (default: text)',
+    },
+  ],
+  examples: [
+    {
+      command: 'config',
+      description: 'Show configuration status and available sections',
+    },
+    {
+      command: 'config list',
+      description: 'Show all configuration settings',
+    },
+    {
+      command: 'config get appearance.theme',
+      description: 'Get current terminal theme',
+      expectedOutput: 'dark',
+    },
+    {
+      command: 'config set appearance.fontSize 16',
+      description: 'Set terminal font size to 16',
+      expectedOutput: 'Configuration updated: appearance.fontSize = 16',
+    },
+    {
+      command: 'config list --section appearance',
+      description: 'Show only appearance settings',
+    },
+    {
+      command: 'config reset appearance',
+      description: 'Reset appearance settings to defaults',
+    },
+    {
+      command: 'config validate',
+      description: 'Check configuration validity',
+    },
+    {
+      command: 'config export',
+      description: 'Export configuration as JSON',
+    },
+  ],
+  notes: [
+    'Configuration paths use dot notation (e.g., appearance.theme, behavior.prompt.style)',
+    'Available sections: appearance, behavior, security, accessibility, advanced',
+    'Configuration is automatically saved when changed (unless auto-save is disabled)',
+    'Values are automatically converted to appropriate types (string, number, boolean)',
+  ],
+  seeAlso: ['help', 'env'],
+}
+
+/**
  * Registry of all command help information.
  */
 export const COMMAND_HELP_REGISTRY = new Map<string, CommandHelpInfo>([
@@ -780,6 +877,7 @@ export const COMMAND_HELP_REGISTRY = new Map<string, CommandHelpInfo>([
   ['fg', FG_HELP],
   ['bg', BG_HELP],
   ['disown', DISOWN_HELP],
+  ['config', CONFIG_HELP],
 ])
 
 /**
