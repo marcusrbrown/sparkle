@@ -5,10 +5,10 @@
  * change notifications, and integration with shell commands.
  */
 
-import type {ConfigChangeEvent, ConfigStorage, ShellConfig} from './config-types'
+import type {ConfigChangeEvent, ConfigManager, ConfigStorage, ShellConfig} from './config-types'
 import {beforeEach, describe, expect, it, vi} from 'vitest'
 
-import {createConfigManager, DEFAULT_CONFIG, ShellConfigManager} from './config-manager'
+import {createConfigManager, createShellConfigManager, DEFAULT_CONFIG} from './config-manager'
 
 // Mock localStorage for testing
 const mockStorage = (): Record<string, string> => ({})
@@ -42,12 +42,12 @@ const createMockStorage = (): ConfigStorage => {
 }
 
 describe('ShellConfigManager', () => {
-  let configManager: ShellConfigManager
+  let configManager: ConfigManager
   let mockStorageInstance: ConfigStorage
 
   beforeEach(() => {
     mockStorageInstance = createMockStorage()
-    configManager = new ShellConfigManager({
+    configManager = createShellConfigManager({
       storage: mockStorageInstance,
       autoSave: false, // Disable auto-save for testing
     })
@@ -64,8 +64,8 @@ describe('ShellConfigManager', () => {
     })
 
     it('should respect auto-save option', () => {
-      const autoSaveManager = new ShellConfigManager({autoSave: true})
-      const noAutoSaveManager = new ShellConfigManager({autoSave: false})
+      const autoSaveManager = createShellConfigManager({autoSave: true})
+      const noAutoSaveManager = createShellConfigManager({autoSave: false})
 
       expect(autoSaveManager.autoSave).toBe(true)
       expect(noAutoSaveManager.autoSave).toBe(false)
@@ -367,7 +367,7 @@ describe('ShellConfigManager', () => {
 
   describe('auto-save functionality', () => {
     it('should auto-save when auto-save is enabled', async () => {
-      const autoSaveManager = new ShellConfigManager({
+      const autoSaveManager = createShellConfigManager({
         storage: mockStorageInstance,
         autoSave: true,
       })
@@ -388,12 +388,15 @@ describe('ShellConfigManager', () => {
 })
 
 describe('createConfigManager factory', () => {
-  it('should create a ShellConfigManager instance', () => {
+  it('should create a configuration manager instance', () => {
     const manager = createConfigManager()
 
-    expect(manager).toBeInstanceOf(ShellConfigManager)
+    expect(manager).toBeDefined()
     expect(typeof manager.get).toBe('function')
     expect(typeof manager.set).toBe('function')
+    expect(typeof manager.save).toBe('function')
+    expect(typeof manager.load).toBe('function')
+    expect(typeof manager.validate).toBe('function')
   })
 
   it('should pass options to constructor', () => {
