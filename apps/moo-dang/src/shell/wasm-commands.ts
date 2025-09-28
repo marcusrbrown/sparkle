@@ -122,7 +122,7 @@ export function createWasmExecutableCommand(
 
         return {
           processId: context.processId,
-          command: `${wasmName} ${args.join(' ')}`,
+          command: args.length > 0 ? `${wasmName} ${args.join(' ')}` : wasmName,
           stdout: result.stdout,
           stderr: result.stderr,
           exitCode: result.exitCode,
