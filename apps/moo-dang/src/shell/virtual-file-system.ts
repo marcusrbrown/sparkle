@@ -8,49 +8,94 @@
 import type {DirectoryEntry, VirtualFileSystem} from './types'
 
 /**
- * File system operation error for path-related failures.
+ * File system operation error interface for path-related failures.
  *
  * Provides structured error information when file system operations fail
  * due to invalid paths, missing files, or permission issues.
  */
-export class FileSystemError extends Error {
+export interface FileSystemError extends Error {
   readonly operation: string
   readonly path: string
   readonly code?: string
-
-  constructor(operation: string, path: string, message: string, code?: string) {
-    super(`${operation} failed for "${path}": ${message}`)
-    this.name = 'FileSystemError'
-    this.operation = operation
-    this.path = path
-    this.code = code
-  }
 }
 
 /**
- * Directory operation error for directory-specific failures.
+ * Create a file system operation error with detailed context.
+ *
+ * Provides structured error information for debugging and error handling.
+ * Uses function-based approach for better testability and consistency.
+ *
+ * @param operation - The file system operation that failed
+ * @param path - The file path that caused the error
+ * @param message - Descriptive error message
+ * @param code - Optional error code for programmatic handling
+ * @returns Structured file system error object
+ */
+export function createFileSystemError(
+  operation: string,
+  path: string,
+  message: string,
+  code?: string,
+): FileSystemError {
+  const error = new Error(`${operation} failed for "${path}": ${message}`) as FileSystemError
+  error.name = 'FileSystemError'
+
+  Object.defineProperty(error, 'operation', {
+    value: operation,
+    writable: false,
+    enumerable: true,
+    configurable: false,
+  })
+
+  Object.defineProperty(error, 'path', {
+    value: path,
+    writable: false,
+    enumerable: true,
+    configurable: false,
+  })
+
+  if (code !== undefined) {
+    Object.defineProperty(error, 'code', {
+      value: code,
+      writable: false,
+      enumerable: true,
+      configurable: false,
+    })
+  }
+
+  return error
+}
+
+/**
+ * Create a directory operation error for directory-specific failures.
  *
  * Used when operations specifically require directory context but
  * encounter files or invalid directory states.
+ *
+ * @param path - The directory path that caused the error
+ * @param message - Descriptive error message
+ * @returns Directory-specific file system error
  */
-export class DirectoryError extends FileSystemError {
-  constructor(path: string, message: string) {
-    super('Directory operation', path, message, 'DIRECTORY_ERROR')
-    this.name = 'DirectoryError'
-  }
+export function createDirectoryError(path: string, message: string): FileSystemError {
+  const error = createFileSystemError('Directory operation', path, message, 'DIRECTORY_ERROR')
+  error.name = 'DirectoryError'
+  return error
 }
 
 /**
- * File operation error for file-specific failures.
+ * Create a file operation error for file-specific failures.
  *
  * Used when operations specifically require file context but
  * encounter directories or missing files.
+ *
+ * @param path - The file path that caused the error
+ * @param message - Descriptive error message
+ * @returns File-specific file system error
  */
-export class FileError extends FileSystemError {
-  constructor(path: string, message: string) {
-    super('File operation', path, message, 'FILE_ERROR')
-    this.name = 'FileError'
-  }
+export function createFileError(path: string, message: string): FileSystemError {
+  const error = createFileSystemError('File operation', path, message, 'FILE_ERROR')
+  error.name = 'FileError'
+  return error
 }
 
 /**
@@ -253,11 +298,11 @@ export function createVirtualFileSystem(enableDebugLogging = false): VirtualFile
       const node = getNode(resolvedPath)
 
       if (!node) {
-        throw new DirectoryError(path, 'Directory not found')
+        throw createDirectoryError(path, 'Directory not found')
       }
 
       if (node.type !== 'directory') {
-        throw new DirectoryError(path, 'Not a directory')
+        throw createDirectoryError(path, 'Not a directory')
       }
 
       currentDirectory = resolvedPath
@@ -271,11 +316,11 @@ export function createVirtualFileSystem(enableDebugLogging = false): VirtualFile
       const node = getNode(resolvedPath)
 
       if (!node) {
-        throw new DirectoryError(path, 'Directory not found')
+        throw createDirectoryError(path, 'Directory not found')
       }
 
       if (node.type !== 'directory' || !node.children) {
-        throw new DirectoryError(path, 'Not a directory')
+        throw createDirectoryError(path, 'Not a directory')
       }
 
       const entries = Array.from(node.children.keys()).sort()
@@ -297,11 +342,11 @@ export function createVirtualFileSystem(enableDebugLogging = false): VirtualFile
       const node = getNode(resolvedPath)
 
       if (!node) {
-        throw new FileError(path, 'File not found')
+        throw createFileError(path, 'File not found')
       }
 
       if (node.type !== 'file') {
-        throw new FileError(path, 'Not a file')
+        throw createFileError(path, 'Not a file')
       }
 
       const content = node.content || ''
@@ -317,7 +362,7 @@ export function createVirtualFileSystem(enableDebugLogging = false): VirtualFile
 
       const parentNode = getNode(parentPath)
       if (!parentNode || parentNode.type !== 'directory' || !parentNode.children) {
-        throw new DirectoryError(parentPath, 'Parent directory not found')
+        throw createDirectoryError(parentPath, 'Parent directory not found')
       }
 
       const fileNode = createFile(fileName, content)
@@ -331,11 +376,11 @@ export function createVirtualFileSystem(enableDebugLogging = false): VirtualFile
       const node = getNode(resolvedPath)
 
       if (!node) {
-        throw new DirectoryError(path, 'Directory not found')
+        throw createDirectoryError(path, 'Directory not found')
       }
 
       if (node.type !== 'directory' || !node.children) {
-        throw new DirectoryError(path, 'Not a directory')
+        throw createDirectoryError(path, 'Not a directory')
       }
 
       const details = Array.from(node.children.entries()).map(
@@ -362,11 +407,11 @@ export function createVirtualFileSystem(enableDebugLogging = false): VirtualFile
 
       const parentNode = getNode(parentPath)
       if (!parentNode || parentNode.type !== 'directory' || !parentNode.children) {
-        throw new DirectoryError(parentPath, 'Parent directory not found')
+        throw createDirectoryError(parentPath, 'Parent directory not found')
       }
 
       if (parentNode.children.has(dirName)) {
-        throw new DirectoryError(path, 'Directory already exists')
+        throw createDirectoryError(path, 'Directory already exists')
       }
 
       const dirNode = createDirectoryNode(dirName, new Map())
@@ -382,11 +427,11 @@ export function createVirtualFileSystem(enableDebugLogging = false): VirtualFile
 
       const parentNode = getNode(parentPath)
       if (!parentNode || parentNode.type !== 'directory' || !parentNode.children) {
-        throw new DirectoryError(parentPath, 'Parent directory not found')
+        throw createDirectoryError(parentPath, 'Parent directory not found')
       }
 
       if (!parentNode.children.has(fileName)) {
-        throw new FileSystemError('Remove', path, 'File not found')
+        throw createFileSystemError('Remove', path, 'File not found')
       }
 
       parentNode.children.delete(fileName)
@@ -424,7 +469,7 @@ export function createVirtualFileSystem(enableDebugLogging = false): VirtualFile
       const node = getNode(resolvedPath)
 
       if (!node) {
-        throw new FileSystemError('Get size', path, 'Path not found')
+        throw createFileSystemError('Get size', path, 'Path not found')
       }
 
       let size = 0

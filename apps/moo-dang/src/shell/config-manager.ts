@@ -97,81 +97,128 @@ const DEFAULT_CONFIG: ShellConfig = {
 } as const
 
 /**
- * localStorage-based configuration storage implementation.
+ * Check if localStorage is available for configuration storage.
+ *
+ * Tests localStorage availability by attempting to write and remove a test value.
+ * This approach handles cases where localStorage exists but is disabled or full.
+ *
+ * @returns True if localStorage is available and functional
  */
-class LocalStorageConfigStorage implements ConfigStorage {
-  constructor(private readonly storageKey = 'moo-dang-config') {}
+function isLocalStorageAvailable(): boolean {
+  try {
+    const test = '__localStorage_test__'
+    localStorage.setItem(test, test)
+    localStorage.removeItem(test)
+    return true
+  } catch {
+    return false
+  }
+}
 
-  readonly save = async (config: ShellConfig): Promise<void> => {
-    if (!this.isAvailable()) {
-      throw new Error('localStorage is not available')
-    }
-
-    try {
-      const serialized = JSON.stringify({
-        ...config,
-        lastUpdated: config.lastUpdated.toISOString(),
-      })
-      localStorage.setItem(this.storageKey, serialized)
-      consola.debug('Configuration saved to localStorage', {storageKey: this.storageKey})
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error)
-      consola.error('Failed to save configuration', {error: errorMessage})
-      throw new Error(`Failed to save configuration: ${errorMessage}`)
-    }
+/**
+ * Save shell configuration to localStorage with error handling.
+ *
+ * Serializes the configuration object to JSON and stores it in localStorage.
+ * Handles localStorage availability checks and provides detailed error context.
+ *
+ * @param config - Shell configuration to save
+ * @param storageKey - localStorage key to use (defaults to 'moo-dang-config')
+ * @throws {Error} When localStorage is unavailable or save operation fails
+ */
+async function saveConfigToStorage(config: ShellConfig, storageKey = 'moo-dang-config'): Promise<void> {
+  if (!isLocalStorageAvailable()) {
+    throw new Error('localStorage is not available')
   }
 
-  readonly load = async (): Promise<ShellConfig | null> => {
-    if (!this.isAvailable()) {
+  try {
+    const serialized = JSON.stringify({
+      ...config,
+      lastUpdated: config.lastUpdated.toISOString(),
+    })
+    localStorage.setItem(storageKey, serialized)
+    consola.debug('Configuration saved to localStorage', {storageKey})
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    consola.error('Failed to save configuration', {error: errorMessage})
+    throw new Error(`Failed to save configuration: ${errorMessage}`)
+  }
+}
+
+/**
+ * Load shell configuration from localStorage with error handling.
+ *
+ * Retrieves and deserializes configuration data from localStorage.
+ * Returns null if no configuration exists or localStorage is unavailable.
+ *
+ * @param storageKey - localStorage key to read from (defaults to 'moo-dang-config')
+ * @returns Shell configuration object or null if not found/invalid
+ */
+async function loadConfigFromStorage(storageKey = 'moo-dang-config'): Promise<ShellConfig | null> {
+  if (!isLocalStorageAvailable()) {
+    return null
+  }
+
+  try {
+    const stored = localStorage.getItem(storageKey)
+    if (stored == null) {
+      consola.debug('No stored configuration found')
       return null
     }
 
-    try {
-      const stored = localStorage.getItem(this.storageKey)
-      if (stored == null) {
-        consola.debug('No stored configuration found')
-        return null
-      }
-
-      const parsed = JSON.parse(stored) as ShellConfig & {lastUpdated: string}
-      const config: ShellConfig = {
-        ...parsed,
-        lastUpdated: new Date(parsed.lastUpdated),
-      }
-
-      consola.debug('Configuration loaded from localStorage', {storageKey: this.storageKey})
-      return config
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error)
-      consola.error('Failed to load configuration', {error: errorMessage})
-      return null
+    const parsed = JSON.parse(stored) as ShellConfig & {lastUpdated: string}
+    const config: ShellConfig = {
+      ...parsed,
+      lastUpdated: new Date(parsed.lastUpdated),
     }
+
+    consola.debug('Configuration loaded from localStorage', {storageKey})
+    return config
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    consola.error('Failed to load configuration', {error: errorMessage})
+    return null
+  }
+}
+
+/**
+ * Clear shell configuration from localStorage with error handling.
+ *
+ * Removes the configuration data from localStorage if available.
+ * Silently succeeds if localStorage is unavailable.
+ *
+ * @param storageKey - localStorage key to clear (defaults to 'moo-dang-config')
+ * @throws {Error} When clear operation fails despite localStorage being available
+ */
+async function clearConfigFromStorage(storageKey = 'moo-dang-config'): Promise<void> {
+  if (!isLocalStorageAvailable()) {
+    return
   }
 
-  readonly clear = async (): Promise<void> => {
-    if (!this.isAvailable()) {
-      return
-    }
-
-    try {
-      localStorage.removeItem(this.storageKey)
-      consola.debug('Configuration cleared from localStorage', {storageKey: this.storageKey})
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error)
-      consola.error('Failed to clear configuration', {error: errorMessage})
-      throw new Error(`Failed to clear configuration: ${errorMessage}`)
-    }
+  try {
+    localStorage.removeItem(storageKey)
+    consola.debug('Configuration cleared from localStorage', {storageKey})
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    consola.error('Failed to clear configuration', {error: errorMessage})
+    throw new Error(`Failed to clear configuration: ${errorMessage}`)
   }
+}
 
-  readonly isAvailable = (): boolean => {
-    try {
-      const test = '__localStorage_test__'
-      localStorage.setItem(test, test)
-      localStorage.removeItem(test)
-      return true
-    } catch {
-      return false
-    }
+/**
+ * Create a localStorage-based configuration storage implementation.
+ *
+ * Returns a ConfigStorage object with function-based implementation
+ * for better testability and composability.
+ *
+ * @param storageKey - localStorage key to use (defaults to 'moo-dang-config')
+ * @returns ConfigStorage implementation using localStorage
+ */
+function createLocalStorageConfigStorage(storageKey = 'moo-dang-config'): ConfigStorage {
+  return {
+    save: (config: ShellConfig) => saveConfigToStorage(config, storageKey),
+    load: () => loadConfigFromStorage(storageKey),
+    clear: () => clearConfigFromStorage(storageKey),
+    isAvailable: isLocalStorageAvailable,
   }
 }
 
@@ -250,7 +297,7 @@ function mergeWithDefaults(stored: ShellConfig): ShellConfig {
 
 export function createShellConfigManager(options: ConfigManagerOptions = {}): ConfigManager {
   let _config: ShellConfig = structuredClone(DEFAULT_CONFIG)
-  const storage = options.storage ?? new LocalStorageConfigStorage(options.storageKey)
+  const storage = options.storage ?? createLocalStorageConfigStorage(options.storageKey)
   const listeners = new Set<ConfigChangeListener>()
   const _autoSave = options.autoSave ?? true
 
