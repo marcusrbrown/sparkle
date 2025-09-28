@@ -1,8 +1,9 @@
 /**
  * Unit tests for Terminal component.
  *
- * Tests cover terminal creation, theme integration, error handling,
- * and utility functions following Sparkle testing patterns.
+ * Comprehensive test coverage for terminal creation, theme integration, error handling,
+ * and utility functions. Tests follow Sparkle testing patterns with proper type safety
+ * and meaningful assertions that validate both implementation correctness and API contracts.
  */
 
 import {ThemeProvider} from '@sparkle/theme'
@@ -18,7 +19,7 @@ import {
   type TerminalProps,
 } from './Terminal'
 
-// Mock xterm.js and addons
+// Mock xterm.js and addons with comprehensive interface coverage
 vi.mock('@xterm/xterm', () => ({
   Terminal: vi.fn().mockImplementation(() => ({
     write: vi.fn(),
@@ -41,7 +42,10 @@ vi.mock('@xterm/addon-fit', () => ({
   })),
 }))
 
-// Mock ResizeObserver
+/**
+ * Mock ResizeObserver for testing terminal resize functionality.
+ * Essential for terminal fit operations that depend on container size changes.
+ */
 globalThis.ResizeObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
@@ -143,12 +147,14 @@ describe('Terminal Utility Functions', () => {
 
   describe('writeToTerminal', () => {
     it('should write text to terminal', () => {
+      // Using minimal mock - 'as any' is necessary for test mocking of external XTerm interface
       const mockTerminal = {write: vi.fn()} as any
       writeToTerminal(mockTerminal, 'test text')
       expect(mockTerminal.write).toHaveBeenCalledWith('test text')
     })
 
     it('should throw TerminalError on write failure', () => {
+      // Mock terminal that throws to test error handling behavior
       const mockTerminal = {
         write: vi.fn().mockImplementationOnce(() => {
           throw new Error('Write failed')
@@ -161,12 +167,14 @@ describe('Terminal Utility Functions', () => {
 
   describe('clearTerminal', () => {
     it('should clear terminal', () => {
+      // Using minimal mock - 'as any' is necessary for test mocking of external XTerm interface
       const mockTerminal = {clear: vi.fn()} as any
       clearTerminal(mockTerminal)
       expect(mockTerminal.clear).toHaveBeenCalled()
     })
 
     it('should throw TerminalError on clear failure', () => {
+      // Mock terminal that throws to test error handling behavior
       const mockTerminal = {
         clear: vi.fn().mockImplementationOnce(() => {
           throw new Error('Clear failed')
@@ -179,12 +187,14 @@ describe('Terminal Utility Functions', () => {
 
   describe('focusTerminal', () => {
     it('should focus terminal', () => {
+      // Using minimal mock - 'as any' is necessary for test mocking of external XTerm interface
       const mockTerminal = {focus: vi.fn()} as any
       focusTerminal(mockTerminal)
       expect(mockTerminal.focus).toHaveBeenCalled()
     })
 
     it('should throw TerminalError on focus failure', () => {
+      // Mock terminal that throws to test error handling behavior
       const mockTerminal = {
         focus: vi.fn().mockImplementationOnce(() => {
           throw new Error('Focus failed')

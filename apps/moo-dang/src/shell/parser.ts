@@ -205,7 +205,7 @@ function parseCommandWithRedirections(
   commandString: string,
   environmentVariables?: Record<string, string>,
 ): ParsedCommand {
-  const redirectionOperators = ['&>', '>>', '2>', '>', '<'] // Order matters - longer operators first
+  const redirectionOperators = ['&>', '>>', '2>', '>', '<'] as const // Order matters - longer operators first
 
   const inputRedirections: IORedirection[] = []
   const outputRedirections: IORedirection[] = []

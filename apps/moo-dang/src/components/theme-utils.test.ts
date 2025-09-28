@@ -1,8 +1,10 @@
 /**
  * Unit tests for theme-utils.ts.
  *
- * Tests cover Sparkle theme to XTerm theme conversion, font family and size extraction,
- * and theme validation following Sparkle testing patterns.
+ * Comprehensive test coverage for Sparkle theme to XTerm theme conversion,
+ * font family and size extraction, and theme validation. Tests ensure proper
+ * fallback behavior, semantic color mapping, and cross-platform compatibility
+ * between Sparkle's design system and XTerm's theming requirements.
  */
 
 import type {ThemeConfig} from '@sparkle/theme'
@@ -16,7 +18,16 @@ import {
   type XTermTheme,
 } from './theme-utils'
 
-// Helper to create minimal valid theme configs for testing
+/**
+ * Creates minimal valid ThemeConfig for testing.
+ *
+ * Helper function provides consistent theme structure across all test cases
+ * while allowing for selective overrides. Ensures proper typing and prevents
+ * accidental mutations during test execution.
+ *
+ * @param overrides - Partial theme config to merge with defaults
+ * @returns Complete ThemeConfig suitable for testing
+ */
 const createTheme = (overrides: Partial<ThemeConfig> = {}): ThemeConfig =>
   ({
     colors: {},
@@ -50,37 +61,43 @@ describe('Theme Utils', () => {
     })
 
     it('should use semantic colors when available', () => {
+      // Using const assertion ensures immutable test color values
+      const semanticColors = {
+        foreground: '#333333',
+        background: '#ffffff',
+      } as const
+
       const sparkleTheme = createTheme({
         colors: {
-          semantic: {
-            foreground: '#333333',
-            background: '#ffffff',
-          },
+          semantic: semanticColors,
         },
       })
 
       const xtermTheme = sparkleToXTermTheme(sparkleTheme)
 
-      expect(xtermTheme.foreground).toBe('#333333')
-      expect(xtermTheme.background).toBe('#ffffff')
+      expect(xtermTheme.foreground).toBe(semanticColors.foreground)
+      expect(xtermTheme.background).toBe(semanticColors.background)
     })
 
     it('should use neutral colors as fallback', () => {
+      // Immutable neutral color palette for consistent testing
+      const neutralColors = {
+        50: '#f9fafb',
+        100: '#f3f4f6',
+        800: '#1f2937',
+        900: '#111827',
+      } as const
+
       const sparkleTheme = createTheme({
         colors: {
-          neutral: {
-            50: '#f9fafb',
-            100: '#f3f4f6',
-            800: '#1f2937',
-            900: '#111827',
-          },
+          neutral: neutralColors,
         },
       })
 
       const xtermTheme = sparkleToXTermTheme(sparkleTheme)
 
-      expect(xtermTheme.foreground).toBe('#111827') // neutral[900]
-      expect(xtermTheme.background).toBe('#f9fafb') // neutral[50]
+      expect(xtermTheme.foreground).toBe(neutralColors[900]) // neutral[900]
+      expect(xtermTheme.background).toBe(neutralColors[50]) // neutral[50]
     })
 
     it('should map primary colors correctly', () => {

@@ -1,8 +1,10 @@
 /**
- * Tests for shell command parsing functionality.
+ * Comprehensive tests for shell command parsing functionality.
  *
- * Validates command parsing, argument handling, quote processing,
- * and edge cases for the shell command parser.
+ * Validates variable expansion, command parsing, argument handling, quote processing,
+ * pipeline parsing with I/O redirection, and edge cases. Tests ensure the shell parser
+ * correctly handles Unix-like shell syntax including $VAR and ${VAR} expansion,
+ * command pipelines, and complex redirection scenarios.
  */
 
 /* eslint-disable no-template-curly-in-string */
@@ -48,10 +50,13 @@ describe('expandVariables', () => {
 
   describe('complex expansion scenarios', () => {
     it('should handle mixed ${VAR} and $VAR syntax', () => {
-      const result = expandVariables('${HOME}/bin:$PATH/local', {
+      // Using const assertion ensures immutable test environment variables
+      const testEnv = {
         HOME: '/home/user',
         PATH: '/usr/bin',
-      })
+      } as const
+
+      const result = expandVariables('${HOME}/bin:$PATH/local', testEnv)
       expect(result).toBe('/home/user/bin:/usr/bin/local')
     })
 
