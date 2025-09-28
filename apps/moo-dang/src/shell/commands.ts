@@ -13,6 +13,7 @@ import type {CommandExecutionResult, ExecutionContext, ShellCommand, VirtualFile
 
 import {consola} from 'consola'
 import {COMMAND_HELP_REGISTRY} from './command-help'
+import {createConfigManager} from './config-manager'
 import {createHelpSystem} from './help-system'
 import {createHistoryManager} from './history-manager'
 
@@ -30,6 +31,13 @@ const COMMAND_EXECUTION_CONSTANTS = {
   /** Performance threshold for logging slow command executions */
   SLOW_COMMAND_THRESHOLD_MS: 1000,
 } as const
+
+/**
+ * Global configuration manager instance for shell configuration.
+ *
+ * Shared across all command handlers to maintain consistent configuration state.
+ */
+const configManager = createConfigManager()
 
 /**
  * Validates source command arguments and returns the script path.
@@ -1520,6 +1528,558 @@ Examples:
 `
 }
 
+/**
+ * Creates config command for managing shell configuration and preferences.
+ */
+function createConfigCommand(): ShellCommand {
+  return {
+    name: 'config',
+    description: 'Manage shell configuration and preferences',
+    execute: async (args: string[], context: ExecutionContext): Promise<CommandExecutionResult> => {
+      const startTime = Date.now()
+
+      try {
+        // Parse command options
+        const options = parseConfigOptions(args)
+
+        if (options.help) {
+          const helpOutput = getConfigHelpText()
+          return createCommandResult(context, 'config', helpOutput, '', 0, startTime)
+        }
+
+        // Handle subcommands
+        switch (options.subcommand) {
+          case 'get':
+            return handleConfigGet(options, context, startTime)
+          case 'set':
+            return await handleConfigSet(options, context, startTime)
+          case 'list':
+            return handleConfigList(options, context, startTime)
+          case 'reset':
+            return await handleConfigReset(options, context, startTime)
+          case 'export':
+            return handleConfigExport(options, context, startTime)
+          case 'import':
+            return await handleConfigImport(options, context, startTime)
+          case 'validate':
+            return handleConfigValidate(context, startTime)
+          default:
+            // Show general config status
+            return handleConfigStatus(context, startTime)
+        }
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : String(error)
+        return createCommandResult(context, `config ${args.join(' ')}`, '', `config: ${errorMessage}`, 1, startTime)
+      }
+    },
+  }
+}
+
+/**
+ * Configuration command options.
+ */
+interface ConfigOptions {
+  help: boolean
+  subcommand?: 'get' | 'set' | 'list' | 'reset' | 'export' | 'import' | 'validate'
+  path?: string
+  value?: string
+  section?: string
+  format?: 'json' | 'yaml' | 'text'
+  file?: string
+}
+
+/**
+ * Parse configuration command arguments.
+ */
+function parseConfigOptions(args: string[]): ConfigOptions {
+  const options: ConfigOptions = {
+    help: false,
+    format: 'text',
+  }
+
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i]
+    if (arg == null || arg.trim().length === 0) continue
+
+    switch (arg) {
+      case '-h':
+      case '--help':
+        options.help = true
+        break
+      case '--format':
+        if (i + 1 < args.length) {
+          const format = args[++i]
+          if (format === 'json' || format === 'yaml' || format === 'text') {
+            options.format = format
+          }
+        }
+        break
+      case '--section':
+        if (i + 1 < args.length) {
+          options.section = args[++i]
+        }
+        break
+      case '--file':
+        if (i + 1 < args.length) {
+          options.file = args[++i]
+        }
+        break
+      default:
+        // Handle subcommands and path/value
+        if (!options.subcommand && ['get', 'set', 'list', 'reset', 'export', 'import', 'validate'].includes(arg)) {
+          options.subcommand = arg as ConfigOptions['subcommand']
+        } else if (options.subcommand === 'get' || options.subcommand === 'set') {
+          if (!options.path) {
+            options.path = arg
+          } else if (options.subcommand === 'set' && !options.value) {
+            options.value = arg
+          }
+        }
+        break
+    }
+  }
+
+  return options
+}
+
+/**
+ * Handle 'config get' subcommand.
+ */
+function handleConfigGet(options: ConfigOptions, context: ExecutionContext, startTime: number): CommandExecutionResult {
+  if (!options.path) {
+    return createCommandResult(context, 'config get', '', 'config get: missing configuration path', 1, startTime)
+  }
+
+  try {
+    const value = configManager.get(options.path)
+    if (value === undefined) {
+      return createCommandResult(
+        context,
+        `config get ${options.path}`,
+        '',
+        `config get: configuration path '${options.path}' not found`,
+        1,
+        startTime,
+      )
+    }
+
+    const output = `${options.path}: ${JSON.stringify(value, null, 2)}\n`
+    return createCommandResult(context, `config get ${options.path}`, output, '', 0, startTime)
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    return createCommandResult(
+      context,
+      `config get ${options.path}`,
+      '',
+      `config get: error retrieving configuration - ${errorMessage}`,
+      1,
+      startTime,
+    )
+  }
+}
+
+/**
+ * Handle 'config set' subcommand.
+ */
+async function handleConfigSet(
+  options: ConfigOptions,
+  context: ExecutionContext,
+  startTime: number,
+): Promise<CommandExecutionResult> {
+  if (!options.path) {
+    return createCommandResult(context, 'config set', '', 'config set: missing configuration path', 1, startTime)
+  }
+
+  if (options.value === undefined) {
+    return createCommandResult(
+      context,
+      `config set ${options.path}`,
+      '',
+      'config set: missing configuration value',
+      1,
+      startTime,
+    )
+  }
+
+  try {
+    // Parse the value based on its type
+    const parsedValue = _parseConfigValue(options.value)
+
+    // Set the configuration value
+    await configManager.set(options.path, parsedValue)
+
+    const output = `Configuration updated: ${options.path} = ${JSON.stringify(parsedValue)}\n`
+    return createCommandResult(context, `config set ${options.path} ${options.value}`, output, '', 0, startTime)
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    return createCommandResult(
+      context,
+      `config set ${options.path} ${options.value}`,
+      '',
+      `config set: error setting configuration - ${errorMessage}`,
+      1,
+      startTime,
+    )
+  }
+}
+
+/**
+ * Handle 'config list' subcommand.
+ */
+function handleConfigList(
+  options: ConfigOptions,
+  context: ExecutionContext,
+  startTime: number,
+): CommandExecutionResult {
+  try {
+    const config = configManager.config
+    let output = ''
+
+    if (options.section) {
+      // Show specific section
+      const sectionConfig = configManager.get(options.section)
+      if (sectionConfig === undefined) {
+        return createCommandResult(
+          context,
+          `config list ${options.section}`,
+          '',
+          `config list: section '${options.section}' not found`,
+          1,
+          startTime,
+        )
+      }
+
+      output = `Configuration section: ${options.section}\n`
+      output += `${'='.repeat(30 + options.section.length)}\n\n`
+      output += _formatFullConfig({[options.section]: sectionConfig} as any, 'readable')
+    } else {
+      // Show all configuration
+      output = 'Complete Shell Configuration\n'
+      output += '============================\n\n'
+      output += _formatFullConfig(config, 'readable')
+    }
+
+    return createCommandResult(context, 'config list', output, '', 0, startTime)
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    return createCommandResult(
+      context,
+      'config list',
+      '',
+      `config list: error listing configuration - ${errorMessage}`,
+      1,
+      startTime,
+    )
+  }
+}
+
+/**
+ * Handle 'config reset' subcommand.
+ */
+async function handleConfigReset(
+  options: ConfigOptions,
+  context: ExecutionContext,
+  startTime: number,
+): Promise<CommandExecutionResult> {
+  try {
+    if (options.section) {
+      await configManager.reset(options.section as any)
+      const output = `Configuration section '${options.section}' has been reset to defaults.\n`
+      return createCommandResult(context, `config reset ${options.section}`, output, '', 0, startTime)
+    } else {
+      await configManager.reset()
+      const output = 'All configuration has been reset to defaults.\n'
+      return createCommandResult(context, 'config reset', output, '', 0, startTime)
+    }
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    return createCommandResult(
+      context,
+      'config reset',
+      '',
+      `config reset: error resetting configuration - ${errorMessage}`,
+      1,
+      startTime,
+    )
+  }
+}
+
+/**
+ * Handle 'config export' subcommand.
+ */
+function handleConfigExport(
+  _options: ConfigOptions,
+  context: ExecutionContext,
+  startTime: number,
+): CommandExecutionResult {
+  try {
+    const exportData = configManager.export()
+    const output = `${JSON.stringify(exportData, null, 2)}\n`
+    return createCommandResult(context, 'config export', output, '', 0, startTime)
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    return createCommandResult(
+      context,
+      'config export',
+      '',
+      `config export: error exporting configuration - ${errorMessage}`,
+      1,
+      startTime,
+    )
+  }
+}
+
+/**
+ * Handle 'config import' subcommand.
+ */
+async function handleConfigImport(
+  _options: ConfigOptions,
+  context: ExecutionContext,
+  startTime: number,
+): Promise<CommandExecutionResult> {
+  // Note: Full file import functionality would require VFS integration
+  // For now, return instructions on how to use export/import
+  const output = [
+    'config import: Import functionality available via configuration manager',
+    '',
+    'To import configuration:',
+    '1. Export current config: config export > config.json',
+    '2. Modify the exported JSON file as needed',
+    '3. Use the configuration manager API to import',
+    '',
+    'Full command-line import support requires file system integration.',
+    '',
+  ].join('\n')
+
+  return createCommandResult(context, 'config import', output, '', 0, startTime)
+}
+
+/**
+ * Handle 'config validate' subcommand.
+ */
+function handleConfigValidate(context: ExecutionContext, startTime: number): CommandExecutionResult {
+  try {
+    const validation = configManager.validate()
+
+    let output = 'Configuration Validation Results\n'
+    output += '================================\n\n'
+
+    if (validation.isValid) {
+      output += '✓ Configuration is valid\n\n'
+    } else {
+      output += '✗ Configuration has errors:\n\n'
+      for (const error of validation.errors) {
+        output += `  • ${error}\n`
+      }
+      output += '\n'
+    }
+
+    if (validation.warnings.length > 0) {
+      output += 'Warnings:\n'
+      for (const warning of validation.warnings) {
+        output += `  ⚠ ${warning}\n`
+      }
+      output += '\n'
+    }
+
+    const exitCode = validation.isValid ? 0 : 1
+    return createCommandResult(context, 'config validate', output, '', exitCode, startTime)
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    return createCommandResult(
+      context,
+      'config validate',
+      '',
+      `config validate: error validating configuration - ${errorMessage}`,
+      1,
+      startTime,
+    )
+  }
+}
+
+/**
+ * Handle default config status display.
+ */
+function handleConfigStatus(context: ExecutionContext, startTime: number): CommandExecutionResult {
+  try {
+    const config = configManager.config
+    const validation = configManager.validate()
+
+    let output = 'moo-dang Shell Configuration\n'
+    output += '============================\n\n'
+
+    output += `Status: ${validation.isValid ? '✓ Valid' : '✗ Issues Found'}\n`
+    output += `Version: ${config.version}\n`
+    output += `Last Updated: ${config.lastUpdated.toLocaleString()}\n`
+    output += `Auto-save: ${configManager.autoSave ? 'Enabled' : 'Disabled'}\n\n`
+
+    if (!validation.isValid) {
+      output += 'Errors:\n'
+      for (const error of validation.errors) {
+        output += `  • ${error}\n`
+      }
+      output += '\n'
+    }
+
+    if (validation.warnings.length > 0) {
+      output += 'Warnings:\n'
+      for (const warning of validation.warnings) {
+        output += `  ⚠ ${warning}\n`
+      }
+      output += '\n'
+    }
+
+    output += 'Available Configuration Sections:\n'
+    output += '  appearance    - Terminal appearance and theming\n'
+    output += '  behavior      - Shell behavior and execution settings\n'
+    output += '  security      - Security and privacy settings\n'
+    output += '  accessibility - Accessibility options\n'
+    output += '  advanced      - Advanced configuration options\n\n'
+
+    output += 'Usage:\n'
+    output += '  config list                    Show all configuration\n'
+    output += '  config get <path>              Get configuration value\n'
+    output += '  config set <path> <value>      Set configuration value\n'
+    output += '  config reset [section]         Reset configuration\n'
+    output += '  config validate               Validate configuration\n'
+    output += '  config --help                 Show detailed help\n'
+
+    return createCommandResult(context, 'config', output, '', 0, startTime)
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    return createCommandResult(
+      context,
+      'config',
+      '',
+      `config: error retrieving configuration status - ${errorMessage}`,
+      1,
+      startTime,
+    )
+  }
+}
+
+/**
+function formatConfigValue(path: string, value: unknown, format: string): string {
+  if (format === 'json') {
+    return JSON.stringify({[path]: value}, null, 2)
+  }
+ 
+  if (typeof value === 'object' && value !== null) {
+    return JSON.stringify(value, null, 2)
+  }
+ 
+  return String(value)
+}
+ 
+/**
+ * Format configuration section for display.
+ */
+function formatConfigSection(section: string, value: unknown, format: string): string {
+  if (format === 'json') {
+    return JSON.stringify({[section]: value}, null, 2)
+  }
+
+  let output = `Configuration section: ${section}\n`
+  output += `${'='.repeat(section.length + 22)}\n`
+
+  if (typeof value === 'object' && value !== null) {
+    for (const [key, val] of Object.entries(value)) {
+      output += `${key}: ${JSON.stringify(val)}\n`
+    }
+  } else {
+    output += `${String(value)}\n`
+  }
+
+  return output
+}
+
+/**
+ * Format full configuration for display.
+ */
+function _formatFullConfig(config: import('./config-types').ShellConfig, format: string): string {
+  if (format === 'json') {
+    return JSON.stringify(config, null, 2)
+  }
+
+  let output = 'Complete Shell Configuration\n'
+  output += '===========================\n\n'
+
+  const sections = ['appearance', 'behavior', 'security', 'accessibility', 'advanced'] as const
+
+  for (const section of sections) {
+    output += `${formatConfigSection(section, config[section], 'text')}\n`
+  }
+
+  return output
+}
+
+/**
+ * Parse string value to appropriate type.
+ */
+function _parseConfigValue(value: string): unknown {
+  // Try boolean
+  if (value === 'true') return true
+  if (value === 'false') return false
+
+  // Try number
+  if (/^\d+$/.test(value)) {
+    return Number.parseInt(value, 10)
+  }
+
+  if (/^\d+\.\d+$/.test(value)) {
+    return Number.parseFloat(value)
+  }
+
+  // Return as string
+  return value
+}
+
+/**
+ * Get help text for config command.
+ */
+function getConfigHelpText(): string {
+  return `config - Manage shell configuration and preferences
+
+Usage:
+  config [subcommand] [options]
+
+Subcommands:
+  list                           List all configuration or specific section
+  get <path>                     Get configuration value at path
+  set <path> <value>             Set configuration value at path
+  reset [section]                Reset configuration to defaults
+  export                         Export configuration as JSON
+  import                         Import configuration from JSON
+  validate                       Validate current configuration
+
+Options:
+  -h, --help                     Show this help message
+  --section <name>               Target specific configuration section
+  --format <format>              Output format: text, json (default: text)
+  --file <path>                  File path for import/export operations
+
+Configuration Paths:
+  appearance.theme               Terminal theme (dark, light, etc.)
+  appearance.fontSize            Terminal font size
+  appearance.fontFamily          Terminal font family
+  behavior.prompt.style          Prompt style (default, minimal, etc.)
+  behavior.completion.maxSuggestions  Max completion suggestions
+  behavior.history.maxHistorySize     Max history entries
+  security.allowWasmExecution    Allow WASM module execution
+  accessibility.highContrast     Enable high contrast mode
+
+Examples:
+  config                         Show configuration status
+  config list                    Show all configuration
+  config list --section appearance  Show appearance settings only
+  config get appearance.theme    Get current theme
+  config set appearance.theme dark  Set theme to dark
+  config reset appearance        Reset appearance to defaults
+  config validate               Check configuration validity
+  config export                 Export configuration as JSON
+`
+}
+
 export function createStandardCommands(
   fileSystem: VirtualFileSystem,
   environment: ShellEnvironment,
@@ -1569,6 +2129,10 @@ export function createStandardCommands(
   commands.set(fgCommand.name, fgCommand)
   commands.set(bgCommand.name, bgCommand)
   commands.set(disownCommand.name, disownCommand)
+
+  // Configuration management command
+  const configCommand = createConfigCommand()
+  commands.set(configCommand.name, configCommand)
 
   const helpCommand = createHelpCommand(commands)
   commands.set(helpCommand.name, helpCommand)
