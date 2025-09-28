@@ -20,35 +20,60 @@ import type {
 import {consola} from 'consola'
 
 /**
- * Error for pipeline execution failures.
+ * Creates a pipeline execution error for pipeline failures.
  */
-export class PipelineExecutionError extends Error {
-  readonly pipelineCommand: string
-  override readonly cause?: Error
+export function createPipelineExecutionError(pipelineCommand: string, message: string, cause?: Error): Error {
+  const error = new Error(`Pipeline execution failed for "${pipelineCommand}": ${message}`)
 
-  constructor(pipelineCommand: string, message: string, cause?: Error) {
-    super(`Pipeline execution failed for "${pipelineCommand}": ${message}`)
-    this.name = 'PipelineExecutionError'
-    this.pipelineCommand = pipelineCommand
-    this.cause = cause
+  Object.defineProperty(error, 'name', {
+    value: 'PipelineExecutionError',
+    configurable: true,
+  })
+
+  Object.defineProperty(error, 'pipelineCommand', {
+    value: pipelineCommand,
+    configurable: true,
+  })
+
+  if (cause) {
+    Object.defineProperty(error, 'cause', {
+      value: cause,
+      configurable: true,
+    })
   }
+
+  return error
 }
 
 /**
- * Error for I/O redirection failures.
+ * Creates a redirection error for I/O redirection failures.
  */
-export class RedirectionError extends Error {
-  readonly operator: string
-  readonly target: string
-  override readonly cause?: Error
+export function createRedirectionError(operator: string, target: string, message: string, cause?: Error): Error {
+  const error = new Error(`Redirection failed (${operator} ${target}): ${message}`)
 
-  constructor(operator: string, target: string, message: string, cause?: Error) {
-    super(`Redirection failed (${operator} ${target}): ${message}`)
-    this.name = 'RedirectionError'
-    this.operator = operator
-    this.target = target
-    this.cause = cause
+  Object.defineProperty(error, 'name', {
+    value: 'RedirectionError',
+    configurable: true,
+  })
+
+  Object.defineProperty(error, 'operator', {
+    value: operator,
+    configurable: true,
+  })
+
+  Object.defineProperty(error, 'target', {
+    value: target,
+    configurable: true,
+  })
+
+  if (cause) {
+    Object.defineProperty(error, 'cause', {
+      value: cause,
+      configurable: true,
+    })
   }
+
+  return error
 }
 
 /**
@@ -153,7 +178,7 @@ export async function executePipeline(
     }
   } catch (error) {
     const pipelineCommand = pipeline.commands.map(cmd => `${cmd.command} ${cmd.args.join(' ')}`).join(' | ')
-    const pipelineError = new PipelineExecutionError(
+    const pipelineError = createPipelineExecutionError(
       pipelineCommand,
       error instanceof Error ? error.message : String(error),
       error instanceof Error ? error : undefined,
@@ -239,7 +264,7 @@ async function handleInputRedirection(redirections: IORedirection[], fileSystem:
         const content = await fileSystem.readFile(redirection.target)
         inputContent += content
       } catch (error) {
-        throw new RedirectionError(
+        throw createRedirectionError(
           redirection.operator,
           redirection.target,
           `Failed to read input file: ${error instanceof Error ? error.message : String(error)}`,
@@ -287,7 +312,7 @@ async function handleOutputRedirection(
           consola.warn(`Unsupported redirection operator: ${redirection.operator}`)
       }
     } catch (error) {
-      throw new RedirectionError(
+      throw createRedirectionError(
         redirection.operator,
         redirection.target,
         `Failed to write output: ${error instanceof Error ? error.message : String(error)}`,

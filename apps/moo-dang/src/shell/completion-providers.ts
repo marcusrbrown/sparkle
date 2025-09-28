@@ -6,13 +6,7 @@
  * and command-specific arguments.
  */
 
-import type {
-  CompletionConfig,
-  CompletionContext,
-  CompletionProvider,
-  CompletionSuggestion,
-  CompletionType,
-} from './completion-types'
+import type {CompletionConfig, CompletionContext, CompletionProvider, CompletionSuggestion} from './completion-types.js'
 import type {ShellEnvironment} from './environment'
 import type {VirtualFileSystem} from './types'
 
@@ -119,25 +113,44 @@ function createCommandCompletionProvider(
 }
 
 /**
- * Provider for completing file and directory paths.
+ * Resolves relative paths relative to a base path.
+ */
+function resolvePath(basePath: string, relativePath: string): string {
+  if (relativePath === '.') {
+    return basePath
+  }
+
+  if (relativePath === '..') {
+    const parts = basePath.split('/').filter(part => part.length > 0)
+    parts.pop()
+    return parts.length === 0 ? '/' : `/${parts.join('/')}`
+  }
+
+  // Simple concatenation for other cases
+  return basePath.endsWith('/') ? `${basePath}${relativePath}` : `${basePath}/${relativePath}`
+}
+
+/**
+ * Builds full path by replacing prefix with entry name.
+ */
+function buildFullPath(currentPath: string, entryName: string, prefix: string): string {
+  const basePath = currentPath.slice(0, currentPath.length - prefix.length)
+  return `${basePath}${entryName}`
+}
+
+/**
+ * Creates a file completion provider for completing file and directory paths.
  *
- * Suggests files and directories relative to current working directory
+ * Handles completion for both relative paths from the current directory
  * or from absolute paths. Handles hidden files based on configuration.
  */
-export class FileCompletionProvider implements CompletionProvider {
-  readonly id = 'files'
-  readonly name = 'File System Paths'
-  readonly supportedTypes: CompletionType[] = ['file', 'directory']
-  readonly priority = 'medium' as const
-
-  constructor(private readonly fileSystem: VirtualFileSystem) {}
-
-  readonly canComplete = (context: CompletionContext): boolean => {
+export function createFileCompletionProvider(fileSystem: VirtualFileSystem): CompletionProvider {
+  const canComplete = (context: CompletionContext): boolean => {
     // Complete files for any non-command position
     return !context.isNewCommand
   }
 
-  readonly getCompletions = async (
+  const getCompletions = async (
     context: CompletionContext,
     config: CompletionConfig,
   ): Promise<CompletionSuggestion[]> => {
@@ -161,23 +174,23 @@ export class FileCompletionProvider implements CompletionProvider {
         prefix = currentPart.slice(lastSlash + 1)
 
         // Resolve relative path
-        searchDir = this.resolvePath(context.workingDirectory, relativePath)
+        searchDir = resolvePath(context.workingDirectory, relativePath)
       } else {
         // Simple filename in current directory
         prefix = currentPart
       }
 
       // Check if search directory exists
-      if (!(await this.fileSystem.exists(searchDir))) {
+      if (!(await fileSystem.exists(searchDir))) {
         return suggestions
       }
 
-      if (!(await this.fileSystem.isDirectory(searchDir))) {
+      if (!(await fileSystem.isDirectory(searchDir))) {
         return suggestions
       }
 
       // Read directory contents
-      const entries = await this.fileSystem.getDetailedListing(searchDir)
+      const entries = await fileSystem.getDetailedListing(searchDir)
 
       for (const entry of entries) {
         // Skip hidden files unless configured to include them
@@ -194,7 +207,7 @@ export class FileCompletionProvider implements CompletionProvider {
           const isDirectory = entry.type === 'directory'
           const fullPath =
             currentPart.startsWith('/') || currentPart.includes('/')
-              ? this.buildFullPath(currentPart, entry.name, prefix)
+              ? buildFullPath(currentPart, entry.name, prefix)
               : entry.name
 
           suggestions.push({
@@ -213,40 +226,24 @@ export class FileCompletionProvider implements CompletionProvider {
     return suggestions
   }
 
-  private resolvePath(basePath: string, relativePath: string): string {
-    if (relativePath === '.') {
-      return basePath
-    }
-
-    if (relativePath === '..') {
-      const parts = basePath.split('/').filter(part => part.length > 0)
-      parts.pop()
-      return parts.length === 0 ? '/' : `/${parts.join('/')}`
-    }
-
-    // Simple concatenation for other cases
-    return basePath.endsWith('/') ? `${basePath}${relativePath}` : `${basePath}/${relativePath}`
-  }
-
-  private buildFullPath(currentPath: string, entryName: string, prefix: string): string {
-    const basePath = currentPath.slice(0, currentPath.length - prefix.length)
-    return `${basePath}${entryName}`
+  return {
+    id: 'files',
+    name: 'File System Paths',
+    supportedTypes: ['file', 'directory'],
+    priority: 'medium' as const,
+    canComplete,
+    getCompletions,
   }
 }
 
 /**
- * Provider for completing environment variable names.
+ * Creates an environment completion provider for completing environment variable names.
  *
  * Suggests available environment variables when preceded by $ or in
  * export/unset commands.
  */
-export class EnvironmentCompletionProvider implements CompletionProvider {
-  readonly id = 'environment'
-  readonly name = 'Environment Variables'
-  readonly supportedTypes: CompletionType[] = ['environment']
-  readonly priority = 'medium' as const
-
-  readonly canComplete = (context: CompletionContext): boolean => {
+export function createEnvironmentCompletionProvider(): CompletionProvider {
+  const canComplete = (context: CompletionContext): boolean => {
     // Complete if current part starts with $ (variable expansion)
     if (context.currentPart.startsWith('$')) {
       return true
@@ -261,7 +258,7 @@ export class EnvironmentCompletionProvider implements CompletionProvider {
     return false
   }
 
-  readonly getCompletions = async (
+  const getCompletions = async (
     context: CompletionContext,
     config: CompletionConfig,
   ): Promise<CompletionSuggestion[]> => {
@@ -298,26 +295,30 @@ export class EnvironmentCompletionProvider implements CompletionProvider {
 
     return suggestions
   }
+
+  return {
+    id: 'environment',
+    name: 'Environment Variables',
+    supportedTypes: ['environment'],
+    priority: 'medium' as const,
+    canComplete,
+    getCompletions,
+  }
 }
 
 /**
- * Provider for completing command options and arguments.
+ * Creates an option completion provider for completing command options and arguments.
  *
  * Suggests common command options (like -h, --help) and command-specific
  * arguments based on the command being executed.
  */
-export class OptionCompletionProvider implements CompletionProvider {
-  readonly id = 'options'
-  readonly name = 'Command Options'
-  readonly supportedTypes: CompletionType[] = ['option', 'argument']
-  readonly priority = 'medium' as const
-
-  readonly canComplete = (context: CompletionContext): boolean => {
+export function createOptionCompletionProvider(): CompletionProvider {
+  const canComplete = (context: CompletionContext): boolean => {
     // Complete options for non-command positions starting with -
     return !context.isNewCommand && context.currentPart.startsWith('-')
   }
 
-  readonly getCompletions = async (
+  const getCompletions = async (
     context: CompletionContext,
     _config: CompletionConfig,
   ): Promise<CompletionSuggestion[]> => {
@@ -359,6 +360,15 @@ export class OptionCompletionProvider implements CompletionProvider {
 
     return suggestions
   }
+
+  return {
+    id: 'options',
+    name: 'Command Options',
+    supportedTypes: ['option', 'argument'],
+    priority: 'medium' as const,
+    canComplete,
+    getCompletions,
+  }
 }
 
 /**
@@ -374,8 +384,8 @@ export function createCompletionProviders(
 ): CompletionProvider[] {
   return [
     createCommandCompletionProvider(commands, fileSystem),
-    new FileCompletionProvider(fileSystem),
-    new EnvironmentCompletionProvider(),
-    new OptionCompletionProvider(),
+    createFileCompletionProvider(fileSystem),
+    createEnvironmentCompletionProvider(),
+    createOptionCompletionProvider(),
   ]
 }

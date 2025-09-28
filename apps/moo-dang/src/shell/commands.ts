@@ -182,45 +182,62 @@ async function executeShellScript(
 }
 
 /**
- * Base error class for shell command execution failures.
+ * Creates a shell command error for command execution failures.
  *
  * Provides structured error information with specific exit codes that match
  * Unix conventions, enabling scripts to handle errors appropriately.
  */
-export class ShellCommandError extends Error {
-  readonly command: string
-  readonly exitCode: number
+export function createShellCommandError(command: string, exitCode: number, message: string): Error {
+  const error = new Error(`${command}: ${message}`)
 
-  constructor(command: string, exitCode: number, message: string) {
-    super(`${command}: ${message}`)
-    this.name = 'ShellCommandError'
-    this.command = command
-    this.exitCode = exitCode
-  }
+  Object.defineProperty(error, 'name', {
+    value: 'ShellCommandError',
+    configurable: true,
+  })
+
+  Object.defineProperty(error, 'command', {
+    value: command,
+    configurable: true,
+  })
+
+  Object.defineProperty(error, 'exitCode', {
+    value: exitCode,
+    configurable: true,
+  })
+
+  return error
 }
 
 /**
- * Error for invalid command arguments or syntax.
+ * Creates an invalid argument error for command argument/syntax errors.
  *
  * Uses exit code 1 for compatibility with existing test suite and simpler error handling.
  */
-export class InvalidArgumentError extends ShellCommandError {
-  constructor(command: string, message: string) {
-    super(command, 1, message)
-    this.name = 'InvalidArgumentError'
-  }
+export function createInvalidArgumentError(command: string, message: string): Error {
+  const error = createShellCommandError(command, 1, message)
+
+  Object.defineProperty(error, 'name', {
+    value: 'InvalidArgumentError',
+    configurable: true,
+  })
+
+  return error
 }
 
 /**
- * Error for file or directory operations.
+ * Creates a file operation error for file or directory operations.
  *
  * Uses exit code 1 for general errors that don't fit other categories.
  */
-export class FileOperationError extends ShellCommandError {
-  constructor(command: string, message: string) {
-    super(command, 1, message)
-    this.name = 'FileOperationError'
-  }
+export function createFileOperationError(command: string, message: string): Error {
+  const error = createShellCommandError(command, 1, message)
+
+  Object.defineProperty(error, 'name', {
+    value: 'FileOperationError',
+    configurable: true,
+  })
+
+  return error
 }
 
 /**
@@ -780,12 +797,12 @@ function createExportCommand(environment: ShellEnvironment): ShellCommand {
             const trimmedKey = key?.trim()
 
             if (!trimmedKey) {
-              throw new InvalidArgumentError('export', `invalid variable name: ${key || '(empty)'}`)
+              throw createInvalidArgumentError('export', `invalid variable name: ${key || '(empty)'}`)
             }
 
             // Validate variable name to prevent injection and maintain POSIX compliance
             if (!/^[a-z_]\w*$/i.test(trimmedKey)) {
-              throw new InvalidArgumentError('export', `invalid variable name: ${trimmedKey}`)
+              throw createInvalidArgumentError('export', `invalid variable name: ${trimmedKey}`)
             }
 
             const value = valueParts.join('=')
@@ -800,15 +817,22 @@ function createExportCommand(environment: ShellEnvironment): ShellCommand {
             // Export existing variable (validate name even though it's a no-op)
             const varName = arg.trim()
             if (!varName || !/^[a-z_]\w*$/i.test(varName)) {
-              throw new InvalidArgumentError('export', `invalid variable name: ${varName || '(empty)'}`)
+              throw createInvalidArgumentError('export', `invalid variable name: ${varName || '(empty)'}`)
             }
           }
         }
 
         return createCommandResult(context, `export ${args.join(' ')}`, '', '', 0, startTime)
       } catch (error) {
-        if (error instanceof ShellCommandError) {
-          return createCommandResult(context, `export ${args.join(' ')}`, '', error.message, error.exitCode, startTime)
+        if (error instanceof Error && 'exitCode' in error && typeof (error as any).exitCode === 'number') {
+          return createCommandResult(
+            context,
+            `export ${args.join(' ')}`,
+            '',
+            error.message,
+            (error as any).exitCode,
+            startTime,
+          )
         }
 
         // Unexpected errors should be logged for debugging
@@ -978,7 +1002,7 @@ function createWhichCommand(fileSystem: VirtualFileSystem): ShellCommand {
 
       try {
         if (args.length === 0) {
-          throw new InvalidArgumentError('which', 'missing command name')
+          throw createInvalidArgumentError('which', 'missing command name')
         }
 
         const pathVariable = context.environmentVariables.PATH || ''
@@ -1019,8 +1043,15 @@ function createWhichCommand(fileSystem: VirtualFileSystem): ShellCommand {
 
         return createCommandResult(context, `which ${args.join(' ')}`, output, '', exitCode, startTime)
       } catch (error) {
-        if (error instanceof ShellCommandError) {
-          return createCommandResult(context, `which ${args.join(' ')}`, '', error.message, error.exitCode, startTime)
+        if (error instanceof Error && 'exitCode' in error && typeof (error as any).exitCode === 'number') {
+          return createCommandResult(
+            context,
+            `which ${args.join(' ')}`,
+            '',
+            error.message,
+            (error as any).exitCode,
+            startTime,
+          )
         }
 
         consola.error('Unexpected error in which command', {
