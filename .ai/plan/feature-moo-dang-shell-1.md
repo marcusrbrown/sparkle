@@ -104,7 +104,7 @@ This implementation plan outlines the creation of `moo-dang`, a WASM-based web s
 
 | Task | Description | Completed | Date |
 |------|-------------|-----------|------|
-| TASK-031 | Write unit tests for terminal components and shell logic | |  |
+| TASK-031 | Write unit tests for terminal components and shell logic | ✅ | 2025-09-27 |
 | TASK-032 | Create integration tests for WASM executable loading | |  |
 | TASK-033 | Add end-to-end tests for complete shell workflows | |  |
 | TASK-034 | Write comprehensive documentation and usage examples | |  |

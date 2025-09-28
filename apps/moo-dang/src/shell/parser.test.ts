@@ -5,9 +5,95 @@
  * and edge cases for the shell command parser.
  */
 
+/* eslint-disable no-template-curly-in-string */
+
 import {describe, expect, it} from 'vitest'
 
-import {parseCommand} from './parser'
+import {expandVariables, parseCommand, parseCommandPipeline} from './parser.js'
+
+describe('expandVariables', () => {
+  describe('basic variable expansion', () => {
+    it('should expand simple variables using $VAR syntax', () => {
+      expect(expandVariables('$HOME/documents', {HOME: '/home/user'})).toBe('/home/user/documents')
+      expect(expandVariables('$PATH:/usr/local/bin', {PATH: '/usr/bin:/bin'})).toBe('/usr/bin:/bin:/usr/local/bin')
+    })
+
+    it('should expand variables using ${VAR} syntax', () => {
+      expect(expandVariables('${HOME}/documents', {HOME: '/home/user'})).toBe('/home/user/documents')
+      expect(expandVariables('prefix${VAR}suffix', {VAR: 'middle'})).toBe('prefixmiddlesuffix')
+    })
+
+    it('should handle multiple variables in one string', () => {
+      const result = expandVariables('$HOME/bin:$PATH', {
+        HOME: '/home/user',
+        PATH: '/usr/bin:/bin',
+      })
+      expect(result).toBe('/home/user/bin:/usr/bin:/bin')
+    })
+
+    it('should expand undefined variables to empty strings', () => {
+      expect(expandVariables('$UNDEFINED/path', {})).toBe('/path')
+      expect(expandVariables('prefix$MISSING', {})).toBe('prefix')
+    })
+
+    it('should preserve text without variables', () => {
+      expect(expandVariables('plain text without variables', {HOME: '/home/user'})).toBe('plain text without variables')
+    })
+
+    it('should be case sensitive for variable names', () => {
+      // Variables are case-sensitive in shell environments
+      expect(expandVariables('$home/$HOME', {HOME: '/user', home: '/lower'})).toBe('/lower//user')
+    })
+  })
+
+  describe('complex expansion scenarios', () => {
+    it('should handle mixed ${VAR} and $VAR syntax', () => {
+      const result = expandVariables('${HOME}/bin:$PATH/local', {
+        HOME: '/home/user',
+        PATH: '/usr/bin',
+      })
+      expect(result).toBe('/home/user/bin:/usr/bin/local')
+    })
+
+    it('should handle variables at different positions', () => {
+      expect(expandVariables('$VAR', {VAR: 'value'})).toBe('value')
+      expect(expandVariables('prefix$VAR', {VAR: 'value'})).toBe('prefixvalue')
+      expect(expandVariables('$VARsuffix', {VAR: 'value'})).toBe('') // $VARsuffix matches whole variable name (not found)
+      expect(expandVariables('prefix$VARsuffix', {VAR: 'value'})).toBe('prefix') // $VARsuffix matches as whole variable
+    })
+
+    it('should handle braced variables correctly', () => {
+      expect(expandVariables('${VAR}name', {VAR: 'test'})).toBe('testname')
+      expect(expandVariables('name${VAR}', {VAR: 'test'})).toBe('nametest')
+    })
+
+    it('should handle empty variables', () => {
+      expect(expandVariables('prefix$EMPTY', {EMPTY: ''})).toBe('prefix')
+      expect(expandVariables('${EMPTY}suffix', {EMPTY: ''})).toBe('suffix')
+    })
+  })
+
+  describe('edge cases', () => {
+    it('should handle variables with underscores and numbers', () => {
+      expect(expandVariables('$VAR_1 $VAR2', {VAR_1: 'first', VAR2: 'second'})).toBe('first second')
+      expect(expandVariables('${TEST_VAR_123}', {TEST_VAR_123: 'complex'})).toBe('complex')
+    })
+
+    it('should handle special characters in variable values', () => {
+      expect(expandVariables('$SPECIAL', {SPECIAL: '!@#$%^&*()'})).toBe('!@#$%^&*()')
+      expect(expandVariables('${PATH}', {PATH: '/usr/bin:/bin:/usr/local/bin'})).toBe('/usr/bin:/bin:/usr/local/bin')
+    })
+
+    it('should handle empty input', () => {
+      expect(expandVariables('', {HOME: '/home/user'})).toBe('')
+    })
+
+    it('should have correct type signature', () => {
+      const result: string = expandVariables('$TEST', {TEST: 'value'})
+      expect(typeof result).toBe('string')
+    })
+  })
+})
 
 describe('parseCommand', () => {
   describe('basic command parsing', () => {
@@ -152,6 +238,399 @@ describe('parseCommand', () => {
         'which',
         'node',
       ])
+    })
+  })
+})
+
+describe('parseCommandPipeline', () => {
+  describe('single command pipelines', () => {
+    it('should parse single commands without pipes', () => {
+      const result = parseCommandPipeline('echo hello')
+      expect(result.background).toBe(false)
+      expect(result.commands).toEqual([
+        {
+          command: 'echo',
+          args: ['hello'],
+          inputRedirections: [],
+          outputRedirections: [],
+        },
+      ])
+    })
+
+    it('should parse single commands with multiple arguments', () => {
+      const result = parseCommandPipeline('ls -la /home')
+      expect(result.background).toBe(false)
+      expect(result.commands).toEqual([
+        {
+          command: 'ls',
+          args: ['-la', '/home'],
+          inputRedirections: [],
+          outputRedirections: [],
+        },
+      ])
+    })
+
+    it('should parse single commands with quoted arguments', () => {
+      const result = parseCommandPipeline('echo "hello world"')
+      expect(result.background).toBe(false)
+      expect(result.commands).toEqual([
+        {
+          command: 'echo',
+          args: ['hello world'],
+          inputRedirections: [],
+          outputRedirections: [],
+        },
+      ])
+    })
+  })
+
+  describe('piped command pipelines', () => {
+    it('should parse simple two-command pipelines', () => {
+      const result = parseCommandPipeline('ls -la | grep test')
+      expect(result.background).toBe(false)
+      expect(result.commands).toEqual([
+        {
+          command: 'ls',
+          args: ['-la'],
+          inputRedirections: [],
+          outputRedirections: [],
+        },
+        {
+          command: 'grep',
+          args: ['test'],
+          inputRedirections: [],
+          outputRedirections: [],
+        },
+      ])
+    })
+
+    it('should parse multiple command pipelines', () => {
+      const result = parseCommandPipeline('cat file.txt | grep pattern | wc -l')
+      expect(result.background).toBe(false)
+      expect(result.commands).toEqual([
+        {
+          command: 'cat',
+          args: ['file.txt'],
+          inputRedirections: [],
+          outputRedirections: [],
+        },
+        {
+          command: 'grep',
+          args: ['pattern'],
+          inputRedirections: [],
+          outputRedirections: [],
+        },
+        {
+          command: 'wc',
+          args: ['-l'],
+          inputRedirections: [],
+          outputRedirections: [],
+        },
+      ])
+    })
+
+    it('should handle whitespace around pipe separators', () => {
+      const result = parseCommandPipeline('echo hello|grep h')
+      expect(result.background).toBe(false)
+      expect(result.commands).toEqual([
+        {
+          command: 'echo',
+          args: ['hello'],
+          inputRedirections: [],
+          outputRedirections: [],
+        },
+        {
+          command: 'grep',
+          args: ['h'],
+          inputRedirections: [],
+          outputRedirections: [],
+        },
+      ])
+
+      const resultWithSpaces = parseCommandPipeline('echo hello | grep h | wc -l')
+      expect(resultWithSpaces.background).toBe(false)
+      expect(resultWithSpaces.commands).toEqual([
+        {
+          command: 'echo',
+          args: ['hello'],
+          inputRedirections: [],
+          outputRedirections: [],
+        },
+        {
+          command: 'grep',
+          args: ['h'],
+          inputRedirections: [],
+          outputRedirections: [],
+        },
+        {
+          command: 'wc',
+          args: ['-l'],
+          inputRedirections: [],
+          outputRedirections: [],
+        },
+      ])
+    })
+  })
+
+  describe('commands with I/O redirection', () => {
+    it('should parse commands with output redirection', () => {
+      const result = parseCommandPipeline('echo hello > output.txt')
+      expect(result.background).toBe(false)
+      expect(result.commands).toEqual([
+        {
+          command: 'echo',
+          args: ['hello'],
+          inputRedirections: [],
+          outputRedirections: [
+            {
+              operator: '>',
+              target: 'output.txt',
+            },
+          ],
+        },
+      ])
+    })
+
+    it('should parse commands with input redirection', () => {
+      const result = parseCommandPipeline('sort < input.txt')
+      expect(result.background).toBe(false)
+      expect(result.commands).toEqual([
+        {
+          command: 'sort',
+          args: [],
+          inputRedirections: [
+            {
+              operator: '<',
+              target: 'input.txt',
+            },
+          ],
+          outputRedirections: [],
+        },
+      ])
+    })
+
+    it('should parse commands with error redirection', () => {
+      const result = parseCommandPipeline('make 2> errors.log')
+      expect(result.background).toBe(false)
+      expect(result.commands).toEqual([
+        {
+          command: 'make',
+          args: [],
+          inputRedirections: [],
+          outputRedirections: [
+            {
+              operator: '2>',
+              target: 'errors.log',
+            },
+          ],
+        },
+      ])
+    })
+
+    it('should parse commands with append redirection', () => {
+      const result = parseCommandPipeline('echo line >> file.log')
+      expect(result.background).toBe(false)
+      expect(result.commands).toEqual([
+        {
+          command: 'echo',
+          args: ['line'],
+          inputRedirections: [],
+          outputRedirections: [
+            {
+              operator: '>>',
+              target: 'file.log',
+            },
+          ],
+        },
+      ])
+    })
+
+    it('should parse commands with multiple redirections', () => {
+      const result = parseCommandPipeline('command < input.txt > output.txt 2> error.log')
+      expect(result.background).toBe(false)
+      expect(result.commands).toEqual([
+        {
+          command: 'command',
+          args: [],
+          inputRedirections: [
+            {
+              operator: '<',
+              target: 'input.txt',
+            },
+          ],
+          outputRedirections: [
+            {
+              operator: '2>',
+              target: 'error.log',
+            },
+            {
+              operator: '>',
+              target: 'output.txt',
+            },
+          ],
+        },
+      ])
+    })
+  })
+
+  describe('complex pipeline combinations', () => {
+    it('should parse pipelines with redirection', () => {
+      const result = parseCommandPipeline('cat input.txt | grep pattern > results.txt')
+      expect(result.background).toBe(false)
+      expect(result.commands).toEqual([
+        {
+          command: 'cat',
+          args: ['input.txt'],
+          inputRedirections: [],
+          outputRedirections: [],
+        },
+        {
+          command: 'grep',
+          args: ['pattern'],
+          inputRedirections: [],
+          outputRedirections: [
+            {
+              operator: '>',
+              target: 'results.txt',
+            },
+          ],
+        },
+      ])
+    })
+
+    it('should parse complex real-world pipelines', () => {
+      const result = parseCommandPipeline('ps aux | grep node | grep -v grep | awk "{print $2}" | head -5')
+      expect(result.background).toBe(false)
+      expect(result.commands).toEqual([
+        {
+          command: 'ps',
+          args: ['aux'],
+          inputRedirections: [],
+          outputRedirections: [],
+        },
+        {
+          command: 'grep',
+          args: ['node'],
+          inputRedirections: [],
+          outputRedirections: [],
+        },
+        {
+          command: 'grep',
+          args: ['-v', 'grep'],
+          inputRedirections: [],
+          outputRedirections: [],
+        },
+        {
+          command: 'awk',
+          args: ['{print $2}'],
+          inputRedirections: [],
+          outputRedirections: [],
+        },
+        {
+          command: 'head',
+          args: ['-5'],
+          inputRedirections: [],
+          outputRedirections: [],
+        },
+      ])
+    })
+
+    it('should parse pipelines with quoted strings containing spaces', () => {
+      const result = parseCommandPipeline('echo "hello world" | grep "hello"')
+      expect(result.background).toBe(false)
+      expect(result.commands).toEqual([
+        {
+          command: 'echo',
+          args: ['hello world'],
+          inputRedirections: [],
+          outputRedirections: [],
+        },
+        {
+          command: 'grep',
+          args: ['hello'],
+          inputRedirections: [],
+          outputRedirections: [],
+        },
+      ])
+    })
+  })
+
+  describe('edge cases and error conditions', () => {
+    it('should handle empty input', () => {
+      const result = parseCommandPipeline('')
+      expect(result).toEqual({
+        background: false,
+        commands: [],
+      })
+    })
+
+    it('should handle whitespace-only input', () => {
+      const result = parseCommandPipeline('   ')
+      expect(result).toEqual({
+        background: false,
+        commands: [],
+      })
+    })
+
+    it('should handle trailing pipes gracefully', () => {
+      const result = parseCommandPipeline('echo hello |')
+      expect(result.background).toBe(false)
+      expect(result.commands).toEqual([
+        {
+          command: 'echo',
+          args: ['hello'],
+          inputRedirections: [],
+          outputRedirections: [],
+        },
+      ])
+    })
+
+    it('should handle leading pipes gracefully', () => {
+      const result = parseCommandPipeline('| grep pattern')
+      expect(result.background).toBe(false)
+      expect(result.commands).toEqual([
+        {
+          command: 'grep',
+          args: ['pattern'],
+          inputRedirections: [],
+          outputRedirections: [],
+        },
+      ])
+    })
+
+    it('should handle multiple consecutive pipes', () => {
+      const result = parseCommandPipeline('echo hello || grep h')
+      expect(result.background).toBe(false)
+      expect(result.commands).toEqual([
+        {
+          command: 'echo',
+          args: ['hello'],
+          inputRedirections: [],
+          outputRedirections: [],
+        },
+        {
+          command: 'grep',
+          args: ['h'],
+          inputRedirections: [],
+          outputRedirections: [],
+        },
+      ])
+    })
+
+    it('should have correct type signature for return value', () => {
+      const result = parseCommandPipeline('echo test')
+      expect(typeof result).toBe('object')
+      expect(result).toHaveProperty('commands')
+      expect(result).toHaveProperty('background')
+      expect(Array.isArray(result.commands)).toBe(true)
+      expect(typeof result.background).toBe('boolean')
+      if (result.commands.length > 0) {
+        const firstCommand = result.commands[0]
+        if (firstCommand) {
+          expect(typeof firstCommand.command).toBe('string')
+          expect(Array.isArray(firstCommand.args)).toBe(true)
+        }
+      }
     })
   })
 })
