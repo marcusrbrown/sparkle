@@ -4,7 +4,12 @@
     "incremental": true,
     "composite": true,
     "jsx": "react-jsx",
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "@moo-dang/*": ["../../apps/moo-dang/src/*"]
+    },
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
   },
   "references": [
     {
@@ -17,5 +22,5 @@
       "path": "../ui"
     }
   ],
-  "include": ["src", ".storybook/**/*"]
+  "include": ["src", ".storybook/**/*", "../../apps/moo-dang/src/**/*"]
 }
