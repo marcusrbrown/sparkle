@@ -369,6 +369,15 @@ importers:
       '@sparkle/ui':
         specifier: workspace:*
         version: link:../ui
+      '@xterm/addon-fit':
+        specifier: ^0.10.0
+        version: 0.10.0(@xterm/xterm@5.5.0)
+      '@xterm/xterm':
+        specifier: ^5.5.0
+        version: 5.5.0
+      consola:
+        specifier: 3.4.2
+        version: 3.4.2
       react:
         specifier: 19.1.1
         version: 19.1.1
