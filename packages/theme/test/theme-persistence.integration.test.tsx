@@ -211,8 +211,6 @@ describe('Theme Persistence Integration Tests', () => {
         throw new Error('localStorage access denied')
       })
 
-      const consoleWarn = vi.spyOn(console, 'warn').mockImplementation(() => {})
-
       render(
         <ThemeProvider themes={mockThemes}>
           <PersistenceTestComponent />
@@ -223,16 +221,12 @@ describe('Theme Persistence Integration Tests', () => {
       await waitFor(() => {
         expect(screen.getByTestId('current-theme')).toHaveTextContent('system')
       })
-
-      consoleWarn.mockRestore()
     })
 
     it('should handle localStorage setItem errors gracefully', async () => {
       mockLocalStorage.setItem.mockImplementation(() => {
         throw new Error('localStorage quota exceeded')
       })
-
-      const consoleWarn = vi.spyOn(console, 'warn').mockImplementation(() => {})
 
       render(
         <ThemeProvider themes={mockThemes}>
@@ -246,8 +240,6 @@ describe('Theme Persistence Integration Tests', () => {
       await waitFor(() => {
         expect(screen.getByTestId('current-theme')).toHaveTextContent('dark')
       })
-
-      consoleWarn.mockRestore()
     })
 
     it('should handle corrupted localStorage data', async () => {

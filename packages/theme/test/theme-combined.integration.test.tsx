@@ -385,8 +385,6 @@ describe('Combined Persistence + System Detection Integration Tests', () => {
         value: undefined,
       })
 
-      const consoleWarn = vi.spyOn(console, 'warn').mockImplementation(() => {})
-
       render(
         <ThemeProvider themes={mockThemes} defaultTheme="light">
           <CombinedIntegrationTestComponent />
@@ -398,8 +396,6 @@ describe('Combined Persistence + System Detection Integration Tests', () => {
         expect(screen.getByTestId('system-theme')).toHaveTextContent('light') // Fallback
         expect(screen.getByTestId('neutral-color')).toHaveTextContent('#6b7280')
       })
-
-      consoleWarn.mockRestore()
       Object.defineProperty(window, 'matchMedia', {
         writable: true,
         value: originalMatchMedia,
@@ -415,8 +411,6 @@ describe('Combined Persistence + System Detection Integration Tests', () => {
       mockLocalStorage.setItem.mockImplementation(() => {
         throw new Error('Storage quota exceeded')
       })
-
-      const consoleWarn = vi.spyOn(console, 'warn').mockImplementation(() => {})
 
       render(
         <ThemeProvider themes={mockThemes} defaultTheme="system">
@@ -447,8 +441,6 @@ describe('Combined Persistence + System Detection Integration Tests', () => {
         expect(screen.getByTestId('system-theme')).toHaveTextContent('dark')
         expect(screen.getByTestId('neutral-color')).toHaveTextContent('#9ca3af')
       })
-
-      consoleWarn.mockRestore()
     })
   })
 
