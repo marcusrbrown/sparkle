@@ -133,13 +133,11 @@ export function useTerminalOutput(config: TerminalOutputConfig = {}): UseTermina
         outputEntries.forEach(entry => {
           let formattedContent = entry.content
 
-          // Add timestamp if enabled
           if (showTimestamps) {
             const timestamp = entry.timestamp.toLocaleTimeString()
             formattedContent = `[${timestamp}] ${formattedContent}`
           }
 
-          // Add newline if content doesn't end with one
           if (!formattedContent.endsWith('\r\n') && !formattedContent.endsWith('\n')) {
             formattedContent += '\r\n'
           }
@@ -175,11 +173,9 @@ export function useTerminalOutput(config: TerminalOutputConfig = {}): UseTermina
       setOutputEntries(prev => {
         let updatedEntries = [...prev]
 
-        // Check for deduplication if enabled
         if (deduplicateOutput && updatedEntries.length > 0) {
           const lastEntry = updatedEntries.at(-1)
           if (lastEntry && lastEntry.type === type && lastEntry.content === content) {
-            // Duplicate found, update timestamp instead of adding new entry
             const updatedLastEntry: TerminalOutputEntry = {
               ...lastEntry,
               timestamp: new Date(),
@@ -189,10 +185,8 @@ export function useTerminalOutput(config: TerminalOutputConfig = {}): UseTermina
           }
         }
 
-        // Add new entry
         updatedEntries.push(newEntry)
 
-        // Enforce maximum entry limit
         if (updatedEntries.length > maxOutputEntries) {
           const entriesToRemove = updatedEntries.length - maxOutputEntries
           updatedEntries = updatedEntries.slice(entriesToRemove)

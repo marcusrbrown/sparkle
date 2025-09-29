@@ -14,6 +14,11 @@
     "lint": "eslint",
     "preview": "vite preview",
     "test": "vitest run",
+    "test:performance": "tsx src/test/performance-runner.ts full",
+    "test:performance:command": "tsx src/test/performance-runner.ts command",
+    "test:performance:quick": "tsx src/test/performance-runner.ts quick",
+    "test:performance:terminal": "tsx src/test/performance-runner.ts terminal",
+    "test:performance:wasm": "tsx src/test/performance-runner.ts wasm",
     "test:wasm": "cd src/wasm && zig build test",
     "test:watch": "vitest",
     "watch:wasm": "nodemon --watch src/wasm/src --watch src/wasm/examples --ext zig --exec \"npm run build:wasm\""
@@ -38,6 +43,7 @@
     "concurrently": "^9.1.0",
     "happy-dom": "18.0.1",
     "nodemon": "^3.1.7",
+    "tsx": "4.20.6",
     "typescript": "5.9.2",
     "vite": "7.1.7",
     "vitest": "^3.0.0"

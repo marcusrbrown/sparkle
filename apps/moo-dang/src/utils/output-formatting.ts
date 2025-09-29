@@ -232,18 +232,14 @@ export function formatOutputEntry(entry: TerminalOutputEntry, options: OutputFor
 
   let content = entry.content
 
-  // Strip existing ANSI codes if requested
   if (stripExistingAnsi) {
     content = stripAnsiCodes(content)
   }
 
-  // Get formatting for this output type
   const typeFormat = OUTPUT_TYPE_FORMATS[entry.type] || OUTPUT_TYPE_FORMATS.output
 
-  // Build formatted output
   let formattedOutput = ''
 
-  // Add timestamp if enabled
   if (showTimestamps) {
     const timestamp = formatTimestamp(entry.timestamp)
     if (enableColors) {

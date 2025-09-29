@@ -313,13 +313,11 @@ export function useCommandInput(
 
       const {newInput} = engine.applySuggestion(currentCommand, suggestion, cursorPosition)
 
-      // Update command and cursor position
       setCurrentCommand(newInput)
       setCursorPosition(newInput.length)
       setHistoryIndex(-1)
       setIsBrowsingHistory(false)
 
-      // Clear completion state
       setCompletionState(prev => ({
         ...prev,
         isActive: false,
@@ -387,7 +385,6 @@ export function useCommandInput(
   const setCompletionEngine = useCallback((engine: CompletionEngine | null): void => {
     completionEngineRef.current = engine
 
-    // Clear completion state when engine changes
     setCompletionState(prev => ({
       ...prev,
       isActive: false,
@@ -459,15 +456,12 @@ export function useCommandInput(
         setCommandHistory(prev => {
           let newHistory = [...prev]
 
-          // Remove duplicate if not allowing duplicates
           if (!allowDuplicates) {
             newHistory = newHistory.filter(cmd => cmd.command !== entry.command)
           }
 
-          // Add new command to the end
           newHistory.push(entry)
 
-          // Trim to max size if necessary
           if (newHistory.length > maxHistorySize) {
             newHistory = newHistory.slice(-maxHistorySize)
           }
