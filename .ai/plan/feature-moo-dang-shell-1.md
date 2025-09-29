@@ -2,7 +2,7 @@
 goal: Create WASM-based Web Shell Application "moo-dang"
 version: 1.0
 date_created: 2025-09-21
-last_updated: 2025-09-28
+last_updated: 2025-09-29
 owner: marcusrbrown
 status: 'In Progress'
 tags: ['feature', 'architecture', 'wasm', 'shell', 'zig', 'xterm.js']
@@ -108,8 +108,8 @@ This implementation plan outlines the creation of `moo-dang`, a WASM-based web s
 | TASK-032 | Create integration tests for WASM executable loading | ✅ | 2025-09-27 |
 | TASK-033 | Add end-to-end tests for complete shell workflows | ✅ | 2025-09-28 |
 | TASK-034 | Write comprehensive documentation and usage examples | ✅ | 2025-09-28 |
-| TASK-035 | Create Storybook stories for terminal components | |  |
-| TASK-036 | Add performance benchmarks and optimization | |  |
+| TASK-035 | Create Storybook stories for terminal components | ✅ | 2025-09-29 |
+| TASK-036 | Add performance benchmarks and optimization | ✅ | 2025-09-29 |
 
 ## 3. Alternatives
 
