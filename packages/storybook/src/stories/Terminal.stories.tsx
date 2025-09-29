@@ -3,6 +3,7 @@ import type {Meta, StoryObj} from '@storybook/react-vite'
 
 import {Terminal} from '@moo-dang/components/Terminal'
 import {ThemeProvider, useTheme} from '@sparkle/theme'
+import {consola} from 'consola'
 import React, {useCallback, useRef, useState} from 'react'
 
 /**
@@ -89,17 +90,38 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
+interface ThemeOption {
+  readonly value: 'light' | 'dark' | 'system'
+  readonly label: string
+  readonly icon: string
+}
+
 /**
- * Theme switcher component for demonstrating theme-aware terminal behavior
+ * Theme switcher component that allows users to test terminal appearance across themes.
+ *
+ * Provides visual theme switching controls to demonstrate how the terminal
+ * component adapts to different color schemes and accessibility modes.
  */
-function ThemeSwitcher() {
+function ThemeSwitcher(): React.JSX.Element {
   const {activeTheme, setTheme, systemTheme} = useTheme()
 
-  const themes = [
+  const themes: readonly ThemeOption[] = [
     {value: 'light', label: 'Light', icon: '☀️'},
     {value: 'dark', label: 'Dark', icon: '🌙'},
     {value: 'system', label: `System (${systemTheme})`, icon: '⚙️'},
   ] as const
+
+  const handleThemeChange = useCallback(
+    (themeValue: ThemeOption['value']) => {
+      try {
+        setTheme(themeValue)
+        consola.debug(`Theme switched to: ${themeValue}`)
+      } catch (error) {
+        consola.error('Failed to switch theme:', error)
+      }
+    },
+    [setTheme],
+  )
 
   return (
     <div className="fixed top-4 right-4 z-50">
@@ -108,7 +130,7 @@ function ThemeSwitcher() {
         {themes.map(theme => (
           <button
             key={theme.value}
-            onClick={() => setTheme(theme.value)}
+            onClick={() => handleThemeChange(theme.value)}
             className={`
               px-3 py-1 text-xs rounded transition-colors
               ${
@@ -118,6 +140,7 @@ function ThemeSwitcher() {
               }
             `}
             aria-label={`Switch to ${theme.label} theme`}
+            type="button"
           >
             {theme.icon} {theme.label}
           </button>
@@ -127,10 +150,17 @@ function ThemeSwitcher() {
   )
 }
 
+interface ThemeWrapperProps {
+  readonly children: React.ReactNode
+}
+
 /**
- * Theme-aware wrapper component for stories
+ * Theme-aware wrapper that provides consistent theming context for stories.
+ *
+ * Ensures all terminal stories have access to the Sparkle theme system
+ * and renders theme switching controls for testing different color schemes.
  */
-function ThemeWrapper({children}: {children: React.ReactNode}) {
+function ThemeWrapper({children}: ThemeWrapperProps): React.JSX.Element {
   return (
     <ThemeProvider defaultTheme="system">
       <div className="min-h-screen bg-theme-surface-primary text-theme-text-primary transition-colors">
@@ -165,37 +195,49 @@ export const Interactive: Story = {
     const [currentLine, setCurrentLine] = useState('')
 
     const handleData = useCallback(
-      (data: string) => {
-        if (!terminalRef.current) return
+      (data: string): void => {
+        const terminal = terminalRef.current
+        if (terminal == null) {
+          consola.warn('Terminal not ready for input')
+          return
+        }
 
-        // Handle basic terminal input
-        if (data === '\r' || data === '\n') {
-          // Enter key - execute command
-          terminalRef.current.write('\r\n')
-          if (currentLine.trim()) {
-            terminalRef.current.write(`Echo: ${currentLine.trim()}\r\n`)
+        try {
+          if (data === '\r' || data === '\n') {
+            // Execute current command and reset line
+            terminal.write('\r\n')
+            if (currentLine.trim().length > 0) {
+              terminal.write(`Echo: ${currentLine.trim()}\r\n`)
+            }
+            terminal.write('$ ')
+            setCurrentLine('')
+          } else if (data === '\u007F' || data === '\b') {
+            // Handle backspace only if there's content to delete
+            if (currentLine.length > 0) {
+              terminal.write('\b \b')
+              setCurrentLine(prev => prev.slice(0, -1))
+            }
+          } else if (data >= ' ' || data === '\t') {
+            // Accept printable characters and tabs
+            terminal.write(data)
+            setCurrentLine(prev => prev + data)
           }
-          terminalRef.current.write('$ ')
-          setCurrentLine('')
-        } else if (data === '\u007F' || data === '\b') {
-          // Backspace
-          if (currentLine.length > 0) {
-            terminalRef.current.write('\b \b')
-            setCurrentLine(prev => prev.slice(0, -1))
-          }
-        } else if (data >= ' ' || data === '\t') {
-          // Printable characters
-          terminalRef.current.write(data)
-          setCurrentLine(prev => prev + data)
+        } catch (error) {
+          consola.error('Error handling terminal input:', error)
         }
       },
       [currentLine],
     )
 
-    const handleReady = useCallback((terminal: any) => {
-      terminal.write('Interactive Terminal Demo\r\n')
-      terminal.write('Type commands and press Enter to see them echoed back.\r\n')
-      terminal.write('$ ')
+    const handleReady = useCallback((terminal: unknown): void => {
+      try {
+        const term = terminal as {write: (data: string) => void}
+        term.write('Interactive Terminal Demo\r\n')
+        term.write('Type commands and press Enter to see them echoed back.\r\n')
+        term.write('$ ')
+      } catch (error) {
+        consola.error('Error initializing interactive terminal:', error)
+      }
     }, [])
 
     return (
@@ -293,21 +335,41 @@ export const SizeVariants: Story = {
 export const ProgrammaticControl: Story = {
   render: () => {
     const terminalRef = useRef<TerminalHandle>(null)
-    const [commandHistory, setCommandHistory] = useState<string[]>([])
+    const [commandHistory, setCommandHistory] = useState<readonly string[]>([])
 
-    const writeCommand = useCallback((command: string) => {
-      if (!terminalRef.current) return
+    const writeCommand = useCallback((command: string): void => {
+      const terminal = terminalRef.current
+      if (terminal == null) {
+        consola.warn('Cannot write command: terminal not initialized')
+        return
+      }
 
-      terminalRef.current.write(`${command}\r\n`)
-      setCommandHistory(prev => [...prev, command])
+      try {
+        terminal.write(`${command}\r\n`)
+        setCommandHistory(prev => [...prev, command])
+        consola.debug(`Command written: ${command}`)
+      } catch (error) {
+        consola.error('Failed to write command to terminal:', error)
+      }
     }, [])
 
-    const clearTerminal = useCallback(() => {
-      terminalRef.current?.clear()
-      setCommandHistory([])
+    const clearTerminal = useCallback((): void => {
+      const terminal = terminalRef.current
+      if (terminal == null) {
+        consola.warn('Cannot clear: terminal not initialized')
+        return
+      }
+
+      try {
+        terminal.clear()
+        setCommandHistory([])
+        consola.debug('Terminal cleared')
+      } catch (error) {
+        consola.error('Failed to clear terminal:', error)
+      }
     }, [])
 
-    const handleReady = useCallback(() => {
+    const handleReady = useCallback((): void => {
       writeCommand('Terminal ready for programmatic control!')
       writeCommand('Use the buttons below to interact with the terminal.')
     }, [writeCommand])

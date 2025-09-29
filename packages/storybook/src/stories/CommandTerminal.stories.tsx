@@ -3,6 +3,7 @@ import type {Meta, StoryObj} from '@storybook/react-vite'
 
 import {CommandTerminal} from '@moo-dang/components/CommandTerminal'
 import {ThemeProvider, useTheme} from '@sparkle/theme'
+import {consola} from 'consola'
 import React, {useCallback, useRef, useState} from 'react'
 
 /**
@@ -89,17 +90,38 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
+interface ThemeOption {
+  readonly value: 'light' | 'dark' | 'system'
+  readonly label: string
+  readonly icon: string
+}
+
 /**
- * Theme switcher component for demonstrating theme-aware terminal behavior
+ * Theme switcher component that allows users to test terminal appearance across themes.
+ *
+ * Provides visual theme switching controls to demonstrate how the command terminal
+ * component adapts to different color schemes and accessibility modes.
  */
-function ThemeSwitcher() {
+function ThemeSwitcher(): React.JSX.Element {
   const {activeTheme, setTheme, systemTheme} = useTheme()
 
-  const themes = [
+  const themes: readonly ThemeOption[] = [
     {value: 'light', label: 'Light', icon: '☀️'},
     {value: 'dark', label: 'Dark', icon: '🌙'},
     {value: 'system', label: `System (${systemTheme})`, icon: '⚙️'},
   ] as const
+
+  const handleThemeChange = useCallback(
+    (themeValue: ThemeOption['value']): void => {
+      try {
+        setTheme(themeValue)
+        consola.debug(`Command terminal theme switched to: ${themeValue}`)
+      } catch (error) {
+        consola.error('Failed to switch command terminal theme:', error)
+      }
+    },
+    [setTheme],
+  )
 
   return (
     <div className="fixed top-4 right-4 z-50">
@@ -108,7 +130,7 @@ function ThemeSwitcher() {
         {themes.map(theme => (
           <button
             key={theme.value}
-            onClick={() => setTheme(theme.value)}
+            onClick={() => handleThemeChange(theme.value)}
             className={`
               px-3 py-1 text-xs rounded transition-colors
               ${
@@ -118,6 +140,7 @@ function ThemeSwitcher() {
               }
             `}
             aria-label={`Switch to ${theme.label} theme`}
+            type="button"
           >
             {theme.icon} {theme.label}
           </button>
@@ -127,10 +150,17 @@ function ThemeSwitcher() {
   )
 }
 
+interface ThemeWrapperProps {
+  readonly children: React.ReactNode
+}
+
 /**
- * Theme-aware wrapper component for stories
+ * Theme-aware wrapper that provides consistent theming context for stories.
+ *
+ * Ensures all command terminal stories have access to the Sparkle theme system
+ * and renders theme switching controls for testing different color schemes.
  */
-function ThemeWrapper({children}: {children: React.ReactNode}) {
+function ThemeWrapper({children}: ThemeWrapperProps): React.JSX.Element {
   return (
     <ThemeProvider defaultTheme="system">
       <div className="min-h-screen bg-theme-surface-primary text-theme-text-primary transition-colors">
@@ -164,43 +194,60 @@ export const Interactive: Story = {
     const terminalRef = useRef<CommandTerminalHandle>(null)
     const [commandCount, setCommandCount] = useState(0)
 
-    const handleCommandExecute = useCallback((command: string) => {
-      if (!terminalRef.current) return
-
-      const trimmedCommand = command.trim()
-
-      if (trimmedCommand === '') {
+    const handleCommandExecute = useCallback((command: string): void => {
+      const terminal = terminalRef.current
+      if (terminal == null) {
+        consola.warn('Cannot execute command: terminal not initialized')
         return
       }
 
-      // Simulate command processing
-      setCommandCount(prev => prev + 1)
+      const trimmedCommand = command.trim()
+      if (trimmedCommand.length === 0) {
+        return
+      }
 
-      if (trimmedCommand === 'help') {
-        terminalRef.current.addOutput('info', 'Available commands: help, clear, echo [text], date, history')
-      } else if (trimmedCommand === 'clear') {
-        terminalRef.current.clearOutput()
-      } else if (trimmedCommand.startsWith('echo ')) {
-        const message = trimmedCommand.slice(5)
-        terminalRef.current.addOutput('output', message)
-      } else if (trimmedCommand === 'date') {
-        terminalRef.current.addOutput('info', new Date().toISOString())
-      } else if (trimmedCommand === 'history') {
-        const history = terminalRef.current.getHistory()
-        history.forEach((entry, index) => {
-          terminalRef.current?.addOutput('info', `${index + 1}: ${entry.command}`)
-        })
-      } else {
-        terminalRef.current.addOutput('error', `Unknown command: ${trimmedCommand}`)
-        terminalRef.current.addOutput('info', 'Type "help" for available commands')
+      try {
+        setCommandCount(prev => prev + 1)
+        consola.debug(`Executing command: ${trimmedCommand}`)
+
+        if (trimmedCommand === 'help') {
+          terminal.addOutput('info', 'Available commands: help, clear, echo [text], date, history')
+        } else if (trimmedCommand === 'clear') {
+          terminal.clearOutput()
+        } else if (trimmedCommand.startsWith('echo ')) {
+          const message = trimmedCommand.slice(5)
+          terminal.addOutput('output', message)
+        } else if (trimmedCommand === 'date') {
+          terminal.addOutput('info', new Date().toISOString())
+        } else if (trimmedCommand === 'history') {
+          const history = terminal.getHistory()
+          history.forEach((entry, index) => {
+            terminal.addOutput('info', `${index + 1}: ${entry.command}`)
+          })
+        } else {
+          terminal.addOutput('error', `Unknown command: ${trimmedCommand}`)
+          terminal.addOutput('info', 'Type "help" for available commands')
+        }
+      } catch (error) {
+        consola.error('Error executing command:', error)
+        terminal.addOutput('error', 'Command execution failed')
       }
     }, [])
 
-    const handleReady = useCallback(() => {
-      if (!terminalRef.current) return
+    const handleReady = useCallback((): void => {
+      const terminal = terminalRef.current
+      if (terminal == null) {
+        consola.warn('Cannot initialize: terminal not ready')
+        return
+      }
 
-      terminalRef.current.addOutput('info', 'Welcome to moo-dang Command Terminal!')
-      terminalRef.current.addOutput('info', 'Type "help" to see available commands.')
+      try {
+        terminal.addOutput('info', 'Welcome to moo-dang Command Terminal!')
+        terminal.addOutput('info', 'Type "help" to see available commands.')
+        consola.debug('Interactive terminal initialized')
+      } catch (error) {
+        consola.error('Error initializing interactive terminal:', error)
+      }
     }, [])
 
     return (
@@ -274,32 +321,74 @@ export const CustomConfiguration: Story = {
 export const ProgrammaticControl: Story = {
   render: () => {
     const terminalRef = useRef<CommandTerminalHandle>(null)
-    const [commandHistory, setCommandHistory] = useState<string[]>([])
+    const [commandHistory, setCommandHistory] = useState<readonly string[]>([])
 
-    const executeCommand = useCallback((command: string) => {
-      if (!terminalRef.current) return
+    const executeCommand = useCallback((command: string): void => {
+      const terminal = terminalRef.current
+      if (terminal == null) {
+        consola.warn('Cannot execute command: terminal not initialized')
+        return
+      }
 
-      terminalRef.current.setCommand(command)
-      terminalRef.current.executeCommand()
-      setCommandHistory(prev => [...prev, command])
+      try {
+        terminal.setCommand(command)
+        terminal.executeCommand()
+        setCommandHistory(prev => [...prev, command])
+        consola.debug(`Programmatically executed command: ${command}`)
+      } catch (error) {
+        consola.error('Failed to execute command programmatically:', error)
+      }
     }, [])
 
-    const addOutput = useCallback((type: 'info' | 'output' | 'warning' | 'error', content: string) => {
-      terminalRef.current?.addOutput(type, content)
+    const addOutput = useCallback((type: 'info' | 'output' | 'warning' | 'error', content: string): void => {
+      const terminal = terminalRef.current
+      if (terminal == null) {
+        consola.warn('Cannot add output: terminal not initialized')
+        return
+      }
+
+      try {
+        terminal.addOutput(type, content)
+        consola.debug(`Added output (${type}): ${content}`)
+      } catch (error) {
+        consola.error('Failed to add output to terminal:', error)
+      }
     }, [])
 
-    const clearTerminal = useCallback(() => {
-      terminalRef.current?.clearOutput()
-      setCommandHistory([])
+    const clearTerminal = useCallback((): void => {
+      const terminal = terminalRef.current
+      if (terminal == null) {
+        consola.warn('Cannot clear terminal: not initialized')
+        return
+      }
+
+      try {
+        terminal.clearOutput()
+        setCommandHistory([])
+        consola.debug('Terminal output cleared')
+      } catch (error) {
+        consola.error('Failed to clear terminal output:', error)
+      }
     }, [])
 
-    const clearHistory = useCallback(() => {
-      terminalRef.current?.clearHistory()
-      setCommandHistory([])
+    const clearHistory = useCallback((): void => {
+      const terminal = terminalRef.current
+      if (terminal == null) {
+        consola.warn('Cannot clear history: terminal not initialized')
+        return
+      }
+
+      try {
+        terminal.clearHistory()
+        setCommandHistory([])
+        consola.debug('Terminal history cleared')
+      } catch (error) {
+        consola.error('Failed to clear terminal history:', error)
+      }
     }, [])
 
     const handleCommandExecute = useCallback(
-      (command: string) => {
+      (command: string): void => {
         setCommandHistory(prev => [...prev, command])
         addOutput('info', `User executed: ${command}`)
       },
