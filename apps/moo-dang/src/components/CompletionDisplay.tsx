@@ -8,6 +8,7 @@
 import type {CompletionResult, CompletionType} from '../shell/completion-types'
 
 import {cx} from '@sparkle/ui'
+import {consola} from 'consola'
 
 /**
  * Position coordinates for the completion overlay.
@@ -225,7 +226,16 @@ export function CompletionDisplay({
 }
 
 /**
- * Hook for calculating completion display position relative to cursor.
+ * Calculates the optimal position for displaying completion suggestions.
+ *
+ * Determines where to position the completion popup based on the current
+ * cursor position in the terminal. Uses character width estimation to
+ * position the popup near the cursor for better user experience.
+ *
+ * @param terminalElement - Terminal DOM element for viewport calculations
+ * @param cursorPosition - Current cursor position in characters
+ * @param _currentCommand - Current command text (reserved for future enhancements)
+ * @returns Position coordinates {left, top} in pixels, or null if calculation fails
  */
 export function useCompletionPosition(
   terminalElement: HTMLElement | null,
@@ -254,7 +264,7 @@ export function useCompletionPosition(
       top: terminalRect.top + cursorY + lineHeight,
     }
   } catch (error) {
-    console.error('Failed to calculate completion position:', error)
+    consola.error('Failed to calculate completion position:', error)
     return null
   }
 }

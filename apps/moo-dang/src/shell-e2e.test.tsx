@@ -11,6 +11,7 @@
  */
 
 import type {CommandTerminalHandle} from './components'
+import type {ShellWorkerRequest} from './shell/types'
 
 import {ThemeProvider} from '@sparkle/theme'
 import {act, fireEvent, render, screen, waitFor} from '@testing-library/react'
@@ -28,7 +29,7 @@ const E2E_TIMEOUT = 15000
  * Provides realistic command responses for integration testing.
  */
 class MockShellWorker extends EventTarget {
-  postMessage(_message: any): void {
+  postMessage(_message: ShellWorkerRequest): void {
     setTimeout(() => {
       this.dispatchEvent(
         new MessageEvent('message', {

@@ -7,7 +7,7 @@
  */
 
 import type {CommandExecutionResult, ExecutionContext, ShellCommand} from './types'
-import type {WasmExecutableName, WasmModuleLoader} from './wasm-types'
+import type {WasmExecutableName, WasmModule, WasmModuleLoader} from './wasm-types'
 import {consola} from 'consola'
 
 import {WASM_EXECUTABLES} from './wasm-types'
@@ -48,7 +48,7 @@ export function createWasmExecutableCommand(
     description: `WASM executable: ${wasmName}`,
     execute: async (args: string[], context: ExecutionContext): Promise<CommandExecutionResult> => {
       const startTime = Date.now()
-      let wasmModule: any = null
+      let wasmModule: WasmModule | null = null
       let loadedSuccessfully = false
 
       consola.debug(`Starting WASM command execution: ${wasmName}`, {
