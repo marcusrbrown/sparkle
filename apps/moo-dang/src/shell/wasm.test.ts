@@ -184,6 +184,13 @@ describe('WASM Module Loader', () => {
           processId: 1,
         },
         exports: {},
+        config: {
+          name: 'test-module',
+          maxMemorySize: 8 * 1024 * 1024, // 8MB
+          executionTimeout: 5000, // 5 seconds
+          enableDebugLogging: true,
+          customImports: {},
+        },
       }
 
       expect(() => {
@@ -433,6 +440,13 @@ describe('Enhanced WASM Error Handling (TASK-024)', () => {
             mockModule.context.stdout = largeOutput
           },
         },
+        config: {
+          name: 'test-module',
+          executionTimeout: 15000,
+          maxMemorySize: 64 * 1024 * 1024,
+          enableDebugLogging: false,
+          customImports: {},
+        },
       }
 
       const result = await wasmLoader.executeFunction(mockModule, 'main', context)
@@ -469,6 +483,13 @@ describe('Enhanced WASM Error Handling (TASK-024)', () => {
             mockModule.context.stdout = 'Valid UTF-8 text'
             mockModule.context.stderr = 'Error message'
           },
+        },
+        config: {
+          name: 'test-module',
+          executionTimeout: 15000,
+          maxMemorySize: 64 * 1024 * 1024,
+          enableDebugLogging: false,
+          customImports: {},
         },
       }
 
@@ -513,6 +534,13 @@ describe('Enhanced WASM Error Handling (TASK-024)', () => {
             throw new Error('Simulated WASM execution error')
           },
         },
+        config: {
+          name: 'test-module',
+          executionTimeout: 15000,
+          maxMemorySize: 64 * 1024 * 1024,
+          enableDebugLogging: false,
+          customImports: {},
+        },
       }
 
       await expect(wasmLoader.executeFunction(mockModule, 'main', context)).rejects.toThrowError()
@@ -524,38 +552,47 @@ describe('Enhanced WASM Error Handling (TASK-024)', () => {
     })
 
     it('should handle timeout errors with proper context', async () => {
-      const context: ExecutionContext = {
-        workingDirectory: '/test',
-        environmentVariables: {TEST: 'value'},
-        processId: 103,
-        args: ['test'],
-      }
+      const wasmLoader = createWasmModuleLoader()
 
+      // Create a mock module directly to test timeout behavior
       const mockModule = {
         instance: {} as WebAssembly.Instance,
         memory: new WebAssembly.Memory({initial: 1}),
         context: {
-          args: ['main', 'test'],
-          env: context.environmentVariables,
+          args: ['main'],
+          env: {},
           stdin: '',
           stdout: '',
           stderr: '',
           exitCode: 0,
-          workingDirectory: context.workingDirectory,
-          processId: context.processId,
+          workingDirectory: '/tmp',
+          processId: 123,
         },
         exports: {
-          main: () => {
-            // Simulate a long-running function that would timeout
-            return new Promise(resolve => {
-              setTimeout(resolve, 20000) // 20 seconds, longer than default timeout
-            })
-          },
+          slowFunction: vi.fn(() => {
+            // Simulate a slow operation (2 seconds) that exceeds short timeout
+            return new Promise(resolve => setTimeout(resolve, 2000))
+          }),
+        },
+        config: {
+          name: 'timeout-test',
+          executionTimeout: 1000, // 1 second timeout
+          maxMemorySize: 64 * 1024 * 1024,
+          enableDebugLogging: false,
+          customImports: {},
         },
       }
 
-      await expect(wasmLoader.executeFunction(mockModule, 'main', context)).rejects.toThrowError()
-    }, 20000) // Increase timeout for this test
+      await expect(
+        wasmLoader.executeFunction(mockModule, 'slowFunction', {
+          args: [],
+          environmentVariables: {},
+          stdin: '',
+          workingDirectory: '/tmp',
+          processId: 123,
+        }),
+      ).rejects.toThrow('execution timeout')
+    }, 5000) // Test timeout of 5 seconds
   })
 })
 

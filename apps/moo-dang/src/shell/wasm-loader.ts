@@ -509,6 +509,7 @@ function createWasmModuleLoaderImpl(cacheSize = 10): WasmModuleLoader {
           memory: actualMemory,
           context: executionContext,
           exports: moduleExports,
+          config: fullConfig,
         }
 
         if (fullConfig.enableDebugLogging) {
@@ -571,7 +572,7 @@ function createWasmModuleLoaderImpl(cacheSize = 10): WasmModuleLoader {
         }
 
         // Execute with timeout protection and better error capture
-        const timeoutMs = DEFAULT_CONFIG.executionTimeout
+        const timeoutMs = module.config.executionTimeout
         await Promise.race([
           new Promise<void>((resolve, reject) => {
             try {
