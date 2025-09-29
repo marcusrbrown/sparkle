@@ -48,6 +48,21 @@ export interface ScrollbackLine {
 }
 
 /**
+ * Data structure for serialized scrollback lines from storage.
+ */
+interface ScrollbackLineData {
+  id: string
+  content: string
+  timestamp: string
+  type?: 'command' | 'output' | 'error' | 'system' | 'warning' | 'info'
+  metadata?: {
+    command?: string
+    isMultiline?: boolean
+    groupId?: string
+  }
+}
+
+/**
  * Search options for scrollback buffer.
  */
 export interface ScrollbackSearchOptions {
@@ -154,7 +169,7 @@ function loadFromStorage(config: Required<ScrollbackConfig>): Pick<ScrollbackSta
     if (stored) {
       const data = JSON.parse(stored)
       if (Array.isArray(data.lines)) {
-        const lines = data.lines.map((line: any) => ({
+        const lines = data.lines.map((line: ScrollbackLineData) => ({
           ...line,
           timestamp: new Date(line.timestamp),
         }))
