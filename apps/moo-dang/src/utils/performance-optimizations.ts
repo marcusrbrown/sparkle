@@ -116,8 +116,14 @@ export class OptimizedCache<T> {
 
   private getMemoryUsage(): number {
     if (typeof performance !== 'undefined' && 'memory' in performance) {
-      const memory = (performance as any).memory
-      return memory.usedJSHeapSize || 0
+      const performanceWithMemory = performance as Performance & {
+        memory?: {
+          usedJSHeapSize?: number
+          totalJSHeapSize?: number
+          jsHeapSizeLimit?: number
+        }
+      }
+      return performanceWithMemory.memory?.usedJSHeapSize ?? 0
     }
     return 0
   }
@@ -490,11 +496,30 @@ export class PerformanceMonitor {
 }
 
 /**
+ * Type-safe cache value types for different optimization caches.
+ */
+export interface WasmModuleCacheValue {
+  module: WebAssembly.Module
+  instantiated?: WebAssembly.Instance
+  metadata?: {
+    size: number
+    compilationTime: number
+  }
+}
+
+export interface CommandResultCacheValue {
+  output: string
+  exitCode: number
+  executionTime: number
+  timestamp: number
+}
+
+/**
  * Global optimization instances for shared use across the application.
  */
 export const globalOptimizations = {
-  wasmCache: new OptimizedCache<any>(50, 10 * 60 * 1000), // 10 minute TTL for WASM modules
-  commandCache: new OptimizedCache<any>(200, 2 * 60 * 1000), // 2 minute TTL for command results
+  wasmCache: new OptimizedCache<WasmModuleCacheValue>(50, 10 * 60 * 1000), // 10 minute TTL for WASM modules
+  commandCache: new OptimizedCache<CommandResultCacheValue>(200, 2 * 60 * 1000), // 2 minute TTL for command results
   bufferPool: new ArrayBufferPool(30),
   debouncer: new Debouncer(),
   monitor: new PerformanceMonitor(200),
@@ -506,7 +531,6 @@ export const globalOptimizations = {
 export function initializeOptimizations(): void {
   consola.info('Initializing performance optimizations...')
 
-  // Set up periodic cache cleanup
   setInterval(
     () => {
       pathNormalizationCache.clear()
@@ -516,7 +540,6 @@ export function initializeOptimizations(): void {
     5 * 60 * 1000,
   ) // Every 5 minutes
 
-  // Set up memory pressure monitoring
   setInterval(
     () => {
       const stats = globalOptimizations.bufferPool.getStats()

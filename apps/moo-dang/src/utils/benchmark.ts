@@ -79,12 +79,23 @@ const DEFAULT_BENCHMARK_OPTIONS: Required<BenchmarkOptions> = {
 } as const
 
 /**
+ * Extended Performance interface with memory information.
+ */
+interface PerformanceWithMemory extends Performance {
+  memory?: {
+    usedJSHeapSize?: number
+    totalJSHeapSize?: number
+    jsHeapSizeLimit?: number
+  }
+}
+
+/**
  * Measures memory usage if Performance API is available.
  */
 function measureMemoryUsage(): number {
   if (typeof performance !== 'undefined' && 'memory' in performance) {
-    const memory = (performance as any).memory
-    return memory.usedJSHeapSize || 0
+    const memory = (performance as PerformanceWithMemory).memory
+    return memory?.usedJSHeapSize ?? 0
   }
   return 0
 }
@@ -94,7 +105,8 @@ function measureMemoryUsage(): number {
  */
 function forceGarbageCollection(): void {
   if (typeof globalThis !== 'undefined' && 'gc' in globalThis) {
-    ;(globalThis as any).gc()
+    const globalWithGC = globalThis as typeof globalThis & {gc?: () => void}
+    globalWithGC.gc?.()
   }
 }
 
