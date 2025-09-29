@@ -14,6 +14,7 @@ export interface WasmModule {
   readonly memory: WebAssembly.Memory
   readonly context: WasmExecutionContext
   readonly exports: WasmExports
+  readonly config: Required<Omit<WasmModuleConfig, 'name'>> & Pick<WasmModuleConfig, 'name'>
 }
 
 export interface WasmExports {
