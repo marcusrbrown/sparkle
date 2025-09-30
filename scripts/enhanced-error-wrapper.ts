@@ -6,6 +6,7 @@
  */
 
 import process from 'node:process'
+import {consola} from 'consola'
 
 import EnhancedErrorReporter from './enhanced-error-reporter.js'
 
@@ -16,12 +17,12 @@ async function main(): Promise<void> {
   const args = process.argv.slice(2)
 
   if (args.length === 0) {
-    console.error('Usage: enhanced-error-wrapper <command> [args...]')
-    console.error('Example: enhanced-error-wrapper pnpm build')
+    consola.error('Usage: enhanced-error-wrapper <command> [args...]')
+    consola.error('Example: enhanced-error-wrapper pnpm build')
     process.exit(1)
   }
 
-  const reporter = new EnhancedErrorReporter()
+  const reporter = EnhancedErrorReporter
   const [command, ...commandArgs] = args
 
   const exitCode = await reporter.runWithEnhancedErrors(command, commandArgs)
@@ -29,6 +30,6 @@ async function main(): Promise<void> {
 }
 
 main().catch(error => {
-  console.error(`Fatal Error: ${error.message}`)
+  consola.error(`Fatal Error: ${error.message}`)
   process.exit(1)
 })
