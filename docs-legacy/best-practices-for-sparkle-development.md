@@ -357,9 +357,10 @@ As a solo developer, maintaining comprehensive documentation is crucial:
 ```typescript
 /**
  * Button component with customizable appearance
- * @param variant - The visual style of the button
- * @param size - The size of the button
- * @param children - The content to display inside the button
+ * @param props - The button properties
+ * @param props.variant - The visual style of the button
+ * @param props.size - The size of the button
+ * @param props.children - The content to display inside the button
  */
 export function Button({variant = "primary", size = "medium", children}: ButtonProps) {
   // Implementation
