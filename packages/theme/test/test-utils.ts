@@ -1,3 +1,4 @@
+import type {ThemeConfig} from '@sparkle/types'
 import {vi} from 'vitest'
 
 /**
@@ -108,4 +109,128 @@ export function createMediaQueryListMock(initialMatches: boolean): MediaQueryLis
   }
 
   return mock
+}
+
+/**
+ * Standard mock theme configurations used across test suites.
+ * Centralizing these fixtures eliminates duplication and ensures consistency.
+ */
+export const mockThemeFixtures = {
+  light: {
+    colors: {
+      primary: {500: '#3b82f6'},
+      neutral: {500: '#6b7280'},
+    },
+    spacing: {4: '1rem'},
+    typography: {
+      fontFamily: {sans: 'Inter'},
+      fontSize: {base: '1rem'},
+      fontWeight: {normal: 400},
+      lineHeight: {normal: 1.5},
+      letterSpacing: {normal: '0'},
+    },
+    borderRadius: {md: '0.375rem'},
+    shadows: {sm: '0 1px 2px rgba(0,0,0,0.1)'},
+    animation: {
+      duration: {normal: '300ms'},
+      easing: {ease: 'ease'},
+      transition: {all: 'all 300ms ease'},
+    },
+  } as ThemeConfig,
+  dark: {
+    colors: {
+      primary: {500: '#3b82f6'},
+      neutral: {500: '#9ca3af'},
+    },
+    spacing: {4: '1rem'},
+    typography: {
+      fontFamily: {sans: 'Inter'},
+      fontSize: {base: '1rem'},
+      fontWeight: {normal: 400},
+      lineHeight: {normal: 1.5},
+      letterSpacing: {normal: '0'},
+    },
+    borderRadius: {md: '0.375rem'},
+    shadows: {sm: '0 1px 2px rgba(0,0,0,0.1)'},
+    animation: {
+      duration: {normal: '300ms'},
+      easing: {ease: 'ease'},
+      transition: {all: 'all 300ms ease'},
+    },
+  } as ThemeConfig,
+}
+
+/**
+ * Creates a theme collection from standard fixtures.
+ * Provides consistent theme configurations for testing theme switching behavior.
+ */
+export function createMockThemes() {
+  return {
+    light: mockThemeFixtures.light,
+    dark: mockThemeFixtures.dark,
+  }
+}
+
+/**
+ * Configures localStorage mock to return a specific stored theme.
+ * Simplifies test setup for persistence scenarios.
+ *
+ * @param mock - The localStorage mock instance
+ * @param theme - Theme name to return from storage ('light', 'dark', 'system', or null)
+ * @param storageKey - Optional custom storage key (defaults to 'sparkle-theme')
+ */
+export function setStoredTheme(mock: LocalStorageMock, theme: string | null, storageKey = 'sparkle-theme'): void {
+  if (theme === null) {
+    mock.getItem.mockReturnValue(null)
+  } else {
+    mock.getItem.mockImplementation((key: string) => (key === storageKey ? theme : null))
+  }
+}
+
+/**
+ * Configures matchMedia mock for a specific system theme preference.
+ * Eliminates boilerplate of creating and assigning matchMedia mocks in tests.
+ *
+ * @param isDark - Whether system prefers dark mode (true) or light mode (false)
+ * @returns The configured MediaQueryList mock
+ */
+export function setupSystemTheme(isDark: boolean): MediaQueryListMock {
+  const mockMediaQueryList = createMediaQueryListMock(isDark)
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: vi.fn().mockImplementation(() => mockMediaQueryList),
+  })
+  return mockMediaQueryList
+}
+
+/**
+ * Complete test environment setup for theme testing scenarios.
+ * Combines localStorage and system theme configuration in one call.
+ *
+ * @param options - Configuration for the test environment
+ * @param options.storedTheme - Theme stored in localStorage (null for no stored theme)
+ * @param options.systemTheme - System theme preference ('light' or 'dark')
+ * @param options.storageKey - Custom storage key (optional)
+ * @returns Object containing configured mocks
+ */
+export function setupThemeTestEnvironment(options: {
+  storedTheme?: string | null
+  systemTheme?: 'light' | 'dark'
+  storageKey?: string
+}): {
+  localStorage: LocalStorageMock
+  mediaQueryList: MediaQueryListMock
+} {
+  const {storedTheme = null, systemTheme = 'light', storageKey = 'sparkle-theme'} = options
+
+  const mockLocalStorage = window.localStorage as unknown as LocalStorageMock
+  resetLocalStorageMock(mockLocalStorage)
+  setStoredTheme(mockLocalStorage, storedTheme, storageKey)
+
+  const mockMediaQueryList = setupSystemTheme(systemTheme === 'dark')
+
+  return {
+    localStorage: mockLocalStorage,
+    mediaQueryList: mockMediaQueryList,
+  }
 }

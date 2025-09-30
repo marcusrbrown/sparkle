@@ -1,50 +1,16 @@
-import type {ThemeConfig} from '@sparkle/types'
-
 import type {ThemeCollection} from '../src/context/ThemeContext'
 import type {LocalStorageMock, MediaQueryListMock} from './test-utils'
 
 import {act, fireEvent, render, screen, waitFor} from '@testing-library/react'
-import {beforeEach, describe, expect, it, vi} from 'vitest'
+import {beforeEach, describe, expect, it} from 'vitest'
 
 import {useTheme} from '../src/hooks'
 import {DEFAULT_THEME_STORAGE_KEY} from '../src/persistence'
 import {ThemeProvider} from '../src/providers/ThemeProvider'
-import {createMediaQueryListMock, resetLocalStorageMock} from './test-utils'
+import {createMockThemes, setStoredTheme, setupSystemTheme} from './test-utils'
 
-const mockLightTheme: ThemeConfig = {
-  colors: {
-    primary: {500: '#3b82f6'},
-    neutral: {500: '#6b7280'},
-  },
-  spacing: {4: '1rem'},
-  typography: {
-    fontFamily: {sans: 'Inter'},
-    fontSize: {base: '1rem'},
-    fontWeight: {normal: 400},
-    lineHeight: {normal: 1.5},
-    letterSpacing: {normal: '0'},
-  },
-  borderRadius: {md: '0.375rem'},
-  shadows: {sm: '0 1px 2px rgba(0,0,0,0.1)'},
-  animation: {
-    duration: {normal: '300ms'},
-    easing: {ease: 'ease'},
-    transition: {all: 'all 300ms ease'},
-  },
-}
-
-const mockDarkTheme: ThemeConfig = {
-  ...mockLightTheme,
-  colors: {
-    primary: {500: '#3b82f6'},
-    neutral: {500: '#9ca3af'},
-  },
-}
-
-const mockThemes: ThemeCollection = {
-  light: mockLightTheme,
-  dark: mockDarkTheme,
-}
+// Use centralized mock theme fixtures
+const mockThemes: ThemeCollection = createMockThemes()
 
 function CombinedIntegrationTestComponent() {
   const {theme, activeTheme, setTheme, systemTheme, isLoading} = useTheme()
@@ -75,21 +41,15 @@ describe('Combined Persistence + System Detection Integration Tests', () => {
   let mockMediaQueryList: MediaQueryListMock
 
   beforeEach(() => {
-    resetLocalStorageMock(mockLocalStorage)
-
-    mockMediaQueryList = createMediaQueryListMock(false)
-
-    Object.defineProperty(window, 'matchMedia', {
-      writable: true,
-      value: vi.fn().mockImplementation(() => mockMediaQueryList),
-    })
+    // Setup baseline: light system theme
+    mockMediaQueryList = setupSystemTheme(false)
   })
 
   describe('Priority Resolution: Stored vs System Theme', () => {
     it('should prefer stored theme over system default on initialization', async () => {
-      mockMediaQueryList = createMediaQueryListMock(true)
-      window.matchMedia = vi.fn().mockImplementation(() => mockMediaQueryList)
-      mockLocalStorage.getItem.mockReturnValue('light')
+      // Setup: dark system theme, but light theme stored in localStorage
+      mockMediaQueryList = setupSystemTheme(true)
+      setStoredTheme(mockLocalStorage, 'light')
 
       render(
         <ThemeProvider themes={mockThemes} defaultTheme="system">
@@ -106,9 +66,9 @@ describe('Combined Persistence + System Detection Integration Tests', () => {
     })
 
     it('should use system theme when no stored preference exists', async () => {
-      mockMediaQueryList = createMediaQueryListMock(true)
-      window.matchMedia = vi.fn().mockImplementation(() => mockMediaQueryList)
-      mockLocalStorage.getItem.mockReturnValue(null)
+      // Setup: dark system theme, no stored theme
+      mockMediaQueryList = setupSystemTheme(true)
+      setStoredTheme(mockLocalStorage, null)
 
       render(
         <ThemeProvider themes={mockThemes} defaultTheme="system">
@@ -124,8 +84,9 @@ describe('Combined Persistence + System Detection Integration Tests', () => {
     })
 
     it('should remove stored preference when switching to system theme', async () => {
-      mockLocalStorage.getItem.mockReturnValue('light')
-      mockMediaQueryList = createMediaQueryListMock(true)
+      // Setup: dark system theme, light theme stored
+      setStoredTheme(mockLocalStorage, 'light')
+      mockMediaQueryList = setupSystemTheme(true)
 
       render(
         <ThemeProvider themes={mockThemes}>
@@ -150,8 +111,8 @@ describe('Combined Persistence + System Detection Integration Tests', () => {
 
   describe('System Theme Changes with Persistence Interaction', () => {
     it('should persist manual theme selection even when system theme changes', async () => {
-      mockMediaQueryList = createMediaQueryListMock(false)
-      window.matchMedia = vi.fn().mockImplementation(() => mockMediaQueryList)
+      // Setup: light system theme initially
+      mockMediaQueryList = setupSystemTheme(false)
 
       render(
         <ThemeProvider themes={mockThemes} defaultTheme="system">
@@ -183,8 +144,8 @@ describe('Combined Persistence + System Detection Integration Tests', () => {
     })
 
     it('should follow system changes when using system theme and persist re-selection', async () => {
-      mockMediaQueryList = createMediaQueryListMock(false)
-      window.matchMedia = vi.fn().mockImplementation(() => mockMediaQueryList)
+      // Setup: light system theme initially
+      mockMediaQueryList = setupSystemTheme(false)
 
       render(
         <ThemeProvider themes={mockThemes} defaultTheme="system">
@@ -221,8 +182,8 @@ describe('Combined Persistence + System Detection Integration Tests', () => {
 
   describe('Cross-Session System + Persistence Integration', () => {
     it('should restore manual theme across sessions and handle system changes correctly', async () => {
-      mockMediaQueryList = createMediaQueryListMock(false)
-      window.matchMedia = vi.fn().mockImplementation(() => mockMediaQueryList)
+      // Setup: light system theme initially
+      mockMediaQueryList = setupSystemTheme(false)
 
       const {unmount} = render(
         <ThemeProvider themes={mockThemes}>
@@ -237,9 +198,9 @@ describe('Combined Persistence + System Detection Integration Tests', () => {
 
       unmount()
 
-      mockMediaQueryList = createMediaQueryListMock(true)
-      window.matchMedia = vi.fn().mockImplementation(() => mockMediaQueryList)
-      mockLocalStorage.getItem.mockReturnValue('dark')
+      // After reload: dark system theme, dark theme stored
+      mockMediaQueryList = setupSystemTheme(true)
+      setStoredTheme(mockLocalStorage, 'dark')
 
       render(
         <ThemeProvider themes={mockThemes}>
@@ -255,8 +216,8 @@ describe('Combined Persistence + System Detection Integration Tests', () => {
     })
 
     it('should handle complex cross-session scenario with multiple theme switches', async () => {
-      mockMediaQueryList = createMediaQueryListMock(false)
-      window.matchMedia = vi.fn().mockImplementation(() => mockMediaQueryList)
+      // Setup: light system theme initially
+      mockMediaQueryList = setupSystemTheme(false)
 
       const {unmount} = render(
         <ThemeProvider themes={mockThemes} defaultTheme="system">
@@ -276,9 +237,9 @@ describe('Combined Persistence + System Detection Integration Tests', () => {
 
       unmount()
 
-      mockMediaQueryList = createMediaQueryListMock(true)
-      window.matchMedia = vi.fn().mockImplementation(() => mockMediaQueryList)
-      mockLocalStorage.getItem.mockReturnValue(null)
+      // After reload: dark system theme, no stored theme
+      mockMediaQueryList = setupSystemTheme(true)
+      setStoredTheme(mockLocalStorage, null)
 
       render(
         <ThemeProvider themes={mockThemes} defaultTheme="system">
@@ -296,9 +257,9 @@ describe('Combined Persistence + System Detection Integration Tests', () => {
 
   describe('Initialization Scenarios', () => {
     it('should handle initialization with stored system preference and different actual system', async () => {
-      mockLocalStorage.getItem.mockReturnValue('system')
-      mockMediaQueryList = createMediaQueryListMock(true)
-      window.matchMedia = vi.fn().mockImplementation(() => mockMediaQueryList)
+      // Setup: dark system theme, 'system' stored
+      setStoredTheme(mockLocalStorage, 'system')
+      mockMediaQueryList = setupSystemTheme(true)
 
       render(
         <ThemeProvider themes={mockThemes}>
@@ -343,8 +304,8 @@ describe('Combined Persistence + System Detection Integration Tests', () => {
 
   describe('Storage Error Handling with System Detection', () => {
     it('should continue working with system detection when storage save fails', async () => {
-      mockMediaQueryList = createMediaQueryListMock(false)
-      window.matchMedia = vi.fn().mockImplementation(() => mockMediaQueryList)
+      // Setup: light system theme, storage will fail
+      mockMediaQueryList = setupSystemTheme(false)
 
       mockLocalStorage.setItem.mockImplementation(() => {
         throw new Error('Storage quota exceeded')
@@ -381,8 +342,8 @@ describe('Combined Persistence + System Detection Integration Tests', () => {
 
   describe('Theme Provider Re-mounting with Different System State', () => {
     it('should handle provider re-mount with changed system state and preserved storage', async () => {
-      mockMediaQueryList = createMediaQueryListMock(false)
-      window.matchMedia = vi.fn().mockImplementation(() => mockMediaQueryList)
+      // Setup: light system theme initially
+      mockMediaQueryList = setupSystemTheme(false)
 
       const {unmount} = render(
         <ThemeProvider themes={mockThemes}>
@@ -397,9 +358,9 @@ describe('Combined Persistence + System Detection Integration Tests', () => {
 
       unmount()
 
-      mockMediaQueryList = createMediaQueryListMock(true)
-      window.matchMedia = vi.fn().mockImplementation(() => mockMediaQueryList)
-      mockLocalStorage.getItem.mockReturnValue('dark')
+      // After reload: dark system theme, dark theme stored
+      mockMediaQueryList = setupSystemTheme(true)
+      setStoredTheme(mockLocalStorage, 'dark')
 
       render(
         <ThemeProvider themes={mockThemes}>

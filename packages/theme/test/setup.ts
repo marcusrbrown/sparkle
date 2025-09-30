@@ -51,7 +51,8 @@ Object.defineProperty(console, 'warn', {
 
 /**
  * Resets all mocks before each test to prevent state pollution between tests.
- * Without this, theme preferences from one test could leak into another.
+ * Individual test files can use setupThemeTestEnvironment() for specific scenarios,
+ * but this ensures a clean baseline state for all tests.
  */
 beforeEach(() => {
   localStorageMock.getItem.mockClear()
