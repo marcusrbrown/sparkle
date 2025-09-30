@@ -16,7 +16,7 @@ import type {ShellWorkerRequest} from './shell/types'
 import {ThemeProvider} from '@sparkle/theme'
 import {act, fireEvent, render, screen, waitFor} from '@testing-library/react'
 
-import {beforeEach, describe, expect, it, vi} from 'vitest'
+import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest'
 
 import App from './App'
 import {CommandTerminal} from './components'
@@ -29,8 +29,10 @@ const E2E_TIMEOUT = 15000
  * Provides realistic command responses for integration testing.
  */
 class MockShellWorker extends EventTarget {
+  private timeoutId: ReturnType<typeof setTimeout> | null = null
+
   postMessage(_message: ShellWorkerRequest): void {
-    setTimeout(() => {
+    this.timeoutId = setTimeout(() => {
       this.dispatchEvent(
         new MessageEvent('message', {
           data: {
@@ -50,12 +52,19 @@ class MockShellWorker extends EventTarget {
   }
 
   terminate(): void {
-    // Mock cleanup
+    if (this.timeoutId) {
+      clearTimeout(this.timeoutId)
+      this.timeoutId = null
+    }
   }
 }
 
 beforeEach(() => {
   vi.stubGlobal('Worker', MockShellWorker)
+})
+
+afterEach(() => {
+  vi.restoreAllMocks()
 })
 
 describe('End-to-End Shell Workflows', () => {
@@ -93,14 +102,17 @@ describe('End-to-End Shell Workflows', () => {
       // Terminal should be present and functional
     })
 
-    it('should handle theme integration properly', () => {
+    it('should handle theme integration properly', async () => {
       render(
         <ThemeProvider defaultTheme="dark">
           <App />
         </ThemeProvider>,
       )
 
-      expect(screen.getByRole('terminal')).toBeDefined()
+      // Wait for async component initialization
+      await waitFor(() => {
+        expect(screen.getByRole('terminal')).toBeDefined()
+      })
     })
   })
 
@@ -217,8 +229,13 @@ describe('End-to-End Shell Workflows', () => {
       expect(screen.getByRole('terminal')).toBeDefined()
     })
 
-    it('should provide proper accessibility attributes and screen reader support', () => {
+    it('should provide proper accessibility attributes and screen reader support', async () => {
       render(<App />)
+
+      // Wait for async component initialization
+      await waitFor(() => {
+        expect(screen.getByRole('terminal')).toBeDefined()
+      })
 
       // Check accessibility attributes
       const terminal = screen.getByRole('terminal')
@@ -236,66 +253,82 @@ describe('End-to-End Shell Workflows', () => {
   })
 
   describe('Complete Shell Session Workflows', () => {
-    it('should handle complete user session from startup to command execution', async () => {
-      render(<App />)
+    it(
+      'should handle complete user session from startup to command execution',
+      async () => {
+        render(<App />)
 
-      // 1. Application initialization
-      await waitFor(() => {
-        expect(screen.getByRole('terminal')).toBeDefined()
-      })
-
-      const terminal = screen.getByRole('terminal')
-
-      // 2. Execute a series of commands
-      const commands = ['pwd', 'ls', 'help']
-
-      for (const cmd of commands) {
-        await act(async () => {
-          cmd.split('').forEach(char => {
-            fireEvent.keyDown(terminal, {key: char})
-          })
-          fireEvent.keyDown(terminal, {key: 'Enter'})
+        // 1. Application initialization
+        await waitFor(() => {
+          expect(screen.getByRole('terminal')).toBeDefined()
         })
 
-        // Small delay between commands
-        await new Promise(resolve => setTimeout(resolve, 50))
-      }
+        const terminal = screen.getByRole('terminal')
 
-      // Complete session workflow verification
-      expect(screen.getByRole('terminal')).toBeDefined()
-    })
+        // 2. Execute a series of commands
+        const commands = ['pwd', 'ls', 'help']
 
-    it('should handle error recovery in complex workflows', async () => {
-      render(<App />)
-
-      await waitFor(() => {
-        expect(screen.getByRole('terminal')).toBeDefined()
-      })
-
-      const terminal = screen.getByRole('terminal')
-
-      // Execute a series of commands with errors mixed in
-      const commands = [
-        'pwd', // success
-        'invalidcmd', // error
-        'help', // success
-      ]
-
-      for (const cmd of commands) {
-        await act(async () => {
-          cmd.split('').forEach(char => {
-            fireEvent.keyDown(terminal, {key: char})
+        for (const cmd of commands) {
+          await act(async () => {
+            cmd.split('').forEach(char => {
+              fireEvent.keyDown(terminal, {key: char})
+            })
+            fireEvent.keyDown(terminal, {key: 'Enter'})
+            // Wait for command processing within act
+            await new Promise(resolve => setTimeout(resolve, 150))
           })
-          fireEvent.keyDown(terminal, {key: 'Enter'})
+        }
+
+        // Wait for all async component effects to complete
+        await waitFor(
+          () => {
+            expect(screen.getByRole('terminal')).toBeDefined()
+          },
+          {timeout: 500},
+        )
+      },
+      E2E_TIMEOUT,
+    )
+
+    it(
+      'should handle error recovery in complex workflows',
+      async () => {
+        render(<App />)
+
+        await waitFor(() => {
+          expect(screen.getByRole('terminal')).toBeDefined()
         })
 
-        // Small delay between commands
-        await new Promise(resolve => setTimeout(resolve, 50))
-      }
+        const terminal = screen.getByRole('terminal')
 
-      // Terminal should still be functional after errors
-      expect(screen.getByRole('terminal')).toBeDefined()
-    })
+        // Execute a series of commands with errors mixed in
+        const commands = [
+          'pwd', // success
+          'invalidcmd', // error
+          'help', // success
+        ]
+
+        for (const cmd of commands) {
+          await act(async () => {
+            cmd.split('').forEach(char => {
+              fireEvent.keyDown(terminal, {key: char})
+            })
+            fireEvent.keyDown(terminal, {key: 'Enter'})
+            // Wait for command processing within act
+            await new Promise(resolve => setTimeout(resolve, 150))
+          })
+        }
+
+        // Wait for all async component effects to complete
+        await waitFor(
+          () => {
+            expect(screen.getByRole('terminal')).toBeDefined()
+          },
+          {timeout: 500},
+        )
+      },
+      E2E_TIMEOUT,
+    )
   })
 })
 
