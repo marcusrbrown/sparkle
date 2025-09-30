@@ -52,7 +52,7 @@ class MockShellWorker extends EventTarget {
   }
 
   terminate(): void {
-    if (this.timeoutId) {
+    if (this.timeoutId != null) {
       clearTimeout(this.timeoutId)
       this.timeoutId = null
     }
@@ -92,17 +92,6 @@ describe('End-to-End Shell Workflows', () => {
     })
 
     it('should initialize with welcome text and command prompt', async () => {
-      render(<App />)
-
-      await waitFor(() => {
-        const terminal = screen.getByRole('terminal')
-        expect(terminal).toBeDefined()
-      })
-
-      // Terminal should be present and functional
-    })
-
-    it('should handle theme integration properly', async () => {
       render(
         <ThemeProvider defaultTheme="dark">
           <App />
@@ -124,10 +113,8 @@ describe('End-to-End Shell Workflows', () => {
         expect(screen.getByRole('terminal')).toBeDefined()
       })
 
-      // Find and interact with terminal input
       const terminal = screen.getByRole('terminal')
 
-      // Simulate typing a command (integration test for terminal interaction)
       await act(async () => {
         fireEvent.keyDown(terminal, {key: 'p'})
         fireEvent.keyDown(terminal, {key: 'w'})
@@ -135,7 +122,6 @@ describe('End-to-End Shell Workflows', () => {
         fireEvent.keyDown(terminal, {key: 'Enter'})
       })
 
-      // Terminal should handle input properly
       expect(terminal).toBeDefined()
     })
 
@@ -148,15 +134,12 @@ describe('End-to-End Shell Workflows', () => {
 
       const terminal = screen.getByRole('terminal')
 
-      // Execute demo command
       await act(async () => {
         'demo'.split('').forEach(char => {
           fireEvent.keyDown(terminal, {key: char})
         })
         fireEvent.keyDown(terminal, {key: 'Enter'})
       })
-
-      // Should display various output types and formatting
     })
 
     it('should handle help command execution', async () => {
@@ -168,7 +151,6 @@ describe('End-to-End Shell Workflows', () => {
 
       const terminal = screen.getByRole('terminal')
 
-      // Execute help command
       await act(async () => {
         'help'.split('').forEach(char => {
           fireEvent.keyDown(terminal, {key: char})
@@ -176,7 +158,6 @@ describe('End-to-End Shell Workflows', () => {
         fireEvent.keyDown(terminal, {key: 'Enter'})
       })
 
-      // Should handle help command
       expect(terminal).toBeDefined()
     })
   })
@@ -189,16 +170,13 @@ describe('End-to-End Shell Workflows', () => {
         expect(screen.getByRole('terminal')).toBeDefined()
       })
 
-      // Test keyboard shortcuts integration
       const terminal = screen.getByRole('terminal')
 
-      // Test help command shortcut
       await act(async () => {
         fireEvent.keyDown(terminal, {key: '?'})
         fireEvent.keyDown(terminal, {key: 'Enter'})
       })
 
-      // Should handle keyboard interaction
       expect(terminal).toBeDefined()
     })
 
@@ -209,7 +187,6 @@ describe('End-to-End Shell Workflows', () => {
         expect(screen.getByRole('terminal')).toBeDefined()
       })
 
-      // Simulate window resize
       await act(async () => {
         Object.defineProperty(window, 'innerWidth', {
           writable: true,
@@ -225,27 +202,22 @@ describe('End-to-End Shell Workflows', () => {
         window.dispatchEvent(new Event('resize'))
       })
 
-      // Terminal should adapt to new size
       expect(screen.getByRole('terminal')).toBeDefined()
     })
 
     it('should provide proper accessibility attributes and screen reader support', async () => {
       render(<App />)
 
-      // Wait for async component initialization
       await waitFor(() => {
         expect(screen.getByRole('terminal')).toBeDefined()
       })
 
-      // Check accessibility attributes
       const terminal = screen.getByRole('terminal')
       expect(terminal.getAttribute('aria-label')).toBe('Terminal interface')
 
-      // Check for accessibility provider
       const main = screen.getByRole('main')
       expect(main).toBeDefined()
 
-      // Check for screen reader helper instructions
       const instructions = screen.getByLabelText('Instructions')
       expect(instructions).toBeDefined()
       expect(instructions.textContent).toContain('Press F1 for keyboard shortcuts help')
@@ -258,14 +230,12 @@ describe('End-to-End Shell Workflows', () => {
       async () => {
         render(<App />)
 
-        // 1. Application initialization
         await waitFor(() => {
           expect(screen.getByRole('terminal')).toBeDefined()
         })
 
         const terminal = screen.getByRole('terminal')
 
-        // 2. Execute a series of commands
         const commands = ['pwd', 'ls', 'help']
 
         for (const cmd of commands) {
@@ -274,12 +244,10 @@ describe('End-to-End Shell Workflows', () => {
               fireEvent.keyDown(terminal, {key: char})
             })
             fireEvent.keyDown(terminal, {key: 'Enter'})
-            // Wait for command processing within act
             await new Promise(resolve => setTimeout(resolve, 150))
           })
         }
 
-        // Wait for all async component effects to complete
         await waitFor(
           () => {
             expect(screen.getByRole('terminal')).toBeDefined()
@@ -301,12 +269,7 @@ describe('End-to-End Shell Workflows', () => {
 
         const terminal = screen.getByRole('terminal')
 
-        // Execute a series of commands with errors mixed in
-        const commands = [
-          'pwd', // success
-          'invalidcmd', // error
-          'help', // success
-        ]
+        const commands = ['pwd', 'invalidcmd', 'help']
 
         for (const cmd of commands) {
           await act(async () => {
@@ -314,12 +277,10 @@ describe('End-to-End Shell Workflows', () => {
               fireEvent.keyDown(terminal, {key: char})
             })
             fireEvent.keyDown(terminal, {key: 'Enter'})
-            // Wait for command processing within act
             await new Promise(resolve => setTimeout(resolve, 150))
           })
         }
 
-        // Wait for all async component effects to complete
         await waitFor(
           () => {
             expect(screen.getByRole('terminal')).toBeDefined()
@@ -382,11 +343,10 @@ describe('CommandTerminal Component E2E Integration', () => {
       expect(mockRef.current).toBeDefined()
     })
 
-    // Test different output types
-    if (mockRef.current) {
+    if (mockRef.current != null) {
       await act(async () => {
         const terminal = mockRef.current
-        if (terminal) {
+        if (terminal != null) {
           terminal.addOutput('command', 'test-command')
           terminal.addOutput('output', 'Command output')
           terminal.addOutput('error', 'Error message')
@@ -397,7 +357,6 @@ describe('CommandTerminal Component E2E Integration', () => {
       })
     }
 
-    // All output should be added to terminal
     expect(mockRef.current).toBeDefined()
   })
 })
