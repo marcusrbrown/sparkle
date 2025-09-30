@@ -163,8 +163,10 @@ export const mockThemeFixtures = {
 /**
  * Creates a theme collection from standard fixtures.
  * Provides consistent theme configurations for testing theme switching behavior.
+ *
+ * @returns Theme collection with light and dark theme configurations
  */
-export function createMockThemes() {
+export function createMockThemes(): {light: ThemeConfig; dark: ThemeConfig} {
   return {
     light: mockThemeFixtures.light,
     dark: mockThemeFixtures.dark,
