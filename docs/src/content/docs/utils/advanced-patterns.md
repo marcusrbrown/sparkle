@@ -165,11 +165,13 @@ function processTextWithCaching(text: string, maxLength = 100): {
   const cacheKey = `${text}:${maxLength}`
 
   if (transformationCache.has(cacheKey)) {
-    const cached = transformationCache.get(cacheKey)!
-    return {
-      original: text,
-      truncated: truncate(text, maxLength),
-      ...cached
+    const cached = transformationCache.get(cacheKey)
+    if (cached) {
+      return {
+        original: text,
+        truncated: truncate(text, maxLength),
+        ...cached
+      }
     }
   }
 
@@ -301,7 +303,10 @@ class EfficientTextProcessor {
     const cacheKey = `${transformer.name}:${text}`
 
     if (this.cache.has(cacheKey)) {
-      return this.cache.get(cacheKey)!
+      const cached = this.cache.get(cacheKey)
+      if (cached) {
+        return cached
+      }
     }
 
     // Prevent memory leaks by limiting cache size

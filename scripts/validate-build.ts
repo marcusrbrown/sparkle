@@ -5,6 +5,7 @@ import {existsSync, readdirSync, readFileSync, statSync} from 'node:fs'
 import {dirname, resolve} from 'node:path'
 import process from 'node:process'
 import {fileURLToPath} from 'node:url'
+import {consola} from 'consola'
 
 const filename = fileURLToPath(import.meta.url)
 const DIRNAME = dirname(filename)
@@ -68,7 +69,7 @@ function getPackages(): PackageInfo[] {
       }
     }
   } catch (error) {
-    console.error(`${colors.red}❌ Error reading packages directory: ${error}${colors.reset}`)
+    consola.error(`${colors.red}❌ Error reading packages directory: ${error}${colors.reset}`)
     process.exit(1)
   }
 
@@ -87,8 +88,8 @@ function getLibraryPackages(packages: PackageInfo[]): PackageInfo[] {
  * Step 1: Build all packages
  */
 function buildAllPackages(): boolean {
-  console.log(`${colors.blue}📊 Step 1: Building all packages...${colors.reset}`)
-  console.log('')
+  consola.info(`${colors.blue}📊 Step 1: Building all packages...${colors.reset}`)
+  consola.info('')
 
   // Run build command with special handling for Turborepo
   try {
@@ -97,8 +98,8 @@ function buildAllPackages(): boolean {
       encoding: 'utf-8',
       stdio: [0, 1, 2], // inherit all stdio
     })
-    console.log(`${colors.green}✅ Build completed successfully${colors.reset}`)
-    console.log('')
+    consola.info(`${colors.green}✅ Build completed successfully${colors.reset}`)
+    consola.info('')
     return true
   } catch (error: any) {
     // Turborepo sometimes returns non-zero exit codes even on successful builds
@@ -111,13 +112,13 @@ function buildAllPackages(): boolean {
     const hasNoErrors = !stderr.includes('ERROR') && !stderr.includes('FAILED') && !stderr.includes('Error:')
 
     if (hasSuccessMessage && hasNoErrors) {
-      console.log(`${colors.green}✅ Build completed successfully${colors.reset}`)
-      console.log('')
+      consola.info(`${colors.green}✅ Build completed successfully${colors.reset}`)
+      consola.info('')
       return true
     } else {
-      console.log(`${colors.red}❌ Build failed${colors.reset}`)
+      consola.info(`${colors.red}❌ Build failed${colors.reset}`)
       if (stderr) {
-        console.error(stderr)
+        consola.error(stderr)
       }
       return false
     }
@@ -128,8 +129,8 @@ function buildAllPackages(): boolean {
  * Step 2: Validate TypeScript declarations
  */
 function validateTypeScriptDeclarations(packages: PackageInfo[]): {successCount: number; errorCount: number} {
-  console.log(`${colors.blue}📊 Step 2: Validating TypeScript declarations...${colors.reset}`)
-  console.log('')
+  consola.info(`${colors.blue}📊 Step 2: Validating TypeScript declarations...${colors.reset}`)
+  consola.info('')
 
   let successCount = 0
   let errorCount = 0
@@ -143,15 +144,15 @@ function validateTypeScriptDeclarations(packages: PackageInfo[]): {successCount:
     const declarationPath = resolve(pkg.path, 'dist', 'index.d.ts')
 
     if (existsSync(declarationPath)) {
-      console.log(`${colors.green}✅ Has type declarations${colors.reset}`)
+      consola.info(`${colors.green}✅ Has type declarations${colors.reset}`)
       successCount++
     } else {
-      console.log(`${colors.red}❌ Missing type declarations${colors.reset}`)
+      consola.info(`${colors.red}❌ Missing type declarations${colors.reset}`)
       errorCount++
     }
   }
 
-  console.log('')
+  consola.info('')
   return {successCount, errorCount}
 }
 
@@ -159,8 +160,8 @@ function validateTypeScriptDeclarations(packages: PackageInfo[]): {successCount:
  * Step 3: Validate build artifacts
  */
 function validateBuildArtifacts(packages: PackageInfo[]): number {
-  console.log(`${colors.blue}📊 Step 3: Validating build artifacts...${colors.reset}`)
-  console.log('')
+  consola.info(`${colors.blue}📊 Step 3: Validating build artifacts...${colors.reset}`)
+  consola.info('')
 
   let errorCount = 0
 
@@ -177,14 +178,14 @@ function validateBuildArtifacts(packages: PackageInfo[]): number {
 
     // Check for dist directory
     if (!existsSync(distPath)) {
-      console.log(`${colors.red}❌ Missing dist directory${colors.reset}`)
+      consola.info(`${colors.red}❌ Missing dist directory${colors.reset}`)
       errorCount++
       continue
     }
 
     // Check for index.js file (main output)
     if (!existsSync(indexJsPath)) {
-      console.log(`${colors.red}❌ Missing index.js${colors.reset}`)
+      consola.info(`${colors.red}❌ Missing index.js${colors.reset}`)
       errorCount++
       continue
     }
@@ -199,13 +200,13 @@ function validateBuildArtifacts(packages: PackageInfo[]): number {
     }
 
     if (warnings.length > 0) {
-      console.log(`${colors.yellow}⚠️  ${warnings.join(', ')}${colors.reset}`)
+      consola.info(`${colors.yellow}⚠️  ${warnings.join(', ')}${colors.reset}`)
     } else {
-      console.log(`${colors.green}✅ Build artifacts present${colors.reset}`)
+      consola.info(`${colors.green}✅ Build artifacts present${colors.reset}`)
     }
   }
 
-  console.log('')
+  consola.info('')
   return errorCount
 }
 
@@ -213,8 +214,8 @@ function validateBuildArtifacts(packages: PackageInfo[]): number {
  * Step 4: Validate package structure consistency
  */
 function validatePackageStructure(packages: PackageInfo[]): number {
-  console.log(`${colors.blue}📊 Step 4: Validating package structure consistency...${colors.reset}`)
-  console.log('')
+  consola.info(`${colors.blue}📊 Step 4: Validating package structure consistency...${colors.reset}`)
+  consola.info('')
 
   let structureErrors = 0
 
@@ -234,14 +235,14 @@ function validatePackageStructure(packages: PackageInfo[]): number {
     }
 
     if (missingFields.length > 0) {
-      console.log(`${colors.red}❌ Missing fields: ${missingFields.join(', ')}${colors.reset}`)
+      consola.info(`${colors.red}❌ Missing fields: ${missingFields.join(', ')}${colors.reset}`)
       structureErrors++
     } else {
-      console.log(`${colors.green}✅ Package structure valid${colors.reset}`)
+      consola.info(`${colors.green}✅ Package structure valid${colors.reset}`)
     }
   }
 
-  console.log('')
+  consola.info('')
   return structureErrors
 }
 
@@ -249,20 +250,20 @@ function validatePackageStructure(packages: PackageInfo[]): number {
  * Print validation summary
  */
 function printSummary(result: ValidationResult): void {
-  console.log(`${colors.bold}📋 Build Validation Summary:${colors.reset}`)
-  console.log('')
-  console.log(`  Total packages checked: ${colors.blue}${result.packageCount}${colors.reset}`)
-  console.log(`  Packages with declarations: ${colors.green}${result.successCount}${colors.reset}`)
-  console.log(`  Declaration errors: ${colors.red}${result.errorCount}${colors.reset}`)
-  console.log(`  Structure errors: ${colors.red}${result.structureErrors}${colors.reset}`)
-  console.log('')
+  consola.info(`${colors.bold}📋 Build Validation Summary:${colors.reset}`)
+  consola.info('')
+  consola.info(`  Total packages checked: ${colors.blue}${result.packageCount}${colors.reset}`)
+  consola.info(`  Packages with declarations: ${colors.green}${result.successCount}${colors.reset}`)
+  consola.info(`  Declaration errors: ${colors.red}${result.errorCount}${colors.reset}`)
+  consola.info(`  Structure errors: ${colors.red}${result.structureErrors}${colors.reset}`)
+  consola.info('')
 
   const totalErrors = result.errorCount + result.structureErrors
 
   if (totalErrors === 0) {
-    console.log(`${colors.green}🎉 All build validations passed!${colors.reset}`)
+    consola.info(`${colors.green}🎉 All build validations passed!${colors.reset}`)
   } else {
-    console.log(`${colors.red}❌ Build validation failed with ${totalErrors} errors${colors.reset}`)
+    consola.info(`${colors.red}❌ Build validation failed with ${totalErrors} errors${colors.reset}`)
   }
 }
 
@@ -270,17 +271,17 @@ function printSummary(result: ValidationResult): void {
  * Main validation function
  */
 function main(): void {
-  console.log('🔍 Validating Sparkle monorepo build integrity...')
-  console.log('')
+  consola.info('🔍 Validating Sparkle monorepo build integrity...')
+  consola.info('')
 
   // Get all packages
   const packages = getPackages()
   const libraryPackages = getLibraryPackages(packages)
 
-  console.log(
+  consola.info(
     `Found ${packages.length} total packages (${libraryPackages.length} library packages, ${packages.length - libraryPackages.length} dev tools)`,
   )
-  console.log('')
+  consola.info('')
 
   // Step 1: Build all packages
   if (!buildAllPackages()) {

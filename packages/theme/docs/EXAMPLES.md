@@ -598,8 +598,15 @@ const consistencyRule: ValidationRule = {
         const currentShade = scale[shades[i]]
         const nextShade = scale[shades[i + 1]]
 
-        const currentLum = calculateLuminance(hexToRgb(currentShade)!)
-        const nextLum = calculateLuminance(hexToRgb(nextShade)!)
+        const currentRgb = hexToRgb(currentShade)
+        const nextRgb = hexToRgb(nextShade)
+
+        if (!currentRgb || !nextRgb) {
+          return false
+        }
+
+        const currentLum = calculateLuminance(currentRgb)
+        const nextLum = calculateLuminance(nextRgb)
 
         if (currentLum <= nextLum) {
           return false

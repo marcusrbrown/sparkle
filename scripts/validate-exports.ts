@@ -4,6 +4,7 @@ import {existsSync, readdirSync, readFileSync, statSync} from 'node:fs'
 import {dirname, resolve} from 'node:path'
 import process from 'node:process'
 import {fileURLToPath} from 'node:url'
+import {consola} from 'consola'
 
 const filename = fileURLToPath(import.meta.url)
 const DIRNAME = dirname(filename)
@@ -63,7 +64,7 @@ function getLibraryPackages(): {name: string; path: string; packageJson: Package
       }
     }
   } catch (error) {
-    console.error(`${colors.red}❌ Error reading packages directory: ${error}${colors.reset}`)
+    consola.error(`${colors.red}❌ Error reading packages directory: ${error}${colors.reset}`)
     process.exit(1)
   }
 
@@ -192,8 +193,8 @@ function validateAllPackages(): ExportValidationResult[] {
   const packages = getLibraryPackages()
   const results: ExportValidationResult[] = []
 
-  console.log(`${colors.blue}🔍 Validating package exports for ${packages.length} library packages...${colors.reset}`)
-  console.log('')
+  consola.info(`${colors.blue}🔍 Validating package exports for ${packages.length} library packages...${colors.reset}`)
+  consola.info('')
 
   for (const pkg of packages) {
     process.stdout.write(`  Validating ${pkg.name}... `)
@@ -203,17 +204,17 @@ function validateAllPackages(): ExportValidationResult[] {
 
     if (result.success) {
       if (result.warnings.length > 0) {
-        console.log(`${colors.yellow}⚠️  ${result.warnings.length} warnings${colors.reset}`)
+        consola.warn(`${colors.yellow}⚠️  ${result.warnings.length} warnings${colors.reset}`)
         for (const warning of result.warnings) {
-          console.log(`    ${colors.yellow}⚠️  ${warning}${colors.reset}`)
+          consola.warn(`    ${colors.yellow}⚠️  ${warning}${colors.reset}`)
         }
       } else {
-        console.log(`${colors.green}✅ All exports valid${colors.reset}`)
+        consola.success(`${colors.green}✅ All exports valid${colors.reset}`)
       }
     } else {
-      console.log(`${colors.red}❌ ${result.errors.length} errors${colors.reset}`)
+      consola.error(`${colors.red}❌ ${result.errors.length} errors${colors.reset}`)
       for (const error of result.errors) {
-        console.log(`    ${colors.red}❌ ${error}${colors.reset}`)
+        consola.error(`    ${colors.red}❌ ${error}${colors.reset}`)
       }
     }
   }
@@ -225,9 +226,9 @@ function validateAllPackages(): ExportValidationResult[] {
  * Print validation summary
  */
 function printSummary(results: ExportValidationResult[]): void {
-  console.log('')
-  console.log(`${colors.bold}📋 Package Exports Validation Summary:${colors.reset}`)
-  console.log('')
+  consola.info('')
+  consola.info(`${colors.bold}📋 Package Exports Validation Summary:${colors.reset}`)
+  consola.info('')
 
   const totalPackages = results.length
   const successfulPackages = results.filter(r => r.success).length
@@ -235,17 +236,17 @@ function printSummary(results: ExportValidationResult[]): void {
   const totalErrors = results.reduce((sum, r) => sum + r.errors.length, 0)
   const totalWarnings = results.reduce((sum, r) => sum + r.warnings.length, 0)
 
-  console.log(`  Total packages checked: ${colors.blue}${totalPackages}${colors.reset}`)
-  console.log(`  Packages with valid exports: ${colors.green}${successfulPackages}${colors.reset}`)
-  console.log(`  Packages with export errors: ${colors.red}${failedPackages}${colors.reset}`)
-  console.log(`  Total errors: ${colors.red}${totalErrors}${colors.reset}`)
-  console.log(`  Total warnings: ${colors.yellow}${totalWarnings}${colors.reset}`)
-  console.log('')
+  consola.info(`  Total packages checked: ${colors.blue}${totalPackages}${colors.reset}`)
+  consola.info(`  Packages with valid exports: ${colors.green}${successfulPackages}${colors.reset}`)
+  consola.info(`  Packages with export errors: ${colors.red}${failedPackages}${colors.reset}`)
+  consola.info(`  Total errors: ${colors.red}${totalErrors}${colors.reset}`)
+  consola.info(`  Total warnings: ${colors.yellow}${totalWarnings}${colors.reset}`)
+  consola.info('')
 
   if (failedPackages === 0) {
-    console.log(`${colors.green}🎉 All package exports are valid!${colors.reset}`)
+    consola.success(`${colors.green}🎉 All package exports are valid!${colors.reset}`)
   } else {
-    console.log(`${colors.red}❌ Export validation failed for ${failedPackages} packages${colors.reset}`)
+    consola.error(`${colors.red}❌ Export validation failed for ${failedPackages} packages${colors.reset}`)
   }
 }
 
@@ -253,8 +254,8 @@ function printSummary(results: ExportValidationResult[]): void {
  * Main validation function
  */
 function main(): void {
-  console.log('🔍 Validating Sparkle monorepo package exports...')
-  console.log('')
+  consola.info('🔍 Validating Sparkle monorepo package exports...')
+  consola.info('')
 
   const results = validateAllPackages()
   printSummary(results)

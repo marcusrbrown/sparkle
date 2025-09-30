@@ -41,6 +41,29 @@ Object.defineProperty(window, 'matchMedia', {
 })
 
 /**
+ * Mock console.warn to suppress expected localStorage errors during testing
+ */
+const originalConsoleWarn = console.warn
+
+// Suppress localStorage-related warnings in test environment
+Object.defineProperty(console, 'warn', {
+  value: vi.fn((message: string, ...args: any[]) => {
+    // Only suppress localStorage-related warnings
+    if (
+      typeof message === 'string' &&
+      (message.includes('localStorage') ||
+        message.includes('Failed to load theme') ||
+        message.includes('Failed to save theme'))
+    ) {
+      return
+    }
+    // Let other warnings through
+    originalConsoleWarn(message, ...args)
+  }),
+  writable: true,
+})
+
+/**
  * Reset mocks before each test
  */
 beforeEach(() => {
