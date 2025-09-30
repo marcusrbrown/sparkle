@@ -1,10 +1,15 @@
 import type {ThemeConfig} from '@sparkle/types'
+
 import type {ThemeCollection} from '../src/context/ThemeContext'
+import type {LocalStorageMock} from './test-utils'
+
 import {fireEvent, render, screen, waitFor} from '@testing-library/react'
 import {beforeEach, describe, expect, it, vi} from 'vitest'
+
 import {useTheme} from '../src/hooks'
 import {DEFAULT_THEME_STORAGE_KEY, webPersistence} from '../src/persistence'
 import {ThemeProvider} from '../src/providers/ThemeProvider'
+import {createMediaQueryListMock, resetLocalStorageMock} from './test-utils'
 
 // Mock theme configurations
 const mockLightTheme: ThemeConfig = {
@@ -64,29 +69,18 @@ function PersistenceTestComponent() {
   )
 }
 
-// Get reference to the mocked localStorage
-const mockLocalStorage = window.localStorage as any
+// Get reference to the global localStorage mock from setup
+const mockLocalStorage = window.localStorage as unknown as LocalStorageMock
 
 describe('Theme Persistence Integration Tests', () => {
   beforeEach(() => {
-    // Reset localStorage mock
-    mockLocalStorage.getItem.mockReturnValue(null)
-    mockLocalStorage.setItem.mockClear()
-    mockLocalStorage.removeItem.mockClear()
+    // Reset localStorage mock to default state
+    resetLocalStorageMock(mockLocalStorage)
 
-    // Mock matchMedia for system theme detection
+    // Mock matchMedia for system theme detection (default to light mode)
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
-      value: vi.fn().mockImplementation(query => ({
-        matches: query === '(prefers-color-scheme: dark)',
-        media: query,
-        onchange: null,
-        addListener: vi.fn(),
-        removeListener: vi.fn(),
-        addEventListener: vi.fn(),
-        removeEventListener: vi.fn(),
-        dispatchEvent: vi.fn(),
-      })),
+      value: vi.fn().mockImplementation(() => createMediaQueryListMock(false)),
     })
   })
 
