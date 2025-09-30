@@ -19,7 +19,6 @@ import {
   type TerminalProps,
 } from './Terminal'
 
-// Mock xterm.js and addons with comprehensive interface coverage
 vi.mock('@xterm/xterm', () => ({
   Terminal: vi.fn().mockImplementation(() => ({
     write: vi.fn(),
@@ -27,6 +26,7 @@ vi.mock('@xterm/xterm', () => ({
     focus: vi.fn(),
     open: vi.fn(),
     dispose: vi.fn(),
+    loadAddon: vi.fn(),
     onData: vi.fn(() => ({dispose: vi.fn()})),
     onResize: vi.fn(() => ({dispose: vi.fn()})),
     options: {},
@@ -43,14 +43,46 @@ vi.mock('@xterm/addon-fit', () => ({
 }))
 
 /**
- * Mock ResizeObserver for testing terminal resize functionality.
- * Essential for terminal fit operations that depend on container size changes.
+ * ResizeObserver mock for container size change testing.
+ * Browser API not available in test environment.
  */
 globalThis.ResizeObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
   disconnect: vi.fn(),
 }))
+
+/**
+ * Mock XTerm terminal interface for testing.
+ * Prevents actual terminal initialization during tests while maintaining API compatibility.
+ */
+interface MockTerminal {
+  write: ReturnType<typeof vi.fn>
+  clear: ReturnType<typeof vi.fn>
+  focus: ReturnType<typeof vi.fn>
+  open: ReturnType<typeof vi.fn>
+  dispose: ReturnType<typeof vi.fn>
+  loadAddon: ReturnType<typeof vi.fn>
+  onData: ReturnType<typeof vi.fn>
+  onResize: ReturnType<typeof vi.fn>
+  options: Record<string, unknown>
+  cols: number
+  rows: number
+}
+
+const createMockTerminal = (): MockTerminal => ({
+  write: vi.fn(),
+  clear: vi.fn(),
+  focus: vi.fn(),
+  open: vi.fn(),
+  dispose: vi.fn(),
+  loadAddon: vi.fn(),
+  onData: vi.fn(() => ({dispose: vi.fn()})),
+  onResize: vi.fn(() => ({dispose: vi.fn()})),
+  options: {},
+  cols: 80,
+  rows: 24,
+})
 
 describe('Terminal Component', () => {
   const renderTerminal = (props: Partial<TerminalProps> = {}) => {
@@ -147,61 +179,52 @@ describe('Terminal Utility Functions', () => {
 
   describe('writeToTerminal', () => {
     it('should write text to terminal', () => {
-      // Using minimal mock - 'as any' is necessary for test mocking of external XTerm interface
-      const mockTerminal = {write: vi.fn()} as any
-      writeToTerminal(mockTerminal, 'test text')
+      const mockTerminal = createMockTerminal()
+      writeToTerminal(mockTerminal as any, 'test text')
       expect(mockTerminal.write).toHaveBeenCalledWith('test text')
     })
 
     it('should throw TerminalError on write failure', () => {
-      // Mock terminal that throws to test error handling behavior
-      const mockTerminal = {
-        write: vi.fn().mockImplementationOnce(() => {
-          throw new Error('Write failed')
-        }),
-      } as any
+      const mockTerminal = createMockTerminal()
+      mockTerminal.write.mockImplementationOnce(() => {
+        throw new Error('Write failed')
+      })
 
-      expect(() => writeToTerminal(mockTerminal, 'test')).toThrow('Terminal write: Write operation failed')
+      expect(() => writeToTerminal(mockTerminal as any, 'test')).toThrow('Terminal write: Write operation failed')
     })
   })
 
   describe('clearTerminal', () => {
     it('should clear terminal', () => {
-      // Using minimal mock - 'as any' is necessary for test mocking of external XTerm interface
-      const mockTerminal = {clear: vi.fn()} as any
-      clearTerminal(mockTerminal)
+      const mockTerminal = createMockTerminal()
+      clearTerminal(mockTerminal as any)
       expect(mockTerminal.clear).toHaveBeenCalled()
     })
 
     it('should throw TerminalError on clear failure', () => {
-      // Mock terminal that throws to test error handling behavior
-      const mockTerminal = {
-        clear: vi.fn().mockImplementationOnce(() => {
-          throw new Error('Clear failed')
-        }),
-      } as any
+      const mockTerminal = createMockTerminal()
+      mockTerminal.clear.mockImplementationOnce(() => {
+        throw new Error('Clear failed')
+      })
 
-      expect(() => clearTerminal(mockTerminal)).toThrow('Terminal clear: Clear operation failed')
+      expect(() => clearTerminal(mockTerminal as any)).toThrow('Terminal clear: Clear operation failed')
     })
   })
 
   describe('focusTerminal', () => {
     it('should focus terminal', () => {
-      // Using minimal mock - 'as any' is necessary for test mocking of external XTerm interface
-      const mockTerminal = {focus: vi.fn()} as any
-      focusTerminal(mockTerminal)
+      const mockTerminal = createMockTerminal()
+      focusTerminal(mockTerminal as any)
       expect(mockTerminal.focus).toHaveBeenCalled()
     })
 
     it('should throw TerminalError on focus failure', () => {
-      // Mock terminal that throws to test error handling behavior
-      const mockTerminal = {
-        focus: vi.fn().mockImplementationOnce(() => {
-          throw new Error('Focus failed')
-        }),
-      } as any
+      const mockTerminal = createMockTerminal()
+      mockTerminal.focus.mockImplementationOnce(() => {
+        throw new Error('Focus failed')
+      })
 
-      expect(() => focusTerminal(mockTerminal)).toThrow('Terminal focus: Focus operation failed')
+      expect(() => focusTerminal(mockTerminal as any)).toThrow('Terminal focus: Focus operation failed')
     })
   })
 })
