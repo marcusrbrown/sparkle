@@ -803,8 +803,9 @@ describe('Form Components', () => {
 
       // Open the select with keyboard
       await user.click(trigger)
-      await user.keyboard('{ArrowDown}') // Move to first item
-      await user.keyboard('{ArrowDown}') // Move to second item (Canada)
+      // When select opens, first item is already highlighted by default in Radix UI
+      // ArrowDown moves from first item (us) to second item (ca)
+      await user.keyboard('{ArrowDown}')
       await user.keyboard('{Enter}') // Select Canada
 
       // Verify selection callback was called
@@ -1026,9 +1027,13 @@ describe('Form Components', () => {
       const trigger = screen.getByRole('combobox')
       await user.click(trigger)
 
-      expect(screen.getByText('United States')).toBeInTheDocument()
-      expect(screen.getByText('Canada')).toBeInTheDocument()
-      expect(screen.getByText('United Kingdom')).toBeInTheDocument()
+      // Radix UI renders both a hidden native select and custom UI
+      // Use getAllByRole to check the options in the listbox
+      const options = screen.getAllByRole('option')
+      expect(options).toHaveLength(3)
+      expect(options[0]).toHaveTextContent('United States')
+      expect(options[1]).toHaveTextContent('Canada')
+      expect(options[2]).toHaveTextContent('United Kingdom')
     })
   })
 
