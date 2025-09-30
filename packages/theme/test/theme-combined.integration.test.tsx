@@ -1,10 +1,15 @@
 import type {ThemeConfig} from '@sparkle/types'
+
 import type {ThemeCollection} from '../src/context/ThemeContext'
+import type {LocalStorageMock, MediaQueryListMock} from './test-utils'
+
 import {act, fireEvent, render, screen, waitFor} from '@testing-library/react'
 import {beforeEach, describe, expect, it, vi} from 'vitest'
+
 import {useTheme} from '../src/hooks'
 import {DEFAULT_THEME_STORAGE_KEY} from '../src/persistence'
 import {ThemeProvider} from '../src/providers/ThemeProvider'
+import {createMediaQueryListMock, resetLocalStorageMock} from './test-utils'
 
 // Mock theme configurations
 const mockLightTheme: ThemeConfig = {
@@ -66,60 +71,18 @@ function CombinedIntegrationTestComponent() {
   )
 }
 
-// Get reference to the mocked localStorage
-const mockLocalStorage = window.localStorage as any
-
-// Helper to create a mock MediaQueryList with change simulation
-function createMockMediaQueryList(matches: boolean) {
-  const listeners: ((event: MediaQueryListEvent) => void)[] = []
-
-  return {
-    matches,
-    media: '(prefers-color-scheme: dark)',
-    onchange: null,
-    addListener: vi.fn((listener: (event: MediaQueryListEvent) => void) => {
-      listeners.push(listener)
-    }),
-    removeListener: vi.fn((listener: (event: MediaQueryListEvent) => void) => {
-      const index = listeners.indexOf(listener)
-      if (index !== -1) {
-        listeners.splice(index, 1)
-      }
-    }),
-    addEventListener: vi.fn((event: string, listener: (event: MediaQueryListEvent) => void) => {
-      if (event === 'change') {
-        listeners.push(listener)
-      }
-    }),
-    removeEventListener: vi.fn((event: string, listener: (event: MediaQueryListEvent) => void) => {
-      if (event === 'change') {
-        const index = listeners.indexOf(listener)
-        if (index !== -1) {
-          listeners.splice(index, 1)
-        }
-      }
-    }),
-    dispatchEvent: vi.fn(),
-    // Helper to simulate system theme change
-    _triggerChange(newMatches: boolean) {
-      this.matches = newMatches
-      const event = {matches: newMatches} as MediaQueryListEvent
-      listeners.forEach(listener => listener(event))
-    },
-  }
-}
+// Get reference to the global localStorage mock from setup
+const mockLocalStorage = window.localStorage as unknown as LocalStorageMock
 
 describe('Combined Persistence + System Detection Integration Tests', () => {
-  let mockMediaQueryList: ReturnType<typeof createMockMediaQueryList>
+  let mockMediaQueryList: MediaQueryListMock
 
   beforeEach(() => {
-    // Reset localStorage mock
-    mockLocalStorage.getItem.mockReturnValue(null)
-    mockLocalStorage.setItem.mockClear()
-    mockLocalStorage.removeItem.mockClear()
+    // Reset localStorage mock to default state (handled by setup.ts, but explicit here for clarity)
+    resetLocalStorageMock(mockLocalStorage)
 
-    // Create fresh mock for each test
-    mockMediaQueryList = createMockMediaQueryList(false) // Default to light
+    // Create fresh MediaQueryList mock for each test
+    mockMediaQueryList = createMediaQueryListMock(false) // Default to light
 
     // Mock matchMedia
     Object.defineProperty(window, 'matchMedia', {
@@ -131,7 +94,7 @@ describe('Combined Persistence + System Detection Integration Tests', () => {
   describe('Priority Resolution: Stored vs System Theme', () => {
     it('should prefer stored theme over system default on initialization', async () => {
       // System is dark, but user has stored light preference
-      mockMediaQueryList = createMockMediaQueryList(true) // System is dark
+      mockMediaQueryList = createMediaQueryListMock(true) // System is dark
       window.matchMedia = vi.fn().mockImplementation(() => mockMediaQueryList)
       mockLocalStorage.getItem.mockReturnValue('light')
 
@@ -151,7 +114,7 @@ describe('Combined Persistence + System Detection Integration Tests', () => {
 
     it('should use system theme when no stored preference exists', async () => {
       // No stored preference, system is dark
-      mockMediaQueryList = createMockMediaQueryList(true) // System is dark
+      mockMediaQueryList = createMediaQueryListMock(true) // System is dark
       window.matchMedia = vi.fn().mockImplementation(() => mockMediaQueryList)
       mockLocalStorage.getItem.mockReturnValue(null)
 
@@ -171,7 +134,7 @@ describe('Combined Persistence + System Detection Integration Tests', () => {
     it('should remove stored preference when switching to system theme', async () => {
       // Start with stored light preference
       mockLocalStorage.getItem.mockReturnValue('light')
-      mockMediaQueryList = createMockMediaQueryList(true) // System is dark
+      mockMediaQueryList = createMediaQueryListMock(true) // System is dark
 
       render(
         <ThemeProvider themes={mockThemes}>
@@ -198,7 +161,7 @@ describe('Combined Persistence + System Detection Integration Tests', () => {
 
   describe('System Theme Changes with Persistence Interaction', () => {
     it('should persist manual theme selection even when system theme changes', async () => {
-      mockMediaQueryList = createMockMediaQueryList(false) // System starts light
+      mockMediaQueryList = createMediaQueryListMock(false) // System starts light
       window.matchMedia = vi.fn().mockImplementation(() => mockMediaQueryList)
 
       render(
@@ -234,7 +197,7 @@ describe('Combined Persistence + System Detection Integration Tests', () => {
     })
 
     it('should follow system changes when using system theme and persist re-selection', async () => {
-      mockMediaQueryList = createMockMediaQueryList(false) // System starts light
+      mockMediaQueryList = createMediaQueryListMock(false) // System starts light
       window.matchMedia = vi.fn().mockImplementation(() => mockMediaQueryList)
 
       render(
@@ -276,7 +239,7 @@ describe('Combined Persistence + System Detection Integration Tests', () => {
   describe('Cross-Session System + Persistence Integration', () => {
     it('should restore manual theme across sessions and handle system changes correctly', async () => {
       // First session: system is light, user selects dark manually
-      mockMediaQueryList = createMockMediaQueryList(false)
+      mockMediaQueryList = createMediaQueryListMock(false)
       window.matchMedia = vi.fn().mockImplementation(() => mockMediaQueryList)
 
       const {unmount} = render(
@@ -293,7 +256,7 @@ describe('Combined Persistence + System Detection Integration Tests', () => {
       unmount()
 
       // Second session: system changed to dark, user has stored dark preference
-      mockMediaQueryList = createMockMediaQueryList(true) // System is now dark
+      mockMediaQueryList = createMediaQueryListMock(true) // System is now dark
       window.matchMedia = vi.fn().mockImplementation(() => mockMediaQueryList)
       mockLocalStorage.getItem.mockReturnValue('dark')
 
@@ -312,7 +275,7 @@ describe('Combined Persistence + System Detection Integration Tests', () => {
 
     it('should handle complex cross-session scenario with multiple theme switches', async () => {
       // Session 1: Start with system, change to manual, then back to system
-      mockMediaQueryList = createMockMediaQueryList(false) // Light system
+      mockMediaQueryList = createMediaQueryListMock(false) // Light system
       window.matchMedia = vi.fn().mockImplementation(() => mockMediaQueryList)
 
       const {unmount} = render(
@@ -336,7 +299,7 @@ describe('Combined Persistence + System Detection Integration Tests', () => {
       unmount()
 
       // Session 2: System changed to dark, no stored preference
-      mockMediaQueryList = createMockMediaQueryList(true) // Dark system
+      mockMediaQueryList = createMediaQueryListMock(true) // Dark system
       window.matchMedia = vi.fn().mockImplementation(() => mockMediaQueryList)
       mockLocalStorage.getItem.mockReturnValue(null) // No stored preference
 
@@ -358,7 +321,7 @@ describe('Combined Persistence + System Detection Integration Tests', () => {
     it('should handle initialization with stored system preference and different actual system', async () => {
       // Stored preference is 'system', actual system is different from when stored
       mockLocalStorage.getItem.mockReturnValue('system')
-      mockMediaQueryList = createMockMediaQueryList(true) // System is dark
+      mockMediaQueryList = createMediaQueryListMock(true) // System is dark
       window.matchMedia = vi.fn().mockImplementation(() => mockMediaQueryList)
 
       render(
@@ -405,7 +368,7 @@ describe('Combined Persistence + System Detection Integration Tests', () => {
 
   describe('Storage Error Handling with System Detection', () => {
     it('should continue working with system detection when storage save fails', async () => {
-      mockMediaQueryList = createMockMediaQueryList(false)
+      mockMediaQueryList = createMediaQueryListMock(false)
       window.matchMedia = vi.fn().mockImplementation(() => mockMediaQueryList)
 
       mockLocalStorage.setItem.mockImplementation(() => {
@@ -447,7 +410,7 @@ describe('Combined Persistence + System Detection Integration Tests', () => {
   describe('Theme Provider Re-mounting with Different System State', () => {
     it('should handle provider re-mount with changed system state and preserved storage', async () => {
       // Initial mount: system light, user selects dark
-      mockMediaQueryList = createMockMediaQueryList(false)
+      mockMediaQueryList = createMediaQueryListMock(false)
       window.matchMedia = vi.fn().mockImplementation(() => mockMediaQueryList)
 
       const {unmount} = render(
@@ -464,7 +427,7 @@ describe('Combined Persistence + System Detection Integration Tests', () => {
       unmount()
 
       // Re-mount: system now dark, storage has dark preference
-      mockMediaQueryList = createMockMediaQueryList(true)
+      mockMediaQueryList = createMediaQueryListMock(true)
       window.matchMedia = vi.fn().mockImplementation(() => mockMediaQueryList)
       mockLocalStorage.getItem.mockReturnValue('dark')
 

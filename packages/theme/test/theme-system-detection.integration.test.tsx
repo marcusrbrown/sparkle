@@ -1,9 +1,14 @@
 import type {ThemeConfig} from '@sparkle/types'
+
 import type {ThemeCollection} from '../src/context/ThemeContext'
+import type {LocalStorageMock, MediaQueryListMock} from './test-utils'
+
 import {act, fireEvent, render, screen, waitFor} from '@testing-library/react'
 import {beforeEach, describe, expect, it, vi} from 'vitest'
+
 import {useTheme} from '../src/hooks'
 import {ThemeProvider} from '../src/providers/ThemeProvider'
+import {createMediaQueryListMock, resetLocalStorageMock} from './test-utils'
 
 // Mock theme configurations
 const mockLightTheme: ThemeConfig = {
@@ -65,60 +70,19 @@ function SystemDetectionTestComponent() {
   )
 }
 
-// Get reference to the mocked localStorage
-const mockLocalStorage = window.localStorage as any
-
-// Helper to create a mock MediaQueryList
-function createMockMediaQueryList(matches: boolean) {
-  const listeners: ((event: MediaQueryListEvent) => void)[] = []
-
-  return {
-    matches,
-    media: '(prefers-color-scheme: dark)',
-    onchange: null,
-    addListener: vi.fn((listener: (event: MediaQueryListEvent) => void) => {
-      listeners.push(listener)
-    }),
-    removeListener: vi.fn((listener: (event: MediaQueryListEvent) => void) => {
-      const index = listeners.indexOf(listener)
-      if (index !== -1) {
-        listeners.splice(index, 1)
-      }
-    }),
-    addEventListener: vi.fn((event: string, listener: (event: MediaQueryListEvent) => void) => {
-      if (event === 'change') {
-        listeners.push(listener)
-      }
-    }),
-    removeEventListener: vi.fn((event: string, listener: (event: MediaQueryListEvent) => void) => {
-      if (event === 'change') {
-        const index = listeners.indexOf(listener)
-        if (index !== -1) {
-          listeners.splice(index, 1)
-        }
-      }
-    }),
-    dispatchEvent: vi.fn(),
-    // Helper to simulate system theme change
-    _triggerChange(newMatches: boolean) {
-      this.matches = newMatches
-      const event = {matches: newMatches} as MediaQueryListEvent
-      listeners.forEach(listener => listener(event))
-    },
-  }
-}
+// Get reference to the global localStorage mock from setup
+const mockLocalStorage = window.localStorage as unknown as LocalStorageMock
 
 describe('System Detection Integration Tests', () => {
-  let mockMediaQueryList: ReturnType<typeof createMockMediaQueryList>
+  let mockMediaQueryList: MediaQueryListMock
 
   beforeEach(() => {
-    // Reset localStorage mock
-    mockLocalStorage.getItem.mockReturnValue(null)
-    mockLocalStorage.setItem.mockClear()
-    mockLocalStorage.removeItem.mockClear()
+    // Reset localStorage mock to default state
+    resetLocalStorageMock(mockLocalStorage)
 
-    // Create fresh mock for each test
-    mockMediaQueryList = createMockMediaQueryList(false) // Default to light
+    // Create fresh MediaQueryList mock for each test
+    mockMediaQueryList = createMediaQueryListMock(false) // Default to light
+    mockMediaQueryList = createMediaQueryListMock(false) // Default to light
 
     // Mock matchMedia
     Object.defineProperty(window, 'matchMedia', {
@@ -129,7 +93,7 @@ describe('System Detection Integration Tests', () => {
 
   describe('System Theme Detection on Mount', () => {
     it('should detect light system theme correctly', async () => {
-      mockMediaQueryList = createMockMediaQueryList(false)
+      mockMediaQueryList = createMediaQueryListMock(false)
       window.matchMedia = vi.fn().mockImplementation(() => mockMediaQueryList)
 
       render(
@@ -146,7 +110,7 @@ describe('System Detection Integration Tests', () => {
     })
 
     it('should detect dark system theme correctly', async () => {
-      mockMediaQueryList = createMockMediaQueryList(true)
+      mockMediaQueryList = createMediaQueryListMock(true)
       window.matchMedia = vi.fn().mockImplementation(() => mockMediaQueryList)
 
       render(
@@ -165,7 +129,7 @@ describe('System Detection Integration Tests', () => {
 
   describe('Runtime System Theme Changes', () => {
     it('should update theme when system preference changes from light to dark', async () => {
-      mockMediaQueryList = createMockMediaQueryList(false) // Start with light
+      mockMediaQueryList = createMediaQueryListMock(false) // Start with light
       window.matchMedia = vi.fn().mockImplementation(() => mockMediaQueryList)
 
       render(
@@ -192,7 +156,7 @@ describe('System Detection Integration Tests', () => {
     })
 
     it('should update theme when system preference changes from dark to light', async () => {
-      mockMediaQueryList = createMockMediaQueryList(true) // Start with dark
+      mockMediaQueryList = createMediaQueryListMock(true) // Start with dark
       window.matchMedia = vi.fn().mockImplementation(() => mockMediaQueryList)
 
       render(
@@ -219,7 +183,7 @@ describe('System Detection Integration Tests', () => {
     })
 
     it('should not affect theme when user has manually selected non-system theme', async () => {
-      mockMediaQueryList = createMockMediaQueryList(false) // Start with light
+      mockMediaQueryList = createMediaQueryListMock(false) // Start with light
       window.matchMedia = vi.fn().mockImplementation(() => mockMediaQueryList)
 
       render(
@@ -250,7 +214,7 @@ describe('System Detection Integration Tests', () => {
     })
 
     it('should respond to system changes when switched back to system theme', async () => {
-      mockMediaQueryList = createMockMediaQueryList(false) // Start with light
+      mockMediaQueryList = createMediaQueryListMock(false) // Start with light
       window.matchMedia = vi.fn().mockImplementation(() => mockMediaQueryList)
 
       render(
@@ -342,7 +306,7 @@ describe('System Detection Integration Tests', () => {
 
   describe('System Detection Disabled', () => {
     it('should not detect system theme when disabled', async () => {
-      mockMediaQueryList = createMockMediaQueryList(true) // System is dark
+      mockMediaQueryList = createMediaQueryListMock(true) // System is dark
       window.matchMedia = vi.fn().mockImplementation(() => mockMediaQueryList)
 
       render(
@@ -359,7 +323,7 @@ describe('System Detection Integration Tests', () => {
     })
 
     it('should not respond to system changes when disabled', async () => {
-      mockMediaQueryList = createMockMediaQueryList(false)
+      mockMediaQueryList = createMediaQueryListMock(false)
       window.matchMedia = vi.fn().mockImplementation(() => mockMediaQueryList)
 
       render(
@@ -451,7 +415,7 @@ describe('System Detection Integration Tests', () => {
 
   describe('System Detection with Multiple Theme Switches', () => {
     it('should correctly handle rapid theme switches including system', async () => {
-      mockMediaQueryList = createMockMediaQueryList(false) // Start with light
+      mockMediaQueryList = createMediaQueryListMock(false) // Start with light
       window.matchMedia = vi.fn().mockImplementation(() => mockMediaQueryList)
 
       const {unmount} = render(
@@ -499,7 +463,7 @@ describe('System Detection Integration Tests', () => {
 
   describe('Event Listener Management', () => {
     it('should properly clean up event listeners on unmount', async () => {
-      mockMediaQueryList = createMockMediaQueryList(false)
+      mockMediaQueryList = createMediaQueryListMock(false)
       const addEventListenerSpy = vi.spyOn(mockMediaQueryList, 'addEventListener')
       const removeEventListenerSpy = vi.spyOn(mockMediaQueryList, 'removeEventListener')
 

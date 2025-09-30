@@ -1,18 +1,15 @@
 import {beforeEach, vi} from 'vitest'
-import '@testing-library/react'
+
+import {createLocalStorageMock, createMediaQueryListMock} from './test-utils'
+
 import '@testing-library/jest-dom'
+import '@testing-library/react'
 
 /**
- * Mock localStorage for theme persistence testing
+ * Global localStorage mock instance.
+ * Tests can access and manipulate this directly if needed.
  */
-const localStorageMock = {
-  getItem: vi.fn(),
-  setItem: vi.fn(),
-  removeItem: vi.fn(),
-  clear: vi.fn(),
-  length: 0,
-  key: vi.fn(),
-}
+const localStorageMock = createLocalStorageMock()
 
 // Set up localStorage mock
 Object.defineProperty(window, 'localStorage', {
@@ -21,33 +18,26 @@ Object.defineProperty(window, 'localStorage', {
 })
 
 /**
- * Mock matchMedia for system theme detection testing
+ * Global matchMedia mock.
+ * Defaults to light mode (matches: false).
+ * Tests should override this per-test if they need different behavior.
  */
-const matchMediaMock = vi.fn().mockImplementation(query => ({
-  matches: false,
-  media: query,
-  onchange: null,
-  addListener: vi.fn(), // deprecated
-  removeListener: vi.fn(), // deprecated
-  addEventListener: vi.fn(),
-  removeEventListener: vi.fn(),
-  dispatchEvent: vi.fn(),
-}))
+const defaultMatchMedia = vi.fn().mockImplementation(() => createMediaQueryListMock(false))
 
 // Set up matchMedia mock
 Object.defineProperty(window, 'matchMedia', {
-  value: matchMediaMock,
+  value: defaultMatchMedia,
   writable: true,
 })
 
 /**
- * Mock console.warn to suppress expected localStorage errors during testing
+ * Mock console.warn to suppress expected localStorage errors during testing.
+ * Only suppresses localStorage-related warnings, letting other warnings through.
  */
 const originalConsoleWarn = console.warn
 
-// Suppress localStorage-related warnings in test environment
 Object.defineProperty(console, 'warn', {
-  value: vi.fn((message: string, ...args: any[]) => {
+  value: vi.fn((message: string, ...args: unknown[]) => {
     // Only suppress localStorage-related warnings
     if (
       typeof message === 'string' &&
@@ -64,34 +54,20 @@ Object.defineProperty(console, 'warn', {
 })
 
 /**
- * Reset mocks before each test
+ * Reset all mocks to default state before each test.
+ * This ensures tests start with clean, predictable state.
  */
 beforeEach(() => {
-  // Reset all mocks
-  vi.clearAllMocks()
+  // Reset localStorage mock to default state
   localStorageMock.getItem.mockClear()
+  localStorageMock.getItem.mockReturnValue(null)
   localStorageMock.setItem.mockClear()
   localStorageMock.removeItem.mockClear()
   localStorageMock.clear.mockClear()
+  localStorageMock.key.mockClear()
+  localStorageMock.length = 0
 
-  // Reset matchMedia mock
-  matchMediaMock.mockClear()
-  matchMediaMock.mockImplementation(query => ({
-    matches: false,
-    media: query,
-    onchange: null,
-    addListener: vi.fn(),
-    removeListener: vi.fn(),
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn(),
-  }))
-})
-
-// Reset mocks before each test
-beforeEach(() => {
-  localStorageMock.getItem.mockClear()
-  localStorageMock.setItem.mockClear()
-  localStorageMock.removeItem.mockClear()
-  localStorageMock.clear.mockClear()
+  // Reset matchMedia mock to default (light mode)
+  defaultMatchMedia.mockClear()
+  defaultMatchMedia.mockImplementation(() => createMediaQueryListMock(false))
 })
