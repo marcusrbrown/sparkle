@@ -4,8 +4,8 @@
 
 Sparkle is a TypeScript monorepo playground using **pnpm workspaces** and **Turborepo**. Key architectural decisions:
 
-- **Package Strategy**: Shared libraries (`@sparkle/ui`, `@sparkle/types`, `@sparkle/utils`, `@sparkle/theme`) with consuming applications (`fro-jive` Expo app in `apps/`) and documentation site (`@sparkle/docs` in `docs/`)
-- **Build System**: Turborepo orchestrates builds with task dependencies (e.g., `build` → `^build` ensures dependencies build first)
+- **Package Strategy**: Shared libraries (`@sparkle/ui`, `@sparkle/types`, `@sparkle/utils`, `@sparkle/theme`) with consuming applications (`fro-jive` Expo mobile app, `moo-dang` WASM web shell) and documentation site (`@sparkle/docs` in `docs/`)
+- **Build System**: Turborepo orchestrates builds with task dependencies (e.g., `build` → `^build` ensures dependencies build first). Package-specific tasks use `build:packagename` convention (e.g., `build:ui`, `build:theme`, `build:moo-dang`)
 - **Documentation Architecture**: Astro Starlight site with automated JSDoc extraction, interactive component playground, and GitHub Pages deployment to https://sparkle.mrbro.dev
 - **Type Safety**: Shared types via `@sparkle/types` + TypeScript project references for clean inter-package dependencies
 - **Component Architecture**: Radix UI primitives + Tailwind CSS + React forwardRef pattern for accessibility and customization
@@ -101,6 +101,64 @@ pnpm test:build-pipeline
 - Uses `@/components/` alias for local components
 - Integrates `@sparkle/ui` components (though platform differences may require adaptation)
 
+### WASM Web Shell (moo-dang)
+
+The `moo-dang` application in `apps/moo-dang/` is a sophisticated WASM-based web shell featuring:
+
+- **Shell Architecture**: Complete Unix-like shell running in Web Workers for secure, non-blocking execution
+- **Built-in Commands**: `ls`, `cd`, `pwd`, `cat`, `echo`, `mkdir`, `touch`, `rm`, `cp`, `mv`, pipes (`|`), redirection (`>`, `>>`), and command chaining (`&&`, `||`, `;`)
+- **WASM Executables**: Zig-compiled WebAssembly programs with comprehensive shell API (`shell_api.zig`)
+- **Terminal UI**: xterm.js integration with full Sparkle theme support (light/dark modes)
+- **Virtual File System**: In-memory file system with directory operations and environment variables
+
+#### Key Development Commands
+
+```bash
+# Start moo-dang development server
+pnpm --filter moo-dang dev
+
+# Build moo-dang for production
+pnpm --filter moo-dang build
+
+# Run moo-dang tests (446+ passing tests)
+pnpm --filter moo-dang test
+```
+
+#### Zig WASM Development Pattern
+
+1. **Zig Source Files**: Located in `apps/moo-dang/src/wasm/zig/src/`
+2. **Shell API**: Import `shell_api.zig` for stdout/stderr, stdin, environment variables, file system operations
+3. **Build Configuration**: `build.zig` in `apps/moo-dang/src/wasm/` compiles Zig to WASM
+4. **Integration**: WASM executables are loaded and executed by the shell's Web Worker
+
+```zig
+// Example WASM executable using shell API
+const shell = @import("shell_api.zig");
+
+pub fn main() !void {
+    // Output functions
+    shell.println("Hello from WASM!");
+    shell.eprintln("Error messages go to stderr");
+
+    // Environment variables
+    const home = shell.getEnv("HOME") orelse "/";
+
+    // Command arguments
+    const args = shell.getArgs();
+    for (args) |arg| {
+        shell.print(arg);
+        shell.print(" ");
+    }
+}
+```
+
+#### moo-dang Architecture Notes
+
+- **Web Worker Isolation**: Shell execution happens in dedicated worker to avoid blocking UI
+- **Message Passing**: Terminal ↔ Worker communication via structured message protocol
+- **Security**: WASM executables run in sandboxed environment with controlled host APIs
+- **File System**: Virtual FS persists in memory, can be exported/imported for state management
+
 ## Project-Specific Conventions
 
 ### Naming Conventions
@@ -180,6 +238,8 @@ turbo run test --filter=...[origin/main]
 ### Turborepo Task Dependencies
 
 - `build` tasks depend on `^build` (dependencies first)
+- Package-specific build tasks follow `build:packagename` convention (e.g., `build:ui`, `build:theme`, `build:config`, `build:moo-dang`)
+- Task dependencies are explicitly defined (e.g., `build:ui` depends on `@sparkle/config#build:config`)
 - `dev` and `test` depend on `^build` (need built dependencies)
 - Use `persistent: true` for dev servers, `cache: false` for watch modes
 
