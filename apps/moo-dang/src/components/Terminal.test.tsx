@@ -27,6 +27,7 @@ vi.mock('@xterm/xterm', () => ({
     focus: vi.fn(),
     open: vi.fn(),
     dispose: vi.fn(),
+    loadAddon: vi.fn(),
     onData: vi.fn(() => ({dispose: vi.fn()})),
     onResize: vi.fn(() => ({dispose: vi.fn()})),
     options: {},
