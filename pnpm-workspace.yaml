@@ -17,5 +17,6 @@ onlyBuiltDependencies:
 
 overrides:
   jiti: <2.2.0
+  tmp@<0.2.4: ^0.2.4
 
 shamefullyHoist: true
