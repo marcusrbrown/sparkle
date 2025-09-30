@@ -7,38 +7,35 @@ import '@testing-library/react'
 
 /**
  * Global localStorage mock instance.
- * Tests can access and manipulate this directly if needed.
+ * Shared across all tests to maintain consistent state management and enable
+ * test isolation through the resetLocalStorageMock utility.
  */
 const localStorageMock = createLocalStorageMock()
 
-// Set up localStorage mock
 Object.defineProperty(window, 'localStorage', {
   value: localStorageMock,
   writable: true,
 })
 
 /**
- * Global matchMedia mock.
- * Defaults to light mode (matches: false).
- * Tests should override this per-test if they need different behavior.
+ * Global matchMedia mock defaults to light mode preference.
+ * Individual tests override this when testing dark mode or system theme switching.
  */
 const defaultMatchMedia = vi.fn().mockImplementation(() => createMediaQueryListMock(false))
 
-// Set up matchMedia mock
 Object.defineProperty(window, 'matchMedia', {
   value: defaultMatchMedia,
   writable: true,
 })
 
 /**
- * Mock console.warn to suppress expected localStorage errors during testing.
- * Only suppresses localStorage-related warnings, letting other warnings through.
+ * Suppresses expected localStorage warnings to reduce test noise.
+ * Real issues in application code still surface through other warnings.
  */
 const originalConsoleWarn = console.warn
 
 Object.defineProperty(console, 'warn', {
   value: vi.fn((message: string, ...args: unknown[]) => {
-    // Only suppress localStorage-related warnings
     if (
       typeof message === 'string' &&
       (message.includes('localStorage') ||
@@ -47,18 +44,16 @@ Object.defineProperty(console, 'warn', {
     ) {
       return
     }
-    // Let other warnings through
     originalConsoleWarn(message, ...args)
   }),
   writable: true,
 })
 
 /**
- * Reset all mocks to default state before each test.
- * This ensures tests start with clean, predictable state.
+ * Resets all mocks before each test to prevent state pollution between tests.
+ * Without this, theme preferences from one test could leak into another.
  */
 beforeEach(() => {
-  // Reset localStorage mock to default state
   localStorageMock.getItem.mockClear()
   localStorageMock.getItem.mockReturnValue(null)
   localStorageMock.setItem.mockClear()
@@ -67,7 +62,6 @@ beforeEach(() => {
   localStorageMock.key.mockClear()
   localStorageMock.length = 0
 
-  // Reset matchMedia mock to default (light mode)
   defaultMatchMedia.mockClear()
   defaultMatchMedia.mockImplementation(() => createMediaQueryListMock(false))
 })

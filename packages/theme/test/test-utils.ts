@@ -1,7 +1,8 @@
 import {vi} from 'vitest'
 
 /**
- * Type-safe localStorage mock for testing
+ * Type-safe localStorage mock interface.
+ * Ensures test mocks maintain API compatibility with browser localStorage.
  */
 export interface LocalStorageMock {
   getItem: ReturnType<typeof vi.fn<(key: string) => string | null>>
@@ -13,8 +14,8 @@ export interface LocalStorageMock {
 }
 
 /**
- * Creates a fresh localStorage mock instance for testing.
- * This provides a clean, predictable mock without global state pollution.
+ * Creates a fresh localStorage mock instance.
+ * Using factory functions prevents mock state pollution between test files.
  *
  * @returns A new localStorage mock with all methods as Vitest mocks
  */
@@ -30,8 +31,8 @@ export function createLocalStorageMock(): LocalStorageMock {
 }
 
 /**
- * Resets a localStorage mock to its default state.
- * This is useful for beforeEach hooks to ensure clean test state.
+ * Resets localStorage mock to clean state.
+ * Essential for beforeEach hooks to prevent test interdependence.
  *
  * @param mock - The localStorage mock to reset
  */
@@ -46,7 +47,8 @@ export function resetLocalStorageMock(mock: LocalStorageMock): void {
 }
 
 /**
- * Type-safe MediaQueryList mock for testing
+ * Type-safe MediaQueryList mock interface.
+ * Includes _triggerChange helper for simulating system theme changes.
  */
 export interface MediaQueryListMock {
   matches: boolean
@@ -61,11 +63,12 @@ export interface MediaQueryListMock {
 }
 
 /**
- * Creates a mock MediaQueryList with the ability to simulate theme changes.
- * This is useful for testing system theme detection.
+ * Creates MediaQueryList mock with theme change simulation.
+ * The _triggerChange method allows tests to simulate OS theme preference changes
+ * without actually modifying system settings.
  *
  * @param initialMatches - Whether the media query initially matches (true for dark mode)
- * @returns A mock MediaQueryList with helper method to trigger changes
+ * @returns Mock with helper method to trigger system theme changes
  */
 export function createMediaQueryListMock(initialMatches: boolean): MediaQueryListMock {
   const listeners: ((event: MediaQueryListEvent) => void)[] = []
