@@ -1,51 +1,16 @@
-import type {ThemeConfig} from '@sparkle/types'
-
 import type {ThemeCollection} from '../src/context/ThemeContext'
 import type {LocalStorageMock} from './test-utils'
 
 import {fireEvent, render, screen, waitFor} from '@testing-library/react'
-import {beforeEach, describe, expect, it, vi} from 'vitest'
+import {beforeEach, describe, expect, it} from 'vitest'
 
 import {useTheme} from '../src/hooks'
 import {DEFAULT_THEME_STORAGE_KEY, webPersistence} from '../src/persistence'
 import {ThemeProvider} from '../src/providers/ThemeProvider'
-import {createMediaQueryListMock, resetLocalStorageMock} from './test-utils'
+import {createMockThemes, setStoredTheme, setupSystemTheme} from './test-utils'
 
-// Mock theme configurations
-const mockLightTheme: ThemeConfig = {
-  colors: {
-    primary: {500: '#3b82f6'},
-    neutral: {500: '#6b7280'},
-  },
-  spacing: {4: '1rem'},
-  typography: {
-    fontFamily: {sans: 'Inter'},
-    fontSize: {base: '1rem'},
-    fontWeight: {normal: 400},
-    lineHeight: {normal: 1.5},
-    letterSpacing: {normal: '0'},
-  },
-  borderRadius: {md: '0.375rem'},
-  shadows: {sm: '0 1px 2px rgba(0,0,0,0.1)'},
-  animation: {
-    duration: {normal: '300ms'},
-    easing: {ease: 'ease'},
-    transition: {all: 'all 300ms ease'},
-  },
-}
-
-const mockDarkTheme: ThemeConfig = {
-  ...mockLightTheme,
-  colors: {
-    primary: {500: '#3b82f6'},
-    neutral: {500: '#9ca3af'},
-  },
-}
-
-const mockThemes: ThemeCollection = {
-  light: mockLightTheme,
-  dark: mockDarkTheme,
-}
+// Use centralized mock theme fixtures
+const mockThemes: ThemeCollection = createMockThemes()
 
 // Test component for persistence integration
 function PersistenceTestComponent() {
@@ -74,14 +39,8 @@ const mockLocalStorage = window.localStorage as unknown as LocalStorageMock
 
 describe('Theme Persistence Integration Tests', () => {
   beforeEach(() => {
-    // Reset localStorage mock to default state
-    resetLocalStorageMock(mockLocalStorage)
-
-    // Mock matchMedia for system theme detection (default to light mode)
-    Object.defineProperty(window, 'matchMedia', {
-      writable: true,
-      value: vi.fn().mockImplementation(() => createMediaQueryListMock(false)),
-    })
+    // Setup baseline: light system theme, no stored preference
+    setupSystemTheme(false)
   })
 
   describe('End-to-End Persistence Flow', () => {
@@ -109,8 +68,8 @@ describe('Theme Persistence Integration Tests', () => {
       // Unmount and remount to simulate page reload
       unmount()
 
-      // Mock localStorage to return the saved theme
-      mockLocalStorage.getItem.mockReturnValue('dark')
+      // Simulate stored theme being available after reload
+      setStoredTheme(mockLocalStorage, 'dark')
 
       // Fresh render instead of rerender
       render(
@@ -182,9 +141,7 @@ describe('Theme Persistence Integration Tests', () => {
 
     it('should load theme from custom storage key on initialization', async () => {
       const customStorageKey = 'custom-theme-key'
-      mockLocalStorage.getItem.mockImplementation((key: string) => {
-        return key === customStorageKey ? 'dark' : null
-      })
+      setStoredTheme(mockLocalStorage, 'dark', customStorageKey)
 
       render(
         <ThemeProvider themes={mockThemes} storageKey={customStorageKey}>
@@ -254,8 +211,8 @@ describe('Theme Persistence Integration Tests', () => {
 
   describe('Cross-Session Persistence', () => {
     it('should maintain theme preference across multiple sessions', async () => {
-      // Simulate first session
-      mockLocalStorage.getItem.mockReturnValue(null)
+      // Simulate first session (no stored theme initially)
+      setStoredTheme(mockLocalStorage, null)
 
       const {unmount} = render(
         <ThemeProvider themes={mockThemes}>
@@ -270,8 +227,8 @@ describe('Theme Persistence Integration Tests', () => {
 
       unmount()
 
-      // Simulate second session
-      mockLocalStorage.getItem.mockReturnValue('dark')
+      // Simulate second session with dark theme stored
+      setStoredTheme(mockLocalStorage, 'dark')
 
       const {unmount: unmount2} = render(
         <ThemeProvider themes={mockThemes}>
@@ -291,8 +248,8 @@ describe('Theme Persistence Integration Tests', () => {
 
       unmount2()
 
-      // Simulate third session
-      mockLocalStorage.getItem.mockReturnValue('light')
+      // Simulate third session with light theme stored
+      setStoredTheme(mockLocalStorage, 'light')
 
       render(
         <ThemeProvider themes={mockThemes}>
@@ -329,7 +286,7 @@ describe('Theme Persistence Integration Tests', () => {
     })
 
     it('should prefer stored theme over system default', async () => {
-      mockLocalStorage.getItem.mockReturnValue('light')
+      setStoredTheme(mockLocalStorage, 'light')
 
       render(
         <ThemeProvider themes={mockThemes} defaultTheme="system">
