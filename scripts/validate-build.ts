@@ -1,8 +1,8 @@
 #!/usr/bin/env tsx
 
 import {execSync} from 'node:child_process'
-import {existsSync, readdirSync, readFileSync, statSync} from 'node:fs'
-import {dirname, resolve} from 'node:path'
+import {existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync} from 'node:fs'
+import {dirname, join, resolve} from 'node:path'
 import process from 'node:process'
 import {fileURLToPath} from 'node:url'
 import {consola} from 'consola'
@@ -42,6 +42,141 @@ interface ValidationResult {
   successCount: number
   errorCount: number
   structureErrors: number
+  buildTime?: number
+  sizeWarnings: number
+}
+
+interface PackageSizeInfo {
+  totalSize: number
+  files: Record<string, number>
+}
+
+interface BundleSizeBaseline {
+  timestamp: string
+  packages: Record<string, PackageSizeInfo>
+  buildTime: number
+}
+
+interface SizeComparison {
+  package: string
+  currentSize: number
+  baselineSize: number
+  percentChange: number
+  isRegression: boolean
+}
+
+/**
+ * Configuration for bundle size monitoring
+ */
+const BUNDLE_SIZE_CONFIG = {
+  baselineFile: resolve(rootDir, '.cache', 'bundle-size-baseline.json'),
+  regressionThreshold: 0.05, // 5% increase triggers warning
+  maxHistorySize: 10, // Keep last 10 baseline measurements
+} as const
+
+/**
+ * Format bytes to human-readable string
+ */
+function formatBytes(bytes: number): string {
+  if (bytes === 0) return '0 B'
+  const k = 1024
+  const sizes = ['B', 'KB', 'MB', 'GB']
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  return `${(bytes / k ** i).toFixed(2)} ${sizes[i]}`
+}
+
+/**
+ * Calculate directory size recursively
+ */
+function getDirectorySize(dirPath: string): number {
+  let totalSize = 0
+
+  if (!existsSync(dirPath)) {
+    return 0
+  }
+
+  try {
+    const entries = readdirSync(dirPath, {withFileTypes: true})
+
+    for (const entry of entries) {
+      const fullPath = join(dirPath, entry.name)
+
+      if (entry.isDirectory()) {
+        totalSize += getDirectorySize(fullPath)
+      } else if (entry.isFile()) {
+        const stats = statSync(fullPath)
+        totalSize += stats.size
+      }
+    }
+  } catch {
+    consola.warn(`Warning: Could not read directory ${dirPath}`)
+  }
+
+  return totalSize
+}
+
+/**
+ * Get size information for a package
+ */
+function getPackageSizeInfo(pkg: PackageInfo): PackageSizeInfo {
+  const distPath = resolve(pkg.path, 'dist')
+  const files: Record<string, number> = {}
+
+  if (!existsSync(distPath)) {
+    return {totalSize: 0, files: {}}
+  }
+
+  try {
+    const entries = readdirSync(distPath)
+
+    for (const entry of entries) {
+      const fullPath = join(distPath, entry)
+      const stats = statSync(fullPath)
+
+      if (stats.isFile()) {
+        files[entry] = stats.size
+      } else if (stats.isDirectory()) {
+        files[entry] = getDirectorySize(fullPath)
+      }
+    }
+  } catch {
+    consola.warn(`Warning: Could not read dist directory for ${pkg.name}`)
+  }
+
+  const totalSize = Object.values(files).reduce((sum, size) => sum + size, 0)
+
+  return {totalSize, files}
+}
+
+/**
+ * Load baseline from file
+ */
+function loadBaseline(): BundleSizeBaseline | null {
+  try {
+    if (existsSync(BUNDLE_SIZE_CONFIG.baselineFile)) {
+      const content = readFileSync(BUNDLE_SIZE_CONFIG.baselineFile, 'utf-8')
+      return JSON.parse(content) as BundleSizeBaseline
+    }
+  } catch {
+    consola.warn('Could not load baseline file, starting fresh')
+  }
+  return null
+}
+
+/**
+ * Save baseline to file
+ */
+function saveBaseline(baseline: BundleSizeBaseline): void {
+  try {
+    const cacheDir = dirname(BUNDLE_SIZE_CONFIG.baselineFile)
+    if (!existsSync(cacheDir)) {
+      mkdirSync(cacheDir, {recursive: true})
+    }
+    writeFileSync(BUNDLE_SIZE_CONFIG.baselineFile, JSON.stringify(baseline, null, 2))
+    consola.debug(`Baseline saved to ${BUNDLE_SIZE_CONFIG.baselineFile}`)
+  } catch (error) {
+    consola.error(`Failed to save baseline: ${error}`)
+  }
 }
 
 /**
@@ -87,9 +222,11 @@ function getLibraryPackages(packages: PackageInfo[]): PackageInfo[] {
 /**
  * Step 1: Build all packages
  */
-function buildAllPackages(): boolean {
+function buildAllPackages(): {success: boolean; buildTime: number} {
   consola.info(`${colors.blue}📊 Step 1: Building all packages...${colors.reset}`)
   consola.info('')
+
+  const startTime = performance.now()
 
   // Run build command with special handling for Turborepo
   try {
@@ -98,9 +235,10 @@ function buildAllPackages(): boolean {
       encoding: 'utf-8',
       stdio: [0, 1, 2], // inherit all stdio
     })
-    consola.info(`${colors.green}✅ Build completed successfully${colors.reset}`)
+    const buildTime = performance.now() - startTime
+    consola.info(`${colors.green}✅ Build completed successfully in ${(buildTime / 1000).toFixed(2)}s${colors.reset}`)
     consola.info('')
-    return true
+    return {success: true, buildTime}
   } catch (error: any) {
     // Turborepo sometimes returns non-zero exit codes even on successful builds
     // Check the error output for success indicators
@@ -111,16 +249,18 @@ function buildAllPackages(): boolean {
     const hasSuccessMessage = errorOutput.includes('Tasks:') && errorOutput.includes('successful')
     const hasNoErrors = !stderr.includes('ERROR') && !stderr.includes('FAILED') && !stderr.includes('Error:')
 
+    const buildTime = performance.now() - startTime
+
     if (hasSuccessMessage && hasNoErrors) {
-      consola.info(`${colors.green}✅ Build completed successfully${colors.reset}`)
+      consola.info(`${colors.green}✅ Build completed successfully in ${(buildTime / 1000).toFixed(2)}s${colors.reset}`)
       consola.info('')
-      return true
+      return {success: true, buildTime}
     } else {
       consola.info(`${colors.red}❌ Build failed${colors.reset}`)
       if (stderr) {
         consola.error(stderr)
       }
-      return false
+      return {success: false, buildTime}
     }
   }
 }
@@ -247,6 +387,78 @@ function validatePackageStructure(packages: PackageInfo[]): number {
 }
 
 /**
+ * Step 5: Validate bundle sizes and detect regressions
+ */
+function validateBundleSizes(
+  packages: PackageInfo[],
+  buildTime: number,
+): {warnings: number; comparisons: SizeComparison[]} {
+  consola.info(`${colors.blue}📊 Step 5: Validating bundle sizes and detecting regressions...${colors.reset}`)
+  consola.info('')
+
+  const libraryPackages = getLibraryPackages(packages)
+  const currentSizes: Record<string, PackageSizeInfo> = {}
+  const comparisons: SizeComparison[] = []
+  let warnings = 0
+
+  // Collect current size information
+  for (const pkg of libraryPackages) {
+    currentSizes[pkg.name] = getPackageSizeInfo(pkg)
+  }
+
+  // Load baseline for comparison
+  const baseline = loadBaseline()
+
+  // Display current sizes and compare with baseline
+  for (const pkg of libraryPackages) {
+    const sizeInfo = currentSizes[pkg.name]
+    const currentSize = sizeInfo.totalSize
+    const formattedSize = formatBytes(currentSize)
+
+    if (baseline && baseline.packages[pkg.name]) {
+      const baselineSize = baseline.packages[pkg.name].totalSize
+      const percentChange = ((currentSize - baselineSize) / baselineSize) * 100
+      const isRegression = percentChange > BUNDLE_SIZE_CONFIG.regressionThreshold * 100
+
+      comparisons.push({
+        package: pkg.name,
+        currentSize,
+        baselineSize,
+        percentChange,
+        isRegression,
+      })
+
+      const changeSymbol = percentChange > 0 ? '+' : ''
+      const changeStr = `${changeSymbol}${percentChange.toFixed(1)}%`
+
+      if (isRegression) {
+        consola.info(
+          `  ${pkg.name}: ${formattedSize} ${colors.red}⚠️  ${changeStr} (regression detected)${colors.reset}`,
+        )
+        warnings++
+      } else if (percentChange > 0) {
+        consola.info(`  ${pkg.name}: ${formattedSize} ${colors.yellow}${changeStr}${colors.reset}`)
+      } else {
+        consola.info(`  ${pkg.name}: ${formattedSize} ${colors.green}${changeStr}${colors.reset}`)
+      }
+    } else {
+      consola.info(`  ${pkg.name}: ${formattedSize} ${colors.blue}(baseline)${colors.reset}`)
+    }
+  }
+
+  // Save current sizes as new baseline
+  const newBaseline: BundleSizeBaseline = {
+    timestamp: new Date().toISOString(),
+    packages: currentSizes,
+    buildTime,
+  }
+  saveBaseline(newBaseline)
+
+  consola.info('')
+  return {warnings, comparisons}
+}
+
+/**
  * Print validation summary
  */
 function printSummary(result: ValidationResult): void {
@@ -256,12 +468,18 @@ function printSummary(result: ValidationResult): void {
   consola.info(`  Packages with declarations: ${colors.green}${result.successCount}${colors.reset}`)
   consola.info(`  Declaration errors: ${colors.red}${result.errorCount}${colors.reset}`)
   consola.info(`  Structure errors: ${colors.red}${result.structureErrors}${colors.reset}`)
+  consola.info(`  Bundle size warnings: ${colors.yellow}${result.sizeWarnings}${colors.reset}`)
+  if (result.buildTime) {
+    consola.info(`  Build time: ${colors.blue}${(result.buildTime / 1000).toFixed(2)}s${colors.reset}`)
+  }
   consola.info('')
 
   const totalErrors = result.errorCount + result.structureErrors
 
-  if (totalErrors === 0) {
+  if (totalErrors === 0 && result.sizeWarnings === 0) {
     consola.info(`${colors.green}🎉 All build validations passed!${colors.reset}`)
+  } else if (totalErrors === 0) {
+    consola.info(`${colors.yellow}⚠️  Build validation passed with ${result.sizeWarnings} size warnings${colors.reset}`)
   } else {
     consola.info(`${colors.red}❌ Build validation failed with ${totalErrors} errors${colors.reset}`)
   }
@@ -284,7 +502,8 @@ function main(): void {
   consola.info('')
 
   // Step 1: Build all packages
-  if (!buildAllPackages()) {
+  const buildResult = buildAllPackages()
+  if (!buildResult.success) {
     process.exit(1)
   }
 
@@ -297,17 +516,35 @@ function main(): void {
   // Step 4: Validate package structure
   const structureErrors = validatePackageStructure(packages)
 
+  // Step 5: Validate bundle sizes and detect regressions
+  const {warnings: sizeWarnings, comparisons} = validateBundleSizes(packages, buildResult.buildTime)
+
+  // Report significant regressions
+  if (sizeWarnings > 0) {
+    consola.warn(`${colors.yellow}⚠️  Detected ${sizeWarnings} bundle size regression(s):${colors.reset}`)
+    for (const comparison of comparisons) {
+      if (comparison.isRegression) {
+        consola.warn(
+          `  ${comparison.package}: ${formatBytes(comparison.baselineSize)} → ${formatBytes(comparison.currentSize)} (+${comparison.percentChange.toFixed(1)}%)`,
+        )
+      }
+    }
+    consola.info('')
+  }
+
   // Print summary
   const result: ValidationResult = {
     packageCount: libraryPackages.length, // Only count library packages in validation
     successCount,
     errorCount: errorCount + artifactErrors,
     structureErrors,
+    buildTime: buildResult.buildTime,
+    sizeWarnings,
   }
 
   printSummary(result)
 
-  // Exit with appropriate code
+  // Exit with appropriate code (warnings don't fail the build)
   const totalErrors = result.errorCount + result.structureErrors
   process.exit(totalErrors === 0 ? 0 : 1)
 }

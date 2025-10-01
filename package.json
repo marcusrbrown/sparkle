@@ -29,6 +29,7 @@
     "lint": "eslint",
     "start": "turbo run start --parallel",
     "test": "turbo run test",
+    "test:build-pipeline": "tsx scripts/validate-build.ts",
     "test:watch": "turbo run test:watch --parallel",
     "test:workspace": "vitest run test/workspace-consistency.test.ts"
   },
