@@ -1,0 +1,71 @@
+{
+  "name": "@sparkle/test-utils",
+  "version": "0.1.0",
+  "description": "Shared test utilities and mocking helpers for Sparkle monorepo",
+  "keywords": [
+    "testing",
+    "test-utils",
+    "vitest",
+    "mocking",
+    "react-testing-library"
+  ],
+  "license": "MIT",
+  "author": "Marcus R. Brown",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./dom": {
+      "types": "./dist/dom/index.d.ts",
+      "import": "./dist/dom/index.js"
+    },
+    "./react": {
+      "types": "./dist/react/index.d.ts",
+      "import": "./dist/react/index.js"
+    },
+    "./console": {
+      "types": "./dist/console/index.d.ts",
+      "import": "./dist/console/index.js"
+    },
+    "./terminal": {
+      "types": "./dist/terminal/index.d.ts",
+      "import": "./dist/terminal/index.js"
+    },
+    "./lifecycle": {
+      "types": "./dist/lifecycle/index.d.ts",
+      "import": "./dist/lifecycle/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsdown",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@sparkle/theme": "workspace:*",
+    "@sparkle/types": "workspace:*"
+  },
+  "devDependencies": {
+    "@sparkle/config": "workspace:*",
+    "@testing-library/react": "^16.0.0",
+    "@types/react": "~19.1.0",
+    "@xterm/addon-fit": "^0.10.0",
+    "@xterm/xterm": "^5.5.0",
+    "react": "19.1.1",
+    "tsdown": "0.14.2",
+    "typescript": "5.9.2",
+    "vitest": "^3.0.0"
+  },
+  "peerDependencies": {
+    "@testing-library/react": ">=14.0.0",
+    "react": ">=18.0.0",
+    "vitest": ">=2.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -6,9 +6,11 @@
  * and meaningful assertions that validate both implementation correctness and API contracts.
  */
 
-import {ThemeProvider} from '@sparkle/theme'
-import {render, screen} from '@testing-library/react'
-import {describe, expect, expectTypeOf, it, vi} from 'vitest'
+import {setupResizeObserver} from '@sparkle/test-utils/dom'
+import {renderWithTheme} from '@sparkle/test-utils/react'
+import {createTerminalMock, setupXTermMocks} from '@sparkle/test-utils/terminal'
+import {screen} from '@testing-library/react'
+import {describe, expect, expectTypeOf, it} from 'vitest'
 
 import {
   clearTerminal,
@@ -19,78 +21,13 @@ import {
   type TerminalProps,
 } from './Terminal'
 
-vi.mock('@xterm/xterm', () => ({
-  Terminal: vi.fn().mockImplementation(() => ({
-    write: vi.fn(),
-    clear: vi.fn(),
-    focus: vi.fn(),
-    open: vi.fn(),
-    dispose: vi.fn(),
-    loadAddon: vi.fn(),
-    onData: vi.fn(() => ({dispose: vi.fn()})),
-    onResize: vi.fn(() => ({dispose: vi.fn()})),
-    options: {},
-    cols: 80,
-    rows: 24,
-  })),
-}))
-
-vi.mock('@xterm/addon-fit', () => ({
-  FitAddon: vi.fn().mockImplementation(() => ({
-    fit: vi.fn(),
-    proposeDimensions: vi.fn(() => ({cols: 80, rows: 24})),
-  })),
-}))
-
-/**
- * ResizeObserver mock for container size change testing.
- * Browser API not available in test environment.
- */
-globalThis.ResizeObserver = vi.fn().mockImplementation(() => ({
-  observe: vi.fn(),
-  unobserve: vi.fn(),
-  disconnect: vi.fn(),
-}))
-
-/**
- * Mock XTerm terminal interface for testing.
- * Prevents actual terminal initialization during tests while maintaining API compatibility.
- */
-interface MockTerminal {
-  write: ReturnType<typeof vi.fn>
-  clear: ReturnType<typeof vi.fn>
-  focus: ReturnType<typeof vi.fn>
-  open: ReturnType<typeof vi.fn>
-  dispose: ReturnType<typeof vi.fn>
-  loadAddon: ReturnType<typeof vi.fn>
-  onData: ReturnType<typeof vi.fn>
-  onResize: ReturnType<typeof vi.fn>
-  options: Record<string, unknown>
-  cols: number
-  rows: number
-}
-
-const createMockTerminal = (): MockTerminal => ({
-  write: vi.fn(),
-  clear: vi.fn(),
-  focus: vi.fn(),
-  open: vi.fn(),
-  dispose: vi.fn(),
-  loadAddon: vi.fn(),
-  onData: vi.fn(() => ({dispose: vi.fn()})),
-  onResize: vi.fn(() => ({dispose: vi.fn()})),
-  options: {},
-  cols: 80,
-  rows: 24,
-})
+// Setup XTerm and ResizeObserver mocks using shared utilities
+setupXTermMocks()
+setupResizeObserver()
 
 describe('Terminal Component', () => {
   const renderTerminal = (props: Partial<TerminalProps> = {}) => {
-    return render(
-      <ThemeProvider>
-        <Terminal data-testid="terminal" {...props} />
-      </ThemeProvider>,
-    )
+    return renderWithTheme(<Terminal data-testid="terminal" {...props} />)
   }
 
   describe('Component Rendering', () => {
@@ -179,13 +116,13 @@ describe('Terminal Utility Functions', () => {
 
   describe('writeToTerminal', () => {
     it('should write text to terminal', () => {
-      const mockTerminal = createMockTerminal()
+      const mockTerminal = createTerminalMock()
       writeToTerminal(mockTerminal as any, 'test text')
       expect(mockTerminal.write).toHaveBeenCalledWith('test text')
     })
 
     it('should throw TerminalError on write failure', () => {
-      const mockTerminal = createMockTerminal()
+      const mockTerminal = createTerminalMock()
       mockTerminal.write.mockImplementationOnce(() => {
         throw new Error('Write failed')
       })
@@ -196,13 +133,13 @@ describe('Terminal Utility Functions', () => {
 
   describe('clearTerminal', () => {
     it('should clear terminal', () => {
-      const mockTerminal = createMockTerminal()
+      const mockTerminal = createTerminalMock()
       clearTerminal(mockTerminal as any)
       expect(mockTerminal.clear).toHaveBeenCalled()
     })
 
     it('should throw TerminalError on clear failure', () => {
-      const mockTerminal = createMockTerminal()
+      const mockTerminal = createTerminalMock()
       mockTerminal.clear.mockImplementationOnce(() => {
         throw new Error('Clear failed')
       })
@@ -213,13 +150,13 @@ describe('Terminal Utility Functions', () => {
 
   describe('focusTerminal', () => {
     it('should focus terminal', () => {
-      const mockTerminal = createMockTerminal()
+      const mockTerminal = createTerminalMock()
       focusTerminal(mockTerminal as any)
       expect(mockTerminal.focus).toHaveBeenCalled()
     })
 
     it('should throw TerminalError on focus failure', () => {
-      const mockTerminal = createMockTerminal()
+      const mockTerminal = createTerminalMock()
       mockTerminal.focus.mockImplementationOnce(() => {
         throw new Error('Focus failed')
       })
