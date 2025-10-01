@@ -9,7 +9,9 @@
 import type {ExecutionContext} from '../shell/types'
 
 import type {WasmModuleLoader} from '../shell/wasm-types'
-import {describe, expect, it, vi} from 'vitest'
+import {suppressConsola} from '@sparkle/test-utils/console'
+import {consola} from 'consola'
+import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest'
 
 import {
   createWasmExecutableCommand,
@@ -21,6 +23,22 @@ import {createWasmModuleLoader} from '../shell/wasm-loader'
 
 // Mock fetch for WASM file loading
 globalThis.fetch = vi.fn()
+
+// Setup console suppression for all WASM tests
+let restoreConsola: (() => void) | undefined
+
+beforeEach(() => {
+  // Suppress expected error/warn logging from intentional test failures
+  restoreConsola = suppressConsola(consola as unknown as Record<string, unknown>, ['error', 'warn'])
+})
+
+afterEach(() => {
+  // Restore consola logging
+  if (restoreConsola) {
+    restoreConsola()
+    restoreConsola = undefined
+  }
+})
 
 describe('WASM Commands', () => {
   describe('isWasmExecutable', () => {
