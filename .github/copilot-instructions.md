@@ -185,6 +185,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
     </button>
   )
 })
+
+Button.displayName = 'Button'
 ```
 
 ### Error Testing Strategy
@@ -254,7 +256,7 @@ turbo run test --filter=...[origin/main]
 
 #### Code Style Conventions
 
-- **Avoid ES6 Classes**: Use function declarations and object patterns instead of class syntax
+- **Avoid ES6 Classes**: Use function declarations and object patterns instead of class syntax (exception: extending Error for custom error types)
 - **Utility Types**: Leverage built-in utility types extensively:
   - `Pick<T, K>` for selecting specific properties
   - `Omit<T, K>` for excluding properties
@@ -283,15 +285,16 @@ export function createButtonClassName(variant: ButtonVariant): string {
 #### Documentation Standards
 
 - **JSDoc Required**: All public APIs must have JSDoc comments explaining purpose and usage
-- **Explain "Why" Not "What"**: Comments should explain reasoning, not implementation details
+- **Explain "Why" Not "What"**: Focus on business logic, design decisions, and non-obvious behavior - avoid stating what the code obviously does
 - **Type Documentation**: Document complex types with examples and use cases
+- **Self-Documenting Code**: Prefer clear naming over comments; only comment when code alone cannot convey intent
 
 ```typescript
 /**
  * Creates a type-safe form field with validation support.
  *
- * This hook manages form field state and integrates with the parent form's
- * validation system to provide real-time feedback.
+ * Integrates with parent form's validation system for real-time feedback.
+ * Uses debounced validation to avoid excessive re-renders during typing.
  *
  * @param name - Unique identifier for the field within the form
  * @param initialValue - Starting value for the field
@@ -309,7 +312,7 @@ export function useFormField<T>(name: string, initialValue: T): FormFieldState<T
 ```typescript
 import {consola} from 'consola'
 
-// ✅ Good: Specific error types with meaningful messages
+// ✅ Good: Specific error types (class usage acceptable for Error extensions)
 export class ValidationError extends Error {
   constructor(
     public readonly field: string,
@@ -349,6 +352,72 @@ describe('Button component', () => {
   it('should handle click events with correct types', () => {
     const handleClick = vi.fn<[React.MouseEvent<HTMLButtonElement>], void>()
     // Test implementation maintains type safety
+  })
+})
+```
+
+### Testing Utilities & Mock Patterns
+
+The `@sparkle/test-utils` package provides comprehensive mocking utilities to prevent test state pollution:
+
+#### Core Testing Utilities
+
+```typescript
+import {
+  createLocalStorageMock,
+  createMediaQueryListMock,
+  createTerminalMock,
+  createFitAddonMock,
+  mockConsole,
+  mockConsola,
+  setupXTermMocks,
+  standardBeforeEach,
+  standardAfterEach,
+} from '@sparkle/test-utils'
+
+// Factory pattern prevents mock state pollution between tests
+beforeEach(() => {
+  standardBeforeEach() // Clears all mocks
+  const mockLocalStorage = createLocalStorageMock()
+  globalThis.localStorage = mockLocalStorage as unknown as Storage
+})
+
+afterEach(() => {
+  standardAfterEach() // Restores original implementations
+})
+```
+
+#### Mock Categories
+
+- **DOM Mocks**: `createLocalStorageMock()`, `createMediaQueryListMock(initialMatches)`
+- **Console Mocks**: `mockConsole({suppress: true})`, `mockConsola(consolaInstance)`
+- **Terminal Mocks**: `createTerminalMock()`, `createFitAddonMock()`, `setupXTermMocks()`
+- **Lifecycle Helpers**: `standardBeforeEach()`, `standardAfterEach()`
+
+#### Testing Best Practices
+
+- **Factory Functions**: Always use factory functions for mocks to prevent state pollution between tests
+- **Mock Cleanup**: Use `standardBeforeEach()` and `standardAfterEach()` for consistent test isolation
+- **Type Safety**: All mocks maintain full TypeScript compatibility with original APIs
+- **Vitest Globals**: Configure `globals: true` in `vitest.config.ts` for implicit imports
+- **Test Quality**: All tests must pass before completing tasks - fix failing tests rather than simplifying them
+- **Working Tests Required**: What good is writing tests if they don't work? Prioritize reliable, maintainable tests over coverage metrics
+
+```typescript
+// Example: Testing with localStorage mock
+import {createLocalStorageMock} from '@sparkle/test-utils'
+
+describe('localStorage integration', () => {
+  let mockStorage: LocalStorageMock
+
+  beforeEach(() => {
+    mockStorage = createLocalStorageMock()
+    globalThis.localStorage = mockStorage as unknown as Storage
+  })
+
+  it('should save theme preference', () => {
+    saveTheme('dark')
+    expect(mockStorage.setItem).toHaveBeenCalledWith('theme', 'dark')
   })
 })
 ```
@@ -412,7 +481,9 @@ import {NativeThemeProvider} from '@sparkle/theme'
 Components should accept theme-aware props and use theme context:
 
 ```typescript
-export interface ButtonProps extends HTMLButtonElement {
+import type {HTMLProperties} from '@sparkle/types'
+
+export interface ButtonProps extends HTMLProperties<HTMLButtonElement> {
   variant?: 'primary' | 'secondary'
   themeMode?: 'light' | 'dark' | 'system'
 }
@@ -429,6 +500,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, r
     />
   )
 })
+
+Button.displayName = 'Button'
 ```
 
 #### Tailwind Integration
@@ -537,6 +610,8 @@ test.describe('Button Component', () => {
 - `@sparkle/theme`: Cross-platform design token system with TokenTransformer and theme providers
 - `@sparkle/ui`: Component library consuming types/utils/theme for consistent design
 - `@sparkle/config`: Shared configurations (Tailwind, TypeScript, ESLint)
+- `@sparkle/test-utils`: Testing utilities with comprehensive mocking (localStorage, console, consola, xterm, media queries)
+- `@sparkle/error-testing`: Error scenario testing with fluent builder pattern (TestScenarioBuilder)
 - `@sparkle/storybook`: Centralized component documentation and visual regression testing
 - `@sparkle/docs`: Astro Starlight documentation site with automated JSDoc extraction and interactive playground
 
