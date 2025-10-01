@@ -21,6 +21,14 @@ export interface ConsolaMocks {
 export type ConsolaMethod = 'log' | 'info' | 'warn' | 'error' | 'debug' | 'success' | 'fail'
 
 /**
+ * Type-safe interface for consola-like objects.
+ * Allows mocking any object with logging methods without complex type assertions.
+ */
+export interface ConsolaLike {
+  [key: string]: unknown
+}
+
+/**
  * Creates consola method mocks for capturing output in tests.
  * Useful for suppressing expected error/warning logs during test execution.
  *
@@ -39,7 +47,7 @@ export type ConsolaMethod = 'log' | 'info' | 'warn' | 'error' | 'debug' | 'succe
  *   let consolaMocks: ConsolaMocks
  *
  *   beforeEach(() => {
- *     consolaMocks = mockConsola(consola as unknown as Record<string, unknown>, {methods: ['error', 'warn']})
+ *     consolaMocks = mockConsola(consola, {methods: ['error', 'warn']})
  *   })
  *
  *   afterEach(() => {
@@ -55,7 +63,7 @@ export type ConsolaMethod = 'log' | 'info' | 'warn' | 'error' | 'debug' | 'succe
  * ```
  */
 export function mockConsola(
-  consolaInstance: Record<string, unknown>,
+  consolaInstance: ConsolaLike,
   options?: {methods?: ConsolaMethod[]; suppress?: boolean},
 ): ConsolaMocks {
   const {methods = ['log', 'info', 'warn', 'error', 'debug', 'success', 'fail'], suppress = true} = options ?? {}
@@ -110,7 +118,10 @@ export function restoreConsola(mocks: ConsolaMocks): void {
  * })
  * ```
  */
-export function suppressConsola(consolaInstance: unknown, methods: ConsolaMethod[] = ['error', 'warn']): () => void {
-  const mocks = mockConsola(consolaInstance as Record<string, unknown>, {methods, suppress: true})
+export function suppressConsola(
+  consolaInstance: ConsolaLike,
+  methods: ConsolaMethod[] = ['error', 'warn'],
+): () => void {
+  const mocks = mockConsola(consolaInstance, {methods, suppress: true})
   return () => restoreConsola(mocks)
 }

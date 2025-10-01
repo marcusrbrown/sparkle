@@ -80,7 +80,7 @@ describe('WASM Executable Loading Integration Tests', () => {
   let wasmLoader: WasmModuleLoader
   let mockExecutionContext: ExecutionContext
   let originalFetch: typeof globalThis.fetch
-  let restoreConsola: (() => void) | undefined
+  let cleanupConsola: (() => void) | undefined
 
   beforeEach(() => {
     wasmLoader = createWasmModuleLoader()
@@ -91,7 +91,7 @@ describe('WASM Executable Loading Integration Tests', () => {
     globalThis.fetch = vi.fn()
 
     // Suppress expected error/warn logging from intentional test failures
-    restoreConsola = suppressConsola(consola as unknown as Record<string, unknown>, ['error', 'warn'])
+    cleanupConsola = suppressConsola(consola, ['error', 'warn'])
   })
 
   afterEach(() => {
@@ -99,9 +99,9 @@ describe('WASM Executable Loading Integration Tests', () => {
     vi.clearAllMocks()
 
     // Restore consola logging
-    if (restoreConsola) {
-      restoreConsola()
-      restoreConsola = undefined
+    if (cleanupConsola != null) {
+      cleanupConsola()
+      cleanupConsola = undefined
     }
   })
 
