@@ -1,5 +1,6 @@
 #!/usr/bin/env tsx
 
+import type {Buffer} from 'node:buffer'
 import {execSync} from 'node:child_process'
 import {existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync} from 'node:fs'
 import {dirname, join, resolve} from 'node:path'
@@ -66,7 +67,12 @@ interface SizeComparison {
 }
 
 /**
- * Configuration for bundle size monitoring
+ * Configuration for bundle size monitoring and regression detection.
+ *
+ * Uses a 5% threshold because smaller fluctuations are often due to minor
+ * dependency updates or code formatting changes that don't represent actual
+ * regressions. Baseline stored in .cache directory to prevent git conflicts
+ * while maintaining local tracking across builds.
  */
 const BUNDLE_SIZE_CONFIG = {
   baselineFile: resolve(rootDir, '.cache', 'bundle-size-baseline.json'),
@@ -75,7 +81,13 @@ const BUNDLE_SIZE_CONFIG = {
 } as const
 
 /**
- * Format bytes to human-readable string
+ * Converts byte count to human-readable format with appropriate units.
+ *
+ * Uses binary (1024) rather than decimal (1000) conversion as is standard
+ * for file sizes in most operating systems and development tools.
+ *
+ * @param bytes - Raw byte count to format
+ * @returns Formatted string with two decimal places and unit suffix (B, KB, MB, GB)
  */
 function formatBytes(bytes: number): string {
   if (bytes === 0) return '0 B'
@@ -116,7 +128,14 @@ function getDirectorySize(dirPath: string): number {
 }
 
 /**
- * Get size information for a package
+ * Extracts size information for a package's built artifacts.
+ *
+ * Recursively calculates sizes for all files and subdirectories in the dist folder.
+ * Non-existent or unreadable dist directories are handled gracefully by returning
+ * zero size rather than failing the entire validation.
+ *
+ * @param pkg - Package information containing path to package directory
+ * @returns Size information with total bytes and per-file breakdown
  */
 function getPackageSizeInfo(pkg: PackageInfo): PackageSizeInfo {
   const distPath = resolve(pkg.path, 'dist')
@@ -149,7 +168,13 @@ function getPackageSizeInfo(pkg: PackageInfo): PackageSizeInfo {
 }
 
 /**
- * Load baseline from file
+ * Loads the baseline bundle size data from persistent storage.
+ *
+ * Baseline files may not exist on first run or may be corrupted. In such cases,
+ * we gracefully return null to trigger baseline creation mode rather than failing.
+ * This ensures the validation script is resilient to missing or invalid baselines.
+ *
+ * @returns Parsed baseline data if valid file exists, null otherwise
  */
 function loadBaseline(): BundleSizeBaseline | null {
   try {
@@ -164,7 +189,13 @@ function loadBaseline(): BundleSizeBaseline | null {
 }
 
 /**
- * Save baseline to file
+ * Persists baseline bundle size data to disk for future comparisons.
+ *
+ * Creates the cache directory if it doesn't exist. Failure to save is logged
+ * but non-fatal since the current run's validation has already completed.
+ * Future runs will simply create a fresh baseline if this save fails.
+ *
+ * @param baseline - Complete baseline data including timestamps and package sizes
  */
 function saveBaseline(baseline: BundleSizeBaseline): void {
   try {
@@ -180,7 +211,14 @@ function saveBaseline(baseline: BundleSizeBaseline): void {
 }
 
 /**
- * Get all packages in the workspace
+ * Discovers all packages in the monorepo workspace.
+ *
+ * Scans the packages directory for valid package subdirectories (those with
+ * package.json files). Critical errors in directory reading or JSON parsing
+ * terminate validation since we can't proceed without knowing which packages
+ * to validate.
+ *
+ * @returns Array of package metadata for all discovered packages
  */
 function getPackages(): PackageInfo[] {
   const packagesDir = resolve(rootDir, 'packages')
@@ -212,7 +250,15 @@ function getPackages(): PackageInfo[] {
 }
 
 /**
- * Get library packages (excludes dev tools like Storybook)
+ * Filters to library packages that require full validation.
+ *
+ * Dev tools like Storybook are excluded because they have different build
+ * outputs and validation requirements. Storybook produces static HTML bundles
+ * rather than consumable npm packages, so standard library checks (like
+ * package.json 'files' field) don't apply.
+ *
+ * @param packages - All discovered workspace packages
+ * @returns Subset of packages requiring library-specific validation
  */
 function getLibraryPackages(packages: PackageInfo[]): PackageInfo[] {
   const excludeFromLibraryValidation = ['storybook']
@@ -220,7 +266,14 @@ function getLibraryPackages(packages: PackageInfo[]): PackageInfo[] {
 }
 
 /**
- * Step 1: Build all packages
+ * Builds all packages via Turborepo and tracks build performance.
+ *
+ * Turborepo sometimes returns non-zero exit codes even on successful builds
+ * due to cached task execution, so we parse stdout/stderr to determine actual
+ * success. Build time tracking helps identify performance regressions in the
+ * build pipeline itself.
+ *
+ * @returns Build success status and elapsed time in milliseconds
  */
 function buildAllPackages(): {success: boolean; buildTime: number} {
   consola.info(`${colors.blue}📊 Step 1: Building all packages...${colors.reset}`)
@@ -228,7 +281,6 @@ function buildAllPackages(): {success: boolean; buildTime: number} {
 
   const startTime = performance.now()
 
-  // Run build command with special handling for Turborepo
   try {
     execSync('pnpm run build', {
       cwd: rootDir,
@@ -239,11 +291,12 @@ function buildAllPackages(): {success: boolean; buildTime: number} {
     consola.info(`${colors.green}✅ Build completed successfully in ${(buildTime / 1000).toFixed(2)}s${colors.reset}`)
     consola.info('')
     return {success: true, buildTime}
-  } catch (error: any) {
+  } catch (error: unknown) {
     // Turborepo sometimes returns non-zero exit codes even on successful builds
     // Check the error output for success indicators
-    const errorOutput = error.stdout ? error.stdout.toString() : ''
-    const stderr = error.stderr ? error.stderr.toString() : ''
+    const execError = error as {stdout?: Buffer; stderr?: Buffer}
+    const errorOutput = execError.stdout ? execError.stdout.toString() : ''
+    const stderr = execError.stderr ? execError.stderr.toString() : ''
 
     // Look for success indicators in the output
     const hasSuccessMessage = errorOutput.includes('Tasks:') && errorOutput.includes('successful')
@@ -266,7 +319,14 @@ function buildAllPackages(): {success: boolean; buildTime: number} {
 }
 
 /**
- * Step 2: Validate TypeScript declarations
+ * Ensures all library packages generate TypeScript declaration files.
+ *
+ * Declaration files (.d.ts) are critical for TypeScript consumers to get
+ * proper type checking and IDE autocomplete. Missing declarations indicate
+ * a build configuration issue that must be fixed before publishing.
+ *
+ * @param packages - All workspace packages
+ * @returns Counts of packages with and without declarations
  */
 function validateTypeScriptDeclarations(packages: PackageInfo[]): {successCount: number; errorCount: number} {
   consola.info(`${colors.blue}📊 Step 2: Validating TypeScript declarations...${colors.reset}`)
@@ -275,7 +335,6 @@ function validateTypeScriptDeclarations(packages: PackageInfo[]): {successCount:
   let successCount = 0
   let errorCount = 0
 
-  // Only validate library packages, not dev tools like Storybook
   const libraryPackages = getLibraryPackages(packages)
 
   for (const pkg of libraryPackages) {
@@ -297,7 +356,15 @@ function validateTypeScriptDeclarations(packages: PackageInfo[]): {successCount:
 }
 
 /**
- * Step 3: Validate build artifacts
+ * Verifies essential build artifacts exist for all library packages.
+ *
+ * Checks for required files (dist/, index.js) and optional quality-of-life
+ * files (source maps). Missing dist directories or entry points are errors
+ * that prevent package consumption. Missing source maps are warnings since
+ * they only affect debugging experience, not core functionality.
+ *
+ * @param packages - All workspace packages
+ * @returns Count of packages with critical artifact errors
  */
 function validateBuildArtifacts(packages: PackageInfo[]): number {
   consola.info(`${colors.blue}📊 Step 3: Validating build artifacts...${colors.reset}`)
@@ -305,7 +372,6 @@ function validateBuildArtifacts(packages: PackageInfo[]): number {
 
   let errorCount = 0
 
-  // Only validate library packages, not dev tools like Storybook
   const libraryPackages = getLibraryPackages(packages)
 
   for (const pkg of libraryPackages) {
@@ -351,7 +417,15 @@ function validateBuildArtifacts(packages: PackageInfo[]): number {
 }
 
 /**
- * Step 4: Validate package structure consistency
+ * Ensures package.json files have required fields for npm publishing.
+ *
+ * The 'main', 'types', 'exports', and 'files' fields are essential for proper
+ * package consumption. Missing fields cause import failures or incomplete
+ * package contents when published to npm. This validation catches configuration
+ * errors before they reach the registry.
+ *
+ * @param packages - All workspace packages
+ * @returns Count of packages with structural errors
  */
 function validatePackageStructure(packages: PackageInfo[]): number {
   consola.info(`${colors.blue}📊 Step 4: Validating package structure consistency...${colors.reset}`)
@@ -359,7 +433,6 @@ function validatePackageStructure(packages: PackageInfo[]): number {
 
   let structureErrors = 0
 
-  // Only validate library packages, not dev tools like Storybook
   const libraryPackages = getLibraryPackages(packages)
 
   for (const pkg of libraryPackages) {
@@ -387,7 +460,16 @@ function validatePackageStructure(packages: PackageInfo[]): number {
 }
 
 /**
- * Step 5: Validate bundle sizes and detect regressions
+ * Tracks bundle sizes and alerts on performance regressions.
+ *
+ * Compares current build artifact sizes against the stored baseline, flagging
+ * packages that exceed the regression threshold. Warnings are non-blocking to
+ * allow gradual optimization without breaking CI, but provide visibility into
+ * bundle bloat before it reaches production.
+ *
+ * @param packages - All workspace packages
+ * @param buildTime - Elapsed build time in milliseconds for baseline storage
+ * @returns Warning count and detailed size comparisons
  */
 function validateBundleSizes(
   packages: PackageInfo[],
@@ -401,12 +483,10 @@ function validateBundleSizes(
   const comparisons: SizeComparison[] = []
   let warnings = 0
 
-  // Collect current size information
   for (const pkg of libraryPackages) {
     currentSizes[pkg.name] = getPackageSizeInfo(pkg)
   }
 
-  // Load baseline for comparison
   const baseline = loadBaseline()
 
   // Display current sizes and compare with baseline
@@ -459,7 +539,13 @@ function validateBundleSizes(
 }
 
 /**
- * Print validation summary
+ * Displays comprehensive validation results summary.
+ *
+ * Separates errors (blocking) from warnings (non-blocking) to help developers
+ * prioritize fixes. Bundle size warnings don't fail builds to allow gradual
+ * optimization without breaking CI pipelines.
+ *
+ * @param result - Aggregated validation metrics from all checks
  */
 function printSummary(result: ValidationResult): void {
   consola.info(`${colors.bold}📋 Build Validation Summary:${colors.reset}`)
@@ -486,13 +572,18 @@ function printSummary(result: ValidationResult): void {
 }
 
 /**
- * Main validation function
+ * Orchestrates comprehensive build validation pipeline.
+ *
+ * Runs a multi-step validation process covering builds, TypeScript declarations,
+ * artifacts, package structure, and bundle sizes. Steps execute sequentially
+ * since later steps depend on earlier outputs (e.g., can't validate artifacts
+ * without a successful build). Exit codes follow Unix conventions: 0 for success,
+ * 1 for errors (warnings alone don't trigger failures).
  */
 function main(): void {
   consola.info('🔍 Validating Sparkle monorepo build integrity...')
   consola.info('')
 
-  // Get all packages
   const packages = getPackages()
   const libraryPackages = getLibraryPackages(packages)
 
@@ -501,7 +592,6 @@ function main(): void {
   )
   consola.info('')
 
-  // Step 1: Build all packages
   const buildResult = buildAllPackages()
   if (!buildResult.success) {
     process.exit(1)
