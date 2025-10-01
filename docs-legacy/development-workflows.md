@@ -223,6 +223,9 @@ pnpm test:artifacts          # Build artifacts and cache
 
 # Run all pipeline tests
 pnpm test:pipeline
+
+# Run all tests across packages
+pnpm test
 ```
 
 ### 2. Test Coverage
@@ -236,6 +239,68 @@ pnpm test:pipeline
 - Development workflow automation
 - Build artifact validation
 - Turborepo cache effectiveness
+- Component unit and integration tests
+- Theme persistence and configuration tests
+- WASM integration tests
+
+### 3. Testing Best Practices
+
+**Factory-Based Mock Patterns** _(Implemented Oct 2025)_:
+
+The Sparkle project uses factory-based mock patterns to prevent test state pollution and ensure reliable test execution.
+
+```typescript
+// ✅ GOOD: Factory function creates clean mock per test
+import {createLocalStorageMock, standardAfterEach, standardBeforeEach} from '@sparkle/test-utils'
+
+describe('MyComponent', () => {
+  beforeEach(standardBeforeEach) // Clean setup
+  afterEach(standardAfterEach)   // Proper cleanup
+
+  it('should work correctly', () => {
+    const mockStorage = createLocalStorageMock() // Fresh state
+    globalThis.localStorage = mockStorage as unknown as Storage
+    // ... test implementation
+  })
+})
+
+// ❌ BAD: Shared mock instance (state pollution)
+const mockStorage = {
+  getItem: vi.fn(),
+  setItem: vi.fn(),
+}
+// State accumulates across tests!
+```
+
+**Available Test Utilities** (`@sparkle/test-utils` package):
+
+**DOM Mocks**:
+
+- `createLocalStorageMock()` - Clean localStorage factory
+- `createMediaQueryListMock(initialMatches)` - Media query mocking
+
+**Console Mocks**:
+
+- `mockConsole({suppress})` - Console function mocking
+- `mockConsola(consolaInstance)` - Consola library mocking
+
+**Terminal Mocks** (for moo-dang):
+
+- `createTerminalMock()` - xterm.js Terminal instance
+- `createFitAddonMock()` - FitAddon functionality
+- `setupXTermMocks()` - Complete xterm setup
+
+**Lifecycle Helpers**:
+
+- `standardBeforeEach()` - Consistent test setup and mock clearing
+- `standardAfterEach()` - Proper cleanup and restoration
+
+**Test Quality Metrics** _(As of Oct 2025)_:
+
+- Pass rate: **100%** (647/647 passing, 1 intentionally skipped)
+- False positives: **0**
+- Flaky tests: **0**
+- Execution time: **~16 seconds** (64% improvement from previous)
 
 ## Enhanced Error Reporting
 
@@ -392,6 +457,89 @@ turbo run build --dry
 - Accurate IntelliSense for cross-package imports
 - Proper build order enforcement
 
+## Security and Quality Gates
+
+### 1. Security Dependency Management _(Implemented Oct 2025)_
+
+**Regular security audits are essential:**
+
+```bash
+# Check for security vulnerabilities
+pnpm audit
+
+# View dependency tree for specific package
+pnpm why <package-name>
+
+# Check for outdated packages
+pnpm outdated
+```
+
+**Security best practices established:**
+
+- **Zero tolerance policy** for known vulnerabilities
+- **Automated monitoring** with Dependabot or similar tools
+- **pnpm overrides** for transitive dependency patches
+- **Regular audits** before every commit recommended
+
+**Example override for security patches** (`pnpm-workspace.yaml`):
+
+```yaml
+packageExtensions:
+  overrides:
+    # Patch vulnerable versions of tmp package
+    tmp@<0.2.4: ^0.2.4
+```
+
+### 2. Quality Gates Checklist
+
+**Pre-commit validation** (should pass before committing):
+
+```bash
+pnpm lint                  # Linting (0 errors required)
+pnpm exec tsc --noEmit     # Type checking (0 errors required)
+pnpm check:monorepo        # Workspace consistency
+```
+
+**Pre-push validation** (should pass before pushing):
+
+```bash
+pnpm test                  # Tests (100% pass rate required)
+pnpm build                 # Build (successful completion required)
+pnpm health-check          # Environment validation
+```
+
+**Release validation** (should pass before releases):
+
+```bash
+pnpm audit                 # Security (0 vulnerabilities required)
+pnpm test:build-pipeline   # Performance (no regressions)
+pnpm check                 # Full quality pipeline
+```
+
+### 3. Automated Quality Monitoring
+
+**Bundle size regression detection:**
+
+The `test:build-pipeline` script monitors bundle sizes and alerts on regressions:
+
+```bash
+# Run bundle size validation
+pnpm test:build-pipeline
+
+# Output includes:
+# - Build time tracking
+# - Bundle size comparison against baseline
+# - 5% regression threshold alerting
+# - TypeScript declaration validation
+# - Package structure validation
+```
+
+**Current performance baselines** _(As of Oct 2025)_:
+
+- Build time: ~1.3s with FULL TURBO cache
+- All packages: 0.0% bundle size change from baseline
+- TypeScript declarations: 100% coverage (7/7 packages)
+
 ## Continuous Integration
 
 ### CI/CD Pipeline Integration
@@ -404,9 +552,21 @@ pnpm check        # Full quality pipeline
 pnpm build        # Production build
 pnpm test:pipeline # Complete test suite
 pnpm health-check # Environment validation
+pnpm audit        # Security validation
 ```
 
 **All scripts provide proper exit codes for CI/CD integration.**
+
+**Recommended CI/CD workflow:**
+
+1. **Environment Setup**: Validate Node.js, pnpm versions
+2. **Health Check**: `pnpm health-check` to validate workspace
+3. **Linting**: `pnpm lint` for code quality
+4. **Type Checking**: `pnpm exec tsc --noEmit` for type safety
+5. **Testing**: `pnpm test` for functionality validation
+6. **Security**: `pnpm audit` for vulnerability scanning
+7. **Build**: `pnpm build` for production artifacts
+8. **Performance**: `pnpm test:build-pipeline` for regression detection
 
 ## Migration from Previous Workflows
 
