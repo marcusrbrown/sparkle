@@ -10,6 +10,8 @@
 import type {ExecutionContext} from './types'
 import type {WasmModuleLoader} from './wasm-types'
 
+import {suppressConsola} from '@sparkle/test-utils/console'
+import {consola} from 'consola'
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest'
 import {createWasmExecutableCommand, createWasmExecutableCommands} from './wasm-commands'
 import {createWasmModuleLoader} from './wasm-loader'
@@ -78,6 +80,7 @@ describe('WASM Executable Loading Integration Tests', () => {
   let wasmLoader: WasmModuleLoader
   let mockExecutionContext: ExecutionContext
   let originalFetch: typeof globalThis.fetch
+  let cleanupConsola: (() => void) | undefined
 
   beforeEach(() => {
     wasmLoader = createWasmModuleLoader()
@@ -86,11 +89,20 @@ describe('WASM Executable Loading Integration Tests', () => {
 
     // Setup fetch mock for integration tests
     globalThis.fetch = vi.fn()
+
+    // Suppress expected error/warn logging from intentional test failures
+    cleanupConsola = suppressConsola(consola, ['error', 'warn'])
   })
 
   afterEach(() => {
     globalThis.fetch = originalFetch
     vi.clearAllMocks()
+
+    // Restore consola logging
+    if (cleanupConsola != null) {
+      cleanupConsola()
+      cleanupConsola = undefined
+    }
   })
 
   describe('WASM Module Loading via Direct API', () => {
