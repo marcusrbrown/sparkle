@@ -456,6 +456,43 @@ importers:
         specifier: 7.1.7
         version: 7.1.7(@types/node@22.18.1)(jiti@2.1.2)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
+  packages/test-utils:
+    dependencies:
+      '@sparkle/theme':
+        specifier: workspace:*
+        version: link:../theme
+      '@sparkle/types':
+        specifier: workspace:*
+        version: link:../types
+    devDependencies:
+      '@sparkle/config':
+        specifier: workspace:*
+        version: link:../config
+      '@testing-library/react':
+        specifier: ^16.0.0
+        version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.1.9(@types/react@19.1.15))(@types/react@19.1.15)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+      '@types/react':
+        specifier: ~19.1.0
+        version: 19.1.15
+      '@xterm/addon-fit':
+        specifier: ^0.10.0
+        version: 0.10.0(@xterm/xterm@5.5.0)
+      '@xterm/xterm':
+        specifier: ^5.5.0
+        version: 5.5.0
+      react:
+        specifier: 19.1.1
+        version: 19.1.1
+      tsdown:
+        specifier: 0.14.2
+        version: 0.14.2(typescript@5.9.2)
+      typescript:
+        specifier: 5.9.2
+        version: 5.9.2
+      vitest:
+        specifier: ^3.0.0
+        version: 3.2.4(@types/debug@4.1.12)(@types/node@22.18.1)(happy-dom@18.0.1)(jiti@2.1.2)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+
   packages/theme:
     dependencies:
       '@sparkle/types':
