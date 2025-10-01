@@ -51,3 +51,17 @@ Design and implement a plugin system for moo-dang that allows third-party develo
 
 ### 3. Visual Regression Testing Framework with AI-Assisted Baseline Management
 Extend the existing Playwright visual regression testing infrastructure in visual-regression with an AI-powered baseline management system that intelligently identifies intentional design changes versus regressions. Implement a machine learning model (or integrate with existing services like Percy/Chromatic) that analyzes screenshot diffs, correlates them with recent commits in the theme system (`@sparkle/theme/src/tokens/`), and automatically categorizes changes as "theme update," "component enhancement," "layout shift," or "potential regression." Build a review dashboard integrated into the GitHub Actions workflow that presents visual changes grouped by category, allows developers to batch-approve intentional changes, and auto-generates changeset entries documenting visual API changes. The system should track design token mutations across all components, predict which components might be affected by theme changes before tests run, and provide accessibility impact analysis (contrast ratios, focus visibility) alongside visual comparisons.
+
+---
+## 3 Unique Implementation Plan Prompts
+
+Based on the updated instructions and Sparkle's architecture, here are three tailored implementation plan prompts for coding agents:
+
+### 1. **Interactive Theme Playground Component**
+Create an interactive theme playground component for the Astro Starlight documentation site that allows users to dynamically modify design tokens in real-time and see changes reflected across all component examples, leveraging the existing `TokenTransformer` class for web/native format conversion, the `@sparkle/theme` package's token structure, and the documentation site's component showcase infrastructure to provide an educational tool for understanding the theme system's cross-platform capabilities, with localStorage persistence for user preferences and a "Copy Theme Config" button that generates valid TypeScript code for custom theme implementations.
+
+### 2. **WASM Command Auto-Generation Tool**
+Develop a build-time code generation tool that automatically creates TypeScript bindings for Zig WASM executables by parsing the shell API usage in `.zig` files, generating type-safe wrapper functions in the moo-dang shell's command registry that match the shell_api.zig interface, implementing automatic command help text extraction from Zig comments, and creating integration tests that validate WASM module loading and execution, following the established pattern of Web Worker isolation and message passing while ensuring all generated code maintains the 446+ test success rate and integrates seamlessly with the existing command execution pipeline.
+
+### 3. **Component Accessibility Audit Dashboard**
+Build an automated accessibility audit dashboard that integrates with the Storybook visual regression testing pipeline to generate comprehensive WCAG 2.1 AA compliance reports across all component variants, themes, and viewports, utilizing the existing Playwright test infrastructure and `@storybook/addon-a11y` integration to capture accessibility tree snapshots, detect violations, and track remediation progress over time, with automated PR comments that highlight new accessibility issues introduced by changes, a visual report generator that creates markdown summaries for the docs site, and integration with the health-check system to gate deployments on critical accessibility violations.
