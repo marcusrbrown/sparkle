@@ -19,12 +19,10 @@ on:
         type: boolean
         default: false
 
-# Prevent multiple simultaneous deployments
 concurrency:
   group: deploy-docs-${{ github.ref }}
-  cancel-in-progress: false # Allow current deployment to finish
+  cancel-in-progress: false
 
-# Minimal permissions by default (security best practice)
 permissions:
   contents: read
 
@@ -39,43 +37,34 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
-          fetch-depth: 0 # Full history for lastUpdated timestamps
+          fetch-depth: 0
 
       - name: Setup CI environment
         uses: ./.github/actions/setup-ci
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile --prefer-offline
-        shell: bash
-
-      - name: Build all required packages
-        run: pnpm build
-        env:
-          NODE_ENV: production
-        shell: bash
-
-      - name: Generate documentation
+      - name: Generate and build documentation
         run: |
+          # Generate documentation from source packages and build site
           if [ "${{ github.event.inputs.force-rebuild }}" = "true" ]; then
-            pnpm --filter @sparkle/docs docs:automation:force
+            pnpm --filter @sparkle/docs build:force
           else
-            pnpm --filter @sparkle/docs docs:automation
+            pnpm --filter @sparkle/docs build
+          fi
+
+          # Verify build output exists
+          if [ ! -d "./docs/dist" ]; then
+            echo "Error: Documentation build output not found at ./docs/dist"
+            exit 1
           fi
         env:
           NODE_ENV: production
-        shell: bash
-
-      - name: Build documentation site
-        run: pnpm --filter @sparkle/docs build
-        env:
-          NODE_ENV: production
-        shell: bash
+        shell: bash -Eeuo pipefail {0}
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
 
       - name: Upload documentation artifacts
-        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
+        uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4.0.0
         with:
           path: ./docs/dist
           retention-days: 1
@@ -85,11 +74,10 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    # Only deploy from main branch pushes or manual workflow dispatch
     if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     permissions:
-      pages: write # Deploy to GitHub Pages
-      id-token: write # OIDC for GitHub Pages deployment
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -100,7 +88,7 @@ jobs:
 
       - name: Generate job summary
         run: |
-          cat >> $GITHUB_STEP_SUMMARY << 'EOF'
+          cat >> "$GITHUB_STEP_SUMMARY" << 'EOF'
           ## 🚀 Documentation Deployment Complete
 
           **Deployment URL**: ${{ steps.deployment.outputs.page_url }}
@@ -118,7 +106,7 @@ jobs:
 
           Visit the documentation site at: https://sparkle.mrbro.dev
           EOF
-        shell: bash
+        shell: bash -Eeuo pipefail {0}
 
   notify-failure:
     name: Notify on Failure
@@ -131,7 +119,7 @@ jobs:
     steps:
       - name: Generate failure summary
         run: |
-          cat >> $GITHUB_STEP_SUMMARY << 'EOF'
+          cat >> "$GITHUB_STEP_SUMMARY" << 'EOF'
           ## ❌ Documentation Deployment Failed
 
           **Build Information**:
@@ -145,4 +133,4 @@ jobs:
 
           Please check the workflow logs for detailed error information.
           EOF
-        shell: bash
+        shell: bash -Eeuo pipefail {0}
