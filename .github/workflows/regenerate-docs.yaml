@@ -28,7 +28,9 @@ on:
         type: boolean
         default: false
       packages:
-        description: Comma-separated list of packages to regenerate (ui,types,utils,theme,error-testing)
+        description: >-
+          Comma-separated list of packages to regenerate
+          (ui,types,utils,theme,error-testing)
         required: false
         type: string
         default: ui,types,utils,theme,error-testing
@@ -45,6 +47,8 @@ jobs:
     name: Detect Package Changes
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      contents: read
     outputs:
       packages: ${{ steps.detect.outputs.packages }}
       has-changes: ${{ steps.detect.outputs.has-changes }}
@@ -58,33 +62,26 @@ jobs:
       - name: Detect changed packages
         id: detect
         run: |
-          # Detect which packages have changed in this push
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            # Manual dispatch - use provided packages or default
             INPUT_PACKAGES="${{ github.event.inputs.packages }}"
-            PACKAGES="$INPUT_PACKAGES"
-            if [ -z "$PACKAGES" ]; then
-              PACKAGES="ui,types,utils,theme,error-testing"
-            fi
+            PACKAGES="${INPUT_PACKAGES:-ui,types,utils,theme,error-testing}"
+
             echo "packages=$PACKAGES" >> "$GITHUB_OUTPUT"
             echo "has-changes=true" >> "$GITHUB_OUTPUT"
             echo "changed-files=Manual trigger" >> "$GITHUB_OUTPUT"
             echo "📦 Manual trigger - regenerating: $PACKAGES"
           else
-            # Automatic trigger - detect changed files
-
-            # Get the commit range
             BASE_SHA="${{ github.event.before }}"
             HEAD_SHA="${{ github.sha }}"
 
-            # If this is the first commit, compare with HEAD~1
-            if [ "$BASE_SHA" = "0000000000000000000000000000000000000000" ]; then
+            # Fallback for initial commits where github.event.before is all zeros
+            ZERO_SHA="0000000000000000000000000000000000000000"
+            if [ "$BASE_SHA" = "$ZERO_SHA" ]; then
               BASE_SHA="HEAD~1"
             fi
 
             echo "🔍 Detecting changes: $BASE_SHA..$HEAD_SHA"
 
-            # Get changed files in source packages
             CHANGED_FILES=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" -- \
               'packages/ui/src/**/*.ts' \
               'packages/ui/src/**/*.tsx' \
@@ -107,25 +104,13 @@ jobs:
               exit 0
             fi
 
-            # Determine which packages changed
             CHANGED_PACKAGES=()
-            if echo "$CHANGED_FILES" | grep -q "packages/ui/src/"; then
-              CHANGED_PACKAGES+=("ui")
-            fi
-            if echo "$CHANGED_FILES" | grep -q "packages/types/src/"; then
-              CHANGED_PACKAGES+=("types")
-            fi
-            if echo "$CHANGED_FILES" | grep -q "packages/utils/src/"; then
-              CHANGED_PACKAGES+=("utils")
-            fi
-            if echo "$CHANGED_FILES" | grep -q "packages/theme/src/"; then
-              CHANGED_PACKAGES+=("theme")
-            fi
-            if echo "$CHANGED_FILES" | grep -q "packages/error-testing/src/"; then
-              CHANGED_PACKAGES+=("error-testing")
-            fi
+            echo "$CHANGED_FILES" | grep -q "packages/ui/src/" && CHANGED_PACKAGES+=("ui")
+            echo "$CHANGED_FILES" | grep -q "packages/types/src/" && CHANGED_PACKAGES+=("types")
+            echo "$CHANGED_FILES" | grep -q "packages/utils/src/" && CHANGED_PACKAGES+=("utils")
+            echo "$CHANGED_FILES" | grep -q "packages/theme/src/" && CHANGED_PACKAGES+=("theme")
+            echo "$CHANGED_FILES" | grep -q "packages/error-testing/src/" && CHANGED_PACKAGES+=("error-testing")
 
-            # Join packages with commas
             PACKAGES_LIST=$(IFS=,; echo "${CHANGED_PACKAGES[*]}")
 
             echo "packages=$PACKAGES_LIST" >> "$GITHUB_OUTPUT"
@@ -146,6 +131,9 @@ jobs:
     if: needs.detect-changes.outputs.has-changes == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - id: get-workflow-app-token
         name: Get Workflow Application Token
@@ -175,7 +163,6 @@ jobs:
         run: |
           echo "🔄 Regenerating docs for: ${{ needs.detect-changes.outputs.packages }}"
 
-          # Force flag for workflow_dispatch
           if [ "${{ github.event.inputs.force }}" = "true" ]; then
             echo "♻️  Force regeneration enabled"
             pnpm --filter @sparkle/docs docs:automation:force
@@ -183,7 +170,6 @@ jobs:
             pnpm --filter @sparkle/docs docs:automation
           fi
 
-          # Verify documentation was generated
           if [ ! -d "./docs/src/content/docs/api" ] && [ ! -d "./docs/src/generated" ]; then
             echo "❌ Error: No documentation output"
             exit 1
@@ -197,7 +183,6 @@ jobs:
       - name: Check for documentation changes
         id: check-changes
         run: |
-          # Check if any documentation files were modified
           git add "docs/src/content/docs/api/" "docs/src/generated/" || true
 
           if git diff --cached --quiet; then
@@ -206,7 +191,6 @@ jobs:
           else
             echo "has-changes=true" >> "$GITHUB_OUTPUT"
 
-            # Get summary of changes
             STATS="$(git diff --cached --numstat)"
             ADDED=$(echo "$STATS" | awk '{added += $1} END {print added}')
             DELETED=$(echo "$STATS" | awk '{deleted += $2} END {print deleted}')
@@ -291,9 +275,10 @@ jobs:
       - name: Generate job summary
         if: always()
         run: |
-          STATUS="ℹ️  No Changes Needed"
           if [ "${{ steps.check-changes.outputs.has-changes }}" = "true" ]; then
             STATUS="✅ PR Created"
+          else
+            STATUS="ℹ️  No Changes Needed"
           fi
 
           cat >> "$GITHUB_STEP_SUMMARY" << EOF
@@ -316,17 +301,18 @@ jobs:
           if [ "${{ steps.check-changes.outputs.has-changes }}" = "true" ]; then
             cat >> "$GITHUB_STEP_SUMMARY" << EOF
 
-            **Statistics**:
-            - Files: ${{ steps.check-changes.outputs.files-changed }}
-            - Added: ${{ steps.check-changes.outputs.lines-added }}
-            - Deleted: ${{ steps.check-changes.outputs.lines-deleted }}
+          **Statistics**:
+          - Files: ${{ steps.check-changes.outputs.files-changed }}
+          - Added: ${{ steps.check-changes.outputs.lines-added }}
+          - Deleted: ${{ steps.check-changes.outputs.lines-deleted }}
 
-            ✅ A pull request has been created with the regenerated documentation.
-            EOF
+          ✅ A pull request has been created with the regenerated documentation.
+          EOF
           else
             cat >> "$GITHUB_STEP_SUMMARY" << EOF
-            ℹ️  Documentation is already up-to-date. No PR needed.
-            EOF
+
+          ℹ️  Documentation is already up-to-date. No PR needed.
+          EOF
           fi
         shell: bash -Eeuo pipefail {0}
 
@@ -336,6 +322,8 @@ jobs:
     if: failure()
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      contents: read
     steps:
       - name: Generate failure summary
         run: |
