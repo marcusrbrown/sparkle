@@ -1,0 +1,362 @@
+---
+name: Regenerate Documentation
+
+# Automatically regenerate documentation when source packages are updated
+# Creates a pull request with updated documentation when package changes affect the docs
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      # Monitor all source packages that generate documentation
+      - packages/ui/src/**/*.{ts,tsx,js,jsx}
+      - packages/types/src/**/*.{ts,tsx}
+      - packages/utils/src/**/*.{ts,tsx}
+      - packages/theme/src/**/*.{ts,tsx}
+      - packages/error-testing/src/**/*.{ts,tsx}
+      # Exclude test and build artifacts
+      - '!**/*.test.{ts,tsx}'
+      - '!**/*.spec.{ts,tsx}'
+      - '!**/*.d.ts'
+      - '!**/dist/**'
+  workflow_dispatch:
+    inputs:
+      force:
+        description: Force regeneration of all documentation
+        required: false
+        type: boolean
+        default: false
+      packages:
+        description: Comma-separated list of packages to regenerate (ui,types,utils,theme,error-testing)
+        required: false
+        type: string
+        default: ui,types,utils,theme,error-testing
+
+concurrency:
+  group: regenerate-docs-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  detect-changes:
+    name: Detect Package Changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      packages: ${{ steps.detect.outputs.packages }}
+      has-changes: ${{ steps.detect.outputs.has-changes }}
+      changed-files: ${{ steps.detect.outputs.changed-files }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed packages
+        id: detect
+        run: |
+          # Detect which packages have changed in this push
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            # Manual dispatch - use provided packages or default
+            INPUT_PACKAGES="${{ github.event.inputs.packages }}"
+            PACKAGES="$INPUT_PACKAGES"
+            if [ -z "$PACKAGES" ]; then
+              PACKAGES="ui,types,utils,theme,error-testing"
+            fi
+            echo "packages=$PACKAGES" >> "$GITHUB_OUTPUT"
+            echo "has-changes=true" >> "$GITHUB_OUTPUT"
+            echo "changed-files=Manual trigger" >> "$GITHUB_OUTPUT"
+            echo "📦 Manual trigger - regenerating: $PACKAGES"
+          else
+            # Automatic trigger - detect changed files
+
+            # Get the commit range
+            BASE_SHA="${{ github.event.before }}"
+            HEAD_SHA="${{ github.sha }}"
+
+            # If this is the first commit, compare with HEAD~1
+            if [ "$BASE_SHA" = "0000000000000000000000000000000000000000" ]; then
+              BASE_SHA="HEAD~1"
+            fi
+
+            echo "🔍 Detecting changes: $BASE_SHA..$HEAD_SHA"
+
+            # Get changed files in source packages
+            CHANGED_FILES=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" -- \
+              'packages/ui/src/**/*.ts' \
+              'packages/ui/src/**/*.tsx' \
+              'packages/types/src/**/*.ts' \
+              'packages/utils/src/**/*.ts' \
+              'packages/theme/src/**/*.ts' \
+              'packages/error-testing/src/**/*.ts' \
+              ':!**/*.test.ts' \
+              ':!**/*.test.tsx' \
+              ':!**/*.spec.ts' \
+              ':!**/*.spec.tsx' \
+              ':!**/*.d.ts' \
+              ':!**/dist/**' || echo "")
+
+            if [ -z "$CHANGED_FILES" ]; then
+              echo "has-changes=false" >> "$GITHUB_OUTPUT"
+              echo "packages=" >> "$GITHUB_OUTPUT"
+              echo "changed-files=" >> "$GITHUB_OUTPUT"
+              echo "ℹ️  No doc-relevant changes detected"
+              exit 0
+            fi
+
+            # Determine which packages changed
+            CHANGED_PACKAGES=()
+            if echo "$CHANGED_FILES" | grep -q "packages/ui/src/"; then
+              CHANGED_PACKAGES+=("ui")
+            fi
+            if echo "$CHANGED_FILES" | grep -q "packages/types/src/"; then
+              CHANGED_PACKAGES+=("types")
+            fi
+            if echo "$CHANGED_FILES" | grep -q "packages/utils/src/"; then
+              CHANGED_PACKAGES+=("utils")
+            fi
+            if echo "$CHANGED_FILES" | grep -q "packages/theme/src/"; then
+              CHANGED_PACKAGES+=("theme")
+            fi
+            if echo "$CHANGED_FILES" | grep -q "packages/error-testing/src/"; then
+              CHANGED_PACKAGES+=("error-testing")
+            fi
+
+            # Join packages with commas
+            PACKAGES_LIST=$(IFS=,; echo "${CHANGED_PACKAGES[*]}")
+
+            echo "packages=$PACKAGES_LIST" >> "$GITHUB_OUTPUT"
+            echo "has-changes=true" >> "$GITHUB_OUTPUT"
+            echo "changed-files<<EOF" >> "$GITHUB_OUTPUT"
+            echo "$CHANGED_FILES" >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
+
+            echo "📦 Changed packages: $PACKAGES_LIST"
+            echo "📝 Changed files:"
+            echo "$CHANGED_FILES" | sed 's/^/   - /'
+          fi
+        shell: bash -Eeuo pipefail {0}
+
+  regenerate:
+    name: Regenerate Documentation
+    needs: detect-changes
+    if: needs.detect-changes.outputs.has-changes == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - id: get-workflow-app-token
+        name: Get Workflow Application Token
+        uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2.1.4
+        with:
+          app-id: ${{ secrets.APPLICATION_ID }}
+          permission-contents: write
+          permission-pull-requests: write
+          private-key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+
+      - name: Checkout repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          fetch-depth: 0
+          token: ${{ steps.get-workflow-app-token.outputs.token }}
+
+      - name: Setup CI environment
+        uses: ./.github/actions/setup-ci
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "mrbro-bot[bot]"
+          git config --global user.email "137683033+mrbro-bot[bot]@users.noreply.github.com"
+        shell: bash -Eeuo pipefail {0}
+
+      - name: Regenerate documentation
+        run: |
+          echo "🔄 Regenerating docs for: ${{ needs.detect-changes.outputs.packages }}"
+
+          # Force flag for workflow_dispatch
+          if [ "${{ github.event.inputs.force }}" = "true" ]; then
+            echo "♻️  Force regeneration enabled"
+            pnpm --filter @sparkle/docs docs:automation:force
+          else
+            pnpm --filter @sparkle/docs docs:automation
+          fi
+
+          # Verify documentation was generated
+          if [ ! -d "./docs/src/content/docs/api" ] && [ ! -d "./docs/src/generated" ]; then
+            echo "❌ Error: No documentation output"
+            exit 1
+          fi
+
+          echo "✅ Documentation generation complete"
+        env:
+          NODE_ENV: production
+        shell: bash -Eeuo pipefail {0}
+
+      - name: Check for documentation changes
+        id: check-changes
+        run: |
+          # Check if any documentation files were modified
+          git add "docs/src/content/docs/api/" "docs/src/generated/" || true
+
+          if git diff --cached --quiet; then
+            echo "has-changes=false" >> "$GITHUB_OUTPUT"
+            echo "ℹ️  No doc changes (already up-to-date)"
+          else
+            echo "has-changes=true" >> "$GITHUB_OUTPUT"
+
+            # Get summary of changes
+            STATS="$(git diff --cached --numstat)"
+            ADDED=$(echo "$STATS" | awk '{added += $1} END {print added}')
+            DELETED=$(echo "$STATS" | awk '{deleted += $2} END {print deleted}')
+            FILES=$(git diff --cached --name-only | wc -l | tr -d ' ')
+
+            echo "files-changed=$FILES" >> "$GITHUB_OUTPUT"
+            echo "lines-added=$ADDED" >> "$GITHUB_OUTPUT"
+            echo "lines-deleted=$DELETED" >> "$GITHUB_OUTPUT"
+
+            echo "📊 Documentation changes detected:"
+            echo "   - Files changed: $FILES"
+            echo "   - Lines added: $ADDED"
+            echo "   - Lines deleted: $DELETED"
+          fi
+        shell: bash -Eeuo pipefail {0}
+
+      - name: Create Pull Request
+        if: steps.check-changes.outputs.has-changes == 'true'
+        uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
+        with:
+          assignees: marcusrbrown
+          author: 'mrbro-bot[bot] <137683033+mrbro-bot[bot]@users.noreply.github.com>'
+          body: |
+            ## 📚 Automated Documentation Regeneration
+
+            This PR contains automatically regenerated documentation for the following packages:
+
+            **Affected Packages**:
+            ```
+            ${{ needs.detect-changes.outputs.packages }}
+            ```
+
+            ### Changes Summary
+
+            - **Files**: ${{ steps.check-changes.outputs.files-changed }}
+            - **Lines Added**: ${{ steps.check-changes.outputs.lines-added }}
+            - **Lines Deleted**: ${{ steps.check-changes.outputs.lines-deleted }}
+
+            ### Changed Source Files
+
+            ```
+            ${{ needs.detect-changes.outputs.changed-files }}
+            ```
+
+            ### Regeneration Details
+
+            - **Trigger**: ${{ github.event_name }}
+            - **Commit**: ${{ github.sha }}
+            - **Branch**: ${{ github.ref_name }}
+            - **Actor**: @${{ github.actor }}
+            - **Force Rebuild**: ${{ github.event.inputs.force || 'false' }}
+
+            ### Review Checklist
+
+            - [ ] Documentation reflects source code changes
+            - [ ] API references complete and formatted
+            - [ ] Component examples render correctly
+            - [ ] Cross-references and links valid
+            - [ ] No sensitive information exposed
+
+            ---
+            🤖 This PR was automatically created by the [Regenerate Documentation workflow](/.github/workflows/regenerate-docs.yaml)
+          branch: docs/auto-regenerate-${{ github.sha }}
+          committer: 'mrbro-bot[bot] <137683033+mrbro-bot[bot]@users.noreply.github.com>'
+          commit-message: |
+            docs: regenerate docs for ${{ needs.detect-changes.outputs.packages }}
+
+            Automated documentation regeneration triggered by changes in: ${{ needs.detect-changes.outputs.packages }}
+
+            Changes:
+            - Files: ${{ steps.check-changes.outputs.files-changed }}
+            - Added: ${{ steps.check-changes.outputs.lines-added }}
+            - Deleted: ${{ steps.check-changes.outputs.lines-deleted }}
+          delete-branch: true
+          labels: |
+            documentation
+            automated
+          sign-commits: true
+          title: 'docs: regenerate documentation for ${{ needs.detect-changes.outputs.packages }}'
+          token: ${{ steps.get-workflow-app-token.outputs.token }}
+
+      - name: Generate job summary
+        if: always()
+        run: |
+          STATUS="ℹ️  No Changes Needed"
+          if [ "${{ steps.check-changes.outputs.has-changes }}" = "true" ]; then
+            STATUS="✅ PR Created"
+          fi
+
+          cat >> "$GITHUB_STEP_SUMMARY" << EOF
+          ## 📚 Documentation Regeneration Summary
+
+          **Status**: $STATUS
+
+          **Affected Packages**: ${{ needs.detect-changes.outputs.packages }}
+
+          **Changes Detected**: ${{ steps.check-changes.outputs.has-changes }}
+
+          **Trigger Information**:
+          - **Event**: ${{ github.event_name }}
+          - **Repository**: ${{ github.repository }}
+          - **Branch**: ${{ github.ref_name }}
+          - **Commit**: ${{ github.sha }}
+          - **Actor**: @${{ github.actor }}
+          EOF
+
+          if [ "${{ steps.check-changes.outputs.has-changes }}" = "true" ]; then
+            cat >> "$GITHUB_STEP_SUMMARY" << EOF
+
+            **Statistics**:
+            - Files: ${{ steps.check-changes.outputs.files-changed }}
+            - Added: ${{ steps.check-changes.outputs.lines-added }}
+            - Deleted: ${{ steps.check-changes.outputs.lines-deleted }}
+
+            ✅ A pull request has been created with the regenerated documentation.
+            EOF
+          else
+            cat >> "$GITHUB_STEP_SUMMARY" << EOF
+            ℹ️  Documentation is already up-to-date. No PR needed.
+            EOF
+          fi
+        shell: bash -Eeuo pipefail {0}
+
+  notify-failure:
+    name: Notify on Failure
+    needs: [detect-changes, regenerate]
+    if: failure()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Generate failure summary
+        run: |
+          cat >> "$GITHUB_STEP_SUMMARY" << EOF
+          ## ❌ Documentation Regeneration Failed
+
+          **Affected Packages**: ${{ needs.detect-changes.outputs.packages }}
+
+          **Trigger Information**:
+          - **Repository**: ${{ github.repository }}
+          - **Branch**: ${{ github.ref_name }}
+          - **Commit**: ${{ github.sha }}
+          - **Actor**: @${{ github.actor }}
+          - **Workflow Run**: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+          Please check the workflow logs for detailed error information.
+
+          Common issues:
+          - Documentation automation scripts failed
+          - TypeDoc generation errors
+          - JSDoc extraction issues
+          - Git commit/PR creation failures
+          EOF
+        shell: bash -Eeuo pipefail {0}
