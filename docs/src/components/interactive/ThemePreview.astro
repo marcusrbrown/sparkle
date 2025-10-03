@@ -1,0 +1,180 @@
+---
+/**
+ * Astro wrapper for ThemePreview React component
+ *
+ * Allows previewing content in both light and dark themes independently.
+ */
+
+export interface Props {
+  /**
+   * Initial theme for the preview
+   * @default 'light'
+   */
+  initialTheme?: 'light' | 'dark'
+  /**
+   * Show theme controls
+   * @default true
+   */
+  showControls?: boolean
+  /**
+   * Title for the preview section
+   */
+  title?: string
+  /**
+   * Custom className for the container
+   */
+  className?: string
+}
+
+const {
+  initialTheme = 'light',
+  showControls = true,
+  title,
+  className = '',
+} = Astro.props
+
+import {ThemePreview as ThemePreviewReact} from './theme-preview'
+---
+
+<ThemePreviewReact
+  client:load
+  initialTheme={initialTheme}
+  showControls={showControls}
+  title={title}
+  className={className}
+>
+  <slot />
+</ThemePreviewReact>
+
+<style>
+  /* Theme preview wrapper */
+  :global(.theme-preview-wrapper) {
+    border: 1px solid var(--sl-color-gray-3);
+    border-radius: var(--sparkle-border-radius-lg);
+    overflow: hidden;
+    margin: var(--sparkle-spacing-md) 0;
+    background: var(--sl-color-gray-1);
+  }
+
+  /* Header */
+  :global(.theme-preview-header) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--sparkle-spacing-sm) var(--sparkle-spacing-md);
+    border-bottom: 1px solid var(--sl-color-gray-3);
+    background: var(--sl-color-gray-1);
+    gap: var(--sparkle-spacing-md);
+  }
+
+  :global(.theme-preview-title) {
+    margin: 0;
+    font-size: var(--sparkle-font-size-sm);
+    font-weight: 600;
+    color: var(--sl-color-text);
+    font-family: var(--sparkle-font-family-sans);
+  }
+
+  /* Controls */
+  :global(.theme-preview-controls) {
+    display: inline-flex;
+    gap: var(--sparkle-spacing-xs);
+    padding: var(--sparkle-spacing-xs);
+    border: 1px solid var(--sl-color-gray-3);
+    border-radius: var(--sparkle-border-radius-sm);
+    background: var(--sl-color-white);
+  }
+
+  :global(.theme-preview-control) {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sparkle-spacing-xs);
+    padding: var(--sparkle-spacing-xs) var(--sparkle-spacing-sm);
+    border: none;
+    background: transparent;
+    color: var(--sl-color-text);
+    cursor: pointer;
+    border-radius: var(--sparkle-border-radius-sm);
+    transition: all 0.2s ease;
+    font-size: var(--sparkle-font-size-sm);
+    font-family: var(--sparkle-font-family-sans);
+    font-weight: 500;
+    min-height: 32px;
+  }
+
+  :global(.theme-preview-control:hover) {
+    background: var(--sl-color-gray-2);
+  }
+
+  :global(.theme-preview-control.active) {
+    background: var(--sl-color-accent);
+    color: white;
+  }
+
+  :global(.theme-preview-control:focus-visible) {
+    outline: 2px solid var(--sl-color-accent);
+    outline-offset: 2px;
+  }
+
+  :global(.theme-preview-control svg) {
+    flex-shrink: 0;
+  }
+
+  /* Content area with theme isolation */
+  :global(.theme-preview-content) {
+    padding: var(--sparkle-spacing-lg);
+    min-height: 200px;
+    position: relative;
+  }
+
+  /* Light theme preview */
+  :global(.theme-preview-content[data-theme='light']) {
+    background: #fafafa;
+    color: #171717;
+    --sl-color-accent-low: #bfdbfe;
+    --sl-color-accent: #3b82f6;
+    --sl-color-accent-high: #2563eb;
+    --sl-color-white: #fafafa;
+    --sl-color-gray-1: #f5f5f5;
+    --sl-color-gray-2: #e5e5e5;
+    --sl-color-gray-3: #e5e5e5;
+    --sl-color-gray-4: #d4d4d4;
+    --sl-color-gray-5: #525252;
+    --sl-color-gray-6: #171717;
+    --sl-color-black: #171717;
+    --sl-color-text: #171717;
+    --sl-color-text-accent: #3b82f6;
+  }
+
+  /* Dark theme preview */
+  :global(.theme-preview-content[data-theme='dark']) {
+    background: #171717;
+    color: #fafafa;
+    --sl-color-accent-low: #93c5fd;
+    --sl-color-accent: #60a5fa;
+    --sl-color-accent-high: #93c5fd;
+    --sl-color-white: #171717;
+    --sl-color-gray-1: #262626;
+    --sl-color-gray-2: #404040;
+    --sl-color-gray-3: #404040;
+    --sl-color-gray-4: #525252;
+    --sl-color-gray-5: #d4d4d4;
+    --sl-color-gray-6: #fafafa;
+    --sl-color-black: #fafafa;
+    --sl-color-text: #fafafa;
+    --sl-color-text-accent: #60a5fa;
+  }
+
+  /* Mobile responsive */
+  @media (max-width: 768px) {
+    :global(.theme-preview-header) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--sparkle-spacing-sm);
+    }
+
+    :global(.theme-preview-content) {
+      padding: var(--sparkle-spacing-md);
+    }
+  }
+</style>
