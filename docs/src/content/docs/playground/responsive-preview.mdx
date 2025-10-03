@@ -4,7 +4,7 @@ description: 'Test components at different viewport sizes with interactive respo
 ---
 
 import ResponsivePreview from '../../../components/interactive/ResponsivePreview.astro'
-import {MultiViewportPreview} from '../../../components/interactive/responsive-preview'
+import MultiViewportPreview from '../../../components/interactive/MultiViewportPreview.astro'
 import {Button} from '@sparkle/ui'
 
 The **Responsive Preview** component allows you to test and demonstrate how components render at different viewport sizes. This is essential for ensuring your components work correctly across mobile, tablet, and desktop screens.
@@ -65,7 +65,7 @@ Show a component at different viewport sizes with interactive controls:
 
 Show the same component at multiple viewport sizes simultaneously:
 
-<MultiViewportPreview client:load viewports={['mobile', 'tablet', 'desktop']}>
+<MultiViewportPreview viewports={['mobile', 'tablet', 'desktop']}>
   <div>
     <h3>Responsive Card</h3>
     <p>This card adapts to different screen sizes. Notice how the layout adjusts across viewports.</p>

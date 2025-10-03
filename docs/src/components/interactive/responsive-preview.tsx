@@ -213,6 +213,8 @@ export const ResponsivePreview: React.FC<ResponsivePreviewProps> = ({
   )
 }
 
+ResponsivePreview.displayName = 'ResponsivePreview'
+
 /**
  * Multi-viewport preview showing content at multiple viewport sizes simultaneously
  *
@@ -277,3 +279,5 @@ export const MultiViewportPreview: React.FC<MultiViewportPreviewProps> = ({
     </div>
   )
 }
+
+MultiViewportPreview.displayName = 'MultiViewportPreview'
