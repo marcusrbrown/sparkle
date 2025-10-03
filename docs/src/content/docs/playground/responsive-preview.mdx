@@ -1,0 +1,139 @@
+---
+title: 'Responsive Preview'
+description: 'Test components at different viewport sizes with interactive responsive preview controls'
+---
+
+import ResponsivePreview from '../../../components/interactive/ResponsivePreview.astro'
+import MultiViewportPreview from '../../../components/interactive/MultiViewportPreview.astro'
+import {Button} from '@sparkle/ui'
+
+The **Responsive Preview** component allows you to test and demonstrate how components render at different viewport sizes. This is essential for ensuring your components work correctly across mobile, tablet, and desktop screens.
+
+## Features
+
+- 🖥️ **Multiple Viewport Sizes**: Mobile (375px), Tablet (768px), Desktop (1280px), Desktop Large (1920px)
+- 🎮 **Interactive Controls**: Switch between viewports with visual feedback
+- 📏 **Dimension Display**: See exact viewport dimensions in real-time
+- 🎨 **Device Frames**: Optional device-style frames for realistic preview
+- 📱 **Scale to Fit**: Automatically scale large viewports to fit container
+- ♿ **Accessible**: Full keyboard navigation and screen reader support
+
+## Basic Usage
+
+### Single Viewport Preview
+
+Show a component at different viewport sizes with interactive controls:
+
+<ResponsivePreview title="Button Component Preview" initialViewport="mobile">
+  <div>
+    <Button variant="primary">Primary Button</Button>
+    <Button variant="secondary">Secondary Button</Button>
+    <Button variant="outline">Outline Button</Button>
+  </div>
+</ResponsivePreview>
+
+## Component Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `initialViewport` | `'mobile' \| 'tablet' \| 'desktop' \| 'desktopLarge'` | `'desktop'` | Initial viewport to display |
+| `showControls` | `boolean` | `true` | Whether to show viewport controls |
+| `showDimensions` | `boolean` | `true` | Whether to show dimension labels |
+| `showFrame` | `boolean` | `true` | Whether to show device frame around preview |
+| `title` | `string` | - | Custom title for the preview section |
+| `className` | `string` | `''` | Additional CSS classes |
+| `scaleToFit` | `boolean` | `false` | Whether to scale content to fit container |
+
+## Advanced Examples
+
+### Navigation Component
+
+<ResponsivePreview title="Navigation Bar" initialViewport="tablet" showDimensions={true}>
+  <nav>
+    <div>Logo</div>
+    <div>
+      <a href="#">Home</a>
+      <a href="#">About</a>
+      <a href="#">Services</a>
+      <a href="#">Contact</a>
+    </div>
+    <Button variant="primary" size="sm">Sign Up</Button>
+  </nav>
+</ResponsivePreview>
+
+## Multi-Viewport Preview
+
+Show the same component at multiple viewport sizes simultaneously:
+
+<MultiViewportPreview viewports={['mobile', 'tablet', 'desktop']}>
+  <div>
+    <h3>Responsive Card</h3>
+    <p>This card adapts to different screen sizes. Notice how the layout adjusts across viewports.</p>
+    <Button variant="primary">Learn More</Button>
+  </div>
+</MultiViewportPreview>
+
+## Viewport Sizes
+
+| Viewport | Width | Height | Description |
+|----------|-------|--------|-------------|
+| **Mobile** | 375px | 667px | iPhone-sized mobile device |
+| **Tablet** | 768px | 1024px | iPad-sized tablet device |
+| **Desktop** | 1280px | 720px | Standard desktop screen |
+| **Desktop Large** | 1920px | 1080px | Large desktop/external monitor |
+
+These sizes align with:
+- Sparkle Design System breakpoints (`@sparkle/theme`)
+- Visual regression testing viewports (`packages/storybook/test/visual-regression/utils.ts`)
+- Common device dimensions and industry standards
+
+## Best Practices
+
+### Testing Responsive Components
+
+1. **Start with Mobile**: Test mobile viewport first to ensure core functionality works on smallest screens
+2. **Check Breakpoints**: Test at each major breakpoint (mobile, tablet, desktop) to verify layout transitions
+3. **Verify Touch Targets**: Ensure interactive elements are large enough (44×44px minimum) on mobile
+4. **Test Content Reflow**: Verify text and images reflow properly without overflow or awkward line breaks
+5. **Check Navigation**: Test navigation patterns work across all screen sizes
+
+### Accessibility Considerations
+
+- **Keyboard Navigation**: All viewport controls are keyboard accessible
+- **Screen Reader Support**: Viewport buttons have proper ARIA labels
+- **Focus Management**: Clear focus indicators on all interactive elements
+- **Semantic HTML**: Preview content maintains proper heading hierarchy
+
+### Performance Tips
+
+- **Scale to Fit**: Use `scaleToFit={true}` for large viewports to prevent horizontal scrolling
+- **Show Relevant Viewports**: Don't show all viewports if component only works on specific sizes
+- **Optimize Content**: Keep preview content lightweight to maintain smooth switching
+
+## Technical Details
+
+### Implementation
+
+The responsive preview component uses:
+- **React State Management**: Tracks active viewport and container dimensions
+- **ResizeObserver API**: Monitors container size for dynamic scaling
+- **CSS Transform**: Scales content when `scaleToFit` is enabled
+- **Astro Islands**: Client-side hydration with `client:load` for interactivity
+
+### Browser Compatibility
+
+- ✅ **Modern Browsers**: Chrome, Firefox, Safari, Edge (latest versions)
+- ✅ **ResizeObserver**: Supported in all modern browsers
+- ✅ **Responsive**: Works on mobile, tablet, and desktop
+- ✅ **Progressive Enhancement**: Falls back gracefully without JavaScript
+
+## Related Documentation
+
+- [Theme System](/theme/overview) - Cross-platform design tokens and responsive patterns
+- [Accessibility Guide](/guides/accessibility) - Accessibility best practices
+
+## Source Code
+
+View the source code on GitHub:
+- [responsive-preview.tsx](https://github.com/marcusrbrown/sparkle/blob/main/docs/src/components/interactive/responsive-preview.tsx)
+- [ResponsivePreview.astro](https://github.com/marcusrbrown/sparkle/blob/main/docs/src/components/interactive/ResponsivePreview.astro)

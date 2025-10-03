@@ -1,0 +1,351 @@
+---
+/**
+ * Astro wrapper for ResponsivePreview React component
+ *
+ * Displays components at different viewport sizes with interactive controls
+ * for testing responsive behavior across mobile, tablet, and desktop screens.
+ */
+
+import type {VIEWPORTS} from './responsive-preview'
+
+export interface Props {
+  /**
+   * Initial viewport to display
+   * @default 'desktop'
+   */
+  initialViewport?: keyof typeof VIEWPORTS
+  /**
+   * Whether to show viewport controls
+   * @default true
+   */
+  showControls?: boolean
+  /**
+   * Whether to show dimension labels
+   * @default true
+   */
+  showDimensions?: boolean
+  /**
+   * Whether to show device frame around preview
+   * @default true
+   */
+  showFrame?: boolean
+  /**
+   * Custom title for the preview section
+   */
+  title?: string
+  /**
+   * Additional CSS classes
+   */
+  className?: string
+  /**
+   * Whether to scale content to fit container
+   * @default false
+   */
+  scaleToFit?: boolean
+}
+
+const {
+  initialViewport = 'desktop',
+  showControls = true,
+  showDimensions = true,
+  showFrame = true,
+  title,
+  className = '',
+  scaleToFit = false,
+} = Astro.props
+
+import {ResponsivePreview as ResponsivePreviewReact} from './responsive-preview'
+---
+
+<ResponsivePreviewReact
+  client:load
+  initialViewport={initialViewport}
+  showControls={showControls}
+  showDimensions={showDimensions}
+  showFrame={showFrame}
+  title={title}
+  className={className}
+  scaleToFit={scaleToFit}
+>
+  <slot />
+</ResponsivePreviewReact>
+
+<style is:global>
+  /* Scope all styles to responsive preview components to avoid global conflicts */
+
+  /* Responsive preview wrapper */
+  .responsive-preview-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sparkle-spacing-md, 1rem);
+    margin: var(--sparkle-spacing-lg, 1.5rem) 0;
+    background: var(--sl-color-gray-1);
+    border: 1px solid var(--sl-color-gray-3);
+    border-radius: var(--sparkle-border-radius-lg, 0.75rem);
+    padding: var(--sparkle-spacing-md, 1rem);
+  }
+
+  /* Header */
+  .responsive-preview-wrapper .responsive-preview-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sparkle-spacing-sm, 0.5rem);
+    padding-bottom: var(--sparkle-spacing-sm, 0.5rem);
+    border-bottom: 1px solid var(--sl-color-gray-3);
+  }
+
+  .responsive-preview-wrapper .responsive-preview-title {
+    margin: 0;
+    font-size: var(--sparkle-font-size-lg, 1.125rem);
+    font-weight: 600;
+    color: var(--sl-color-text);
+    font-family: var(--sparkle-font-family-sans, system-ui, sans-serif);
+  }
+
+  /* Controls */
+  .responsive-preview-wrapper .responsive-preview-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sparkle-spacing-xs, 0.25rem);
+  }
+
+  .responsive-preview-wrapper .viewport-button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sparkle-spacing-xs, 0.25rem);
+    padding: var(--sparkle-spacing-xs, 0.25rem) var(--sparkle-spacing-sm, 0.5rem);
+    background: var(--sl-color-white);
+    border: 1px solid var(--sl-color-gray-3);
+    border-radius: var(--sparkle-border-radius-md, 0.5rem);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: var(--sparkle-font-size-sm, 0.875rem);
+    font-family: var(--sparkle-font-family-sans, system-ui, sans-serif);
+    color: var(--sl-color-text);
+  }
+
+  .responsive-preview-wrapper .viewport-button:hover {
+    background: var(--sl-color-gray-2);
+    border-color: var(--sl-color-gray-4);
+  }
+
+  .responsive-preview-wrapper .viewport-button.active {
+    background: var(--sl-color-blue);
+    border-color: var(--sl-color-blue);
+    color: var(--sl-color-white);
+    font-weight: 600;
+  }
+
+  .responsive-preview-wrapper .viewport-button .viewport-icon {
+    font-size: var(--sparkle-font-size-base, 1rem);
+  }
+
+  .responsive-preview-wrapper .viewport-button .viewport-label {
+    white-space: nowrap;
+  }
+
+  /* Dimensions display */
+  .responsive-preview-wrapper .responsive-preview-dimensions {
+    display: flex;
+    justify-content: center;
+    padding: var(--sparkle-spacing-xs, 0.25rem);
+    background: var(--sl-color-gray-2);
+    border-radius: var(--sparkle-border-radius-sm, 0.25rem);
+  }
+
+  .responsive-preview-wrapper .dimension-label {
+    font-size: var(--sparkle-font-size-xs, 0.75rem);
+    font-family: var(--sparkle-font-family-mono, monospace);
+    color: var(--sl-color-text-accent);
+    font-weight: 600;
+  }
+
+  /* Preview container */
+  .responsive-preview-wrapper .responsive-preview-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: var(--sparkle-spacing-md, 1rem);
+    background: var(--sl-color-white);
+    border-radius: var(--sparkle-border-radius-md, 0.5rem);
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .responsive-preview-wrapper .responsive-preview-container.with-frame {
+    background: var(--sl-color-gray-2);
+    padding: var(--sparkle-spacing-lg, 1.5rem);
+  }
+
+  /* Preview content */
+  .responsive-preview-wrapper .responsive-preview-content {
+    background: var(--sl-color-white);
+    border: 1px solid var(--sl-color-gray-3);
+    border-radius: var(--sparkle-border-radius-md, 0.5rem);
+    box-shadow: var(--sparkle-shadow-md, 0 4px 6px -1px rgb(0 0 0 / 0.1));
+    padding: var(--sparkle-spacing-md, 1rem);
+    overflow: hidden;
+  }
+
+  .responsive-preview-wrapper .responsive-preview-content.mobile {
+    border-radius: var(--sparkle-border-radius-xl, 1rem);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  }
+
+  .responsive-preview-wrapper .responsive-preview-content.tablet {
+    border-radius: var(--sparkle-border-radius-lg, 0.75rem);
+  }
+
+  .responsive-preview-wrapper .responsive-preview-content.desktop {
+    border-radius: var(--sparkle-border-radius-md, 0.5rem);
+  }
+
+  /* Multi-viewport preview */
+  .multi-viewport-preview {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--sparkle-spacing-lg, 1.5rem);
+    margin: var(--sparkle-spacing-lg, 1.5rem) 0;
+    padding: var(--sparkle-spacing-md, 1rem);
+    background: var(--sl-color-gray-1);
+    border: 1px solid var(--sl-color-gray-3);
+    border-radius: var(--sparkle-border-radius-lg, 0.75rem);
+  }
+
+  .multi-viewport-preview .multi-viewport-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sparkle-spacing-sm, 0.5rem);
+  }
+
+  .multi-viewport-preview .multi-viewport-header {
+    display: flex;
+    align-items: center;
+    gap: var(--sparkle-spacing-sm, 0.5rem);
+    padding: var(--sparkle-spacing-xs, 0.25rem) var(--sparkle-spacing-sm, 0.5rem);
+    background: var(--sl-color-gray-2);
+    border-radius: var(--sparkle-border-radius-sm, 0.25rem);
+  }
+
+  .multi-viewport-preview .multi-viewport-header .viewport-icon {
+    font-size: var(--sparkle-font-size-base, 1rem);
+  }
+
+  .multi-viewport-preview .multi-viewport-header .viewport-name {
+    font-weight: 600;
+    font-size: var(--sparkle-font-size-sm, 0.875rem);
+    color: var(--sl-color-text);
+  }
+
+  .multi-viewport-preview .multi-viewport-header .viewport-dimensions {
+    margin-left: auto;
+    font-size: var(--sparkle-font-size-xs, 0.75rem);
+    font-family: var(--sparkle-font-family-mono, monospace);
+    color: var(--sl-color-text-accent);
+  }
+
+  .multi-viewport-preview .multi-viewport-content {
+    background: var(--sl-color-white);
+    border: 1px solid var(--sl-color-gray-3);
+    border-radius: var(--sparkle-border-radius-md, 0.5rem);
+    padding: var(--sparkle-spacing-md, 1rem);
+    box-shadow: var(--sparkle-shadow-sm, 0 1px 3px 0 rgb(0 0 0 / 0.1));
+    overflow: hidden;
+  }
+
+  /* Dark theme support */
+  [data-theme='dark'] .responsive-preview-wrapper,
+  [data-theme='dark'] .multi-viewport-preview {
+    background: var(--sl-color-gray-6);
+    border-color: var(--sl-color-gray-5);
+  }
+
+  [data-theme='dark'] .responsive-preview-wrapper .viewport-button {
+    background: var(--sl-color-gray-6);
+    border-color: var(--sl-color-gray-5);
+    color: var(--sl-color-white);
+  }
+
+  [data-theme='dark'] .responsive-preview-wrapper .viewport-button:hover {
+    background: var(--sl-color-gray-5);
+  }
+
+  [data-theme='dark'] .responsive-preview-wrapper .responsive-preview-container,
+  [data-theme='dark'] .responsive-preview-wrapper .responsive-preview-content,
+  [data-theme='dark'] .multi-viewport-preview .multi-viewport-content {
+    background: var(--sl-color-gray-6);
+    border-color: var(--sl-color-gray-5);
+  }
+
+  [data-theme='dark'] .responsive-preview-wrapper .responsive-preview-dimensions,
+  [data-theme='dark'] .multi-viewport-preview .multi-viewport-header {
+    background: var(--sl-color-gray-5);
+  }
+
+  /* Responsive adjustments - scoped to component containers only */
+  @media (max-width: 768px) {
+    .responsive-preview-wrapper {
+      padding: var(--sparkle-spacing-sm, 0.5rem);
+    }
+
+    .responsive-preview-wrapper .responsive-preview-controls {
+      width: 100%;
+    }
+
+    .responsive-preview-wrapper .viewport-button {
+      flex: 1;
+      justify-content: center;
+    }
+
+    .responsive-preview-wrapper .viewport-button .viewport-label {
+      font-size: var(--sparkle-font-size-xs, 0.75rem);
+    }
+
+    .responsive-preview-wrapper .responsive-preview-container {
+      padding: var(--sparkle-spacing-sm, 0.5rem);
+    }
+
+    .responsive-preview-wrapper .responsive-preview-container.with-frame {
+      padding: var(--sparkle-spacing-md, 1rem);
+    }
+  }
+
+  @media (min-width: 768px) {
+    .responsive-preview-wrapper .responsive-preview-header {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .multi-viewport-preview {
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .multi-viewport-preview {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  /* Accessibility */
+  .responsive-preview-wrapper .viewport-button:focus-visible {
+    outline: 2px solid var(--sl-color-blue);
+    outline-offset: 2px;
+  }
+
+  /* Loading state */
+  .responsive-preview-wrapper:not(:has(.responsive-preview-content)) {
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .responsive-preview-wrapper:not(:has(.responsive-preview-content))::before {
+    content: 'Loading preview...';
+    color: var(--sl-color-text);
+    font-size: var(--sparkle-font-size-sm, 0.875rem);
+    opacity: 0.5;
+  }
+</style>

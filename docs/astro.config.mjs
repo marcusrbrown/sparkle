@@ -196,6 +196,7 @@ export default defineConfig({
             {label: 'Component Examples', slug: 'playground/button-example'},
             {label: 'Live Code Editor', slug: 'playground/live-code-editor'},
             {label: 'Copy Demo', slug: 'playground/copy-demo'},
+            {label: 'Responsive Preview', slug: 'playground/responsive-preview'},
             {label: 'Theme Toggle & Preview', slug: 'playground/theme-toggle'},
           ],
         },

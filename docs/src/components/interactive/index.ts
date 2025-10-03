@@ -5,6 +5,9 @@ export type {CodeEditorProps} from './CodeEditor.tsx'
 export {CopyButton} from './CopyButton.tsx'
 export type {CopyButtonProps} from './CopyButton.tsx'
 
+export {MultiViewportPreview, ResponsivePreview, VIEWPORTS} from './responsive-preview.tsx'
+export type {MultiViewportPreviewProps, ResponsivePreviewProps, ViewportConfig} from './responsive-preview.tsx'
+
 export {StorybookEmbed} from './StorybookEmbed.tsx'
 export type {StorybookEmbedProps} from './StorybookEmbed.tsx'
 
@@ -20,3 +23,5 @@ export const SimpleCodeEditor = './SimpleCodeEditor.astro'
 export const StorybookEmbedAstro = './StorybookEmbedAstro.astro'
 export const ThemeToggleAstro = './ThemeToggle.astro'
 export const ThemePreviewAstro = './ThemePreview.astro'
+export const ResponsivePreviewAstro = './ResponsivePreview.astro'
+export const MultiViewportPreviewAstro = './MultiViewportPreview.astro'

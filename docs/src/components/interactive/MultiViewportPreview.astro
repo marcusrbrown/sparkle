@@ -1,0 +1,44 @@
+---
+/**
+ * Astro wrapper for MultiViewportPreview React component
+ *
+ * Displays the same content at multiple viewport sizes simultaneously
+ * for easy comparison of responsive behavior.
+ */
+
+import type {VIEWPORTS} from './responsive-preview'
+
+export interface Props {
+  /**
+   * Viewports to display
+   * @default ['mobile', 'tablet', 'desktop']
+   */
+  viewports?: (keyof typeof VIEWPORTS)[]
+  /**
+   * Whether to show dimension labels
+   * @default true
+   */
+  showDimensions?: boolean
+  /**
+   * Additional CSS classes
+   */
+  className?: string
+}
+
+const {
+  viewports = ['mobile', 'tablet', 'desktop'],
+  showDimensions = true,
+  className = '',
+} = Astro.props
+
+import {MultiViewportPreview as MultiViewportPreviewReact} from './responsive-preview'
+---
+
+<MultiViewportPreviewReact
+  client:load
+  viewports={viewports}
+  showDimensions={showDimensions}
+  className={className}
+>
+  <slot />
+</MultiViewportPreviewReact>
