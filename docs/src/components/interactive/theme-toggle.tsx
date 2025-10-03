@@ -7,37 +7,20 @@
  */
 
 import {useEffect, useState} from 'react'
+import {MonitorIcon, MoonIcon, SunIcon} from './icons'
 
 export type Theme = 'light' | 'dark' | 'auto'
 
 export interface ThemeToggleProps {
-  /**
-   * Initial theme mode
-   * @default 'auto'
-   */
+  /** @default 'auto' */
   initialTheme?: Theme
-  /**
-   * Display variant of the toggle
-   * @default 'buttons'
-   */
+  /** @default 'buttons' */
   variant?: 'buttons' | 'dropdown' | 'icons'
-  /**
-   * Size of the toggle
-   * @default 'md'
-   */
+  /** @default 'md' */
   size?: 'sm' | 'md' | 'lg'
-  /**
-   * Show labels for theme options
-   * @default true
-   */
+  /** @default true */
   showLabels?: boolean
-  /**
-   * Custom className for styling
-   */
   className?: string
-  /**
-   * Callback when theme changes
-   */
   onThemeChange?: (theme: Theme) => void
 }
 
@@ -73,9 +56,6 @@ function setStarlightTheme(theme: Theme): void {
   document.documentElement.dataset.theme = effectiveTheme
 }
 
-/**
- * ThemeToggle component for switching between light, dark, and auto themes
- */
 export function ThemeToggle({
   initialTheme = 'auto',
   variant = 'buttons',
@@ -117,11 +97,11 @@ export function ThemeToggle({
     return <div className={`theme-toggle theme-toggle-loading ${className}`} />
   }
 
-  const sizeClasses: Record<'sm' | 'md' | 'lg', string> = {
+  const sizeClasses = {
     sm: 'theme-toggle-sm',
     md: 'theme-toggle-md',
     lg: 'theme-toggle-lg',
-  } as const
+  } as const satisfies Record<'sm' | 'md' | 'lg', string>
 
   if (variant === 'dropdown') {
     return (
@@ -159,28 +139,7 @@ export function ThemeToggle({
           aria-pressed={currentTheme === 'light'}
           title="Light theme"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <circle cx="12" cy="12" r="5"></circle>
-            <line x1="12" y1="1" x2="12" y2="3"></line>
-            <line x1="12" y1="21" x2="12" y2="23"></line>
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-            <line x1="1" y1="12" x2="3" y2="12"></line>
-            <line x1="21" y1="12" x2="23" y2="12"></line>
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-          </svg>
+          <SunIcon size={20} />
         </button>
         <button
           type="button"
@@ -190,20 +149,7 @@ export function ThemeToggle({
           aria-pressed={currentTheme === 'dark'}
           title="Dark theme"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-          </svg>
+          <MoonIcon size={20} />
         </button>
         <button
           type="button"
@@ -213,22 +159,7 @@ export function ThemeToggle({
           aria-pressed={currentTheme === 'auto'}
           title="Auto theme (system preference)"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-            <line x1="8" y1="21" x2="16" y2="21"></line>
-            <line x1="12" y1="17" x2="12" y2="21"></line>
-          </svg>
+          <MonitorIcon size={20} />
         </button>
       </div>
     )
