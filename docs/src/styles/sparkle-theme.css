@@ -3,13 +3,14 @@
 
 :root {
   /* === STARLIGHT COLORS MAPPED FROM SPARKLE THEME === */
+  /* Starlight uses :root for DARK MODE by default */
 
-  /* Brand/Accent Colors */
+  /* Brand/Accent Colors - Use light tokens for visual consistency */
   --sl-color-accent-low: #bfdbfe;
   --sl-color-accent: #3b82f6;
   --sl-color-accent-high: #2563eb;
 
-  /* Background Colors */
+  /* UI Background Colors - Use light tokens for sidebar/navbar backgrounds */
   --sl-color-white: #fafafa;
   --sl-color-gray-1: #f5f5f5;
   --sl-color-gray-2: #e5e5e5;
@@ -19,9 +20,13 @@
   --sl-color-gray-6: #171717;
   --sl-color-black: #171717;
 
-  /* Text Colors */
-  --sl-color-text: #171717;
-  --sl-color-text-accent: #3b82f6;
+  /* Content Text Colors - Use dark tokens for readability on light UI backgrounds */
+  --sl-color-text: #fafafa;
+  --sl-color-text-accent: #60a5fa;
+
+  /* Code Block Backgrounds - Use dark tokens for proper syntax highlighting contrast */
+  --sparkle-code-bg-primary: #262626;
+  --sparkle-code-bg-secondary: #404040;
 
   /* Status Colors */
   --sl-color-green: #22c55e;
@@ -62,14 +67,14 @@
   --sparkle-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
 
-/* === DARK THEME OVERRIDES === */
-[data-theme='dark'] {
-  /* Brand/Accent Colors for Dark Mode */
+/* === LIGHT THEME OVERRIDES === */
+[data-theme='light'] {
+  /* Brand/Accent Colors - Use dark tokens for visual consistency */
   --sl-color-accent-low: #93c5fd;
   --sl-color-accent: #60a5fa;
   --sl-color-accent-high: #93c5fd;
 
-  /* Background Colors for Dark Mode */
+  /* UI Background Colors - Use dark tokens for sidebar/navbar backgrounds */
   --sl-color-white: #171717;
   --sl-color-gray-1: #262626;
   --sl-color-gray-2: #404040;
@@ -79,11 +84,15 @@
   --sl-color-gray-6: #fafafa;
   --sl-color-black: #fafafa;
 
-  /* Text Colors for Dark Mode */
-  --sl-color-text: #fafafa;
-  --sl-color-text-accent: #60a5fa;
+  /* Content Text Colors - Use light tokens for readability on dark UI backgrounds */
+  --sl-color-text: #171717;
+  --sl-color-text-accent: #3b82f6;
 
-  /* Status Colors for Dark Mode (slightly lighter) */
+  /* Code Block Backgrounds - Use light tokens for proper syntax highlighting contrast */
+  --sparkle-code-bg-primary: #f5f5f5;
+  --sparkle-code-bg-secondary: #e5e5e5;
+
+  /* Status Colors */
   --sl-color-green: #4ade80;
   --sl-color-orange: #fbbf24;
   --sl-color-red: #f87171;
@@ -128,6 +137,15 @@
   padding: 0.125rem 0.25rem;
   font-size: 0.9em;
   word-break: break-word;
+}
+
+/* Code block backgrounds - override generic gray variables with theme-specific colors */
+.sl-markdown-content pre {
+  background: var(--sparkle-code-bg-primary);
+}
+
+.sl-markdown-content code {
+  background: var(--sparkle-code-bg-secondary);
 }
 
 /* Mobile: better inline code wrapping */
@@ -428,127 +446,6 @@ button:focus-visible,
   border-radius: var(--sparkle-border-radius-sm);
 }
 
-/* Focus styles for specific interactive elements */
-.sl-sidebar a:focus-visible {
-  outline: 2px solid var(--sl-color-accent);
-  outline-offset: 1px;
-  background-color: var(--sl-color-accent-low);
-}
-
-.sl-nav a:focus-visible {
-  outline: 2px solid var(--sl-color-accent);
-  outline-offset: 2px;
-}
-
-/* Enhanced keyboard navigation for code blocks */
-.code-editor-container:focus-within {
-  outline: 2px solid var(--sl-color-accent);
-  outline-offset: 2px;
-  border-radius: var(--sparkle-border-radius-md);
-}
-
-/* Focus trapping for modal-like elements */
-.modal:focus-within {
-  outline: none;
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.modal {
-  background: var(--sl-color-white);
-  border-radius: var(--sparkle-border-radius-lg);
-  max-width: 90vw;
-  max-height: 90vh;
-  overflow: auto;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  outline: none;
-}
-
-/* Roving tabindex support */
-[data-roving-tabindex] {
-  outline: none;
-}
-
-[data-roving-tabindex]:focus {
-  outline: 2px solid var(--sl-color-accent);
-  outline-offset: 2px;
-  background-color: var(--sl-color-accent-low);
-}
-
-/* Keyboard navigation instructions */
-.keyboard-instructions {
-  margin: var(--sparkle-spacing-md) 0;
-  border: 1px solid var(--sl-color-gray-3);
-  border-radius: var(--sparkle-border-radius-md);
-  background: var(--sl-color-gray-1);
-}
-
-.keyboard-instructions__toggle {
-  width: 100%;
-  padding: var(--sparkle-spacing-sm) var(--sparkle-spacing-md);
-  text-align: left;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-weight: 600;
-  color: var(--sl-color-text);
-}
-
-.keyboard-instructions__toggle:focus-visible {
-  outline: 2px solid var(--sl-color-accent);
-  outline-offset: 2px;
-}
-
-.keyboard-instructions__content {
-  padding: var(--sparkle-spacing-md);
-  border-top: 1px solid var(--sl-color-gray-3);
-}
-
-.keyboard-instructions__list {
-  display: grid;
-  gap: var(--sparkle-spacing-sm);
-  margin: 0;
-}
-
-.keyboard-instructions__item {
-  display: flex;
-  align-items: center;
-  gap: var(--sparkle-spacing-md);
-}
-
-.keyboard-instructions__key {
-  margin: 0;
-  min-width: 120px;
-}
-
-.keyboard-instructions__key kbd {
-  display: inline-block;
-  padding: 2px 6px;
-  background: var(--sl-color-gray-2);
-  border: 1px solid var(--sl-color-gray-4);
-  border-radius: var(--sparkle-border-radius-sm);
-  font-family: var(--sparkle-font-family-mono);
-  font-size: var(--sparkle-font-size-sm);
-  font-weight: normal;
-}
-
-.keyboard-instructions__description {
-  margin: 0;
-  flex: 1;
-  color: var(--sl-color-text);
-}
-
 /* Ensure sufficient color contrast for text */
 .sl-markdown-content {
   color: var(--sl-color-text);
@@ -806,3 +703,4 @@ button:focus-visible,
     text-align: center;
   }
 }
+

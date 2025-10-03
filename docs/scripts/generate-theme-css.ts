@@ -1,6 +1,31 @@
 /**
  * Generate CSS custom properties for Starlight theme customization
  * from Sparkle Design System tokens
+ *
+ * @module generate-theme-css
+ *
+ * ## Starlight Theme System Architecture
+ *
+ * Starlight uses a counter-intuitive color naming system:
+ * - `:root` selector defines the **dark mode** theme (Starlight's default)
+ * - `[data-theme='light']` selector overrides for **light mode**
+ *
+ * ## Color Variable Semantics
+ *
+ * Starlight's color variables are **semantic**, not literal:
+ * - `--sl-color-white` means "primary background color" (can be dark or light)
+ * - `--sl-color-black` means "contrasting accent color" (can be light or dark)
+ * - `--sl-color-text` means "primary text color" (adjusted for background contrast)
+ *
+ * ## Token Mapping Strategy
+ *
+ * For proper contrast, we map tokens based on intended visual appearance:
+ * - **Dark Mode** (`:root`): Uses `lightTokens` for UI backgrounds (sidebar, navbar)
+ *   but `darkTokens` for content text, creating light-on-light UI with dark text
+ * - **Light Mode** (`[data-theme='light']`): Uses `darkTokens` for UI backgrounds
+ *   but `lightTokens` for content text, creating dark-on-dark UI with light text
+ *
+ * Code blocks require special handling to invert this pattern for proper syntax highlighting.
  */
 
 import process from 'node:process'
@@ -9,6 +34,12 @@ import {darkTokens, lightTokens} from '@sparkle/theme'
 
 /**
  * Maps Sparkle theme tokens to Starlight CSS custom properties
+ *
+ * Generates theme-aware CSS with proper contrast ratios for both light and dark modes.
+ * Includes special handling for code block backgrounds to ensure syntax highlighting
+ * remains readable in both themes.
+ *
+ * @returns Complete CSS string with theme variables and component styles
  * @see https://starlight.astro.build/guides/css-and-tailwind/#custom-css-properties
  */
 function generateStarlightThemeCSS(): string {
@@ -17,13 +48,14 @@ function generateStarlightThemeCSS(): string {
 
 :root {
   /* === STARLIGHT COLORS MAPPED FROM SPARKLE THEME === */
+  /* Starlight uses :root for DARK MODE by default */
 
-  /* Brand/Accent Colors */
+  /* Brand/Accent Colors - Use light tokens for visual consistency */
   --sl-color-accent-low: ${lightTokens.colors.primary[200]};
   --sl-color-accent: ${lightTokens.colors.primary[500]};
   --sl-color-accent-high: ${lightTokens.colors.primary[600]};
 
-  /* Background Colors */
+  /* UI Background Colors - Use light tokens for sidebar/navbar backgrounds */
   --sl-color-white: ${lightTokens.colors.background?.primary || '#fafafa'};
   --sl-color-gray-1: ${lightTokens.colors.background?.secondary || '#f5f5f5'};
   --sl-color-gray-2: ${lightTokens.colors.background?.tertiary || '#e5e5e5'};
@@ -33,9 +65,13 @@ function generateStarlightThemeCSS(): string {
   --sl-color-gray-6: ${lightTokens.colors.text?.primary || '#171717'};
   --sl-color-black: ${lightTokens.colors.background?.inverse || '#171717'};
 
-  /* Text Colors */
-  --sl-color-text: ${lightTokens.colors.text?.primary || '#171717'};
-  --sl-color-text-accent: ${lightTokens.colors.interactive?.primary || '#3b82f6'};
+  /* Content Text Colors - Use dark tokens for readability on light UI backgrounds */
+  --sl-color-text: ${darkTokens.colors.text?.primary || '#fafafa'};
+  --sl-color-text-accent: ${darkTokens.colors.interactive?.primary || '#60a5fa'};
+
+  /* Code Block Backgrounds - Use dark tokens for proper syntax highlighting contrast */
+  --sparkle-code-bg-primary: ${darkTokens.colors.background?.secondary || '#262626'};
+  --sparkle-code-bg-secondary: ${darkTokens.colors.background?.tertiary || '#404040'};
 
   /* Status Colors */
   --sl-color-green: ${lightTokens.colors.success[500]};
@@ -76,14 +112,14 @@ function generateStarlightThemeCSS(): string {
   --sparkle-shadow-lg: ${lightTokens.shadows.lg};
 }
 
-/* === DARK THEME OVERRIDES === */
-[data-theme='dark'] {
-  /* Brand/Accent Colors for Dark Mode */
+/* === LIGHT THEME OVERRIDES === */
+[data-theme='light'] {
+  /* Brand/Accent Colors - Use dark tokens for visual consistency */
   --sl-color-accent-low: ${darkTokens.colors.primary[300]};
   --sl-color-accent: ${darkTokens.colors.primary[400]};
   --sl-color-accent-high: ${darkTokens.colors.primary[300]};
 
-  /* Background Colors for Dark Mode */
+  /* UI Background Colors - Use dark tokens for sidebar/navbar backgrounds */
   --sl-color-white: ${darkTokens.colors.background?.primary || '#171717'};
   --sl-color-gray-1: ${darkTokens.colors.background?.secondary || '#262626'};
   --sl-color-gray-2: ${darkTokens.colors.background?.tertiary || '#404040'};
@@ -91,13 +127,17 @@ function generateStarlightThemeCSS(): string {
   --sl-color-gray-4: ${darkTokens.colors.border?.secondary || '#525252'};
   --sl-color-gray-5: ${darkTokens.colors.text?.secondary || '#d4d4d4'};
   --sl-color-gray-6: ${darkTokens.colors.text?.primary || '#fafafa'};
-  --sl-color-black: ${darkTokens.colors.background?.inverse || '#fafafa'};
+  --sl-color-black: ${darkTokens.colors.text?.primary || '#fafafa'};
 
-  /* Text Colors for Dark Mode */
-  --sl-color-text: ${darkTokens.colors.text?.primary || '#fafafa'};
-  --sl-color-text-accent: ${darkTokens.colors.interactive?.primary || '#60a5fa'};
+  /* Content Text Colors - Use light tokens for readability on dark UI backgrounds */
+  --sl-color-text: ${lightTokens.colors.text?.primary || '#171717'};
+  --sl-color-text-accent: ${lightTokens.colors.interactive?.primary || '#3b82f6'};
 
-  /* Status Colors for Dark Mode (slightly lighter) */
+  /* Code Block Backgrounds - Use light tokens for proper syntax highlighting contrast */
+  --sparkle-code-bg-primary: ${lightTokens.colors.background?.secondary || '#f5f5f5'};
+  --sparkle-code-bg-secondary: ${lightTokens.colors.background?.tertiary || '#e5e5e5'};
+
+  /* Status Colors */
   --sl-color-green: ${darkTokens.colors.success[400]};
   --sl-color-orange: ${darkTokens.colors.warning[400]};
   --sl-color-red: ${darkTokens.colors.error[400]};
@@ -142,6 +182,15 @@ function generateStarlightThemeCSS(): string {
   padding: 0.125rem 0.25rem;
   font-size: 0.9em;
   word-break: break-word;
+}
+
+/* Code block backgrounds - override generic gray variables with theme-specific colors */
+.sl-markdown-content pre {
+  background: var(--sparkle-code-bg-primary);
+}
+
+.sl-markdown-content code {
+  background: var(--sparkle-code-bg-secondary);
 }
 
 /* Mobile: better inline code wrapping */
