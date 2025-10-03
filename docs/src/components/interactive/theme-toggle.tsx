@@ -2,7 +2,8 @@
  * Theme Toggle Component
  *
  * Interactive toggle for switching between light, dark, and auto themes.
- * Syncs with Starlight's built-in theme system and persists user preference.
+ * Syncs with Starlight's built-in theme system and persists user preference
+ * using localStorage for cross-session persistence.
  */
 
 import {useEffect, useState} from 'react'
@@ -40,10 +41,11 @@ export interface ThemeToggleProps {
   onThemeChange?: (theme: Theme) => void
 }
 
-const STORAGE_KEY = 'starlight-theme'
+const STORAGE_KEY = 'starlight-theme' as const
 
 /**
- * Get the current theme from Starlight's system
+ * Retrieves the persisted theme preference from localStorage.
+ * Falls back to 'auto' mode if no valid preference is stored.
  */
 function getStarlightTheme(): Theme {
   if (typeof window === 'undefined') return 'auto'
@@ -57,7 +59,8 @@ function getStarlightTheme(): Theme {
 }
 
 /**
- * Set theme in Starlight's system
+ * Persists theme preference to localStorage and updates the DOM.
+ * Resolves 'auto' theme to actual light/dark based on system preference.
  */
 function setStarlightTheme(theme: Theme): void {
   if (typeof window === 'undefined') return
@@ -84,20 +87,18 @@ export function ThemeToggle({
   const [currentTheme, setCurrentTheme] = useState<Theme>(initialTheme)
   const [mounted, setMounted] = useState(false)
 
-  // Load theme from localStorage on mount
   useEffect(() => {
     const theme = getStarlightTheme()
     setCurrentTheme(theme)
     setMounted(true)
   }, [])
 
-  // Listen for system theme preference changes
   useEffect(() => {
     if (currentTheme !== 'auto') return
 
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
 
-    const handleChange = () => {
+    const handleChange = (): void => {
       const effectiveTheme = mediaQuery.matches ? 'dark' : 'light'
       document.documentElement.dataset.theme = effectiveTheme
     }
@@ -106,22 +107,21 @@ export function ThemeToggle({
     return () => mediaQuery.removeEventListener('change', handleChange)
   }, [currentTheme])
 
-  const handleThemeChange = (theme: Theme) => {
+  const handleThemeChange = (theme: Theme): void => {
     setCurrentTheme(theme)
     setStarlightTheme(theme)
     onThemeChange?.(theme)
   }
 
-  // Don't render until mounted to avoid hydration mismatch
   if (!mounted) {
     return <div className={`theme-toggle theme-toggle-loading ${className}`} />
   }
 
-  const sizeClasses = {
+  const sizeClasses: Record<'sm' | 'md' | 'lg', string> = {
     sm: 'theme-toggle-sm',
     md: 'theme-toggle-md',
     lg: 'theme-toggle-lg',
-  }
+  } as const
 
   if (variant === 'dropdown') {
     return (
@@ -131,7 +131,7 @@ export function ThemeToggle({
           <select
             id="theme-select"
             value={currentTheme}
-            onChange={e => handleThemeChange(e.target.value as Theme)}
+            onChange={(e): void => handleThemeChange(e.target.value as Theme)}
             className="theme-toggle-select"
             aria-label="Select theme"
           >
@@ -153,7 +153,7 @@ export function ThemeToggle({
       >
         <button
           type="button"
-          onClick={() => handleThemeChange('light')}
+          onClick={(): void => handleThemeChange('light')}
           className={`theme-toggle-icon ${currentTheme === 'light' ? 'active' : ''}`}
           aria-label="Light theme"
           aria-pressed={currentTheme === 'light'}
@@ -184,7 +184,7 @@ export function ThemeToggle({
         </button>
         <button
           type="button"
-          onClick={() => handleThemeChange('dark')}
+          onClick={(): void => handleThemeChange('dark')}
           className={`theme-toggle-icon ${currentTheme === 'dark' ? 'active' : ''}`}
           aria-label="Dark theme"
           aria-pressed={currentTheme === 'dark'}
@@ -207,7 +207,7 @@ export function ThemeToggle({
         </button>
         <button
           type="button"
-          onClick={() => handleThemeChange('auto')}
+          onClick={(): void => handleThemeChange('auto')}
           className={`theme-toggle-icon ${currentTheme === 'auto' ? 'active' : ''}`}
           aria-label="Auto theme"
           aria-pressed={currentTheme === 'auto'}
@@ -234,7 +234,6 @@ export function ThemeToggle({
     )
   }
 
-  // Default: buttons variant
   return (
     <div
       className={`theme-toggle theme-toggle-buttons ${sizeClasses[size]} ${className}`}
@@ -243,7 +242,7 @@ export function ThemeToggle({
     >
       <button
         type="button"
-        onClick={() => handleThemeChange('light')}
+        onClick={(): void => handleThemeChange('light')}
         className={`theme-toggle-button ${currentTheme === 'light' ? 'active' : ''}`}
         aria-pressed={currentTheme === 'light'}
       >
@@ -251,7 +250,7 @@ export function ThemeToggle({
       </button>
       <button
         type="button"
-        onClick={() => handleThemeChange('dark')}
+        onClick={(): void => handleThemeChange('dark')}
         className={`theme-toggle-button ${currentTheme === 'dark' ? 'active' : ''}`}
         aria-pressed={currentTheme === 'dark'}
       >
@@ -259,7 +258,7 @@ export function ThemeToggle({
       </button>
       <button
         type="button"
-        onClick={() => handleThemeChange('auto')}
+        onClick={(): void => handleThemeChange('auto')}
         className={`theme-toggle-button ${currentTheme === 'auto' ? 'active' : ''}`}
         aria-pressed={currentTheme === 'auto'}
       >

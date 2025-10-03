@@ -1,8 +1,9 @@
 /**
  * Theme Preview Component
  *
- * Wraps content in a theme-switchable container for previewing components
- * in both light and dark modes independently of the main site theme.
+ * Provides an isolated theme environment for component testing.
+ * Allows previewing in light/dark modes without affecting the main site theme,
+ * using scoped CSS custom properties for theme isolation.
  */
 
 import {useState} from 'react'
@@ -35,7 +36,8 @@ export interface ThemePreviewProps {
 }
 
 /**
- * ThemePreview component for previewing content in different themes
+ * Renders content in an isolated theme container with optional theme controls.
+ * Uses data-theme attribute and scoped CSS variables to prevent theme bleed.
  */
 export function ThemePreview({
   initialTheme = 'light',
@@ -55,7 +57,7 @@ export function ThemePreview({
             <div className="theme-preview-controls" role="radiogroup" aria-label="Preview theme selection">
               <button
                 type="button"
-                onClick={() => setTheme('light')}
+                onClick={(): void => setTheme('light')}
                 className={`theme-preview-control ${theme === 'light' ? 'active' : ''}`}
                 aria-pressed={theme === 'light'}
                 aria-label="Preview in light mode"
@@ -86,7 +88,7 @@ export function ThemePreview({
               </button>
               <button
                 type="button"
-                onClick={() => setTheme('dark')}
+                onClick={(): void => setTheme('dark')}
                 className={`theme-preview-control ${theme === 'dark' ? 'active' : ''}`}
                 aria-pressed={theme === 'dark'}
                 aria-label="Preview in dark mode"
