@@ -1,0 +1,245 @@
+---
+/**
+ * Astro wrapper for ThemeToggle React component
+ *
+ * Provides theme switching functionality with proper hydration and no-JS fallback.
+ */
+
+import type {Theme} from './theme-toggle'
+
+export interface Props {
+  /**
+   * Initial theme mode
+   * @default 'auto'
+   */
+  initialTheme?: Theme
+  /**
+   * Display variant of the toggle
+   * @default 'buttons'
+   */
+  variant?: 'buttons' | 'dropdown' | 'icons'
+  /**
+   * Size of the toggle
+   * @default 'md'
+   */
+  size?: 'sm' | 'md' | 'lg'
+  /**
+   * Show labels for theme options
+   * @default true
+   */
+  showLabels?: boolean
+  /**
+   * Custom className for styling
+   */
+  className?: string
+}
+
+const {
+  initialTheme = 'auto',
+  variant = 'buttons',
+  size = 'md',
+  showLabels = true,
+  className = '',
+} = Astro.props
+
+import {ThemeToggle as ThemeToggleReact} from './theme-toggle'
+---
+
+<div class="theme-toggle-container">
+  <ThemeToggleReact
+    client:only="react"
+    initialTheme={initialTheme}
+    variant={variant}
+    size={size}
+    showLabels={showLabels}
+    className={className}
+  />
+  <noscript>
+    <p class="theme-toggle-noscript">
+      Theme switching requires JavaScript. Your browser's default theme will be used.
+    </p>
+  </noscript>
+</div>
+
+<style>
+  .theme-toggle-container {
+    display: inline-block;
+  }
+
+  .theme-toggle-noscript {
+    font-size: var(--sparkle-font-size-sm);
+    color: var(--sl-color-gray-5);
+    margin: 0;
+    padding: var(--sparkle-spacing-sm);
+    border: 1px solid var(--sl-color-gray-3);
+    border-radius: var(--sparkle-border-radius-sm);
+    background: var(--sl-color-gray-1);
+  }
+
+  /* Theme toggle base styles */
+  :global(.theme-toggle) {
+    display: inline-flex;
+    gap: var(--sparkle-spacing-xs);
+    align-items: center;
+    font-family: var(--sparkle-font-family-sans);
+  }
+
+  :global(.theme-toggle-loading) {
+    min-height: 2.5rem;
+    min-width: 8rem;
+    background: var(--sl-color-gray-2);
+    border-radius: var(--sparkle-border-radius-md);
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  /* Size variants */
+  :global(.theme-toggle-sm) {
+    font-size: var(--sparkle-font-size-sm);
+  }
+
+  :global(.theme-toggle-md) {
+    font-size: var(--sparkle-font-size-base);
+  }
+
+  :global(.theme-toggle-lg) {
+    font-size: var(--sparkle-font-size-lg);
+  }
+
+  /* Buttons variant */
+  :global(.theme-toggle-buttons) {
+    display: inline-flex;
+    border: 1px solid var(--sl-color-gray-3);
+    border-radius: var(--sparkle-border-radius-md);
+    background: var(--sl-color-gray-1);
+    padding: var(--sparkle-spacing-xs);
+  }
+
+  :global(.theme-toggle-button) {
+    padding: var(--sparkle-spacing-sm) var(--sparkle-spacing-md);
+    border: none;
+    background: transparent;
+    color: var(--sl-color-text);
+    cursor: pointer;
+    border-radius: var(--sparkle-border-radius-sm);
+    transition: all 0.2s ease;
+    font-size: inherit;
+    font-family: inherit;
+    font-weight: 500;
+    min-height: 44px; /* Touch target minimum */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  :global(.theme-toggle-button:hover) {
+    background: var(--sl-color-gray-2);
+  }
+
+  :global(.theme-toggle-button.active) {
+    background: var(--sl-color-accent);
+    color: white;
+  }
+
+  :global(.theme-toggle-button:focus-visible) {
+    outline: 2px solid var(--sl-color-accent);
+    outline-offset: 2px;
+  }
+
+  /* Dropdown variant */
+  :global(.theme-toggle-dropdown) {
+    display: inline-block;
+  }
+
+  :global(.theme-toggle-label) {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sparkle-spacing-sm);
+    font-weight: 500;
+    color: var(--sl-color-text);
+  }
+
+  :global(.theme-toggle-select) {
+    padding: var(--sparkle-spacing-sm) var(--sparkle-spacing-md);
+    border: 1px solid var(--sl-color-gray-3);
+    border-radius: var(--sparkle-border-radius-sm);
+    background: var(--sl-color-gray-1);
+    color: var(--sl-color-text);
+    cursor: pointer;
+    font-size: inherit;
+    font-family: inherit;
+    min-height: 44px;
+  }
+
+  :global(.theme-toggle-select:hover) {
+    border-color: var(--sl-color-accent);
+  }
+
+  :global(.theme-toggle-select:focus-visible) {
+    outline: 2px solid var(--sl-color-accent);
+    outline-offset: 2px;
+    border-color: var(--sl-color-accent);
+  }
+
+  /* Icons variant */
+  :global(.theme-toggle-icons) {
+    display: inline-flex;
+    gap: var(--sparkle-spacing-xs);
+    padding: var(--sparkle-spacing-xs);
+    border: 1px solid var(--sl-color-gray-3);
+    border-radius: var(--sparkle-border-radius-md);
+    background: var(--sl-color-gray-1);
+  }
+
+  :global(.theme-toggle-icon) {
+    padding: var(--sparkle-spacing-sm);
+    border: none;
+    background: transparent;
+    color: var(--sl-color-text);
+    cursor: pointer;
+    border-radius: var(--sparkle-border-radius-sm);
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  :global(.theme-toggle-icon:hover) {
+    background: var(--sl-color-gray-2);
+  }
+
+  :global(.theme-toggle-icon.active) {
+    background: var(--sl-color-accent);
+    color: white;
+  }
+
+  :global(.theme-toggle-icon:focus-visible) {
+    outline: 2px solid var(--sl-color-accent);
+    outline-offset: 2px;
+  }
+
+  /* Dark mode adjustments */
+  [data-theme='dark'] :global(.theme-toggle-buttons),
+  [data-theme='dark'] :global(.theme-toggle-icons) {
+    border-color: var(--sl-color-gray-4);
+  }
+
+  [data-theme='dark'] :global(.theme-toggle-button:hover),
+  [data-theme='dark'] :global(.theme-toggle-icon:hover) {
+    background: var(--sl-color-gray-3);
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    :global(.theme-toggle-button),
+    :global(.theme-toggle-icon) {
+      padding: var(--sparkle-spacing-xs) var(--sparkle-spacing-sm);
+    }
+  }
+</style>

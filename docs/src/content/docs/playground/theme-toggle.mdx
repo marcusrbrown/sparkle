@@ -1,0 +1,203 @@
+---
+title: Theme Toggle & Preview
+description: Interactive theme switching and component preview system for the Sparkle Design System
+---
+
+import ThemeToggle from '../../../components/interactive/ThemeToggle.astro'
+import ThemePreview from '../../../components/interactive/ThemePreview.astro'
+import {Button} from '@sparkle/ui'
+
+# Theme Toggle & Preview System
+
+The Sparkle Documentation Site includes a comprehensive theme system that allows users to switch between light, dark, and automatic themes, as well as preview components in isolated theme environments.
+
+## Global Theme Toggle
+
+The theme toggle component syncs with Starlight's built-in theme system and persists your preference across sessions.
+
+### Button Variant (Default)
+
+<ThemeToggle variant="buttons" />
+
+The default button variant provides clear labeled options for theme selection with visual feedback.
+
+### Icon Variant
+
+<ThemeToggle variant="icons" showLabels={false} />
+
+The icon variant offers a more compact interface, perfect for toolbars or limited spaces.
+
+### Dropdown Variant
+
+<ThemeToggle variant="dropdown" />
+
+The dropdown variant is ideal for conserving space while still providing full theme control.
+
+## Theme Preview System
+
+The theme preview component allows you to preview Sparkle components in both light and dark modes independently of your current site theme. This is essential for:
+
+- **Component Development**: Test how components look in both themes during development
+- **Documentation**: Show component behavior across themes in examples
+- **Design Review**: Quickly compare component appearance in different themes
+
+### Interactive Component Preview
+
+<ThemePreview title="Button Component Preview" initialTheme="light">
+  <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+    <Button variant="primary">Primary Button</Button>
+    <Button variant="secondary">Secondary Button</Button>
+    <Button variant="outline">Outline Button</Button>
+  </div>
+</ThemePreview>
+
+### Multiple Components in Preview
+
+<ThemePreview title="Multiple Components" initialTheme="dark">
+  <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+    <div>
+      <h4 style="margin-top: 0;">Buttons</h4>
+      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        <Button variant="primary" size="sm">Small</Button>
+        <Button variant="primary" size="md">Medium</Button>
+        <Button variant="primary" size="lg">Large</Button>
+      </div>
+    </div>
+    <div>
+      <h4>Text Content</h4>
+      <p style="margin: 0;">
+        This paragraph demonstrates how text content renders in different themes.
+        The color should automatically adjust based on the selected theme.
+      </p>
+    </div>
+  </div>
+</ThemePreview>
+
+## Usage Guide
+
+### Using Theme Toggle in Your Pages
+
+```astro
+---
+import ThemeToggle from '../components/interactive/ThemeToggle.astro'
+---
+
+<!-- Buttons variant (default) -->
+<ThemeToggle variant="buttons" />
+
+<!-- Icons variant for compact spaces -->
+<ThemeToggle variant="icons" showLabels={false} />
+
+<!-- Dropdown variant -->
+<ThemeToggle variant="dropdown" />
+
+<!-- Custom sizes -->
+<ThemeToggle size="sm" />
+<ThemeToggle size="md" />
+<ThemeToggle size="lg" />
+```
+
+### Using Theme Preview for Component Showcases
+
+```astro
+---
+import ThemePreview from '../components/interactive/ThemePreview.astro'
+import {Button} from '@sparkle/ui'
+---
+
+<ThemePreview title="My Component" initialTheme="light">
+  <Button>Test Button</Button>
+</ThemePreview>
+```
+
+## Technical Details
+
+### Theme Persistence
+
+The theme toggle component uses Starlight's built-in theme system with `localStorage` for persistence:
+
+- **Storage Key**: `starlight-theme`
+- **Values**: `'light'`, `'dark'`, or `'auto'`
+- **Auto Mode**: Respects system preferences via `prefers-color-scheme` media query
+
+### CSS Custom Properties
+
+Both components use Sparkle's design tokens and Starlight's theme variables:
+
+```css
+/* Light theme colors */
+:root {
+  --sl-color-text: #171717;
+  --sl-color-accent: #3b82f6;
+  --sl-color-gray-1: #f5f5f5;
+}
+
+/* Dark theme colors */
+[data-theme='dark'] {
+  --sl-color-text: #fafafa;
+  --sl-color-accent: #60a5fa;
+  --sl-color-gray-1: #262626;
+}
+```
+
+### Accessibility Features
+
+Both components follow WCAG 2.1 AA accessibility guidelines:
+
+- **Keyboard Navigation**: Full keyboard support with visible focus indicators
+- **ARIA Labels**: Proper labeling for screen readers
+- **Touch Targets**: Minimum 44px touch targets for mobile devices
+- **Color Contrast**: All color combinations meet AA standards
+- **Reduced Motion**: Respects `prefers-reduced-motion` media query
+
+## Integration with Component Showcase Pages
+
+The theme toggle can be integrated into component showcase pages to provide users with theme switching capability:
+
+<ThemePreview title="Integrated Example" showControls={true}>
+  <div style="padding: 1rem; border: 1px solid var(--sl-color-gray-3); border-radius: 0.5rem;">
+    <h5 style="margin-top: 0;">Component Showcase</h5>
+    <p>This demonstrates how components render in the selected theme.</p>
+    <Button variant="primary">Themed Button</Button>
+  </div>
+</ThemePreview>
+
+## Best Practices
+
+### For Documentation Authors
+
+1. **Use Theme Preview for Component Examples**: Always wrap component examples in `<ThemePreview>` to show behavior in both themes
+2. **Test Both Themes**: Verify that your content is readable in both light and dark modes
+3. **Provide Theme Context**: Explain theme-specific behavior when relevant
+4. **Use Semantic Colors**: Rely on CSS custom properties that adapt to themes
+
+### For Component Developers
+
+1. **Design for Both Themes**: Ensure components work well in light and dark modes
+2. **Use Theme Tokens**: Leverage Sparkle's design tokens for automatic theme adaptation
+3. **Test Contrast**: Verify color contrast ratios in both themes
+4. **Handle Edge Cases**: Consider how components behave at theme boundaries
+
+## Theme System Architecture
+
+The Sparkle theme system follows a layered architecture:
+
+1. **Design Tokens** (`@sparkle/theme`): Core color, spacing, and typography tokens
+2. **Starlight Integration**: Mapping Sparkle tokens to Starlight's CSS custom properties
+3. **Component Theming**: Components use semantic token references
+4. **User Control**: Theme toggle provides user-level theme management
+
+This architecture ensures:
+
+- **Consistency**: All components use the same theme foundation
+- **Flexibility**: Easy to customize and extend themes
+- **Performance**: CSS custom properties enable instant theme switching
+- **Maintainability**: Centralized theme management
+
+---
+
+**Related Documentation**:
+- [Theme System Overview](/theme/overview)
+- [Design Tokens](/theme/design-tokens)
+- [Customization Guide](/theme/customization)
+- [Component Showcase](/components/)
