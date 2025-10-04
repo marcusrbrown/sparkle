@@ -1,0 +1,535 @@
+---
+title: Syntax Highlighting with Shiki
+description: Comprehensive demonstration of the CodeHighlight component using Shiki for syntax highlighting across multiple programming languages with theme support, line numbers, and interactive features.
+---
+
+import CodeHighlight from '../../../components/interactive/CodeHighlight.astro'
+
+# Syntax Highlighting with Shiki
+
+The **CodeHighlight** component provides beautiful syntax highlighting powered by Shiki, supporting multiple programming languages, themes (light/dark/auto), line numbers, line highlighting, copy-to-clipboard, and various display options.
+
+## Key Features
+
+- **Multiple Languages**: Support for TypeScript, JavaScript, Python, Rust, Go, JSON, YAML, Markdown, and more
+- **Theme Support**: Light, dark, and auto (system preference) themes
+- **Line Numbers**: Optional line numbering with customizable starting line
+- **Line Highlighting**: Highlight specific lines or ranges
+- **Copy-to-Clipboard**: Built-in copy functionality with visual feedback
+- **Responsive Design**: Mobile-friendly with proper overflow handling
+- **Accessibility**: Full keyboard navigation and screen reader support
+- **Word Wrap**: Optional word wrapping for long lines
+
+## Basic Usage
+
+### TypeScript Example
+
+<CodeHighlight
+  code={`interface User {
+  id: number
+  name: string
+  email: string
+  roles: string[]
+}
+
+async function getUser(id: number): Promise<User> {
+  const response = await fetch(\`/api/users/\${id}\`)
+  return response.json()
+}`}
+  language="typescript"
+  title="user.ts"
+  showLineNumbers
+/>
+
+### JavaScript Example
+
+<CodeHighlight
+  code={`// React component example
+function Button({ children, onClick, variant = 'primary' }) {
+  return (
+    <button
+      className={\`btn btn-\${variant}\`}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  )
+}
+
+export default Button`}
+  language="javascript"
+  title="Button.jsx"
+  showLineNumbers
+  highlightLines="3-6"
+/>
+
+### Python Example
+
+<CodeHighlight
+  code={`from typing import List, Optional
+import asyncio
+
+class DataProcessor:
+    """Process and analyze data with async support"""
+
+    def __init__(self, batch_size: int = 100):
+        self.batch_size = batch_size
+        self.results: List[dict] = []
+
+    async def process(self, data: List[dict]) -> Optional[dict]:
+        """Process data in batches"""
+        batches = [data[i:i + self.batch_size]
+                   for i in range(0, len(data), self.batch_size)]
+
+        tasks = [self._process_batch(batch) for batch in batches]
+        results = await asyncio.gather(*tasks)
+
+        return {"processed": sum(results), "total": len(data)}
+
+    async def _process_batch(self, batch: List[dict]) -> int:
+        """Process a single batch"""
+        await asyncio.sleep(0.1)  # Simulate processing
+        return len(batch)`}
+  language="python"
+  title="processor.py"
+  showLineNumbers
+  highlightLines="11-18"
+/>
+
+### Rust Example
+
+<CodeHighlight
+  code={`use std::collections::HashMap;
+
+#[derive(Debug, Clone)]
+pub struct Config {
+    pub host: String,
+    pub port: u16,
+    pub settings: HashMap<String, String>,
+}
+
+impl Config {
+    pub fn new(host: String, port: u16) -> Self {
+        Self {
+            host,
+            port,
+            settings: HashMap::new(),
+        }
+    }
+
+    pub fn with_setting(mut self, key: String, value: String) -> Self {
+        self.settings.insert(key, value);
+        self
+    }
+}
+
+fn main() {
+    let config = Config::new("localhost".to_string(), 8080)
+        .with_setting("debug".to_string(), "true".to_string());
+
+    println!("Server config: {:?}", config);
+}`}
+  language="rust"
+  title="config.rs"
+  showLineNumbers
+  highlightLines="25-27"
+/>
+
+### Go Example
+
+<CodeHighlight
+  code={`package main
+
+import (
+    "fmt"
+    "net/http"
+    "time"
+)
+
+type Server struct {
+    addr string
+    mux  *http.ServeMux
+}
+
+func NewServer(addr string) *Server {
+    return &Server{
+        addr: addr,
+        mux:  http.NewServeMux(),
+    }
+}
+
+func (s *Server) RegisterHandler(pattern string, handler http.HandlerFunc) {
+    s.mux.HandleFunc(pattern, handler)
+}
+
+func (s *Server) Start() error {
+    fmt.Printf("Starting server on %s\\n", s.addr)
+
+    server := &http.Server{
+        Addr:         s.addr,
+        Handler:      s.mux,
+        ReadTimeout:  10 * time.Second,
+        WriteTimeout: 10 * time.Second,
+    }
+
+    return server.ListenAndServe()
+}`}
+  language="go"
+  title="server.go"
+  showLineNumbers
+  highlightLines="25-35"
+/>
+
+## Configuration Examples
+
+### JSON Configuration
+
+<CodeHighlight
+  code={`{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "lib": ["ESNext", "DOM"],
+    "jsx": "react-jsx",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "@/components/*": ["./src/components/*"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "build"]
+}`}
+  language="json"
+  title="tsconfig.json"
+  showLineNumbers
+/>
+
+### YAML Configuration
+
+<CodeHighlight
+  code={`name: CI/CD Pipeline
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x, 22.x]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: \${{ matrix.node-version }}
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
+      - name: Run tests
+        run: pnpm test
+      - name: Build
+        run: pnpm build`}
+  language="yaml"
+  title=".github/workflows/ci.yml"
+  showLineNumbers
+  highlightLines="8-13"
+/>
+
+## Advanced Features
+
+### Line Highlighting
+
+Highlight specific lines or ranges using the `highlightLines` prop:
+
+<CodeHighlight
+  code={`function calculateTotal(items) {
+  // Calculate subtotal
+  const subtotal = items.reduce((sum, item) => {
+    return sum + (item.price * item.quantity)
+  }, 0)
+
+  // Apply tax
+  const tax = subtotal * 0.08
+
+  // Calculate total
+  const total = subtotal + tax
+
+  return {
+    subtotal,
+    tax,
+    total
+  }
+}`}
+  language="javascript"
+  title="calculations.js"
+  showLineNumbers
+  highlightLines="3-5,8,11"
+/>
+
+### Custom Starting Line Number
+
+Start line numbers from any value:
+
+<CodeHighlight
+  code={`export async function middleware(request) {
+  const token = request.cookies.get('auth-token')
+
+  if (!token) {
+    return Response.redirect('/login')
+  }
+
+  return NextResponse.next()
+}`}
+  language="typescript"
+  title="middleware.ts (excerpt)"
+  showLineNumbers
+  startLineNumber={42}
+/>
+
+### Word Wrap for Long Lines
+
+Enable word wrapping for better readability on narrow screens:
+
+<CodeHighlight
+  code={`const veryLongFunctionWithManyParameters = (param1, param2, param3, param4, param5, param6, param7, param8) => {
+  return doSomethingWithAllTheseParameters(param1, param2, param3, param4, param5, param6, param7, param8)
+}
+
+const extremelyLongURL = "https://example.com/api/v2/users/profile?include=posts,comments,likes&filter[status]=active&sort=-created_at&page[number]=1&page[size]=50"`}
+  language="javascript"
+  title="long-lines.js"
+  wordWrap
+  showLineNumbers
+/>
+
+## Shell Script Example
+
+<CodeHighlight
+  code={`#!/bin/bash
+
+# Deployment script with error handling
+set -euo pipefail
+
+ENVIRONMENT=\${1:-production}
+VERSION=\$(git describe --tags --always)
+
+echo "Deploying version \$VERSION to \$ENVIRONMENT..."
+
+# Build the application
+pnpm install --frozen-lockfile
+pnpm build
+
+# Run tests
+if ! pnpm test; then
+  echo "Tests failed, aborting deployment"
+  exit 1
+fi
+
+# Deploy to target environment
+case \$ENVIRONMENT in
+  production)
+    echo "Deploying to production..."
+    ./scripts/deploy-prod.sh "\$VERSION"
+    ;;
+  staging)
+    echo "Deploying to staging..."
+    ./scripts/deploy-staging.sh "\$VERSION"
+    ;;
+  *)
+    echo "Unknown environment: \$ENVIRONMENT"
+    exit 1
+    ;;
+esac
+
+echo "Deployment complete!"`}
+  language="bash"
+  title="deploy.sh"
+  showLineNumbers
+  highlightLines="22-34"
+/>
+
+## SQL Example
+
+<CodeHighlight
+  code={`-- Create users table with indexes
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  username VARCHAR(50) UNIQUE NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create index on email for fast lookups
+CREATE INDEX idx_users_email ON users(email);
+
+-- Create posts table with foreign key
+CREATE TABLE posts (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL,
+  title VARCHAR(200) NOT NULL,
+  content TEXT,
+  published BOOLEAN DEFAULT false,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Query with join
+SELECT
+  u.username,
+  p.title,
+  p.created_at
+FROM users u
+INNER JOIN posts p ON u.id = p.user_id
+WHERE p.published = true
+ORDER BY p.created_at DESC
+LIMIT 10;`}
+  language="sql"
+  title="schema.sql"
+  showLineNumbers
+  highlightLines="25-33"
+/>
+
+## Markdown Example
+
+<CodeHighlight
+  code={`# Documentation Guide
+
+## Getting Started
+
+Welcome to our **comprehensive documentation**! This guide will help you get started quickly.
+
+### Installation
+
+\`\`\`bash
+npm install @sparkle/ui
+\`\`\`
+
+### Quick Example
+
+\`\`\`typescript
+import { Button } from '@sparkle/ui'
+
+function App() {
+  return <Button variant="primary">Click me</Button>
+}
+\`\`\`
+
+## Features
+
+- **Component Library**: Pre-built React components
+- **Theme System**: Customizable design tokens
+- **TypeScript**: Full type safety
+- **Accessibility**: WCAG 2.1 AA compliant
+
+> **Note**: All components are tested and production-ready!
+
+For more information, visit [our website](https://sparkle.mrbro.dev).`}
+  language="markdown"
+  title="README.md"
+  showLineNumbers
+/>
+
+## Usage in Documentation
+
+The CodeHighlight component can be used anywhere in the documentation:
+
+### In MDX Files
+
+```jsx
+import CodeHighlight from '../../../components/interactive/CodeHighlight.astro'
+
+<CodeHighlight
+  code={'your code here'}
+  language="typescript"
+  showLineNumbers
+/>
+```
+
+### Component Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `code` | `string` | - | Code content to highlight (required) |
+| `language` | `BundledLanguage` | `'typescript'` | Programming language |
+| `theme` | `'light' \| 'dark' \| 'auto'` | `'auto'` | Syntax highlighting theme |
+| `showLineNumbers` | `boolean` | `false` | Display line numbers |
+| `highlightLines` | `string` | - | Lines to highlight (e.g., "1,3-5,7") |
+| `startLineNumber` | `number` | `1` | Starting line number |
+| `title` | `string` | - | Optional title/filename |
+| `showCopyButton` | `boolean` | `true` | Show copy-to-clipboard button |
+| `copyButtonPosition` | `'top-right' \| 'top-left' \| 'bottom-right' \| 'bottom-left'` | `'top-right'` | Copy button position |
+| `maxHeight` | `string \| number` | - | Maximum height for scrolling |
+| `wordWrap` | `boolean` | `false` | Enable word wrapping |
+
+### Supported Languages
+
+The component supports all [Shiki bundled languages](https://shiki.style/languages), including:
+
+**Common Languages:**
+- JavaScript, TypeScript, JSX, TSX
+- Python, Java, C, C++, C#, Go, Rust
+- HTML, CSS, SCSS, Less
+- JSON, YAML, TOML, XML
+- Markdown, MDX
+
+**Shell & Scripting:**
+- Bash, Shell, PowerShell
+- Lua, Perl, Ruby, PHP
+
+**Data & Query:**
+- SQL, GraphQL
+- Dockerfile, Makefile
+
+**And many more!**
+
+## When to Use CodeHighlight vs Monaco Editor
+
+### Use CodeHighlight When:
+- Displaying **static code examples** in documentation
+- Showing **syntax-highlighted snippets** without editing
+- Needing **multiple language support** in a single page
+- Prioritizing **performance** and **bundle size**
+- Building **component showcases** with code examples
+
+### Use Monaco Editor When:
+- Building **interactive code playgrounds**
+- Providing **live code editing** capabilities
+- Needing **IntelliSense** and **type checking**
+- Creating **tutorial environments** with editable code
+- Building **online IDE** features
+
+## Technical Implementation
+
+The CodeHighlight component uses:
+- **Shiki**: Fast, beautiful syntax highlighter powered by the same engine as VS Code
+- **Client-side Rendering**: Lazy loading with `client:load` for optimal performance
+- **Theme Detection**: Automatic system theme detection in 'auto' mode
+- **React Integration**: Full React component with hooks for state management
+- **Astro Wrapper**: Seamless integration with Astro's component system
+
+## Accessibility Features
+
+- ✅ **Keyboard Navigation**: Full keyboard support for scrolling and interaction
+- ✅ **Screen Reader Support**: Proper ARIA labels and semantic HTML
+- ✅ **Color Contrast**: High contrast themes for better readability
+- ✅ **Focus Indicators**: Visible focus states for all interactive elements
+- ✅ **Responsive Design**: Works on mobile, tablet, and desktop
+
+## Related Documentation
+
+- [Live Code Editor](/playground/live-code-editor) - Interactive Monaco Editor
+- [Copy Demo](/playground/copy-demo) - Copy-to-clipboard functionality
+- [Theme Toggle](/playground/theme-toggle) - Theme switching
+- [Component Architecture](/components/architecture) - Component design patterns
