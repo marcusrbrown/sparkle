@@ -1,4 +1,5 @@
 import type {BundledLanguage, BundledTheme, HighlighterGeneric} from 'shiki'
+import {consola} from 'consola'
 import React, {useEffect, useState} from 'react'
 
 import {CopyButton} from './CopyButton'
@@ -36,8 +37,13 @@ export interface CodeHighlightProps {
 /**
  * Parses highlight lines string into a Set of line numbers
  *
+ * Supports both individual lines and ranges for flexible highlighting configuration.
+ * Uses Set to avoid duplicate line numbers and enable O(1) lookup during rendering.
+ *
  * @param highlightLines - String like "1,3-5,7" representing lines to highlight
  * @returns Set of line numbers to highlight
+ * @example
+ * parseHighlightLines("1,3-5,7") // Returns Set {1, 3, 4, 5, 7}
  */
 function parseHighlightLines(highlightLines?: string): Set<number> {
   const lines = new Set<number>()
@@ -150,7 +156,7 @@ export function CodeHighlight(props: CodeHighlightProps): React.ReactElement {
         setHighlightedCode(html)
       } catch (error_) {
         if (!cancelled) {
-          console.error('Shiki highlighting error:', error_)
+          consola.error('Shiki highlighting error:', error_)
           setError(error_ instanceof Error ? error_.message : 'Failed to highlight code')
         }
       } finally {
@@ -170,14 +176,20 @@ export function CodeHighlight(props: CodeHighlightProps): React.ReactElement {
   // Parse highlighted lines
   const highlightedLines = React.useMemo(() => parseHighlightLines(highlightLines), [highlightLines])
 
-  // Post-process HTML to add line numbers and highlighted lines
+  /**
+   * Post-process Shiki's HTML output to add line numbers and highlighting
+   *
+   * Shiki generates clean HTML but doesn't support line numbers or custom highlighting.
+   * This post-processing step injects line numbers and applies highlighting classes
+   * by manipulating the HTML string before rendering.
+   */
   const processedHtml = React.useMemo(() => {
     if (!highlightedCode || (!showLineNumbers && highlightedLines.size === 0)) {
       return highlightedCode
     }
 
     const lines = highlightedCode.split('\n')
-    const codeLines = lines.slice(1, -1) // Remove first and last empty lines from wrapping elements
+    const codeLines = lines.slice(1, -1) // Remove wrapper divs from Shiki output
 
     return codeLines
       .map((line, index) => {
@@ -204,25 +216,27 @@ export function CodeHighlight(props: CodeHighlightProps): React.ReactElement {
       .join('\n')
   }, [highlightedCode, showLineNumbers, highlightedLines, startLineNumber])
 
-  // Calculate copy button position styles
-  const getCopyButtonPositionStyles = (): React.CSSProperties => {
+  /**
+   * Calculate CSS positioning for the copy button
+   *
+   * Positions the button absolutely within the code block container.
+   * Uses rem units for consistent spacing across different viewport sizes.
+   */
+  const copyButtonStyles: React.CSSProperties = React.useMemo(() => {
     const baseStyles: React.CSSProperties = {
       position: 'absolute',
       zIndex: 10,
     }
 
-    switch (copyButtonPosition) {
-      case 'top-left':
-        return {...baseStyles, top: '0.5rem', left: '0.5rem'}
-      case 'bottom-right':
-        return {...baseStyles, bottom: '0.5rem', right: '0.5rem'}
-      case 'bottom-left':
-        return {...baseStyles, bottom: '0.5rem', left: '0.5rem'}
-      case 'top-right':
-      default:
-        return {...baseStyles, top: '0.5rem', right: '0.5rem'}
+    const positionMap: Record<typeof copyButtonPosition, React.CSSProperties> = {
+      'top-left': {...baseStyles, top: '0.5rem', left: '0.5rem'},
+      'top-right': {...baseStyles, top: '0.5rem', right: '0.5rem'},
+      'bottom-left': {...baseStyles, bottom: '0.5rem', left: '0.5rem'},
+      'bottom-right': {...baseStyles, bottom: '0.5rem', right: '0.5rem'},
     }
-  }
+
+    return positionMap[copyButtonPosition] || positionMap['top-right']
+  }, [copyButtonPosition])
 
   if (loading) {
     return (
@@ -264,7 +278,7 @@ export function CodeHighlight(props: CodeHighlightProps): React.ReactElement {
         }}
       >
         {showCopyButton && (
-          <div style={getCopyButtonPositionStyles()}>
+          <div style={copyButtonStyles}>
             <CopyButton
               textToCopy={code}
               variant="minimal"
