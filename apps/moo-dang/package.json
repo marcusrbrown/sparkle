@@ -31,14 +31,14 @@
     "@xterm/addon-fit": "^0.10.0",
     "@xterm/xterm": "^5.5.0",
     "consola": "3.4.2",
-    "react": "19.1.1",
-    "react-dom": "19.1.1"
+    "react": "19.2.0",
+    "react-dom": "19.2.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^16.0.0",
-    "@types/react": "~19.1.0",
-    "@types/react-dom": "19.1.11",
+    "@types/react": "~19.2.0",
+    "@types/react-dom": "19.2.0",
     "@vitejs/plugin-react-swc": "^4.0.0",
     "concurrently": "^9.1.0",
     "happy-dom": "18.0.1",
