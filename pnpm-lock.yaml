@@ -275,6 +275,9 @@ importers:
       sharp:
         specifier: ^0.34.2
         version: 0.34.4
+      shiki:
+        specifier: 3.13.0
+        version: 3.13.0
     devDependencies:
       '@axe-core/cli':
         specifier: 4.10.2

@@ -1,0 +1,259 @@
+---
+import type {BundledLanguage} from 'shiki'
+
+import CodeHighlightReact from './CodeHighlight'
+
+export interface Props {
+  /** Code content to syntax highlight */
+  code: string
+  /** Programming language for syntax highlighting */
+  language?: BundledLanguage
+  /** Theme for syntax highlighting (light, dark, or auto) */
+  theme?: 'light' | 'dark' | 'auto'
+  /** Show line numbers */
+  showLineNumbers?: boolean
+  /** Lines to highlight (e.g., "1,3-5,7") */
+  highlightLines?: string
+  /** Starting line number for line numbers display */
+  startLineNumber?: number
+  /** Optional title for the code block */
+  title?: string
+  /** Show copy button */
+  showCopyButton?: boolean
+  /** Copy button position */
+  copyButtonPosition?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'
+  /** Additional CSS classes */
+  className?: string
+  /** Maximum height for scrollable code blocks */
+  maxHeight?: string | number
+  /** Enable word wrap */
+  wordWrap?: boolean
+}
+
+const {
+  code,
+  language = 'typescript',
+  theme = 'auto',
+  showLineNumbers = false,
+  highlightLines,
+  startLineNumber = 1,
+  title,
+  showCopyButton = true,
+  copyButtonPosition = 'top-right',
+  className = '',
+  maxHeight,
+  wordWrap = false,
+} = Astro.props
+---
+
+<CodeHighlightReact
+  client:load
+  code={code}
+  language={language}
+  theme={theme}
+  showLineNumbers={showLineNumbers}
+  highlightLines={highlightLines}
+  startLineNumber={startLineNumber}
+  title={title}
+  showCopyButton={showCopyButton}
+  copyButtonPosition={copyButtonPosition}
+  className={className}
+  maxHeight={maxHeight}
+  wordWrap={wordWrap}
+/>
+
+<style is:global>
+  /* CodeHighlight Component Styles */
+  .code-highlight-wrapper {
+    border-radius: var(--sparkle-border-radius-md, 0.5rem);
+    overflow: hidden;
+    margin: var(--sparkle-spacing-md, 1rem) 0;
+    border: 1px solid var(--sl-color-gray-3);
+    box-shadow: var(--sparkle-shadow-sm);
+    transition: all 0.2s ease;
+  }
+
+  .code-highlight-wrapper.light {
+    background: var(--sl-color-white);
+  }
+
+  .code-highlight-wrapper.dark {
+    background: var(--sl-color-gray-1);
+  }
+
+  .code-highlight-wrapper:hover {
+    box-shadow: var(--sparkle-shadow-md);
+  }
+
+  /* Header with title and language */
+  .code-highlight-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--sparkle-spacing-sm, 0.5rem) var(--sparkle-spacing-md, 1rem);
+    background: var(--sl-color-gray-2);
+    border-bottom: 1px solid var(--sl-color-gray-3);
+    font-family: var(--sparkle-font-family-mono, monospace);
+    font-size: var(--sparkle-font-size-sm, 0.875rem);
+  }
+
+  .code-highlight-title {
+    font-weight: 600;
+    color: var(--sl-color-text);
+  }
+
+  .code-highlight-language {
+    color: var(--sl-color-text-accent);
+    text-transform: uppercase;
+    font-size: var(--sparkle-font-size-xs, 0.75rem);
+    letter-spacing: 0.05em;
+  }
+
+  /* Container for code content */
+  .code-highlight-container {
+    position: relative;
+    overflow: auto;
+  }
+
+  /* Code content area */
+  .code-highlight-content {
+    padding: var(--sparkle-spacing-md, 1rem);
+    font-family: var(--sparkle-font-family-mono, monospace);
+    font-size: var(--sparkle-font-size-sm, 0.875rem);
+    line-height: 1.6;
+    overflow-x: auto;
+  }
+
+  /* Line numbers */
+  .code-highlight-content.with-line-numbers .line {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .code-highlight-content .line-number {
+    display: inline-block;
+    width: 3em;
+    margin-right: 1em;
+    text-align: right;
+    color: var(--sl-color-gray-4);
+    user-select: none;
+    flex-shrink: 0;
+  }
+
+  /* Highlighted lines */
+  .code-highlight-content .highlighted-line {
+    background: rgba(59, 130, 246, 0.1);
+    border-left: 3px solid var(--sl-color-accent);
+    padding-left: calc(var(--sparkle-spacing-sm, 0.5rem) - 3px);
+    margin-left: calc(-1 * var(--sparkle-spacing-md, 1rem));
+    margin-right: calc(-1 * var(--sparkle-spacing-md, 1rem));
+    padding-right: var(--sparkle-spacing-md, 1rem);
+  }
+
+  .code-highlight-content.with-line-numbers .highlighted-line .line-number {
+    margin-left: var(--sparkle-spacing-sm, 0.5rem);
+  }
+
+  /* Word wrap mode */
+  .code-highlight-content.word-wrap {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .code-highlight-content:not(.word-wrap) {
+    white-space: pre;
+  }
+
+  /* Loading state */
+  .code-highlight-wrapper.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--sparkle-spacing-xl, 2rem);
+    min-height: 200px;
+  }
+
+  .code-highlight-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--sparkle-spacing-md, 1rem);
+    color: var(--sl-color-text);
+    font-family: var(--sparkle-font-family-sans);
+  }
+
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--sl-color-gray-3);
+    border-top-color: var(--sl-color-accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Error state */
+  .code-highlight-wrapper.error {
+    background: var(--sl-color-red-low);
+    border-color: var(--sl-color-red);
+  }
+
+  .code-highlight-error {
+    padding: var(--sparkle-spacing-md, 1rem);
+    color: var(--sl-color-red-high);
+    font-family: var(--sparkle-font-family-sans);
+    margin-bottom: var(--sparkle-spacing-sm, 0.5rem);
+  }
+
+  .code-highlight-error strong {
+    font-weight: 600;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .code-highlight-content {
+      padding: var(--sparkle-spacing-sm, 0.5rem);
+      font-size: var(--sparkle-font-size-xs, 0.75rem);
+    }
+
+    .code-highlight-header {
+      padding: var(--sparkle-spacing-xs, 0.25rem) var(--sparkle-spacing-sm, 0.5rem);
+      font-size: var(--sparkle-font-size-xs, 0.75rem);
+    }
+
+    .code-highlight-content .line-number {
+      width: 2.5em;
+      margin-right: 0.5em;
+    }
+  }
+
+  /* Accessibility: Focus styles */
+  .code-highlight-container:focus-visible {
+    outline: 2px solid var(--sl-color-accent);
+    outline-offset: 2px;
+  }
+
+  /* Dark theme adjustments */
+  [data-theme='dark'] .code-highlight-wrapper.light {
+    background: var(--sl-color-gray-1);
+  }
+
+  [data-theme='dark'] .code-highlight-header {
+    background: var(--sl-color-gray-2);
+    border-bottom-color: var(--sl-color-gray-4);
+  }
+
+  /* Light theme adjustments */
+  [data-theme='light'] .code-highlight-wrapper.dark {
+    background: var(--sl-color-white);
+  }
+
+  [data-theme='light'] .code-highlight-header {
+    background: var(--sl-color-gray-1);
+  }
+</style>

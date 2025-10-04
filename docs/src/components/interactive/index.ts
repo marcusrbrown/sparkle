@@ -2,6 +2,9 @@
 export {CodeEditor} from './CodeEditor.tsx'
 export type {CodeEditorProps} from './CodeEditor.tsx'
 
+export {CodeHighlight} from './CodeHighlight.tsx'
+export type {CodeHighlightProps} from './CodeHighlight.tsx'
+
 export {CopyButton} from './CopyButton.tsx'
 export type {CopyButtonProps} from './CopyButton.tsx'
 
@@ -19,6 +22,7 @@ export type {Theme, ThemeToggleProps} from './theme-toggle.tsx'
 
 // Astro components are imported via the .astro file when needed
 export const CodeEditorAstro = './CodeEditorAstro.astro'
+export const CodeHighlightAstro = './CodeHighlight.astro'
 export const SimpleCodeEditor = './SimpleCodeEditor.astro'
 export const StorybookEmbedAstro = './StorybookEmbedAstro.astro'
 export const ThemeToggleAstro = './ThemeToggle.astro'
