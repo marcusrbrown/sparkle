@@ -20,7 +20,7 @@ All images in the documentation are automatically optimized using Astro's built-
 
 ### Using OptimizedImage Component
 
-For custom images, use the `OptimizedImage` component:
+For custom images, use the `OptimizedImage` component with imported images:
 
 ```astro
 ---
@@ -31,18 +31,18 @@ import myImage from '@/assets/example.jpg';
 <OptimizedImage
   src={myImage}
   alt="Example image"
-  formats={['avif', 'webp']}
   quality={80}
   loading="lazy"
 />
 ```
 
 **Features:**
-- Automatic AVIF and WebP generation
+- Automatic modern format generation (WebP, AVIF with fallbacks)
 - Configurable quality settings (default: 80)
 - Lazy loading by default
 - High-DPI display support with densities
 - Prevents Cumulative Layout Shift (CLS)
+- Automatic width/height inference from imported images
 
 ## Lazy Loading Strategy
 

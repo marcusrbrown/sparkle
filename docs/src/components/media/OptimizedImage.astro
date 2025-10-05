@@ -2,8 +2,13 @@
 /**
  * Optimized Image Component for Astro Documentation
  *
- * Provides automatic image optimization with modern formats (WebP, AVIF),
- * lazy loading, responsive sizes, and proper accessibility attributes.
+ * Provides automatic image optimization with lazy loading, responsive sizing,
+ * and proper accessibility attributes. Astro automatically converts images to
+ * modern formats (WebP, AVIF) with appropriate fallbacks.
+ *
+ * For local images (imported via import statement), width and height are optional
+ * as they are inferred from the source. For remote images, width and height must
+ * be specified or use inferSize.
  *
  * @example
  * ```astro
@@ -19,29 +24,25 @@ import {Image} from 'astro:assets'
 import type {ImageMetadata} from 'astro'
 
 export interface Props {
-  /** Image source (imported image or string path) */
-  src: ImageMetadata | string
+  /** Image source (imported ImageMetadata only) */
+  src: ImageMetadata
   /** Alt text for accessibility (required) */
   alt: string
-  /** Image width in pixels */
+  /** Image width in pixels (optional for local images, inferred from source) */
   width?: number
-  /** Image height in pixels */
+  /** Image height in pixels (optional for local images, inferred from source) */
   height?: number
-  /** Image loading strategy */
+  /** Image loading strategy (defaults to lazy) */
   loading?: 'lazy' | 'eager'
-  /** Image decoding strategy */
+  /** Image decoding strategy (defaults to async) */
   decoding?: 'async' | 'sync' | 'auto'
-  /** Image formats to generate (defaults to ['avif', 'webp']) */
-  formats?: ('avif' | 'webp' | 'png' | 'jpg')[]
   /** Quality setting (0-100, defaults to 80) */
   quality?: number
   /** Densities for high-DPI displays */
   densities?: number[]
   /** Additional CSS classes */
   class?: string
-  /** Inline styles */
-  style?: string
-  /** Fetch priority for above-the-fold images */
+  /** Fetch priority for above-the-fold images (defaults to auto) */
   fetchpriority?: 'high' | 'low' | 'auto'
 }
 
@@ -52,28 +53,24 @@ const {
   height,
   loading = 'lazy',
   decoding = 'async',
-  formats = ['avif', 'webp'],
   quality = 80,
   densities,
   class: className,
-  style,
   fetchpriority = 'auto',
 } = Astro.props
 ---
 
 <Image
-  src={src}
-  alt={alt}
-  width={width}
-  height={height}
-  loading={loading}
-  decoding={decoding}
-  format={formats[0]}
-  quality={quality}
-  densities={densities}
+  {src}
+  {alt}
+  {width}
+  {height}
+  {loading}
+  {decoding}
+  {quality}
+  {densities}
   class={className}
-  style={style}
-  fetchpriority={fetchpriority}
+  {fetchpriority}
 />
 
 <style>
