@@ -44,6 +44,7 @@
     "docs:watch:verbose": "tsx scripts/watch-docs.ts --verbose",
     "lint": "eslint",
     "preview": "astro preview",
+    "sr:test": "tsx scripts/screen-reader-testing.ts",
     "start": "astro dev",
     "theme:generate": "tsx scripts/generate-theme-css.ts >| src/styles/sparkle-theme.css"
   },
