@@ -243,6 +243,7 @@ export default defineConfig({
           collapsed: true,
           items: [
             {label: 'Accessibility Guide', slug: 'guides/accessibility'},
+            {label: 'ARIA Labels', slug: 'guides/aria-labels'},
             {label: 'Heading Hierarchy', slug: 'guides/heading-hierarchy'},
           ],
         },

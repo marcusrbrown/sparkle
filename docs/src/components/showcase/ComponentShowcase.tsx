@@ -2,58 +2,60 @@ import React, {useState} from 'react'
 import {PropsTable, type PropDocumentation} from './PropsTable'
 
 /**
- * Component documentation structure matching JSDoc extraction output
+ * Component documentation structure matching JSDoc extraction output.
+ *
+ * Used by automated documentation generation scripts to display API information.
  */
 export interface ComponentDocumentation {
-  /** Component name */
   name: string
-  /** File path relative to packages/ui/src */
+  /** Path relative to packages/ui/src for source code links */
   filePath: string
-  /** Component description from JSDoc */
   description?: string
-  /** Component props interface documentation */
+  /** Extracted from TypeScript interface and JSDoc comments */
   props?: PropDocumentation[]
-  /** Usage examples extracted from JSDoc */
+  /** JSDoc @example blocks transformed into code snippets */
   examples?: string[]
-  /** Whether this is the default export */
+  /** Affects display prominence and export syntax in examples */
   isDefault: boolean
 }
 
 /**
- * Configuration for a live component example
+ * Configuration for live interactive component demonstrations.
+ *
+ * Combines rendered component with viewable source code for documentation.
  */
 export interface ExampleConfig {
-  /** Example title */
   title: string
-  /** Description of what this example demonstrates */
+  /** Explains use case or variant purpose beyond the title */
   description?: string
-  /** React component to render */
+  /** Live component instance with real props and interactivity */
   component: React.ReactNode
-  /** Source code to display */
+  /** Formatted source code for syntax highlighting and copying */
   code: string
-  /** Whether to show code by default */
+  /** Controls initial code visibility (defaults to hidden) */
   showCode?: boolean
 }
 
 /**
- * Props for the ComponentShowcase component
+ * Props for ComponentShowcase component.
  */
 export interface ComponentShowcaseProps {
-  /** Component documentation extracted from JSDoc */
+  /** Automated JSDoc extraction output from packages/ui */
   documentation: ComponentDocumentation
-  /** Live examples to demonstrate the component */
+  /** Interactive demos with variant examples and source code */
   examples: ExampleConfig[]
-  /** Optional Storybook story ID for iframe embed */
+  /** Links to full Storybook playground when provided */
   storybookId?: string
-  /** Additional CSS classes */
   className?: string
 }
 
 /**
- * Comprehensive component showcase with live examples, props table, and API documentation
+ * Comprehensive component showcase combining live demos, API docs, and Storybook integration.
  *
- * Combines interactive component demonstrations with comprehensive documentation
- * extracted from JSDoc comments and TypeScript interfaces.
+ * Serves as the primary documentation display for Sparkle UI components by unifying
+ * automated JSDoc extraction, interactive examples with source code, props tables,
+ * and optional Storybook playground links. Implements ARIA tab pattern for accessible
+ * navigation between multiple component variants.
  */
 export const ComponentShowcase: React.FC<ComponentShowcaseProps> = ({
   documentation,
@@ -79,16 +81,21 @@ export const ComponentShowcase: React.FC<ComponentShowcaseProps> = ({
       </div>
 
       {/* Live Examples Section */}
-      <section className="examples-section">
+      <section className="examples-section" aria-labelledby="examples-heading">
         <div className="section-header">
-          <h2>Examples</h2>
+          <h2 id="examples-heading">Examples</h2>
           {examples.length > 1 && (
-            <div className="example-tabs">
+            <div className="example-tabs" role="tablist" aria-label="Component example variations">
               {examples.map((example, index) => (
                 <button
                   key={index}
                   className={`example-tab ${index === activeExampleIndex ? 'active' : ''}`}
                   onClick={() => setActiveExampleIndex(index)}
+                  role="tab"
+                  aria-selected={index === activeExampleIndex}
+                  aria-controls={`example-panel-${index}`}
+                  aria-label={`View ${example.title} example`}
+                  id={`example-tab-${index}`}
                 >
                   {example.title}
                 </button>
@@ -98,7 +105,12 @@ export const ComponentShowcase: React.FC<ComponentShowcaseProps> = ({
         </div>
 
         {activeExample && (
-          <div className="example-content">
+          <div
+            className="example-content"
+            role="tabpanel"
+            id={`example-panel-${activeExampleIndex}`}
+            aria-labelledby={`example-tab-${activeExampleIndex}`}
+          >
             <div className="example-header">
               <h3>{activeExample.title}</h3>
               {activeExample.description && <p className="example-description">{activeExample.description}</p>}
@@ -106,21 +118,30 @@ export const ComponentShowcase: React.FC<ComponentShowcaseProps> = ({
                 <button
                   className={`toggle-code-btn ${showCode ? 'active' : ''}`}
                   onClick={() => setShowCode(!showCode)}
+                  aria-label={showCode ? 'Hide code example' : 'Show code example'}
+                  aria-expanded={showCode}
+                  aria-controls="code-container"
                 >
-                  {showCode ? '👁️ Hide Code' : '👁️ Show Code'}
+                  <span aria-hidden="true">{showCode ? '👁️' : '👁️'}</span> {showCode ? 'Hide Code' : 'Show Code'}
                 </button>
               </div>
             </div>
 
             <div className="example-demo">
-              <div className="demo-container">{activeExample.component}</div>
+              <div className="demo-container" role="region" aria-label={`${activeExample.title} live demo`}>
+                {activeExample.component}
+              </div>
 
               {showCode && (
-                <div className="code-container">
+                <div className="code-container" id="code-container" role="region" aria-label="Code example">
                   <div className="code-header">
                     <span className="code-label">React Code</span>
-                    <button className="copy-code-btn" onClick={() => navigator.clipboard.writeText(activeExample.code)}>
-                      📋 Copy
+                    <button
+                      className="copy-code-btn"
+                      onClick={() => navigator.clipboard.writeText(activeExample.code)}
+                      aria-label="Copy code to clipboard"
+                    >
+                      <span aria-hidden="true">📋</span> Copy
                     </button>
                   </div>
                   <pre className="code-block">
@@ -135,8 +156,8 @@ export const ComponentShowcase: React.FC<ComponentShowcaseProps> = ({
 
       {/* Storybook Integration */}
       {storybookId && (
-        <section className="storybook-section">
-          <h2>Interactive Playground</h2>
+        <section className="storybook-section" aria-labelledby="storybook-heading">
+          <h2 id="storybook-heading">Interactive Playground</h2>
           <p className="storybook-description">
             Explore all variations and configurations in our interactive Storybook playground:
           </p>
@@ -144,7 +165,8 @@ export const ComponentShowcase: React.FC<ComponentShowcaseProps> = ({
             <iframe
               src={`/storybook/iframe.html?id=${storybookId}&viewMode=story`}
               className="storybook-iframe"
-              title={`${documentation.name} Storybook`}
+              title={`Interactive Storybook playground for ${documentation.name} component`}
+              aria-label={`${documentation.name} Storybook interactive examples`}
               loading="lazy"
             />
           </div>

@@ -176,6 +176,8 @@ export function ThemeToggle({
         onClick={(): void => handleThemeChange('light')}
         className={`theme-toggle-button ${currentTheme === 'light' ? 'active' : ''}`}
         aria-pressed={currentTheme === 'light'}
+        aria-label="Light theme"
+        title="Light theme"
       >
         {showLabels && <span>Light</span>}
       </button>
@@ -184,6 +186,8 @@ export function ThemeToggle({
         onClick={(): void => handleThemeChange('dark')}
         className={`theme-toggle-button ${currentTheme === 'dark' ? 'active' : ''}`}
         aria-pressed={currentTheme === 'dark'}
+        aria-label="Dark theme"
+        title="Dark theme"
       >
         {showLabels && <span>Dark</span>}
       </button>
@@ -192,6 +196,8 @@ export function ThemeToggle({
         onClick={(): void => handleThemeChange('auto')}
         className={`theme-toggle-button ${currentTheme === 'auto' ? 'active' : ''}`}
         aria-pressed={currentTheme === 'auto'}
+        aria-label="Auto theme (system preference)"
+        title="Auto theme (system preference)"
       >
         {showLabels && <span>Auto</span>}
       </button>

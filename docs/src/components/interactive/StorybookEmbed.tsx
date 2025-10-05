@@ -26,11 +26,11 @@ export interface StorybookEmbedProps {
 }
 
 /**
- * Component that embeds a Storybook story in an iframe for documentation purposes.
+ * Embeds Storybook stories in documentation for interactive component demonstrations.
  *
- * This component provides a seamless way to display interactive Storybook stories
- * within the Astro Starlight documentation site. It automatically handles the
- * iframe URL construction, loading states, and responsive behavior.
+ * Bridges Storybook and Astro documentation by providing iframe-based embedding
+ * with responsive design, loading states, and error handling. Optimizes mobile UX
+ * by limiting iframe height on smaller screens to prevent excessive scrolling.
  *
  * @example
  * ```tsx
@@ -60,7 +60,7 @@ export function StorybookEmbed({
   className = '',
   title,
   loadingPlaceholder,
-}: StorybookEmbedProps) {
+}: StorybookEmbedProps): React.JSX.Element {
   const [isLoading, setIsLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
   const {isMobile, isTablet} = useResponsive()
@@ -186,6 +186,7 @@ export function StorybookEmbed({
         width="100%"
         height={responsiveHeight}
         title={accessibleTitle}
+        aria-label={accessibleTitle}
         style={{
           border: '1px solid #e0e0e0',
           borderRadius: '8px',
