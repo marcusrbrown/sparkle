@@ -1,0 +1,108 @@
+---
+/**
+ * Optimized Image Component for Astro Documentation
+ *
+ * Provides automatic image optimization with modern formats (WebP, AVIF),
+ * lazy loading, responsive sizes, and proper accessibility attributes.
+ *
+ * @example
+ * ```astro
+ * ---
+ * import OptimizedImage from '@/components/media/OptimizedImage.astro';
+ * import myImage from '@/assets/example.jpg';
+ * ---
+ * <OptimizedImage src={myImage} alt="Example image" />
+ * ```
+ */
+
+import {Image} from 'astro:assets'
+import type {ImageMetadata} from 'astro'
+
+export interface Props {
+  /** Image source (imported image or string path) */
+  src: ImageMetadata | string
+  /** Alt text for accessibility (required) */
+  alt: string
+  /** Image width in pixels */
+  width?: number
+  /** Image height in pixels */
+  height?: number
+  /** Image loading strategy */
+  loading?: 'lazy' | 'eager'
+  /** Image decoding strategy */
+  decoding?: 'async' | 'sync' | 'auto'
+  /** Image formats to generate (defaults to ['avif', 'webp']) */
+  formats?: ('avif' | 'webp' | 'png' | 'jpg')[]
+  /** Quality setting (0-100, defaults to 80) */
+  quality?: number
+  /** Densities for high-DPI displays */
+  densities?: number[]
+  /** Additional CSS classes */
+  class?: string
+  /** Inline styles */
+  style?: string
+  /** Fetch priority for above-the-fold images */
+  fetchpriority?: 'high' | 'low' | 'auto'
+}
+
+const {
+  src,
+  alt,
+  width,
+  height,
+  loading = 'lazy',
+  decoding = 'async',
+  formats = ['avif', 'webp'],
+  quality = 80,
+  densities,
+  class: className,
+  style,
+  fetchpriority = 'auto',
+} = Astro.props
+---
+
+<Image
+  src={src}
+  alt={alt}
+  width={width}
+  height={height}
+  loading={loading}
+  decoding={decoding}
+  format={formats[0]}
+  quality={quality}
+  densities={densities}
+  class={className}
+  style={style}
+  fetchpriority={fetchpriority}
+/>
+
+<style>
+  :global(img) {
+    /* Prevent Cumulative Layout Shift (CLS) */
+    max-width: 100%;
+    height: auto;
+
+    /* Smooth image rendering */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+
+  /* Blur-up effect for lazy-loaded images */
+  :global(img[loading='lazy']:not([src*='.svg'])) {
+    background-color: var(--sl-color-gray-6, #f3f4f6);
+    background-size: cover;
+    background-position: center;
+  }
+
+  /* Dark mode optimization */
+  :global([data-theme='dark'] img:not([src*='.svg'])) {
+    opacity: 0.9;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(img) {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+</style>

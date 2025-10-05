@@ -6,6 +6,25 @@ import {defineConfig} from 'astro/config'
 // https://astro.build/config
 export default defineConfig({
   site: 'https://sparkle.mrbro.dev',
+  // Image optimization configuration for performance
+  image: {
+    service: {
+      entrypoint: 'astro/assets/services/sharp',
+      config: {
+        limitInputPixels: false, // Allow large images for diagrams
+      },
+    },
+    // Configure remote image optimization (if needed for CDN)
+    domains: ['sparkle.mrbro.dev'],
+    remotePatterns: [{protocol: 'https'}],
+  },
+  // Build optimization for production
+  build: {
+    inlineStylesheets: 'auto', // Automatically inline small CSS files
+    assets: '_astro', // Asset directory for cache busting
+  },
+  // Compression and minification
+  compressHTML: true,
   integrations: [
     react(),
     starlight({
@@ -246,6 +265,7 @@ export default defineConfig({
             {label: 'ARIA Labels', slug: 'guides/aria-labels'},
             {label: 'Heading Hierarchy', slug: 'guides/heading-hierarchy'},
             {label: 'Screen Reader Testing', slug: 'guides/screen-reader-testing'},
+            {label: 'Performance Optimization', slug: 'guides/performance'},
           ],
         },
 

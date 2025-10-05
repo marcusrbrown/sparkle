@@ -1,0 +1,219 @@
+---
+title: Performance Optimization
+description: Comprehensive guide to performance optimizations implemented in the Sparkle Design System documentation including image optimization, lazy loading, and build performance enhancements.
+---
+
+# Performance Optimization
+
+The Sparkle Design System documentation is built with performance as a core priority. This guide details the optimizations implemented to ensure fast load times, excellent Core Web Vitals scores, and a smooth user experience.
+
+## Image Optimization
+
+### Automatic Optimization with Astro
+
+All images in the documentation are automatically optimized using Astro's built-in image processing:
+
+- **Modern Formats**: Images are converted to AVIF and WebP formats with automatic fallbacks
+- **Responsive Sizing**: Multiple image sizes are generated for different screen resolutions
+- **Lazy Loading**: Images below the fold are loaded only when needed
+- **Sharp Processing**: High-performance image optimization using the Sharp library
+
+### Using OptimizedImage Component
+
+For custom images, use the `OptimizedImage` component:
+
+```astro
+---
+import OptimizedImage from '@/components/media/OptimizedImage.astro';
+import myImage from '@/assets/example.jpg';
+---
+
+<OptimizedImage
+  src={myImage}
+  alt="Example image"
+  formats={['avif', 'webp']}
+  quality={80}
+  loading="lazy"
+/>
+```
+
+**Features:**
+- Automatic AVIF and WebP generation
+- Configurable quality settings (default: 80)
+- Lazy loading by default
+- High-DPI display support with densities
+- Prevents Cumulative Layout Shift (CLS)
+
+## Lazy Loading Strategy
+
+### Component Lazy Loading
+
+Heavy components like Monaco Editor are wrapped with intersection observer-based lazy loading:
+
+```tsx
+import { LazyComponent } from '@/components/media';
+
+<LazyComponent
+  fallback={<div>Loading editor...</div>}
+  minHeight="400px"
+  rootMargin="50px"
+>
+  <CodeEditor />
+</LazyComponent>
+```
+
+**Benefits:**
+- Reduces initial JavaScript bundle execution
+- Improves Time to Interactive (TTI)
+- Only loads when component enters viewport
+- Smooth user experience with placeholders
+
+### Iframe Lazy Loading
+
+Storybook embeds and other iframes use native lazy loading:
+
+```tsx
+<iframe
+  src={url}
+  loading="lazy"  // Native browser lazy loading
+  title="Interactive demo"
+/>
+```
+
+## Build Performance
+
+### Configuration Optimizations
+
+The Astro configuration includes several build optimizations:
+
+```javascript
+// docs/astro.config.mjs
+export default defineConfig({
+  build: {
+    inlineStylesheets: 'auto',  // Inline small CSS files
+    assets: '_astro',            // Cache-busted asset directory
+  },
+  compressHTML: true,            // Minify HTML output
+  image: {
+    service: {
+      entrypoint: 'astro/assets/services/sharp',
+      config: {
+        limitInputPixels: false  // Allow large diagrams
+      }
+    }
+  }
+});
+```
+
+### Asset Optimization
+
+- **CSS Inlining**: Small CSS files are automatically inlined to reduce HTTP requests
+- **HTML Compression**: All HTML output is minified for production
+- **Cache Busting**: Assets use content-based hashes for optimal caching
+- **Tree Shaking**: Unused JavaScript is eliminated from bundles
+
+## Performance Monitoring
+
+### Core Web Vitals Targets
+
+The documentation aims for excellent Core Web Vitals scores:
+
+- **LCP (Largest Contentful Paint)**: < 2.5s
+- **FID (First Input Delay)**: < 100ms
+- **CLS (Cumulative Layout Shift)**: < 0.1
+
+### Optimization Techniques
+
+1. **Preload Critical Resources**:
+   ```html
+   <link rel="preload" href="/fonts/system-ui.woff2" as="font" />
+   ```
+
+2. **Image Dimensions**: All images have explicit width/height to prevent CLS
+
+3. **Async Decoding**: Images use `decoding="async"` for non-blocking rendering
+
+4. **Resource Hints**: Strategic use of preload, prefetch, and preconnect
+
+## Bundle Size Optimization
+
+### Code Splitting
+
+- **Route-based Splitting**: Each page loads only its required JavaScript
+- **Component-level Splitting**: Heavy components are dynamically imported
+- **Shared Chunks**: Common dependencies are extracted into shared bundles
+
+### Dependency Optimization
+
+```javascript
+// Vite optimization for Monaco Editor
+vite: {
+  optimizeDeps: {
+    include: ['@monaco-editor/react', 'monaco-editor']
+  }
+}
+```
+
+## Accessibility and Performance
+
+Performance optimizations maintain full accessibility compliance:
+
+- **Reduced Motion**: Respects `prefers-reduced-motion` preference
+- **Focus Management**: Lazy-loaded components maintain keyboard navigation
+- **Screen Readers**: Loading states are announced to assistive technologies
+- **Progressive Enhancement**: Core content accessible without JavaScript
+
+## Best Practices
+
+### For Content Authors
+
+1. **Use Optimized Components**: Prefer `OptimizedImage` over raw `<img>` tags
+2. **Specify Dimensions**: Always include width and height attributes
+3. **Lazy Load Heavy Content**: Wrap expensive components with `LazyComponent`
+4. **Test Performance**: Check Lighthouse scores for new pages
+
+### For Developers
+
+1. **Monitor Bundle Size**: Use build analysis tools regularly
+2. **Optimize Dependencies**: Evaluate and minimize third-party libraries
+3. **Use Code Splitting**: Dynamic imports for non-critical features
+4. **Profile Performance**: Use browser DevTools for bottleneck identification
+
+## Performance Metrics
+
+### Build Performance
+
+```bash
+# Build time metrics (example)
+pnpm build
+# Pages: 68 generated in ~10s
+# Assets: Optimized images, minified CSS/JS
+# Bundle size: <500KB total JavaScript
+```
+
+### Runtime Performance
+
+- **First Load**: < 3s on 3G connections
+- **Subsequent Navigation**: < 1s (client-side routing)
+- **Image Loading**: Progressive with blur-up effect
+- **Search Performance**: Instant with Pagefind index
+
+## Tools and Resources
+
+- **Lighthouse**: Chrome DevTools performance auditing
+- **WebPageTest**: Real-world performance testing
+- **Bundle Analyzer**: Visualize JavaScript bundle composition
+- **Sharp**: High-performance image processing library
+
+## Continuous Improvement
+
+Performance optimization is an ongoing process:
+
+1. **Regular Audits**: Run Lighthouse tests on each deployment
+2. **Monitoring**: Track Core Web Vitals in production
+3. **Feedback**: User reports guide optimization priorities
+4. **Iteration**: Continuous refinement based on data
+
+---
+
+For questions or performance issues, please [open an issue](https://github.com/marcusrbrown/sparkle/issues) on GitHub.
