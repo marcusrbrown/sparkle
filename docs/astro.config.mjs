@@ -245,6 +245,7 @@ export default defineConfig({
             {label: 'Accessibility Guide', slug: 'guides/accessibility'},
             {label: 'ARIA Labels', slug: 'guides/aria-labels'},
             {label: 'Heading Hierarchy', slug: 'guides/heading-hierarchy'},
+            {label: 'Screen Reader Testing', slug: 'guides/screen-reader-testing'},
           ],
         },
 

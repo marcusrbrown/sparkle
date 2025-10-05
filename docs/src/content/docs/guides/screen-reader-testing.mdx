@@ -1,0 +1,365 @@
+---
+title: Screen Reader Testing
+description: Comprehensive guide for testing the Sparkle documentation with screen readers to ensure accessibility for users with visual impairments.
+---
+
+import {Aside} from '@astrojs/starlight/components'
+
+# Screen Reader Testing Guide
+
+This guide provides comprehensive instructions for testing the Sparkle Design System documentation with screen readers to ensure WCAG 2.1 AA compliance and optimal accessibility for users with visual impairments.
+
+<Aside type="tip">
+  Screen reader testing is an essential part of accessibility validation. Automated tools can only catch about 30% of accessibility issues - manual testing with assistive technologies is crucial for comprehensive coverage.
+</Aside>
+
+## Why Screen Reader Testing Matters
+
+Screen readers are assistive technologies that convert digital text into synthesized speech or braille output, allowing users with visual impairments to navigate and interact with web content. Testing with screen readers ensures:
+
+- **Content is perceivable**: All information is announced correctly
+- **Navigation is efficient**: Users can quickly find what they need
+- **Interactions work properly**: Forms, buttons, and dynamic content function as expected
+- **Experience is equivalent**: Screen reader users have the same access to functionality as sighted users
+
+## Supported Screen Readers
+
+We test with the following screen readers to ensure broad compatibility:
+
+### NVDA (Windows)
+
+**Type**: Free and open-source
+**Download**: [nvaccess.org](https://www.nvaccess.org/download/)
+**Recommended Browser**: Firefox or Chrome
+
+NVDA (NonVisual Desktop Access) is the most popular free screen reader for Windows. It offers:
+- Highly compatible with modern web standards
+- Excellent ARIA support
+- Regular updates with community-driven development
+- Extensive add-on ecosystem
+
+**Essential Shortcuts**:
+- `Ctrl + Alt + N` - Start/Stop NVDA
+- `H` - Next heading
+- `K` - Next link
+- `B` - Next button
+- `F` - Next form field
+- `NVDA + F7` - Elements list
+
+### JAWS (Windows)
+
+**Type**: Commercial screen reader
+**Download**: [freedomscientific.com](https://www.freedomscientific.com/products/software/jaws/)
+**Recommended Browser**: Chrome or Edge
+
+JAWS (Job Access With Speech) is the most widely used commercial screen reader, offering:
+- Industry-leading enterprise support
+- Extensive training resources
+- 40-minute demo mode for testing
+- Advanced scripting capabilities
+
+**Essential Shortcuts**:
+- `H` - Next heading
+- `K` - Next link
+- `B` - Next button
+- `F` - Next form field
+- `Insert + F7` - Elements list
+- `Insert + Down Arrow` - Say all
+
+### VoiceOver (macOS/iOS)
+
+**Type**: Built-in screen reader
+**Platform**: macOS and iOS
+**Recommended Browser**: Safari
+
+VoiceOver is Apple's built-in screen reader, offering:
+- Integrated with all Apple devices at no cost
+- Seamless Safari integration
+- Touch gestures on iOS
+- "Rotor" for quick navigation
+
+**Essential Shortcuts (macOS)**:
+- `Command + F5` - Start/Stop VoiceOver
+- `VO + Command + H` - Next heading
+- `VO + Command + L` - Next link
+- `VO + Command + J` - Next form control
+- `VO + U` - Open Rotor
+
+<Aside type="note">
+  **VO** refers to the VoiceOver modifier keys: `Control + Option` on macOS.
+</Aside>
+
+### ORCA (Linux)
+
+**Type**: Built-in open-source screen reader
+**Platform**: Linux
+**Recommended Browser**: Firefox or Chrome
+
+ORCA is the default screen reader for many Linux distributions, offering:
+- Free and open-source
+- Active community support
+- Good compatibility with modern browsers
+- Customizable configuration
+
+**Essential Shortcuts**:
+- `Super + Alt + S` - Start/Stop ORCA
+- `H` - Next heading
+- `K` - Next link
+- `B` - Next button
+- `Tab` - Next form field
+
+## Testing Environment Setup
+
+### Prerequisites
+
+1. **Install Screen Reader**: Download and install the appropriate screen reader for your platform
+2. **Compatible Browser**: Use the recommended browser for your chosen screen reader
+3. **Documentation Site**: Ensure the documentation site is running:
+   ```bash
+   pnpm --filter @sparkle/docs dev
+   ```
+4. **Test Environment**: Navigate to http://localhost:4321
+
+### Testing Preparation
+
+- Close unnecessary applications to reduce audio distractions
+- Use headphones for clear audio feedback
+- Have a quiet testing environment
+- Take notes or record sessions for detailed analysis
+- Test with both keyboard and screen reader navigation modes
+
+## Key Testing Areas
+
+### 1. Page Structure and Navigation
+
+**What to Test**:
+- Page title announcement
+- Heading hierarchy (H1 → H2 → H3)
+- Landmark regions (navigation, main, complementary)
+- Skip navigation links
+- Breadcrumb navigation
+
+**How to Test**:
+- Listen to initial page load announcement
+- Navigate by headings using `H` key
+- Navigate by landmarks using `D` or `R` key
+- Test skip links by pressing `Tab` on page load
+- Verify logical reading order
+
+### 2. Interactive Elements
+
+**What to Test**:
+- Button labels and purpose
+- Link context and destination
+- Form field labels and descriptions
+- Tab navigation with arrow keys
+- Toggle button states
+
+**How to Test**:
+- Navigate by buttons using `B` key
+- Navigate by links using `K` key
+- Navigate by form fields using `F` key
+- Test button activation with `Enter` or `Space`
+- Verify state changes are announced (pressed, expanded)
+
+### 3. Forms and Validation
+
+**What to Test**:
+- Form field labels
+- Required field indication
+- Helper text and instructions
+- Error message announcements
+- Success confirmations
+
+**How to Test**:
+- Navigate through form fields sequentially
+- Trigger validation errors intentionally
+- Listen for error announcements
+- Verify error messages are associated with fields
+- Test form submission and confirmation
+
+### 4. Dynamic Content
+
+**What to Test**:
+- Content updates (ARIA live regions)
+- Loading states
+- Modal dialogs
+- Expandable sections
+- Tab panels
+
+**How to Test**:
+- Trigger content changes (expand/collapse)
+- Listen for live region announcements
+- Test modal focus management
+- Verify focus returns after modal closes
+- Navigate tab panels with arrow keys
+
+### 5. Code Examples and Syntax
+
+**What to Test**:
+- Code block identification
+- Programming language announcement
+- Copy button accessibility
+- Syntax highlighting preservation
+
+**How to Test**:
+- Navigate to code blocks
+- Verify code is identified as such
+- Test copy button announcement
+- Check that code content is readable
+
+## Common Issues and Solutions
+
+### Issue: Links Announced as "Blank" or Without Context
+
+**Problem**: Generic link text like "click here" or "read more" doesn't provide context
+
+**Solution**:
+- Use descriptive link text that makes sense out of context
+- Good: "View Button component documentation"
+- Bad: "Click here for more information"
+
+### Issue: Buttons Not Identified as Buttons
+
+**Problem**: Div elements with click handlers aren't recognized as buttons
+
+**Solution**:
+- Use semantic `<button>` elements
+- Add `role="button"` if necessary
+- Ensure `aria-label` or visible text is present
+
+### Issue: Form Fields Without Labels
+
+**Problem**: Form inputs don't announce their purpose
+
+**Solution**:
+- Use `<label>` elements with `for` attribute
+- Alternative: Use `aria-label` or `aria-labelledby`
+- Ensure labels are descriptive and unique
+
+### Issue: Heading Hierarchy Skipped
+
+**Problem**: Headings jump from H2 to H4, skipping H3
+
+**Solution**:
+- Maintain sequential heading order
+- Only one H1 per page (usually the page title)
+- Properly nest subheadings
+
+### Issue: Dynamic Content Not Announced
+
+**Problem**: Content changes without notification
+
+**Solution**:
+- Use ARIA live regions (`aria-live="polite"` or `"assertive"`)
+- Use `role="status"` for status messages
+- Use `role="alert"` for urgent notifications
+
+## Running Screen Reader Tests
+
+### Generate Testing Documentation
+
+Generate comprehensive testing guides and templates:
+
+```bash
+pnpm --filter @sparkle/docs sr:test
+```
+
+This generates:
+- `screen-reader-testing-guide.md` - Complete testing procedures
+- `screen-reader-test-results.json` - Results template
+- Quick reference guides for each screen reader (NVDA, JAWS, VoiceOver, ORCA)
+
+### Recording Test Results
+
+1. **Use the JSON Template**: Fill out the generated `screen-reader-test-results.json`
+2. **Record Systematically**: Test each component and page type
+3. **Document Issues**: Note severity, location, and reproduction steps
+4. **Suggest Fixes**: Provide actionable recommendations
+
+### Test Result Categories
+
+- **Pass**: Feature works as expected with screen reader
+- **Fail**: Critical accessibility barrier preventing use
+- **Partial**: Works but with minor issues or suboptimal experience
+- **Not Tested**: Feature not evaluated during this session
+
+## Best Practices
+
+### Test Multiple Screen Readers
+
+Different screen readers may handle the same content differently:
+- **Core functionality** should work across all screen readers
+- **ARIA support** is generally consistent in modern versions
+- **Browser differences** can affect behavior even with the same screen reader
+
+### Test Real User Scenarios
+
+Don't just navigate through elements:
+- Complete realistic tasks (find information, fill forms, etc.)
+- Test error recovery and validation
+- Try keyboard shortcuts and alternative navigation methods
+- Test with both novice and expert screen reader techniques
+
+### Document Thoroughly
+
+When reporting issues:
+- **Location**: Specific page URL and element description
+- **Steps**: Exact reproduction instructions
+- **Expected**: What should happen
+- **Actual**: What actually happens
+- **Screen Reader/Browser**: Specific combination used
+- **WCAG**: Relevant success criteria
+
+## Testing Checklist
+
+<Aside type="tip">
+  Use this checklist to ensure comprehensive screen reader testing coverage.
+</Aside>
+
+- [ ] Page titles are announced correctly
+- [ ] Heading hierarchy is logical and sequential
+- [ ] All landmarks are properly identified
+- [ ] Skip navigation works
+- [ ] Links have descriptive text
+- [ ] Buttons are identified with clear labels
+- [ ] Form fields have associated labels
+- [ ] Required fields are indicated
+- [ ] Error messages are announced
+- [ ] Dynamic content updates are announced
+- [ ] Modal dialogs trap focus properly
+- [ ] Tab panels work with arrow keys
+- [ ] Code blocks are identified
+- [ ] Images have appropriate alt text
+- [ ] Tables have proper headers
+- [ ] Lists are structured correctly
+- [ ] Reading order is logical
+
+## Additional Resources
+
+### WCAG Guidelines
+- [WCAG 2.1 Quick Reference](https://www.w3.org/WAI/WCAG21/quickref/)
+- [Understanding WCAG 2.1](https://www.w3.org/WAI/WCAG21/Understanding/)
+
+### Screen Reader Documentation
+- [NVDA User Guide](https://www.nvaccess.org/files/nvda/documentation/userGuide.html)
+- [JAWS Documentation](https://www.freedomscientific.com/training/jaws/)
+- [VoiceOver User Guide](https://support.apple.com/guide/voiceover/welcome/mac)
+- [ORCA Wiki](https://help.gnome.org/users/orca/stable/)
+
+### Testing Resources
+- [WebAIM Screen Reader Testing](https://webaim.org/articles/screenreader_testing/)
+- [Deque Screen Reader Guide](https://www.deque.com/blog/dont-screen-readers-alone/)
+- [ARIA Authoring Practices Guide](https://www.w3.org/WAI/ARIA/apg/)
+
+## Getting Help
+
+If you need assistance with screen reader testing:
+
+- **GitHub Issues**: [Report accessibility issues](https://github.com/marcusrbrown/sparkle/issues)
+- **Email**: git@mrbro.dev
+- **Documentation**: Review our [Accessibility Guide](/guides/accessibility)
+
+---
+
+**Remember**: Screen reader testing is an iterative process. Regular testing throughout development ensures accessibility is built in, not bolted on.
