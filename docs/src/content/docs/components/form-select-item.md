@@ -13,19 +13,15 @@ No description available
 import { FormSelectItem } from '@sparkle/ui'
 ```
 
-## Basic Usage
+## Theme Integration
 
-```tsx
-import { FormSelectItem } from '@sparkle/ui'
+This component uses CSS custom properties from `@sparkle/theme` for consistent styling across light and dark modes.
 
-export function Example() {
-  return <FormSelectItem />
-}
-```
+### Design Tokens Used
 
-## Styling
+- `--theme-*`: Uses theme design tokens for consistent styling
 
-This component uses theme-aware CSS custom properties for consistent styling across light and dark modes. You can customize the appearance by:
+You can customize the appearance by:
 
 1. **Theme Variables**: Modify theme tokens in your `@sparkle/theme` configuration
 2. **CSS Classes**: Apply custom CSS classes via the `className` prop
@@ -49,14 +45,7 @@ This component follows accessibility best practices with proper ARIA attributes 
 - [FormSubmit](./form-submit)
 - [FormTextarea](./form-textarea)
 
-## Source Code
+## Additional Resources
 
-View the source code for this component on GitHub:
-
-- [components/Form/FormSelect.tsx](https://github.com/marcusrbrown/sparkle/blob/main/packages/ui/src/components/Form/FormSelect.tsx)
-
-## API Reference
-
-For detailed TypeScript definitions and additional API information, see:
-
+- [View source code](https://github.com/marcusrbrown/sparkle/blob/main/packages/ui/src/components/Form/FormSelect.tsx)
 - [API Documentation](/api/ui/src#formselectitem)

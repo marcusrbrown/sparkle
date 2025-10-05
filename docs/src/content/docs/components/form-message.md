@@ -1,6 +1,6 @@
 ---
 title: FormMessage
-description: "Form message component with theme-aware styling for displaying validation feedback Uses CSS custom properties from @sparkle/theme for consistent theming across light/dark modes and supports semantic colors for different message types."
+description: "Form message component with theme-aware styling for displaying validation feedback"
 ---
 
 # FormMessage
@@ -24,19 +24,15 @@ import { FormMessage } from '@sparkle/ui'
 | `announce` | `boolean \| undefined` |  | `` | Whether to announce the message to screen readers |
 | `type` | `"success" \| "error" \| "info" \| undefined` |  | `` | Type of message for styling |
 
-## Basic Usage
+## Theme Integration
 
-```tsx
-import { FormMessage } from '@sparkle/ui'
+This component uses CSS custom properties from `@sparkle/theme` for consistent styling across light and dark modes.
 
-export function Example() {
-  return <FormMessage />
-}
-```
+### Design Tokens Used
 
-## Styling
+- `--theme-*`: Uses theme design tokens for consistent styling
 
-This component uses theme-aware CSS custom properties for consistent styling across light and dark modes. You can customize the appearance by:
+You can customize the appearance by:
 
 1. **Theme Variables**: Modify theme tokens in your `@sparkle/theme` configuration
 2. **CSS Classes**: Apply custom CSS classes via the `className` prop
@@ -60,14 +56,7 @@ This component follows accessibility best practices with proper ARIA attributes 
 - [FormSubmit](./form-submit)
 - [FormTextarea](./form-textarea)
 
-## Source Code
+## Additional Resources
 
-View the source code for this component on GitHub:
-
-- [components/Form/FormMessage.tsx](https://github.com/marcusrbrown/sparkle/blob/main/packages/ui/src/components/Form/FormMessage.tsx)
-
-## API Reference
-
-For detailed TypeScript definitions and additional API information, see:
-
+- [View source code](https://github.com/marcusrbrown/sparkle/blob/main/packages/ui/src/components/Form/FormMessage.tsx)
 - [API Documentation](/api/ui/src#formmessage)
