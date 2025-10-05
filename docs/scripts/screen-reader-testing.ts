@@ -3,14 +3,24 @@
 /**
  * Screen Reader Testing Documentation Generator
  *
- * Generates comprehensive screen reader testing guides, procedures, and result templates
- * for NVDA, JAWS, VoiceOver, and ORCA screen readers to ensure WCAG 2.1 AA compliance.
+ * Automates generation of comprehensive testing documentation for screen readers.
+ * This script exists because manual testing documentation quickly becomes outdated
+ * and inconsistent across different screen readers. Automated generation ensures
+ * consistency, completeness, and easy updates when testing procedures change.
+ *
+ * @see {@link https://www.w3.org/WAI/WCAG21/quickref/ | WCAG 2.1 Guidelines}
  */
 
 import {existsSync, mkdirSync, writeFileSync} from 'node:fs'
 import {join} from 'node:path'
 import process from 'node:process'
 
+import {consola} from 'consola'
+
+/**
+ * Screen reader configuration including platform details and keyboard shortcuts.
+ * Separated from test cases to allow independent updates of reader info vs. test procedures.
+ */
 interface ScreenReaderInfo {
   name: string
   platform: string
@@ -20,6 +30,10 @@ interface ScreenReaderInfo {
   testingNotes: string[]
 }
 
+/**
+ * Structured test case for screen reader validation.
+ * Each test case maps to specific WCAG criteria to ensure compliance coverage.
+ */
 interface TestCase {
   id: string
   title: string
@@ -31,9 +45,11 @@ interface TestCase {
 }
 
 /**
- * Screen reader configurations and information
+ * Screen reader configurations covering all major platforms.
+ * Includes both free and commercial options to ensure testing accessibility
+ * for teams with different budgets and platform requirements.
  */
-const SCREEN_READERS: ScreenReaderInfo[] = [
+const SCREEN_READERS: readonly ScreenReaderInfo[] = [
   {
     name: 'NVDA',
     platform: 'Windows',
@@ -136,9 +152,11 @@ const SCREEN_READERS: ScreenReaderInfo[] = [
 ]
 
 /**
- * Comprehensive test cases for screen reader testing
+ * Comprehensive test cases covering all WCAG 2.1 AA requirements.
+ * Each test case includes specific steps and expected behaviors to ensure
+ * consistent testing across different screen readers and team members.
  */
-const TEST_CASES: TestCase[] = [
+const TEST_CASES: readonly TestCase[] = [
   {
     id: 'SR-001',
     title: 'Page Title and Language Announcement',
@@ -519,10 +537,12 @@ const TEST_CASES: TestCase[] = [
     ],
     wcagCriteria: ['1.3.2 Meaningful Sequence', '2.4.3 Focus Order'],
   },
-]
+] as const
 
 /**
- * Generate comprehensive screen reader testing guide
+ * Generates the main testing guide with complete procedures for all screen readers.
+ * Centralizes all testing knowledge in a single comprehensive document to avoid
+ * documentation fragmentation and ensure consistent testing practices.
  */
 function generateScreenReaderGuide(): string {
   let guide = `# Screen Reader Testing Guide for Sparkle Documentation
@@ -722,7 +742,9 @@ When reporting issues:
 }
 
 /**
- * Generate screen reader test results template
+ * Generates structured JSON template for recording test results.
+ * Standardized format enables automated processing and trend analysis
+ * across multiple testing sessions and team members.
  */
 function generateResultsTemplate(): string {
   const template = {
@@ -782,7 +804,9 @@ function generateResultsTemplate(): string {
 }
 
 /**
- * Generate quick reference guide for each screen reader
+ * Generates platform-specific quick reference guide.
+ * Separate quick refs allow testers to print/reference only their platform
+ * without cognitive overhead of irrelevant cross-platform information.
  */
 function generateQuickReference(screenReader: ScreenReaderInfo): string {
   return `# ${screenReader.name} Quick Reference for Testing
@@ -870,57 +894,60 @@ For complete testing procedures, see the main Screen Reader Testing Guide.
 }
 
 /**
- * Main execution
+ * Main execution function coordinating documentation generation.
+ * Async to allow future enhancements like fetching external data or parallel file writes.
  */
-async function main() {
+async function main(): Promise<void> {
   const outputDir = join(process.cwd(), 'accessibility-reports')
 
-  // Ensure output directory exists
+  // Directory creation is idempotent - safe to run multiple times
   if (!existsSync(outputDir)) {
     mkdirSync(outputDir, {recursive: true})
   }
 
-  console.log('📋 Generating screen reader testing documentation...')
-  console.log('')
+  consola.info('📋 Generating screen reader testing documentation...')
+  consola.info('')
 
   // Generate main testing guide
   const guide = generateScreenReaderGuide()
   const guidePath = join(outputDir, 'screen-reader-testing-guide.md')
   writeFileSync(guidePath, guide)
-  console.log(`✅ Screen reader testing guide: ${guidePath}`)
+  consola.success(`Screen reader testing guide: ${guidePath}`)
 
   // Generate results template
   const resultsTemplate = generateResultsTemplate()
   const resultsPath = join(outputDir, 'screen-reader-test-results.json')
   writeFileSync(resultsPath, resultsTemplate)
-  console.log(`✅ Test results template: ${resultsPath}`)
+  consola.success(`Test results template: ${resultsPath}`)
 
   // Generate quick reference for each screen reader
-  SCREEN_READERS.forEach(sr => {
+  for (const sr of SCREEN_READERS) {
     const quickRef = generateQuickReference(sr)
     const quickRefPath = join(outputDir, `${sr.name.toLowerCase()}-quick-reference.md`)
     writeFileSync(quickRefPath, quickRef)
-    console.log(`✅ ${sr.name} quick reference: ${quickRefPath}`)
-  })
+    consola.success(`${sr.name} quick reference: ${quickRefPath}`)
+  }
 
-  console.log('')
-  console.log('🎉 Screen reader testing documentation generated successfully!')
-  console.log('')
-  console.log('📖 Next steps:')
-  console.log('   1. Review the screen reader testing guide')
-  console.log('   2. Install screen readers for your platform')
-  console.log('   3. Execute test cases systematically')
-  console.log('   4. Record results in the JSON template')
-  console.log('   5. Report issues and create remediation plan')
-  console.log('')
-  console.log('🔍 Testing Tips:')
-  console.log('   - Test with multiple screen readers for comprehensive coverage')
-  console.log('   - Record audio of testing sessions for detailed analysis')
-  console.log('   - Test both with and without visual display')
-  console.log('   - Involve users with visual impairments when possible')
+  consola.info('')
+  consola.success('🎉 Screen reader testing documentation generated successfully!')
+  consola.info('')
+  consola.box(
+    '📖 Next steps:\n' +
+      '   1. Review the screen reader testing guide\n' +
+      '   2. Install screen readers for your platform\n' +
+      '   3. Execute test cases systematically\n' +
+      '   4. Record results in the JSON template\n' +
+      '   5. Report issues and create remediation plan',
+  )
+  consola.info('')
+  consola.info('🔍 Testing Tips:')
+  consola.info('   - Test with multiple screen readers for comprehensive coverage')
+  consola.info('   - Record audio of testing sessions for detailed analysis')
+  consola.info('   - Test both with and without visual display')
+  consola.info('   - Involve users with visual impairments when possible')
 }
 
-main().catch(error => {
-  console.error('Error generating screen reader testing documentation:', error)
+main().catch((error: unknown) => {
+  consola.error('Error generating screen reader testing documentation:', error)
   process.exit(1)
 })
