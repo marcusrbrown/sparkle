@@ -25,20 +25,15 @@ const componentPropSchema = z.object({
   defaultValue: z.string().optional(),
 })
 
-// Schema for JSDoc tags
+// Schema for JSDoc tags (Doctrine format)
 const jsdocTagSchema = z.object({
-  tag: z.string(),
+  title: z.string(), // Doctrine uses "title" for tag name
   name: z.string().optional(),
   description: z.string().optional(),
 })
 
-// Schema for component examples
-const componentExampleSchema = z.object({
-  title: z.string(),
-  code: z.string(),
-  language: z.string().default('tsx'),
-  description: z.string().optional(),
-})
+// Schema for component examples (strings from JSDoc @example tags)
+const componentExampleSchema = z.string() // Examples are extracted as strings from @example tags
 
 // Extended schema for different content types
 const extendedDocsSchema = z.object({

@@ -251,6 +251,11 @@ export class DocumentationAutomator {
       this.generatedFiles.push('API reference documentation')
       this.log('TypeScript API reference generated successfully')
     } catch (error) {
+      let stdout = ''
+      if (error instanceof Error && 'stdout' in error) {
+        stdout = (error as {stdout: string}).stdout
+      }
+      console.error(`❌ TypeDoc generation failed: ${error}${stdout ? `\nℹ Command output:\n${stdout}` : ''}`)
       throw new Error(`TypeDoc generation failed: ${error}`)
     }
   }
@@ -352,6 +357,11 @@ export class DocumentationAutomator {
 
       this.log('Generated documentation formatted successfully')
     } catch (error) {
+      let stdout = ''
+      if (error instanceof Error && 'stdout' in error) {
+        stdout = (error as {stdout: string}).stdout
+      }
+      console.error(`❌ Documentation formatting failed: ${error}${stdout ? `\nℹ Command output:\n${stdout}` : ''}`)
       throw new Error(`Documentation formatting failed: ${error}`)
     }
   }

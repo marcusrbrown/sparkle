@@ -7,6 +7,10 @@ const filename = fileURLToPath(import.meta.url)
 const scriptDir = dirname(filename)
 
 interface CrossReferenceOptions {
+  /** Whether to include API documentation links */
+  includeApiLinks?: boolean
+  /** Whether to include source code links */
+  includeSourceLinks?: boolean
   /** Verbose logging */
   verbose?: boolean
 }
@@ -42,6 +46,8 @@ export class CrossReferenceGenerator {
 
   constructor(options: CrossReferenceOptions = {}) {
     this.options = {
+      includeApiLinks: false,
+      includeSourceLinks: false,
       verbose: false,
       ...options,
     }
@@ -221,7 +227,7 @@ export class CrossReferenceGenerator {
     let content = readFileSync(filePath, 'utf-8')
 
     // Add source code section if not present
-    if (!content.includes('## Source Code')) {
+    if (this.options.includeSourceLinks && !content.includes('## Source Code')) {
       const sourceSection = this.generateSourceCodeSection(crossRef)
 
       // Insert at the end
@@ -235,7 +241,7 @@ export class CrossReferenceGenerator {
     }
 
     // Add API reference section if not present
-    if (!content.includes('## API Reference')) {
+    if (this.options.includeApiLinks && !content.includes('## API Reference')) {
       const apiSection = this.generateApiReferenceSection(crossRef)
       content = `${content}\n\n${apiSection}`
     }
@@ -349,6 +355,8 @@ async function main(): Promise<void> {
   const args = process.argv.slice(2)
 
   const options: CrossReferenceOptions = {
+    includeApiLinks: args.includes('--include-api-links'),
+    includeSourceLinks: args.includes('--include-source-links'),
     verbose: args.includes('--verbose') || args.includes('-v'),
   }
 
@@ -359,6 +367,8 @@ Cross-Reference Generator
 Usage: tsx scripts/cross-reference.ts [options]
 
 Options:
+  --include-api-links   Include links to API documentation
+  --include-source-links Include links to source code on GitHub
   --verbose, -v        Enable verbose logging
   --help, -h           Show this help message
 

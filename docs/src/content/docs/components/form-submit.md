@@ -1,6 +1,6 @@
 ---
 title: FormSubmit
-description: "Form submit button component with theme-aware styling and proper form association Uses CSS custom properties from @sparkle/theme for consistent theming across light/dark modes and follows the same patterns as the Button component."
+description: "Form submit button component with theme-aware styling and proper form association"
 ---
 
 # FormSubmit
@@ -24,19 +24,15 @@ import { FormSubmit } from '@sparkle/ui'
 | `disabled` | `boolean \| undefined` |  | `` | Whether the submit button is disabled |
 | `children` | `React.ReactNode` | ✓ | `` | Submit button children content |
 
-## Basic Usage
+## Theme Integration
 
-```tsx
-import { FormSubmit } from '@sparkle/ui'
+This component uses CSS custom properties from `@sparkle/theme` for consistent styling across light and dark modes.
 
-export function Example() {
-  return <FormSubmit />
-}
-```
+### Design Tokens Used
 
-## Styling
+- `--theme-*`: Uses theme design tokens for consistent styling
 
-This component uses theme-aware CSS custom properties for consistent styling across light and dark modes. You can customize the appearance by:
+You can customize the appearance by:
 
 1. **Theme Variables**: Modify theme tokens in your `@sparkle/theme` configuration
 2. **CSS Classes**: Apply custom CSS classes via the `className` prop
@@ -60,14 +56,7 @@ This component follows accessibility best practices with proper ARIA attributes 
 - [FormSelectItem](./form-select-item)
 - [FormTextarea](./form-textarea)
 
-## Source Code
+## Additional Resources
 
-View the source code for this component on GitHub:
-
-- [components/Form/FormSubmit.tsx](https://github.com/marcusrbrown/sparkle/blob/main/packages/ui/src/components/Form/FormSubmit.tsx)
-
-## API Reference
-
-For detailed TypeScript definitions and additional API information, see:
-
+- [View source code](https://github.com/marcusrbrown/sparkle/blob/main/packages/ui/src/components/Form/FormSubmit.tsx)
 - [API Documentation](/api/ui/src#formsubmit)

@@ -1,6 +1,6 @@
 ---
 title: FormLabel
-description: "Form label component with theme-aware styling and proper accessibility associations and required field indicators Uses CSS custom properties from @sparkle/theme for consistent theming across light/dark modes and supports disabled states."
+description: "Form label component with theme-aware styling and proper accessibility associations and required field indicators"
 ---
 
 # FormLabel
@@ -24,19 +24,15 @@ import { FormLabel } from '@sparkle/ui'
 | `disabled`    | `boolean \| undefined` |          | ``      | Whether the field is disabled           |
 | `description` | `string \| undefined`  |          | ``      | Optional description text for the field |
 
-## Basic Usage
+## Theme Integration
 
-```tsx
-import { FormLabel } from '@sparkle/ui'
+This component uses CSS custom properties from `@sparkle/theme` for consistent styling across light and dark modes.
 
-export function Example() {
-  return <FormLabel />
-}
-```
+### Design Tokens Used
 
-## Styling
+- `--theme-*`: Uses theme design tokens for consistent styling
 
-This component uses theme-aware CSS custom properties for consistent styling across light and dark modes. You can customize the appearance by:
+You can customize the appearance by:
 
 1. **Theme Variables**: Modify theme tokens in your `@sparkle/theme` configuration
 2. **CSS Classes**: Apply custom CSS classes via the `className` prop
@@ -60,14 +56,7 @@ This component follows accessibility best practices with proper ARIA attributes 
 - [FormSubmit](./form-submit)
 - [FormTextarea](./form-textarea)
 
-## Source Code
+## Additional Resources
 
-View the source code for this component on GitHub:
-
-- [components/Form/FormLabel.tsx](https://github.com/marcusrbrown/sparkle/blob/main/packages/ui/src/components/Form/FormLabel.tsx)
-
-## API Reference
-
-For detailed TypeScript definitions and additional API information, see:
-
+- [View source code](https://github.com/marcusrbrown/sparkle/blob/main/packages/ui/src/components/Form/FormLabel.tsx)
 - [API Documentation](/api/ui/src#formlabel)

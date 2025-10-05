@@ -9,7 +9,7 @@ This section contains documentation for all components in the `@sparkle/ui` pack
 
 ## Available Components
 
-- [Button](./button) - Button component with theme-aware styling and semantic color variants Uses CSS custom properties from @sparkle/theme for consistent theming across light/dark modes and supports semantic color variants for contextual actions (success, warning, error).
+- [Button](./button) - Button component with theme-aware styling and semantic color variants
 - [Form](./form) - Form component with accessible validation and submission handling
 - [FormControl](./form-control) - Form control wrapper component with theme-aware styling that handles input focus and validation Uses CSS custom properties from @sparkle/theme for consistent theming across light/dark modes. Primarily a pass-through wrapper for Radix Form.Control.
 - [FormDescription](./form-description) - Form description component with theme-aware styling for providing additional field context Automatically connects to form controls via aria-describedby Uses CSS custom properties from @sparkle/theme for consistent theming.

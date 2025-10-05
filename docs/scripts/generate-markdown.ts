@@ -174,10 +174,11 @@ All Sparkle UI components follow these patterns:
    * Builds the content for a single component documentation page
    */
   private buildComponentPageContent(componentDoc: ComponentDocumentation): string {
-    const {name, description, props = [], examples = []} = componentDoc
+    const {name, description, props = [], examples = [], jsdoc} = componentDoc
 
-    // Build frontmatter with properly escaped description
-    const yamlSafeDescription = (description || `Documentation for the ${name} component`)
+    // Extract first paragraph as short description for frontmatter
+    const firstParagraph = description?.split('\n\n')[0] || `Documentation for the ${name} component`
+    const yamlSafeDescription = firstParagraph
       .replaceAll('\n', ' ')
       .replaceAll(/\s+/g, ' ')
       .trim()
@@ -213,58 +214,196 @@ ${props.map(prop => this.formatPropRow(prop)).join('\n')}
 `
     }
 
-    // Add usage examples
+    // Add examples from JSDoc
     if (examples.length > 0) {
-      content += `
-## Examples
+      content += `\n## Examples\n`
 
-${examples
-  .map(
-    (example, index) => `
-### Example ${index + 1}
+      for (const [index, example] of examples.entries()) {
+        // Check if example already has title and code fences (new JSDoc format)
+        const hasCodeFence = example.includes('```')
+
+        if (hasCodeFence) {
+          // Example already formatted with title and code block, use as-is
+          const lines = example.split('\n')
+          const title = lines[0] || `Example ${index + 1}`
+
+          content += `
+### ${title}
+
+${lines.slice(1).join('\n')}
+`
+        } else {
+          // Legacy format: plain code, extract title from comment
+          const titleMatch = example.match(/^\/\/ (.*)$/m)
+          const title = titleMatch ? titleMatch[1] : `Example ${index + 1}`
+
+          content += `
+### ${title}
 
 \`\`\`tsx
 ${example}
 \`\`\`
-`,
-  )
-  .join('\n')}
 `
-    } else {
-      // Add basic usage example
+        }
+      }
+    }
+
+    // Extract and add sections from JSDoc tags
+    const jsdocSections = this.extractJSDocSections(jsdoc)
+
+    // Add features section if available
+    if (jsdocSections.features) {
       content += `
-## Basic Usage
+## Features
 
-\`\`\`tsx
-import { ${name} } from '@sparkle/ui'
-
-export function Example() {
-  return <${name} />
-}
-\`\`\`
+${jsdocSections.features}
 `
     }
 
-    // Add additional sections
-    content += `
-## Styling
+    // Add validation states for Form components
+    if (jsdocSections.validationStates) {
+      content += `
+## Validation States
 
-This component uses theme-aware CSS custom properties for consistent styling across light and dark modes. You can customize the appearance by:
+${jsdocSections.validationStates}
+`
+    }
+
+    // Add best practices section if available
+    if (jsdocSections.bestPractices) {
+      content += `
+## Best Practices
+
+${jsdocSections.bestPractices}
+`
+    }
+
+    // Add theme integration section
+    const themeTokens = jsdocSections.themeTokens || this.getDefaultThemeTokens(name)
+    content += `
+## Theme Integration
+
+This component uses CSS custom properties from \`@sparkle/theme\` for consistent styling across light and dark modes.
+
+### Design Tokens Used
+
+${themeTokens}
+
+You can customize the appearance by:
 
 1. **Theme Variables**: Modify theme tokens in your \`@sparkle/theme\` configuration
 2. **CSS Classes**: Apply custom CSS classes via the \`className\` prop
 3. **CSS-in-JS**: Use styled-components or emotion with the component
+`
 
+    // Add accessibility section
+    const accessibilityNotes = jsdocSections.accessibility || this.generateAccessibilityNotes(name)
+    content += `
 ## Accessibility
 
-${this.generateAccessibilityNotes(name)}
+${accessibilityNotes}
+`
 
+    // Add related components
+    content += `
 ## Related Components
 
 ${this.generateRelatedComponents(componentDoc)}
 `
 
+    // Add links to API reference and source code
+    const apiLink = this.getComponentApiLink(componentDoc)
+    const sourceLink = this.getComponentSourceLink(componentDoc)
+
+    content += `
+## Additional Resources
+
+- [View source code](${sourceLink})
+- [API Documentation](${apiLink})
+`
+
     return content
+  }
+
+  /**
+   * Extracts structured sections from JSDoc tags
+   */
+  private extractJSDocSections(jsdoc?: Annotation): Record<string, string> {
+    const sections: Record<string, string> = {}
+
+    if (!jsdoc) return sections
+
+    // Extract @features tag content
+    const featuresTag = jsdoc.tags?.find(tag => tag.title === 'features')
+    if (featuresTag?.description) {
+      sections.features = featuresTag.description
+    }
+
+    // Extract @best or @best-practices tag content
+    // Note: JSDoc parser treats hyphens as word separators, so "@best-practices" becomes tag "best" with description "-practices..."
+    const bestPracticesTag = jsdoc.tags?.find(tag => tag.title === 'best' || tag.title === 'best-practices')
+    if (bestPracticesTag?.description) {
+      // Remove leading "-practices" if present
+      sections.bestPractices = bestPracticesTag.description.replace(/^-practices\s*/, '')
+    }
+
+    // Extract @accessibility tag content
+    const accessibilityTag = jsdoc.tags?.find(tag => tag.title === 'accessibility')
+    if (accessibilityTag?.description) {
+      sections.accessibility = accessibilityTag.description
+    }
+
+    // Extract @theme or @theme-tokens tag content
+    const themeTokensTag = jsdoc.tags?.find(tag => tag.title === 'theme' || tag.title === 'theme-tokens')
+    if (themeTokensTag?.description) {
+      // Remove leading "-tokens" if present
+      sections.themeTokens = themeTokensTag.description.replace(/^-tokens\s*/, '')
+    }
+
+    // Extract @validation or @validation-states tag content
+    const validationStatesTag = jsdoc.tags?.find(tag => tag.title === 'validation' || tag.title === 'validation-states')
+    if (validationStatesTag?.description) {
+      // Remove leading "-states" if present
+      sections.validationStates = validationStatesTag.description.replace(/^-states\s*/, '')
+    }
+
+    return sections
+  }
+
+  /**
+   * Gets default theme tokens for common components
+   */
+  private getDefaultThemeTokens(componentName: string): string {
+    const commonTokens: Record<string, string> = {
+      Button: `- \`--theme-primary-*\`: Primary button variants
+- \`--theme-success-*\`: Success semantic variants
+- \`--theme-warning-*\`: Warning semantic variants
+- \`--theme-error-*\`: Error semantic variants
+- \`--theme-surface-*\`: Secondary and ghost variants`,
+      Form: `- \`--theme-surface-primary\`: Form background
+- \`--theme-border\`: Form border
+- \`--theme-text-primary\`: Label text
+- \`--theme-error-500\`: Error messages
+- \`--theme-success-500\`: Success messages`,
+    }
+
+    return commonTokens[componentName] || `- \`--theme-*\`: Uses theme design tokens for consistent styling`
+  }
+
+  /**
+   * Gets the GitHub source link for a component
+   */
+  private getComponentSourceLink(componentDoc: ComponentDocumentation): string {
+    const repoBase = 'https://github.com/marcusrbrown/sparkle/blob/main'
+    return `${repoBase}/packages/ui/src/${componentDoc.filePath}`
+  }
+
+  /**
+   * Gets the API reference link for a component
+   */
+  private getComponentApiLink(componentDoc: ComponentDocumentation): string {
+    const apiBase = '/api/ui/src#'
+    return `${apiBase}${componentDoc.name.toLowerCase()}`
   }
 
   /**

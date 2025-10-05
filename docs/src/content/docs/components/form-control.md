@@ -1,6 +1,6 @@
 ---
 title: FormControl
-description: "Form control wrapper component with theme-aware styling that handles input focus and validation Uses CSS custom properties from @sparkle/theme for consistent theming across light/dark modes. Primarily a pass-through wrapper for Radix Form.Control."
+description: "Form control wrapper component with theme-aware styling that handles input focus and validation"
 ---
 
 # FormControl
@@ -24,19 +24,15 @@ import { FormControl } from '@sparkle/ui'
 | `validationState` | `"default" \| "success" \| "error" \| undefined` |  | `` | Validation state for styling |
 | `disabled` | `boolean \| undefined` |  | `` | Whether the control is disabled |
 
-## Basic Usage
+## Theme Integration
 
-```tsx
-import { FormControl } from '@sparkle/ui'
+This component uses CSS custom properties from `@sparkle/theme` for consistent styling across light and dark modes.
 
-export function Example() {
-  return <FormControl />
-}
-```
+### Design Tokens Used
 
-## Styling
+- `--theme-*`: Uses theme design tokens for consistent styling
 
-This component uses theme-aware CSS custom properties for consistent styling across light and dark modes. You can customize the appearance by:
+You can customize the appearance by:
 
 1. **Theme Variables**: Modify theme tokens in your `@sparkle/theme` configuration
 2. **CSS Classes**: Apply custom CSS classes via the `className` prop
@@ -60,14 +56,7 @@ This component follows accessibility best practices with proper ARIA attributes 
 - [FormSubmit](./form-submit)
 - [FormTextarea](./form-textarea)
 
-## Source Code
+## Additional Resources
 
-View the source code for this component on GitHub:
-
-- [components/Form/FormControl.tsx](https://github.com/marcusrbrown/sparkle/blob/main/packages/ui/src/components/Form/FormControl.tsx)
-
-## API Reference
-
-For detailed TypeScript definitions and additional API information, see:
-
+- [View source code](https://github.com/marcusrbrown/sparkle/blob/main/packages/ui/src/components/Form/FormControl.tsx)
 - [API Documentation](/api/ui/src#formcontrol)
