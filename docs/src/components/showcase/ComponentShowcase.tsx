@@ -79,16 +79,21 @@ export const ComponentShowcase: React.FC<ComponentShowcaseProps> = ({
       </div>
 
       {/* Live Examples Section */}
-      <section className="examples-section">
+      <section className="examples-section" aria-labelledby="examples-heading">
         <div className="section-header">
-          <h2>Examples</h2>
+          <h2 id="examples-heading">Examples</h2>
           {examples.length > 1 && (
-            <div className="example-tabs">
+            <div className="example-tabs" role="tablist" aria-label="Component example variations">
               {examples.map((example, index) => (
                 <button
                   key={index}
                   className={`example-tab ${index === activeExampleIndex ? 'active' : ''}`}
                   onClick={() => setActiveExampleIndex(index)}
+                  role="tab"
+                  aria-selected={index === activeExampleIndex}
+                  aria-controls={`example-panel-${index}`}
+                  aria-label={`View ${example.title} example`}
+                  id={`example-tab-${index}`}
                 >
                   {example.title}
                 </button>
@@ -98,7 +103,12 @@ export const ComponentShowcase: React.FC<ComponentShowcaseProps> = ({
         </div>
 
         {activeExample && (
-          <div className="example-content">
+          <div
+            className="example-content"
+            role="tabpanel"
+            id={`example-panel-${activeExampleIndex}`}
+            aria-labelledby={`example-tab-${activeExampleIndex}`}
+          >
             <div className="example-header">
               <h3>{activeExample.title}</h3>
               {activeExample.description && <p className="example-description">{activeExample.description}</p>}
@@ -106,21 +116,30 @@ export const ComponentShowcase: React.FC<ComponentShowcaseProps> = ({
                 <button
                   className={`toggle-code-btn ${showCode ? 'active' : ''}`}
                   onClick={() => setShowCode(!showCode)}
+                  aria-label={showCode ? 'Hide code example' : 'Show code example'}
+                  aria-expanded={showCode}
+                  aria-controls="code-container"
                 >
-                  {showCode ? '👁️ Hide Code' : '👁️ Show Code'}
+                  <span aria-hidden="true">{showCode ? '👁️' : '👁️'}</span> {showCode ? 'Hide Code' : 'Show Code'}
                 </button>
               </div>
             </div>
 
             <div className="example-demo">
-              <div className="demo-container">{activeExample.component}</div>
+              <div className="demo-container" role="region" aria-label={`${activeExample.title} live demo`}>
+                {activeExample.component}
+              </div>
 
               {showCode && (
-                <div className="code-container">
+                <div className="code-container" id="code-container" role="region" aria-label="Code example">
                   <div className="code-header">
                     <span className="code-label">React Code</span>
-                    <button className="copy-code-btn" onClick={() => navigator.clipboard.writeText(activeExample.code)}>
-                      📋 Copy
+                    <button
+                      className="copy-code-btn"
+                      onClick={() => navigator.clipboard.writeText(activeExample.code)}
+                      aria-label="Copy code to clipboard"
+                    >
+                      <span aria-hidden="true">📋</span> Copy
                     </button>
                   </div>
                   <pre className="code-block">
@@ -135,8 +154,8 @@ export const ComponentShowcase: React.FC<ComponentShowcaseProps> = ({
 
       {/* Storybook Integration */}
       {storybookId && (
-        <section className="storybook-section">
-          <h2>Interactive Playground</h2>
+        <section className="storybook-section" aria-labelledby="storybook-heading">
+          <h2 id="storybook-heading">Interactive Playground</h2>
           <p className="storybook-description">
             Explore all variations and configurations in our interactive Storybook playground:
           </p>
@@ -144,7 +163,8 @@ export const ComponentShowcase: React.FC<ComponentShowcaseProps> = ({
             <iframe
               src={`/storybook/iframe.html?id=${storybookId}&viewMode=story`}
               className="storybook-iframe"
-              title={`${documentation.name} Storybook`}
+              title={`Interactive Storybook playground for ${documentation.name} component`}
+              aria-label={`${documentation.name} Storybook interactive examples`}
               loading="lazy"
             />
           </div>

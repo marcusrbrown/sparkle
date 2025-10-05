@@ -1,0 +1,289 @@
+---
+title: ARIA Labels and Accessibility Attributes
+description: Guide for adding and maintaining proper ARIA labels and accessibility attributes in interactive components
+---
+
+This guide provides best practices for implementing ARIA labels and accessibility attributes in Sparkle documentation components to ensure WCAG 2.1 AA compliance.
+
+## Overview
+
+ARIA (Accessible Rich Internet Applications) labels and attributes help screen readers and other assistive technologies understand the purpose and state of interactive elements. All interactive components in the documentation must have proper accessibility attributes.
+
+## Core Principles
+
+### 1. All Interactive Elements Need Labels
+
+Every button, link, input, and interactive element must have a clear, descriptive label that explains its purpose.
+
+**Required Attributes:**
+- `aria-label`: Provides accessible name when visible text is insufficient
+- `aria-labelledby`: References another element's text as the label
+- `aria-describedby`: References element(s) that describe the current element
+
+### 2. Images Need Alternative Text
+
+All images must have descriptive alternative text. Decorative images should be marked with `aria-hidden="true"`.
+
+**For meaningful images:**
+```tsx
+<img src="diagram.png" alt="Architecture diagram showing component relationships" />
+```
+
+**For decorative images/icons:**
+```tsx
+<span aria-hidden="true">🎨</span>
+<SunIcon aria-hidden="true" />
+```
+
+### 3. Interactive States Must Be Communicated
+
+Screen readers need to know the current state of interactive elements.
+
+**Required State Attributes:**
+- `aria-pressed`: For toggle buttons (true/false)
+- `aria-expanded`: For collapsible content (true/false)
+- `aria-selected`: For tabs and selectable items (true/false)
+- `aria-checked`: For checkboxes and radio buttons (true/false/mixed)
+- `aria-disabled`: For disabled elements (true/false)
+
+## Component-Specific Guidelines
+
+### Buttons
+
+All buttons must have clear labels that describe their action:
+
+```tsx
+// ✅ Good - Clear action with aria-label
+<button
+  onClick={handleCopy}
+  aria-label="Copy code to clipboard"
+  aria-pressed={copied}
+>
+  <span aria-hidden="true">📋</span> Copy
+</button>
+
+// ❌ Bad - No accessible label for icon-only button
+<button onClick={handleCopy}>
+  📋
+</button>
+```
+
+### Tabs and Tab Panels
+
+Tabs require proper ARIA roles and relationships:
+
+```tsx
+// Tab list container
+<div role="tablist" aria-label="Component example variations">
+  {examples.map((example, index) => (
+    <button
+      key={index}
+      role="tab"
+      aria-selected={index === activeIndex}
+      aria-controls={`panel-${index}`}
+      id={`tab-${index}`}
+      aria-label={`View ${example.title} example`}
+    >
+      {example.title}
+    </button>
+  ))}
+</div>
+
+// Associated tab panel
+<div
+  role="tabpanel"
+  id={`panel-${activeIndex}`}
+  aria-labelledby={`tab-${activeIndex}`}
+>
+  {activeExample.component}
+</div>
+```
+
+### Iframes
+
+All iframes must have descriptive titles and aria-labels:
+
+```tsx
+<iframe
+  src={url}
+  title="Interactive Storybook playground for Button component"
+  aria-label="Button component Storybook interactive examples"
+  loading="lazy"
+/>
+```
+
+### Expandable/Collapsible Content
+
+Elements that show/hide content need `aria-expanded`:
+
+```tsx
+<button
+  onClick={toggleCode}
+  aria-label={showCode ? 'Hide code example' : 'Show code example'}
+  aria-expanded={showCode}
+  aria-controls="code-container"
+>
+  {showCode ? 'Hide Code' : 'Show Code'}
+</button>
+
+<div id="code-container" role="region" aria-label="Code example">
+  {/* Code content */}
+</div>
+```
+
+### Form Controls
+
+All form inputs need associated labels:
+
+```tsx
+// Using label element
+<label htmlFor="theme-select">
+  Select Theme
+  <select id="theme-select" aria-label="Select theme">
+    <option value="light">Light</option>
+    <option value="dark">Dark</option>
+  </select>
+</label>
+
+// Using aria-label when label element isn't appropriate
+<input
+  type="search"
+  aria-label="Search documentation"
+  placeholder="Search..."
+/>
+```
+
+### Radio Groups
+
+Radio button groups need proper grouping and labeling:
+
+```tsx
+<div role="radiogroup" aria-label="Theme selection">
+  <button
+    type="button"
+    role="radio"
+    aria-checked={theme === 'light'}
+    aria-label="Light theme"
+    onClick={() => setTheme('light')}
+  >
+    Light
+  </button>
+  <button
+    type="button"
+    role="radio"
+    aria-checked={theme === 'dark'}
+    aria-label="Dark theme"
+    onClick={() => setTheme('dark')}
+  >
+    Dark
+  </button>
+</div>
+```
+
+### Live Regions
+
+Dynamic content changes must be announced to screen readers:
+
+```tsx
+<div
+  role="status"
+  aria-live="polite"
+  aria-atomic="true"
+>
+  {statusMessage}
+</div>
+
+// For urgent alerts
+<div
+  role="alert"
+  aria-live="assertive"
+>
+  {errorMessage}
+</div>
+```
+
+## Common Patterns
+
+### Icon-Only Buttons
+
+When buttons contain only icons, always provide text alternatives:
+
+```tsx
+<button
+  aria-label="Close modal"
+  onClick={handleClose}
+>
+  <span aria-hidden="true">✕</span>
+</button>
+```
+
+### Loading States
+
+Communicate loading states to assistive technologies:
+
+```tsx
+<button
+  aria-busy={isLoading}
+  aria-label={isLoading ? 'Loading...' : 'Submit form'}
+  disabled={isLoading}
+>
+  {isLoading ? 'Loading...' : 'Submit'}
+</button>
+```
+
+### Modal Dialogs
+
+Modals require specific ARIA attributes:
+
+```tsx
+<div
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="dialog-title"
+  aria-describedby="dialog-description"
+>
+  <h2 id="dialog-title">Confirm Action</h2>
+  <p id="dialog-description">Are you sure you want to proceed?</p>
+  <button onClick={handleConfirm}>Confirm</button>
+  <button onClick={handleClose} aria-label="Close dialog">Cancel</button>
+</div>
+```
+
+## Testing Checklist
+
+Before committing accessibility improvements, verify:
+
+- [ ] All interactive elements have appropriate ARIA labels
+- [ ] Button purposes are clear from labels alone
+- [ ] Tab panels are properly associated with tabs
+- [ ] Expandable content has `aria-expanded` attributes
+- [ ] Form controls have associated labels
+- [ ] Loading and error states are announced
+- [ ] Icon-only buttons have text alternatives
+- [ ] Decorative elements are marked with `aria-hidden="true"`
+- [ ] Screen reader testing passes (see [Accessibility Guide](/guides/accessibility))
+
+## Automated Testing
+
+Run accessibility audits to catch missing labels:
+
+```bash
+# Run Playwright accessibility tests
+pnpm --filter @sparkle/docs a11y:playwright
+
+# Run axe-core accessibility audit
+pnpm --filter @sparkle/docs a11y:audit
+```
+
+## Resources
+
+- [ARIA Authoring Practices Guide (APG)](https://www.w3.org/WAI/ARIA/apg/)
+- [MDN ARIA Documentation](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA)
+- [WebAIM Screen Reader Testing](https://webaim.org/articles/screenreader_testing/)
+- [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
+
+## Related Guides
+
+- [Accessibility Overview](/guides/accessibility) - Comprehensive accessibility compliance guide
+- [Keyboard Navigation](/guides/keyboard-navigation) - Focus management and keyboard patterns
+- [Heading Hierarchy](/guides/heading-hierarchy) - Semantic HTML structure

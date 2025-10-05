@@ -186,6 +186,7 @@ export function StorybookEmbed({
         width="100%"
         height={responsiveHeight}
         title={accessibleTitle}
+        aria-label={accessibleTitle}
         style={{
           border: '1px solid #e0e0e0',
           borderRadius: '8px',
