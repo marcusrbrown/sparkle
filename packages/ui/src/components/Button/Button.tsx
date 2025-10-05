@@ -212,7 +212,7 @@ export interface ButtonProps extends HTMLProperties<HTMLButtonElement> {
  *
  * @see {@link https://storybook.sparkle.mrbro.dev/?path=/docs/components-button--docs | Storybook Documentation}
  */
-export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, ref) => {
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>((props, ref): React.JSX.Element => {
   const {variant = 'primary', size = 'md', semantic = 'default', className, children, ...rest} = props
 
   // Base theme-aware classes for all buttons

@@ -5,6 +5,8 @@ import {dirname, join} from 'node:path'
 import process from 'node:process'
 import {fileURLToPath} from 'node:url'
 
+import {consola} from 'consola'
+
 const filename = fileURLToPath(import.meta.url)
 const scriptDir = dirname(filename)
 
@@ -68,7 +70,7 @@ export class MarkdownGenerator {
    * Generates markdown documentation for all components
    */
   async generateAll(): Promise<void> {
-    console.log('📝 Generating Markdown documentation from JSDoc...')
+    consola.info('📝 Generating Markdown documentation from JSDoc...')
 
     // Generate index page for components
     await this.generateComponentIndex()
@@ -81,11 +83,11 @@ export class MarkdownGenerator {
         generatedCount++
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error)
-        console.warn(`⚠️  Failed to generate documentation for ${componentDoc.name}: ${errorMessage}`)
+        consola.warn(`⚠️  Failed to generate documentation for ${componentDoc.name}: ${errorMessage}`)
       }
     }
 
-    console.log(`✅ Generated ${generatedCount} component documentation pages`)
+    consola.success(`✅ Generated ${generatedCount} component documentation pages`)
   }
 
   /**
@@ -96,7 +98,7 @@ export class MarkdownGenerator {
     const outputFile = join(this.outputPath, 'index.md')
 
     writeFileSync(outputFile, content)
-    console.log(`📄 Generated components index: ${outputFile}`)
+    consola.info(`📄 Generated components index: ${outputFile}`)
   }
 
   /**
@@ -108,11 +110,12 @@ export class MarkdownGenerator {
     const outputFile = join(this.outputPath, filename)
 
     writeFileSync(outputFile, content)
-    console.log(`📄 Generated component page: ${outputFile}`)
+    consola.info(`📄 Generated component page: ${outputFile}`)
   }
 
   /**
    * Builds the content for the components index page
+   * @returns Markdown content for the index page
    */
   private buildComponentIndexContent(): string {
     const sortedComponents = [...this.componentDocs].sort((a, b) => a.name.localeCompare(b.name))
@@ -172,6 +175,8 @@ All Sparkle UI components follow these patterns:
 
   /**
    * Builds the content for a single component documentation page
+   * @param componentDoc - Component documentation data
+   * @returns Markdown content for the component page
    */
   private buildComponentPageContent(componentDoc: ComponentDocumentation): string {
     const {name, description, props = [], examples = [], jsdoc} = componentDoc
@@ -327,6 +332,8 @@ ${this.generateRelatedComponents(componentDoc)}
 
   /**
    * Extracts structured sections from JSDoc tags
+   * @param jsdoc - JSDoc annotation object
+   * @returns Record of section names to their content
    */
   private extractJSDocSections(jsdoc?: Annotation): Record<string, string> {
     const sections: Record<string, string> = {}
@@ -372,6 +379,8 @@ ${this.generateRelatedComponents(componentDoc)}
 
   /**
    * Gets default theme tokens for common components
+   * @param componentName - Name of the component
+   * @returns Markdown list of theme tokens used by the component
    */
   private getDefaultThemeTokens(componentName: string): string {
     const commonTokens: Record<string, string> = {
@@ -392,6 +401,8 @@ ${this.generateRelatedComponents(componentDoc)}
 
   /**
    * Gets the GitHub source link for a component
+   * @param componentDoc - Component documentation data
+   * @returns GitHub URL to the component source file
    */
   private getComponentSourceLink(componentDoc: ComponentDocumentation): string {
     const repoBase = 'https://github.com/marcusrbrown/sparkle/blob/main'
@@ -400,6 +411,8 @@ ${this.generateRelatedComponents(componentDoc)}
 
   /**
    * Gets the API reference link for a component
+   * @param componentDoc - Component documentation data
+   * @returns Relative URL to the API reference page
    */
   private getComponentApiLink(componentDoc: ComponentDocumentation): string {
     const apiBase = '/api/ui/src#'
@@ -408,6 +421,8 @@ ${this.generateRelatedComponents(componentDoc)}
 
   /**
    * Formats a single prop row for the props table
+   * @param prop - Property documentation data
+   * @returns Markdown table row for the prop
    */
   private formatPropRow(prop: PropDocumentation): string {
     const {name, type, required, defaultValue, description} = prop
@@ -422,6 +437,8 @@ ${this.generateRelatedComponents(componentDoc)}
 
   /**
    * Generates accessibility notes for a component
+   * @param componentName - Name of the component
+   * @returns Accessibility guidance text
    */
   private generateAccessibilityNotes(componentName: string): string {
     const commonNotes = {
@@ -439,6 +456,8 @@ ${this.generateRelatedComponents(componentDoc)}
 
   /**
    * Generates related components section
+   * @param componentDoc - Component documentation data
+   * @returns Markdown list of related components or message if none found
    */
   private generateRelatedComponents(componentDoc: ComponentDocumentation): string {
     const componentName = componentDoc.name
@@ -469,6 +488,8 @@ ${this.generateRelatedComponents(componentDoc)}
 
   /**
    * Gets the filename for a component documentation page
+   * @param componentName - Name of the component in PascalCase
+   * @returns Kebab-case filename with .md extension
    */
   private getComponentFilename(componentName: string): string {
     // Convert PascalCase to kebab-case
@@ -483,9 +504,9 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   try {
     const generator = new MarkdownGenerator()
     await generator.generateAll()
-    console.log('🎉 Markdown generation completed successfully!')
+    consola.success('🎉 Markdown generation completed successfully!')
   } catch (error) {
-    console.error('❌ Markdown generation failed:', error)
+    consola.error('❌ Markdown generation failed:', error)
     process.exit(1)
   }
 }
