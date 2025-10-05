@@ -1,9 +1,13 @@
 import React, {useState} from 'react'
 
 /**
- * Demonstrates a button click interaction
+ * Interactive demonstration component for testing React hydration and interactivity.
+ *
+ * Used in documentation to verify that React components are properly hydrated
+ * in the Astro site and that state management works as expected. Provides
+ * immediate visual feedback for developers troubleshooting layout or integration issues.
  */
-export function ButtonDemo() {
+export function ButtonDemo(): React.JSX.Element {
   const [clicked, setClicked] = useState(false)
 
   return (

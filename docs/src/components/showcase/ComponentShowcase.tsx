@@ -2,58 +2,60 @@ import React, {useState} from 'react'
 import {PropsTable, type PropDocumentation} from './PropsTable'
 
 /**
- * Component documentation structure matching JSDoc extraction output
+ * Component documentation structure matching JSDoc extraction output.
+ *
+ * Used by automated documentation generation scripts to display API information.
  */
 export interface ComponentDocumentation {
-  /** Component name */
   name: string
-  /** File path relative to packages/ui/src */
+  /** Path relative to packages/ui/src for source code links */
   filePath: string
-  /** Component description from JSDoc */
   description?: string
-  /** Component props interface documentation */
+  /** Extracted from TypeScript interface and JSDoc comments */
   props?: PropDocumentation[]
-  /** Usage examples extracted from JSDoc */
+  /** JSDoc @example blocks transformed into code snippets */
   examples?: string[]
-  /** Whether this is the default export */
+  /** Affects display prominence and export syntax in examples */
   isDefault: boolean
 }
 
 /**
- * Configuration for a live component example
+ * Configuration for live interactive component demonstrations.
+ *
+ * Combines rendered component with viewable source code for documentation.
  */
 export interface ExampleConfig {
-  /** Example title */
   title: string
-  /** Description of what this example demonstrates */
+  /** Explains use case or variant purpose beyond the title */
   description?: string
-  /** React component to render */
+  /** Live component instance with real props and interactivity */
   component: React.ReactNode
-  /** Source code to display */
+  /** Formatted source code for syntax highlighting and copying */
   code: string
-  /** Whether to show code by default */
+  /** Controls initial code visibility (defaults to hidden) */
   showCode?: boolean
 }
 
 /**
- * Props for the ComponentShowcase component
+ * Props for ComponentShowcase component.
  */
 export interface ComponentShowcaseProps {
-  /** Component documentation extracted from JSDoc */
+  /** Automated JSDoc extraction output from packages/ui */
   documentation: ComponentDocumentation
-  /** Live examples to demonstrate the component */
+  /** Interactive demos with variant examples and source code */
   examples: ExampleConfig[]
-  /** Optional Storybook story ID for iframe embed */
+  /** Links to full Storybook playground when provided */
   storybookId?: string
-  /** Additional CSS classes */
   className?: string
 }
 
 /**
- * Comprehensive component showcase with live examples, props table, and API documentation
+ * Comprehensive component showcase combining live demos, API docs, and Storybook integration.
  *
- * Combines interactive component demonstrations with comprehensive documentation
- * extracted from JSDoc comments and TypeScript interfaces.
+ * Serves as the primary documentation display for Sparkle UI components by unifying
+ * automated JSDoc extraction, interactive examples with source code, props tables,
+ * and optional Storybook playground links. Implements ARIA tab pattern for accessible
+ * navigation between multiple component variants.
  */
 export const ComponentShowcase: React.FC<ComponentShowcaseProps> = ({
   documentation,
