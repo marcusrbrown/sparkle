@@ -65,3 +65,17 @@ Develop a build-time code generation tool that automatically creates TypeScript 
 
 ### 3. **Component Accessibility Audit Dashboard**
 Build an automated accessibility audit dashboard that integrates with the Storybook visual regression testing pipeline to generate comprehensive WCAG 2.1 AA compliance reports across all component variants, themes, and viewports, utilizing the existing Playwright test infrastructure and `@storybook/addon-a11y` integration to capture accessibility tree snapshots, detect violations, and track remediation progress over time, with automated PR comments that highlight new accessibility issues introduced by changes, a visual report generator that creates markdown summaries for the docs site, and integration with the health-check system to gate deployments on critical accessibility violations.
+
+---
+## 3 Implementation Prompts (2025-10-05)
+
+Based on the Sparkle architecture and copilot instructions, here are three project-specific implementation prompts:
+
+### 1. Cross-Platform Component Enhancement
+Create a new `Card` component in `packages/ui/src/components/Card/` that leverages the `@sparkle/theme` token system for cross-platform compatibility. The component should support multiple variants (default, elevated, outlined), accept theme-aware props, use the React forwardRef pattern for accessibility, and include comprehensive JSDoc comments. Test the component in Storybook with theme switching controls across light/dark modes, and ensure visual regression tests cover all variants and viewports. Follow the established Button component pattern and export via the package index for documentation generation.
+
+### 2. WASM Shell Command Extension
+Implement a new built-in command for the moo-dang WASM shell that provides file search functionality similar to Unix `find`. The command should be compiled from Zig using the `shell_api.zig` interface, support pattern matching with wildcards, integrate with the virtual file system, handle pipes and output redirection, and include comprehensive test coverage (targeting 446+ passing tests standard). Follow the existing shell architecture with Web Worker isolation and message passing, ensuring the command integrates seamlessly with command chaining operators (`&&`, `||`, `;`).
+
+### 3. Documentation Automation Enhancement
+Extend the generate-docs.ts automation to extract and generate API documentation for React hooks from utils alongside the existing component documentation. Parse JSDoc comments from hook implementations, generate structured Markdown with usage examples and type signatures, integrate with the Astro Starlight content structure in `docs/src/content/docs/api/hooks/`, and maintain consistency with existing component documentation patterns. Ensure the documentation site's automated generation workflow (`pnpm --filter @sparkle/docs docs:automation`) includes the new hook documentation without breaking existing component extraction.
