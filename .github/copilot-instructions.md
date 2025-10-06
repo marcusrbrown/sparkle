@@ -1,5 +1,31 @@
 # Sparkle Development Guide for AI Agents
 
+## Quick Reference
+
+**Essential Commands:**
+```bash
+pnpm bootstrap        # Install dependencies
+pnpm dev             # Start all dev servers
+pnpm check           # Run quality checks
+pnpm health-check    # Validate environment
+pnpm fix             # Auto-fix issues
+pnpm test            # Run tests
+```
+
+**Key Patterns:**
+- **Component Development**: `packages/ui/src/components/` → Export via `packages/ui/src/index.ts` → Test in Storybook
+- **Package Naming**: Types/Interfaces = PascalCase, Functions = camelCase, Files = kebab-case
+- **Testing**: Use factory functions from `@sparkle/test-utils`, always use `standardBeforeEach()` and `standardAfterEach()`
+- **Documentation**: Add JSDoc to components → Run `pnpm --filter @sparkle/docs docs:automation`
+- **Versioning**: `pnpm changeset` → `pnpm changeset version` → commit
+
+**Critical Principles:**
+- ✅ All tests must pass before task completion
+- ✅ Use `consola` for logging, not `console`
+- ✅ Avoid ES6 classes except for Error extensions
+- ✅ All packages use ESM-only (`"type": "module"`)
+- ✅ Workspace dependencies use `workspace:*` protocol
+
 ## Architecture Overview
 
 Sparkle is a TypeScript monorepo playground using **pnpm workspaces** and **Turborepo**. Key architectural decisions:
