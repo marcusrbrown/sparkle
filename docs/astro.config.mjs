@@ -307,28 +307,6 @@ export default defineConfig({
       // Rollup-specific build optimizations
       rollupOptions: {
         output: {
-          // Manual chunk splitting for better caching
-          manualChunks(id) {
-            // Vendor chunks for large dependencies
-            if (id.includes('node_modules')) {
-              // Monaco Editor in separate chunk (large dependency)
-              if (id.includes('monaco-editor') || id.includes('@monaco-editor')) {
-                return 'monaco'
-              }
-              // React and related libraries
-              if (id.includes('react') || id.includes('react-dom')) {
-                return 'react-vendor'
-              }
-              // Note: Starlight is NOT separated into its own chunk because it relies on
-              // Astro's content collection initialization order (globalDataStore).
-              // Splitting it causes "Cannot access 'globalDataStore' before initialization" errors.
-
-              // All other node_modules (includes Starlight)
-              return 'vendor'
-            }
-            // Return undefined for non-vendor chunks (default behavior)
-            return undefined
-          },
           // Optimize chunk file names for caching
           chunkFileNames: 'chunks/[name].[hash].js',
           assetFileNames: 'assets/[name].[hash][extname]',
