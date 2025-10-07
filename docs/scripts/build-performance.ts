@@ -50,6 +50,28 @@ export class BuildPerformanceMonitor {
   }
 
   /**
+   * Recursively walks a directory and executes a callback for each file
+   */
+  private walkDirectory(dirPath: string, callback: (filePath: string, file: string, stats: any) => void): void {
+    try {
+      const files = readdirSync(dirPath)
+
+      for (const file of files) {
+        const filePath = join(dirPath, file)
+        const stats = statSync(filePath)
+
+        if (stats.isDirectory()) {
+          this.walkDirectory(filePath, callback)
+        } else {
+          callback(filePath, file, stats)
+        }
+      }
+    } catch (error) {
+      consola.warn(`Failed to read directory ${dirPath}:`, error)
+    }
+  }
+
+  /**
    * Analyzes build output and generates performance report
    */
   async analyze(): Promise<PerformanceReport> {
@@ -78,26 +100,10 @@ export class BuildPerformanceMonitor {
   private calculateBundleSize(): number {
     let totalSize = 0
 
-    const walkDirectory = (dirPath: string): void => {
-      try {
-        const files = readdirSync(dirPath)
+    this.walkDirectory(this.distPath, (_filePath, _file, stats) => {
+      totalSize += stats.size
+    })
 
-        for (const file of files) {
-          const filePath = join(dirPath, file)
-          const stats = statSync(filePath)
-
-          if (stats.isDirectory()) {
-            walkDirectory(filePath)
-          } else {
-            totalSize += stats.size
-          }
-        }
-      } catch (error) {
-        consola.warn(`Failed to read directory ${dirPath}:`, error)
-      }
-    }
-
-    walkDirectory(this.distPath)
     return totalSize
   }
 
@@ -107,26 +113,12 @@ export class BuildPerformanceMonitor {
   private countAssets(): number {
     let assetCount = 0
 
-    const walkDirectory = (dirPath: string): void => {
-      try {
-        const files = readdirSync(dirPath)
-
-        for (const file of files) {
-          const filePath = join(dirPath, file)
-          const stats = statSync(filePath)
-
-          if (stats.isDirectory()) {
-            walkDirectory(filePath)
-          } else if (!file.endsWith('.html')) {
-            assetCount++
-          }
-        }
-      } catch (error) {
-        consola.warn(`Failed to read directory ${dirPath}:`, error)
+    this.walkDirectory(this.distPath, (_filePath, file, _stats) => {
+      if (!file.endsWith('.html')) {
+        assetCount++
       }
-    }
+    })
 
-    walkDirectory(this.distPath)
     return assetCount
   }
 
@@ -136,26 +128,12 @@ export class BuildPerformanceMonitor {
   private countChunks(): number {
     let chunkCount = 0
 
-    const walkDirectory = (dirPath: string): void => {
-      try {
-        const files = readdirSync(dirPath)
-
-        for (const file of files) {
-          const filePath = join(dirPath, file)
-          const stats = statSync(filePath)
-
-          if (stats.isDirectory()) {
-            walkDirectory(filePath)
-          } else if (file.endsWith('.js') || file.endsWith('.mjs')) {
-            chunkCount++
-          }
-        }
-      } catch (error) {
-        consola.warn(`Failed to read directory ${dirPath}:`, error)
+    this.walkDirectory(this.distPath, (_filePath, file, _stats) => {
+      if (file.endsWith('.js') || file.endsWith('.mjs')) {
+        chunkCount++
       }
-    }
+    })
 
-    walkDirectory(this.distPath)
     return chunkCount
   }
 
@@ -165,26 +143,12 @@ export class BuildPerformanceMonitor {
   private findLargestChunk(): {name: string; size: number} {
     let largestChunk = {name: '', size: 0}
 
-    const walkDirectory = (dirPath: string): void => {
-      try {
-        const files = readdirSync(dirPath)
-
-        for (const file of files) {
-          const filePath = join(dirPath, file)
-          const stats = statSync(filePath)
-
-          if (stats.isDirectory()) {
-            walkDirectory(filePath)
-          } else if ((file.endsWith('.js') || file.endsWith('.mjs')) && stats.size > largestChunk.size) {
-            largestChunk = {name: file, size: stats.size}
-          }
-        }
-      } catch (error) {
-        consola.warn(`Failed to read directory ${dirPath}:`, error)
+    this.walkDirectory(this.distPath, (_filePath, file, stats) => {
+      if ((file.endsWith('.js') || file.endsWith('.mjs')) && stats.size > largestChunk.size) {
+        largestChunk = {name: file, size: stats.size}
       }
-    }
+    })
 
-    walkDirectory(this.distPath)
     return largestChunk
   }
 
