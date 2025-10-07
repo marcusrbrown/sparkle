@@ -44,7 +44,10 @@ jobs:
 
       - name: Generate and build documentation
         run: |
-          # Generate documentation from source packages and build site
+          # Generate documentation from source packages and build site with optimizations
+          export NODE_ENV=production
+          export NODE_OPTIONS="--max-old-space-size=4096" # Increase heap size for large builds
+
           if [ "${{ github.event.inputs.force-rebuild }}" = "true" ]; then
             pnpm --filter @sparkle/docs build:force
           else
@@ -56,8 +59,43 @@ jobs:
             echo "Error: Documentation build output not found at ./docs/dist"
             exit 1
           fi
+
+          # Report build metrics
+          echo "📊 Build Output Summary:"
+          du -sh ./docs/dist
+          echo "Total files: $(find ./docs/dist -type f | wc -l)"
+          echo "JavaScript chunks: $(find ./docs/dist -name '*.js' -o -name '*.mjs' | wc -l)"
         env:
           NODE_ENV: production
+        shell: bash -Eeuo pipefail {0}
+
+      - name: Analyze build performance
+        run: |
+          # Calculate build metrics for reporting
+          TOTAL_SIZE=$(du -sb ./docs/dist | cut -f1)
+          TOTAL_SIZE_MB=$(echo "scale=2; $TOTAL_SIZE / 1024 / 1024" | bc)
+          FILE_COUNT=$(find ./docs/dist -type f | wc -l)
+          JS_COUNT=$(find ./docs/dist -name '*.js' -o -name '*.mjs' | wc -l)
+
+          # Find largest chunks
+          echo "📦 Largest JavaScript chunks:"
+          find ./docs/dist -name '*.js' -o -name '*.mjs' | xargs du -h | sort -rh | head -5
+
+          # Write to GitHub Actions summary
+          cat >> "$GITHUB_STEP_SUMMARY" << EOF
+          ### 📊 Build Performance Metrics
+
+          | Metric | Value |
+          |--------|-------|
+          | Total Bundle Size | ${TOTAL_SIZE_MB}MB |
+          | Total Files | $FILE_COUNT |
+          | JavaScript Chunks | $JS_COUNT |
+
+          #### 📦 Top 5 Largest Chunks
+          $(find ./docs/dist -name '*.js' -o -name '*.mjs' | xargs du -h | sort -rh | head -5 | awk '{print "- " $2 " (" $1 ")"}')
+
+          ---
+          EOF
         shell: bash -Eeuo pipefail {0}
 
       - name: Configure GitHub Pages

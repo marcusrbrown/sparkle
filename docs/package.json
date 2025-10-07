@@ -30,6 +30,7 @@
     "astro": "astro",
     "build": "npm run docs:automation && astro build",
     "build:force": "npm run docs:automation:force && astro build",
+    "build:perf": "tsx scripts/build-performance.ts",
     "dev": "astro dev",
     "docs:api": "typedoc --options typedoc.json",
     "docs:api:watch": "typedoc --options typedoc.json --watch",

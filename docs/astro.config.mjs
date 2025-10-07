@@ -22,9 +22,19 @@ export default defineConfig({
   build: {
     inlineStylesheets: 'auto', // Automatically inline small CSS files
     assets: '_astro', // Asset directory for cache busting
+    format: 'directory', // Use directory structure for cleaner URLs
   },
   // Compression and minification
   compressHTML: true,
+  // Prefetch configuration for faster navigation
+  prefetch: {
+    prefetchAll: true,
+    defaultStrategy: 'viewport', // Prefetch links when they enter viewport
+  },
+  // Experimental optimizations
+  experimental: {
+    clientPrerender: true, // Pre-render pages on client for instant navigation
+  },
   integrations: [
     react(),
     starlight({
@@ -292,6 +302,53 @@ export default defineConfig({
     define: {
       // Monaco Editor environment variables
       global: 'globalThis',
+    },
+    build: {
+      // Rollup-specific build optimizations
+      rollupOptions: {
+        output: {
+          // Manual chunk splitting for better caching
+          manualChunks(id) {
+            // Vendor chunks for large dependencies
+            if (id.includes('node_modules')) {
+              // Monaco Editor in separate chunk (large dependency)
+              if (id.includes('monaco-editor') || id.includes('@monaco-editor')) {
+                return 'monaco'
+              }
+              // React and related libraries
+              if (id.includes('react') || id.includes('react-dom')) {
+                return 'react-vendor'
+              }
+              // Note: Starlight is NOT separated into its own chunk because it relies on
+              // Astro's content collection initialization order (globalDataStore).
+              // Splitting it causes "Cannot access 'globalDataStore' before initialization" errors.
+
+              // All other node_modules (includes Starlight)
+              return 'vendor'
+            }
+            // Return undefined for non-vendor chunks (default behavior)
+            return undefined
+          },
+          // Optimize chunk file names for caching
+          chunkFileNames: 'chunks/[name].[hash].js',
+          assetFileNames: 'assets/[name].[hash][extname]',
+        },
+      },
+      // Production build optimizations
+      minify: 'esbuild', // Fast minification with esbuild
+      cssMinify: 'lightningcss', // Ultra-fast CSS minification
+      target: 'es2022', // Modern browser target for smaller bundles (supports top-level await)
+      // Chunk size warning threshold
+      chunkSizeWarningLimit: 1000, // 1MB warning threshold
+      // Source maps for production debugging (disabled for faster builds)
+      sourcemap: false,
+      // Asset inlining threshold
+      assetsInlineLimit: 4096, // 4KB - inline small assets as base64
+    },
+    // Performance optimizations for dev and build
+    resolve: {
+      // Deduplicate dependencies to reduce bundle size
+      dedupe: ['react', 'react-dom'],
     },
   },
 })
