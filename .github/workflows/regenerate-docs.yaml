@@ -153,15 +153,58 @@ jobs:
       - name: Setup CI environment
         uses: ./.github/actions/setup-ci
 
+      - name: Cache generated documentation
+        id: cache-generated-docs
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          key: docs-regen-${{ runner.os }}-${{ hashFiles('packages/*/src/**/*.{ts,tsx}', 'docs/scripts/**/*.ts', 'docs/typedoc.json') }}
+          restore-keys: |
+            docs-regen-${{ runner.os }}-
+          path: |
+            docs/src/content/docs/api/**
+            docs/src/content/docs/components/**
+            docs/src/generated/**
+
       - name: Configure Git
         run: |
           git config --global user.name "mrbro-bot[bot]"
           git config --global user.email "137683033+mrbro-bot[bot]@users.noreply.github.com"
         shell: bash -Eeuo pipefail {0}
 
+      - name: Report cache status
+        run: |
+          echo "### � Cache Status" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Cache Type | Status |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|------------|--------|" >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "${{ steps.cache-generated-docs.outputs.cache-hit }}" = "true" ]; then
+            echo "| Generated Documentation | ✅ Cache Hit |" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "| Generated Documentation | ⚠️ Cache Miss |" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "_Cache keys are automatically invalidated when source files change_" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+        shell: bash -Eeuo pipefail {0}
+
       - name: Regenerate documentation
         run: |
           echo "🔄 Regenerating docs for: ${{ needs.detect-changes.outputs.packages }}"
+
+          # Enable Turborepo remote caching if configured
+          export TURBO_TOKEN="${{ secrets.TURBO_TOKEN || '' }}"
+          export TURBO_TEAM="${{ secrets.TURBO_TEAM || '' }}"
+
+          # Report Turborepo caching configuration to summary
+          if [ -n "$TURBO_TOKEN" ] && [ -n "$TURBO_TEAM" ]; then
+            echo "| Turborepo Remote Cache | ✅ Enabled |" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "| Turborepo Remote Cache | ℹ️ Not Configured |" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+          fi
 
           if [ "${{ github.event.inputs.force }}" = "true" ]; then
             echo "♻️  Force regeneration enabled"
