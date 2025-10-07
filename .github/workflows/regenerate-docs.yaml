@@ -171,20 +171,40 @@ jobs:
           git config --global user.email "137683033+mrbro-bot[bot]@users.noreply.github.com"
         shell: bash -Eeuo pipefail {0}
 
+      - name: Report cache status
+        run: |
+          echo "### � Cache Status" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Cache Type | Status |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|------------|--------|" >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "${{ steps.cache-generated-docs.outputs.cache-hit }}" = "true" ]; then
+            echo "| Generated Documentation | ✅ Cache Hit |" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "| Generated Documentation | ⚠️ Cache Miss |" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "_Cache keys are automatically invalidated when source files change_" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+        shell: bash -Eeuo pipefail {0}
+
       - name: Regenerate documentation
         run: |
           echo "🔄 Regenerating docs for: ${{ needs.detect-changes.outputs.packages }}"
 
-          # Report cache status
-          if [ "${{ steps.cache-generated-docs.outputs.cache-hit }}" = "true" ]; then
-            echo "✅ Cache hit - using cached documentation as base"
-          else
-            echo "⚠️  Cache miss - generating from scratch"
-          fi
-
           # Enable Turborepo remote caching if configured
           export TURBO_TOKEN="${{ secrets.TURBO_TOKEN || '' }}"
           export TURBO_TEAM="${{ secrets.TURBO_TEAM || '' }}"
+
+          # Report Turborepo caching configuration to summary
+          if [ -n "$TURBO_TOKEN" ] && [ -n "$TURBO_TEAM" ]; then
+            echo "| Turborepo Remote Cache | ✅ Enabled |" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "| Turborepo Remote Cache | ℹ️ Not Configured |" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+          fi
 
           if [ "${{ github.event.inputs.force }}" = "true" ]; then
             echo "♻️  Force regeneration enabled"

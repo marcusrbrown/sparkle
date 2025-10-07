@@ -92,11 +92,13 @@ jobs:
           export TURBO_TOKEN="${{ secrets.TURBO_TOKEN || '' }}"
           export TURBO_TEAM="${{ secrets.TURBO_TEAM || '' }}"
 
-          # Enable Turborepo remote caching if tokens are configured
+          # Report Turborepo caching configuration to summary
           if [ -n "$TURBO_TOKEN" ] && [ -n "$TURBO_TEAM" ]; then
-            echo "🔗 Turborepo remote caching enabled"
+            echo "| Turborepo Remote Cache | ✅ Enabled |" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "📦 Using local Turborepo cache only (remote caching not configured)"
+            echo "| Turborepo Remote Cache | ℹ️ Not Configured |" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
           fi
 
           if [ "${{ github.event.inputs.force-rebuild }}" = "true" ]; then

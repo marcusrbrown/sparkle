@@ -5,6 +5,39 @@ description: Comprehensive guide to caching strategies for build artifacts, gene
 
 This guide covers all caching strategies implemented in the Sparkle documentation site to optimize build times, reduce resource usage, and improve deployment performance.
 
+## Quick Reference
+
+**Key Commands:**
+
+```bash
+# View cache status
+gh cache list
+
+# Delete specific cache
+gh cache delete <cache-id>
+
+# Force rebuild (skip cache)
+gh workflow run deploy-docs.yaml -f force-rebuild=true
+
+# Monitor cache metrics
+gh run view --log | grep "Cache"
+```
+
+**Cache Performance:**
+
+| Cache Type                  | Typical Savings | Invalidation Trigger        |
+| --------------------------- | --------------- | --------------------------- |
+| pnpm Dependencies           | ~80% install    | `pnpm-lock.yaml` changes    |
+| Generated Documentation     | ~95% generation | Package source file changes |
+| Astro Build Artifacts       | ~50% build time | Content/component changes   |
+| Turborepo Remote (optional) | ~50% build time | Task input changes          |
+
+**Cache Locations:**
+
+- GitHub Actions Cache: Workflows → Caches (10GB limit, 7-day retention)
+- Turborepo Local: `node_modules/.cache/turbo/`
+- Turborepo Remote: Vercel (when configured)
+
 ## Overview
 
 The documentation site implements multiple layers of caching:
