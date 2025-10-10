@@ -73,7 +73,7 @@
     "@microsoft/api-extractor": "7.53.0",
     "@types/node": "22.18.6",
     "@types/react": "~19.2.0",
-    "@types/react-dom": "19.2.0",
+    "@types/react-dom": "19.2.1",
     "axe-core": "4.10.3",
     "chokidar": "4.0.3",
     "doctrine": "3.0.0",
