@@ -149,8 +149,8 @@ importers:
         specifier: ^4.0.0
         version: 4.1.0(@swc/helpers@0.5.17)(vite@7.1.11(@types/node@22.18.10)(jiti@2.1.2)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
       happy-dom:
-        specifier: 20.0.5
-        version: 20.0.5
+        specifier: 20.0.7
+        version: 20.0.7
       react-test-renderer:
         specifier: ^19.0.0
         version: 19.2.0(react@19.2.0)
@@ -162,7 +162,7 @@ importers:
         version: 7.1.11(@types/node@22.18.10)(jiti@2.1.2)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
       vitest:
         specifier: ^3.0.0
-        version: 3.2.4(@types/debug@4.1.12)(@types/node@22.18.10)(happy-dom@20.0.5)(jiti@2.1.2)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/debug@4.1.12)(@types/node@22.18.10)(happy-dom@20.0.7)(jiti@2.1.2)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   apps/moo-dang:
     dependencies:
@@ -213,8 +213,8 @@ importers:
         specifier: ^9.1.0
         version: 9.2.1
       happy-dom:
-        specifier: 20.0.5
-        version: 20.0.5
+        specifier: 20.0.7
+        version: 20.0.7
       nodemon:
         specifier: ^3.1.7
         version: 3.1.10
@@ -229,7 +229,7 @@ importers:
         version: 7.1.11(@types/node@22.18.10)(jiti@2.1.2)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
       vitest:
         specifier: ^3.0.0
-        version: 3.2.4(@types/debug@4.1.12)(@types/node@22.18.10)(happy-dom@20.0.5)(jiti@2.1.2)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/debug@4.1.12)(@types/node@22.18.10)(happy-dom@20.0.7)(jiti@2.1.2)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   docs:
     dependencies:
@@ -369,7 +369,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^3.0.0
-        version: 3.2.4(@types/debug@4.1.12)(@types/node@22.18.10)(happy-dom@20.0.5)(jiti@2.1.2)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/debug@4.1.12)(@types/node@22.18.10)(happy-dom@20.0.7)(jiti@2.1.2)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   packages/storybook:
     dependencies:
@@ -497,7 +497,7 @@ importers:
         version: 5.9.3
       vitest:
         specifier: ^3.0.0
-        version: 3.2.4(@types/debug@4.1.12)(@types/node@22.18.10)(happy-dom@20.0.5)(jiti@2.1.2)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/debug@4.1.12)(@types/node@22.18.10)(happy-dom@20.0.7)(jiti@2.1.2)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   packages/theme:
     dependencies:
@@ -521,8 +521,8 @@ importers:
         specifier: ~19.2.0
         version: 19.2.2
       happy-dom:
-        specifier: 20.0.5
-        version: 20.0.5
+        specifier: 20.0.7
+        version: 20.0.7
       react:
         specifier: 19.2.0
         version: 19.2.0
@@ -586,10 +586,10 @@ importers:
         version: 4.1.0(@swc/helpers@0.5.17)(vite@7.1.11(@types/node@22.18.10)(jiti@2.1.2)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
       '@vitest/coverage-v8':
         specifier: 3.2.4
-        version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.10)(happy-dom@20.0.5)(jiti@2.1.2)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
+        version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.10)(happy-dom@20.0.7)(jiti@2.1.2)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
       happy-dom:
-        specifier: 20.0.5
-        version: 20.0.5
+        specifier: 20.0.7
+        version: 20.0.7
       postcss:
         specifier: ^8.5.2
         version: 8.5.6
@@ -610,7 +610,7 @@ importers:
         version: 7.1.11(@types/node@22.18.10)(jiti@2.1.2)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
       vitest:
         specifier: ^3.0.0
-        version: 3.2.4(@types/debug@4.1.12)(@types/node@22.18.10)(happy-dom@20.0.5)(jiti@2.1.2)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+        version: 3.2.4(@types/debug@4.1.12)(@types/node@22.18.10)(happy-dom@20.0.7)(jiti@2.1.2)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
   packages/utils:
     dependencies:
@@ -4174,8 +4174,8 @@ packages:
     engines: {node: '>=12.13.0'}
     hasBin: true
 
-  chromedriver@141.0.3:
-    resolution: {integrity: sha512-YnB6cK5OIKJvz056A97RxTMlQVj/zzDf9YnJj4jUQwc61Ixk4/cis0rguS8kzHTOLR7IkJZRUOWWGKuBYMjo0Q==}
+  chromedriver@141.0.4:
+    resolution: {integrity: sha512-pUpriiZRn+JXkBud54eTnhFwp2hRc9B7szSk7smN7swsqQq8aK9Q6WGeV8RcTpYqaZ+4/gMIUaZAUqe1Ds4W1w==}
     engines: {node: '>=20'}
     hasBin: true
 
@@ -5563,8 +5563,8 @@ packages:
   h3@1.15.4:
     resolution: {integrity: sha512-z5cFQWDffyOe4vQ9xIqNfCZdV4p//vy6fBnr8Q1AWnVZ0teurKMG66rLj++TKwKPUP3u7iMUvrvKaEUiQw2QWQ==}
 
-  happy-dom@20.0.5:
-    resolution: {integrity: sha512-AiqA0rfS7WR1kihXt9W9aA5LFLaOKzwiL+QoI7BkOQ0r21C7VHTOf4k8QNlnWYaHLhpI2tZzJPLV1lY1obDTmw==}
+  happy-dom@20.0.7:
+    resolution: {integrity: sha512-CywLfzmYxP5OYpuAG0usFY0CpxJtwYR+w8Mms5J8W29Y2Pzf6rbfQS2M523tRZTb0oLA+URopPtnAQX2fupHZQ==}
     engines: {node: '>=20.0.0'}
 
   has-flag@3.0.0:
@@ -9660,7 +9660,7 @@ snapshots:
     dependencies:
       '@axe-core/webdriverjs': 4.10.2(selenium-webdriver@4.22.0)
       axe-core: 4.10.3
-      chromedriver: 141.0.3
+      chromedriver: 141.0.4
       colors: 1.4.0
       commander: 9.5.0
       dotenv: 16.6.1
@@ -13028,7 +13028,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/coverage-v8@3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.10)(happy-dom@20.0.5)(jiti@2.1.2)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))':
+  '@vitest/coverage-v8@3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.10)(happy-dom@20.0.7)(jiti@2.1.2)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 1.0.2
@@ -13043,7 +13043,7 @@ snapshots:
       std-env: 3.10.0
       test-exclude: 7.0.1
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/debug@4.1.12)(@types/node@22.18.10)(happy-dom@20.0.5)(jiti@2.1.2)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
+      vitest: 3.2.4(@types/debug@4.1.12)(@types/node@22.18.10)(happy-dom@20.0.7)(jiti@2.1.2)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -13864,7 +13864,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  chromedriver@141.0.3:
+  chromedriver@141.0.4:
     dependencies:
       '@testim/chrome-version': 1.1.4
       axios: 1.12.2
@@ -15398,7 +15398,7 @@ snapshots:
       ufo: 1.6.1
       uncrypto: 0.1.3
 
-  happy-dom@20.0.5:
+  happy-dom@20.0.7:
     dependencies:
       '@types/node': 20.19.22
       '@types/whatwg-mimetype': 3.0.2
@@ -19821,7 +19821,7 @@ snapshots:
     optionalDependencies:
       vite: 6.4.1(@types/node@22.18.10)(jiti@2.1.2)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1)
 
-  vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.10)(happy-dom@20.0.5)(jiti@2.1.2)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1):
+  vitest@3.2.4(@types/debug@4.1.12)(@types/node@22.18.10)(happy-dom@20.0.7)(jiti@2.1.2)(lightningcss@1.30.1)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1):
     dependencies:
       '@types/chai': 5.2.2
       '@vitest/expect': 3.2.4
@@ -19849,7 +19849,7 @@ snapshots:
     optionalDependencies:
       '@types/debug': 4.1.12
       '@types/node': 22.18.10
-      happy-dom: 20.0.5
+      happy-dom: 20.0.7
     transitivePeerDependencies:
       - jiti
       - less
