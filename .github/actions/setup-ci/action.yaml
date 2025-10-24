@@ -59,6 +59,7 @@ runs:
     - name: Bootstrap monorepo
       env:
         HUSKY: '0'
+        TURBO_TELEMETRY_DISABLED: '1'
       run: |
         # Use the bootstrap script to install dependencies and build packages
         pnpm bootstrap
