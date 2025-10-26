@@ -28,6 +28,8 @@ jobs:
       - name: Setup CI
         id: setup-ci
         uses: ./.github/actions/setup-ci
+        with:
+          install-zig: 'true'
 
   check:
     name: Check
