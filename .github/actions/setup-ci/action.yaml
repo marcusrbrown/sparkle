@@ -40,7 +40,5 @@ runs:
         restore-keys: ${{ runner.os }}-development-cache-
 
     - name: Bootstrap monorepo
-      env:
-        TURBO_TELEMETRY_DISABLED: '1'
       run: pnpm install
       shell: 'bash -Eeuo pipefail {0}'
