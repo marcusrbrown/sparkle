@@ -5,6 +5,7 @@ on:
   push:
     branches: [main]
   pull_request:
+    branches: [main]
   workflow_dispatch:
 
 concurrency:
@@ -14,13 +15,45 @@ concurrency:
 permissions:
   contents: read
 
+env:
+  TURBO_TELEMETRY_DISABLED: '1'
+
 jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - name: Setup CI
+        id: setup-ci
+        uses: ./.github/actions/setup-ci
+        with:
+          install-zig: 'true'
+
   check:
     name: Check
+    needs: setup
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
       - name: Setup CI
         uses: ./.github/actions/setup-ci
-      - run: pnpm check
+      - name: Run checks
+        run: pnpm check
+
+  build:
+    name: Build
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - name: Setup CI
+        uses: ./.github/actions/setup-ci
+        with:
+          install-zig: 'true'
+      - name: Build project
+        run: pnpm build
