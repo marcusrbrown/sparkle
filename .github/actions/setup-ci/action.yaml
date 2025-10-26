@@ -3,6 +3,12 @@
 name: Setup CI
 description: Setup pnpm, configure caches, and install dependencies
 
+inputs:
+  install-zig:
+    description: 'Whether to install Zig (default: true)'
+    required: false
+    default: 'false'
+
 runs:
   using: composite
   steps:
@@ -14,37 +20,14 @@ runs:
     - name: Setup Node.js
       uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
       with:
+        cache: pnpm
         node-version-file: .node-version
-        package-manager-cache: false
 
     - name: Setup Zig
+      if: ${{ inputs.install-zig == 'true' }}
       uses: mlugg/setup-zig@8d6198c65fb0feaa111df26e6b467fea8345e46f # v2.0.5
 
-    - id: cache-config
-      name: Configure cache
-      run: |
-        pnpm_store_path="$(pnpm store path --silent)"
-        if [ -z "pnpm_store_path" ]; then
-          echo "Failed to get pnpm store path"
-          exit 1
-        fi
-        mkdir -p "pnpm_store_path" || exit 1
-        echo "path=$pnpm_store_path" >> $GITHUB_OUTPUT
-        year_month=$(date -u '+%Y%m')
-        base_key="${{ runner.os }}-pnpm-cache-v${year_month}"
-        echo "key=${base_key}-${{ hashFiles('**/pnpm-lock.yaml') }}" >> $GITHUB_OUTPUT
-        echo "restore-keys=${base_key}-" >> $GITHUB_OUTPUT
-      shell: 'bash -Eeuo pipefail {0}'
-
-    - name: Setup pnpm cache
-      uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
-      with:
-        key: ${{ steps.cache-config.outputs.key }}
-        path: ${{ steps.cache-config.outputs.path }}
-        restore-keys: ${{ steps.cache-config.outputs.restore-keys }}
-
-    - id: cache-development
-      name: Restore development related caches
+    - name: Restore development related caches
       uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
       with:
         key: ${{ runner.os }}-development-cache-${{ hashFiles('**/pnpm-lock.yaml', '**/*.ts', 'turbo.json') }}
@@ -58,11 +41,6 @@ runs:
 
     - name: Bootstrap monorepo
       env:
-        HUSKY: '0'
         TURBO_TELEMETRY_DISABLED: '1'
-      run: |
-        # Use the bootstrap script to install dependencies and build packages
-        pnpm bootstrap
-        # Build all packages to ensure dependencies are available
-        pnpm build
+      run: pnpm install
       shell: 'bash -Eeuo pipefail {0}'
