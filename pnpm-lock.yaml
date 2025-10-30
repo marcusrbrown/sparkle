@@ -16,8 +16,8 @@ importers:
         specifier: 4.11.0
         version: 4.11.0
       '@bfra.me/eslint-config':
-        specifier: 0.33.0
-        version: 0.33.0(@typescript-eslint/eslint-plugin@8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.38.0(jiti@2.1.2))(typescript@5.9.3))(eslint@9.38.0(jiti@2.1.2))(typescript@5.9.3))(@typescript-eslint/utils@8.46.2(eslint@9.38.0(jiti@2.1.2))(typescript@5.9.3))(eslint-config-prettier@10.1.8(eslint@9.38.0(jiti@2.1.2)))(eslint-plugin-prettier@5.5.4(eslint-config-prettier@10.1.8(eslint@9.38.0(jiti@2.1.2)))(eslint@9.38.0(jiti@2.1.2))(prettier@3.6.2))(eslint@9.38.0(jiti@2.1.2))(typescript@5.9.3)
+        specifier: 0.35.1
+        version: 0.35.1(@typescript-eslint/eslint-plugin@8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.38.0(jiti@2.1.2))(typescript@5.9.3))(eslint@9.38.0(jiti@2.1.2))(typescript@5.9.3))(@typescript-eslint/utils@8.46.2(eslint@9.38.0(jiti@2.1.2))(typescript@5.9.3))(eslint-config-prettier@10.1.8(eslint@9.38.0(jiti@2.1.2)))(eslint-plugin-prettier@5.5.4(eslint-config-prettier@10.1.8(eslint@9.38.0(jiti@2.1.2)))(eslint@9.38.0(jiti@2.1.2))(prettier@3.6.2))(eslint@9.38.0(jiti@2.1.2))(typescript@5.9.3)
       '@bfra.me/prettier-config':
         specifier: 0.16.1
         version: 0.16.1(prettier@3.6.2)
@@ -1221,14 +1221,14 @@ packages:
     resolution: {integrity: sha512-6zABk/ECA/QYSCQ1NGiVwwbQerUCZ+TQbp64Q3AgmfNvurHH0j8TtXa1qbShXA6qqkpAj4V5W8pP6mLe1mcMqA==}
     engines: {node: '>=18'}
 
-  '@bfra.me/eslint-config@0.33.0':
-    resolution: {integrity: sha512-/Evvt/kRyjRbT9HgecOgzRRwDQQdRJKk0qXPIiUGI7nWAMMjoYpjoBFIgNuPWRFtCNw16ruvVP3hAf18SJIGjg==}
+  '@bfra.me/eslint-config@0.35.1':
+    resolution: {integrity: sha512-41LxYyEdfY5wUADxmz3c6Ts1nNSBPF2WI6RHaoRbDXR3YwUAlaqAWt544Dv/Yz48U/u5CN4pjssRYqaKK2R8eQ==}
     peerDependencies:
       '@eslint-react/eslint-plugin': ^2.0.1
       '@next/eslint-plugin-next': ^15.5.3
       '@vitest/eslint-plugin': ^1.1.21
       astro-eslint-parser: ^1.2.2
-      eslint: ^9.10.0
+      eslint: ^9.38.0
       eslint-config-prettier: ^10.1.8
       eslint-plugin-astro: ^1.3.1
       eslint-plugin-prettier: ^5.5.4
@@ -4173,8 +4173,8 @@ packages:
     engines: {node: '>=12.13.0'}
     hasBin: true
 
-  chromedriver@141.0.6:
-    resolution: {integrity: sha512-ccfB+3CuQVYGNOR0S3JWstAN/KIP7FUgCW0f2eGV8MJECJY6tSrGw7D7fG61y6XjvrKf3ylqg7KFP2dfboGd8A==}
+  chromedriver@142.0.0:
+    resolution: {integrity: sha512-BlMMPFOKAOYOT23tjtAjvci57gyYcasKqd/3yGKOjGMEbFZa5kfwoNcUzwL/5ugZ932MJX1fW/j8zk5KD5mHBw==}
     engines: {node: '>=20'}
     hasBin: true
 
@@ -9666,7 +9666,7 @@ snapshots:
     dependencies:
       '@axe-core/webdriverjs': 4.11.0(selenium-webdriver@4.35.0)
       axe-core: 4.11.0
-      chromedriver: 141.0.6
+      chromedriver: 142.0.0
       colors: 1.4.0
       commander: 9.5.0
       dotenv: 17.2.3
@@ -10290,7 +10290,7 @@ snapshots:
 
   '@bcoe/v8-coverage@1.0.2': {}
 
-  '@bfra.me/eslint-config@0.33.0(@typescript-eslint/eslint-plugin@8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.38.0(jiti@2.1.2))(typescript@5.9.3))(eslint@9.38.0(jiti@2.1.2))(typescript@5.9.3))(@typescript-eslint/utils@8.46.2(eslint@9.38.0(jiti@2.1.2))(typescript@5.9.3))(eslint-config-prettier@10.1.8(eslint@9.38.0(jiti@2.1.2)))(eslint-plugin-prettier@5.5.4(eslint-config-prettier@10.1.8(eslint@9.38.0(jiti@2.1.2)))(eslint@9.38.0(jiti@2.1.2))(prettier@3.6.2))(eslint@9.38.0(jiti@2.1.2))(typescript@5.9.3)':
+  '@bfra.me/eslint-config@0.35.1(@typescript-eslint/eslint-plugin@8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.38.0(jiti@2.1.2))(typescript@5.9.3))(eslint@9.38.0(jiti@2.1.2))(typescript@5.9.3))(@typescript-eslint/utils@8.46.2(eslint@9.38.0(jiti@2.1.2))(typescript@5.9.3))(eslint-config-prettier@10.1.8(eslint@9.38.0(jiti@2.1.2)))(eslint-plugin-prettier@5.5.4(eslint-config-prettier@10.1.8(eslint@9.38.0(jiti@2.1.2)))(eslint@9.38.0(jiti@2.1.2))(prettier@3.6.2))(eslint@9.38.0(jiti@2.1.2))(typescript@5.9.3)':
     dependencies:
       '@eslint-community/eslint-plugin-eslint-comments': 4.5.0(eslint@9.38.0(jiti@2.1.2))
       '@eslint/markdown': 7.5.0
@@ -13870,7 +13870,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  chromedriver@141.0.6:
+  chromedriver@142.0.0:
     dependencies:
       '@testim/chrome-version': 1.1.4
       axios: 1.12.2
