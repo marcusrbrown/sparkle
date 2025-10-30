@@ -44,6 +44,14 @@
       matchFileNames: ['package.json'],
       extends: [':pinDevDependencies'],
     },
+    {
+      description: 'Automerge unstable versions of some packages.',
+      matchCurrentVersion: '0.x',
+      matchPackageNames: ['@astrojs/check', 'typedoc'],
+      matchUpdateTypes: ['minor', 'patch'],
+      automerge: true,
+      dependencyDashboardApproval: false,
+    },
   ],
   postUpgradeTasks: {
     commands: ['pnpm bootstrap', 'pnpm build', 'pnpm fix'],
