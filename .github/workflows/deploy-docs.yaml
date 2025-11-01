@@ -150,7 +150,7 @@ jobs:
 
           ---
           EOF
-        shell: bash -Eeuo pipefail {0}
+        # shell: bash -Eeuo pipefail {0}
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
