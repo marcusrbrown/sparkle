@@ -1,11 +1,17 @@
+autoInstallPeers: true
+
+dedupePeerDependents: true
+
+engineStrict: true
+
+ignoredBuiltDependencies:
+  - '@tailwindcss/oxide'
+
 packages:
   - packages/*
   - apps/*
   - docs
   - scripts
-
-ignoredBuiltDependencies:
-  - '@tailwindcss/oxide'
 
 onlyBuiltDependencies:
   - '@swc/core'
@@ -16,7 +22,16 @@ onlyBuiltDependencies:
   - unrs-resolver
 
 overrides:
-  jiti: <2.2.0
   tmp@<0.2.4: ^0.2.4
 
+preferWorkspacePackages: true
+
+resolutionMode: highest
+
+savePrefix: ''
+
+saveWorkspaceProtocol: rolling
+
 shamefullyHoist: true
+
+strictPeerDependencies: false
