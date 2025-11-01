@@ -71,7 +71,7 @@
     "@axe-core/cli": "4.11.0",
     "@axe-core/playwright": "4.11.0",
     "@microsoft/api-extractor": "7.53.3",
-    "@types/node": "22.18.10",
+    "@types/node": "24.9.2",
     "@types/react": "~19.2.0",
     "@types/react-dom": "19.2.2",
     "axe-core": "4.11.0",
