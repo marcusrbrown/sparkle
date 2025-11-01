@@ -54,7 +54,7 @@
     },
   ],
   postUpgradeTasks: {
-    commands: ['pnpm bootstrap', 'pnpm build', 'pnpm fix'],
+    commands: ['pnpm bootstrap', 'pnpm fix'],
     executionMode: 'branch',
   },
   prCreation: 'immediate',
