@@ -55,7 +55,7 @@
     "@manypkg/cli": "0.25.1",
     "@types/node": "24.9.2",
     "consola": "3.4.2",
-    "eslint": "9.39.0",
+    "eslint": "9.39.1",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-prettier": "5.5.4",
     "markdownlint": "0.38.0",
