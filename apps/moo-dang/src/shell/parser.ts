@@ -214,7 +214,7 @@ function parseCommandWithRedirections(
 
   // Extract redirections from the command
   for (const operator of redirectionOperators) {
-    const regex = new RegExp(`\\s+(${escapeRegExp(operator)})\\s+([^\\s]+)`, 'g')
+    const regex = new RegExp(String.raw`\s+(${escapeRegExp(operator)})\s+([^\s]+)`, 'g')
     let match = regex.exec(remainingCommand)
 
     while (match !== null) {
