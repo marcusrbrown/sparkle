@@ -22,7 +22,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "type-fest": "^4.10.2"
+    "type-fest": "^5.0.0"
   },
   "devDependencies": {
     "@types/node": "24.10.1",
