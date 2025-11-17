@@ -53,7 +53,7 @@
     "@astrojs/check": "0.9.5",
     "@astrojs/mdx": "4.3.10",
     "@astrojs/react": "4.4.2",
-    "@astrojs/starlight": "^0.35.2",
+    "@astrojs/starlight": "^0.36.0",
     "@monaco-editor/react": "4.7.0",
     "@sparkle/theme": "workspace:*",
     "@sparkle/types": "workspace:*",
