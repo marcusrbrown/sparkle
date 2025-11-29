@@ -201,8 +201,6 @@ function batchProcessText(texts: string[]): { original: string; processed: strin
 
 #### Content Management Patterns
 
-<!-- eslint-disable @typescript-eslint/no-extraneous-class -->
-
 ```typescript
 import { slugify, toTitleCase, truncate } from '@sparkle/utils'
 

@@ -53,7 +53,7 @@ tokens.spacing.xl.value        // '2rem'
 
 Type scale and font definitions:
 
-<!-- eslint-disable -->
+ 
 
 ```typescript
 // Font sizes

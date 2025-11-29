@@ -1019,15 +1019,15 @@ class WasmError extends Error {
 
 #### `FileSystemError`
 
-<!-- eslint-disable -->
+ 
 
 ```typescript
 class FileSystemError extends Error {
   constructor(
     message: string,
-    public readonly path: string,
-    public readonly operation: string,
-    public readonly cause?: Error
+    readonly path: string,
+    readonly operation: string,
+    readonly cause?: Error
   ) {
     super(message)
     this.name = 'FileSystemError'

@@ -3,8 +3,6 @@ title: Advanced Customization
 description: Advanced patterns for customizing and extending Sparkle's theme system, including enterprise-level theme management.
 ---
 
-<!-- eslint-disable @typescript-eslint/no-unused-expressions -->
-
 ## Overview
 
 This guide covers advanced customization patterns for Sparkle's theme system, including enterprise-level theme management, custom token transformers, theme validation strategies, and migration approaches.
