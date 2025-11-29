@@ -13,8 +13,6 @@ Sparkle's design token system follows the [Design Tokens Community Group specifi
 
 Color tokens use a numeric scale from 50 (lightest) to 950 (darkest) for consistent color progression:
 
-<!-- eslint-disable @typescript-eslint/no-unused-expressions -->
-
 ```typescript
 // Primary brand colors
 tokens.colors.primary[500]  // Main brand color: '#3b82f6'
@@ -36,8 +34,6 @@ tokens.colors.info[500]       // Info blue: '#06b6d4'
 
 Consistent spacing scale for layouts and components:
 
-<!-- eslint-disable @typescript-eslint/no-unused-expressions -->
-
 ```typescript
 // Spacing tokens
 tokens.spacing.xs     // 0.25rem (4px)
@@ -52,8 +48,6 @@ tokens.spacing['3xl'] // 3rem (48px)
 #### Typography
 
 Font families, sizes, weights, and line heights:
-
-<!-- eslint-disable @typescript-eslint/no-unused-expressions -->
 
 ```typescript
 // Font families
@@ -78,8 +72,6 @@ tokens.typography.fontWeight.bold     // 700
 
 Consistent border radius values for rounded corners:
 
-<!-- eslint-disable @typescript-eslint/no-unused-expressions -->
-
 ```typescript
 // Border radius tokens
 tokens.borderRadius.none     // 0
@@ -93,8 +85,6 @@ tokens.borderRadius.full     // 9999px (circular)
 #### Shadows
 
 Elevation and depth with consistent shadow system:
-
-<!-- eslint-disable @typescript-eslint/no-unused-expressions -->
 
 ```typescript
 // Shadow tokens
@@ -154,8 +144,6 @@ function MyComponent() {
 ### Light and Dark Themes
 
 Sparkle provides built-in light and dark theme variants:
-
-<!-- eslint-disable @typescript-eslint/no-unused-expressions -->
 
 ```typescript
 // Light theme values

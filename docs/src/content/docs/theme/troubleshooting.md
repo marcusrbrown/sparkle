@@ -3,8 +3,6 @@ title: Troubleshooting & Best Practices
 description: Common issues, debugging strategies, performance optimization, and development best practices for Sparkle's theme system.
 ---
 
-<!-- eslint-disable @typescript-eslint/no-unused-expressions -->
-
 ## Overview
 
 This guide covers common issues you might encounter with Sparkle's theme system, debugging strategies, performance optimization techniques, and development best practices.
@@ -99,8 +97,6 @@ const {theme} = useTheme()
 #### Issue: Platform-specific provider errors
 
 **React Native: "undefined is not an object"**
-
-<!-- eslint-disable import-x/no-duplicates, no-duplicate-imports -->
 
 ```tsx
 // ❌ Bad: Using web ThemeProvider in React Native
@@ -364,17 +360,15 @@ const efficientTokens = {
 
 #### Cache Strategy
 
-<!-- eslint-disable import-x/first -->
-
 ```typescript
 // Create singleton transformer instance
+// Use memoization for expensive operations
+import {useMemo} from 'react'
+
 export const globalTransformer = new TokenTransformer({
   enableCache: true,
   maxCacheSize: 50, // Reasonable cache size
 })
-
-// Use memoization for expensive operations
-import {useMemo} from 'react'
 
 function useTransformedTokens(tokens: ThemeConfig) {
   return useMemo(() => {
