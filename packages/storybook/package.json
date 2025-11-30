@@ -35,7 +35,7 @@
     "@storybook/addon-onboarding": "^9.0.0",
     "@storybook/addon-viewport": "9.0.8",
     "@storybook/react-vite": "^9.0.0",
-    "@storybook/test-runner": "0.24.1",
+    "@storybook/test-runner": "0.24.2",
     "@tailwindcss/vite": "^4.0.6",
     "@types/react": "~19.2.0",
     "@types/react-dom": "19.2.3",
