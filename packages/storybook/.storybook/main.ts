@@ -1,24 +1,18 @@
 import type {StorybookConfig} from '@storybook/react-vite'
-import {dirname, join} from 'node:path'
 import {mergeConfig} from 'vite'
 
 const config: StorybookConfig = {
   stories: ['../src/**/*.stories.@(js|jsx|ts|tsx)'],
 
-  addons: [
-    getAbsolutePath('@storybook/addon-links'),
-    getAbsolutePath('@storybook/addon-onboarding'),
-    getAbsolutePath('@storybook/addon-docs'),
-    getAbsolutePath('@storybook/addon-a11y'),
-  ],
+  addons: ['@storybook/addon-links', '@storybook/addon-onboarding', '@storybook/addon-docs', '@storybook/addon-a11y'],
 
   framework: {
-    name: getAbsolutePath('@storybook/react-vite'),
+    name: '@storybook/react-vite',
     options: {},
   },
 
   core: {
-    builder: getAbsolutePath('@storybook/builder-vite'),
+    builder: '@storybook/builder-vite',
     disableTelemetry: true,
   },
 
@@ -35,12 +29,3 @@ const config: StorybookConfig = {
 }
 
 export default config
-
-/**
- * Get absolute path to addon package directory
- * @param value - Package name (e.g., '@storybook/addon-links')
- * @returns Absolute path to the package directory
- */
-function getAbsolutePath(value: string): string {
-  return dirname(require.resolve(join(value, 'package.json')))
-}
