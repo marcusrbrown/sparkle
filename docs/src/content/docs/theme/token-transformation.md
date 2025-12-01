@@ -3,8 +3,6 @@ title: Token Transformation
 description: Learn how to transform design tokens between web and React Native platforms using the TokenTransformer.
 ---
 
-<!-- eslint-disable @typescript-eslint/no-unused-expressions -->
-
 ## Overview
 
 The `TokenTransformer` is a core component of Sparkle's theme system that enables cross-platform token transformation. It converts design tokens between web format (CSS custom properties) and React Native format (StyleSheet values) while maintaining type safety and performance through intelligent caching.
@@ -234,11 +232,8 @@ const customTheme = tokenUtils.mergeThemes(lightTokens, {
 
 ### Web Component Integration
 
-<!-- eslint-disable -->
-
 ```tsx
-import {useTheme} from '@sparkle/theme'
-import {TokenTransformer} from '@sparkle/theme'
+import {TokenTransformer, useTheme} from '@sparkle/theme'
 
 function ThemedButton({children}: {children: React.ReactNode}) {
   const {theme} = useTheme()
@@ -262,12 +257,10 @@ function ThemedButton({children}: {children: React.ReactNode}) {
 
 ### React Native Component Integration
 
-<!-- eslint-disable -->
-
 ```tsx
-import {StyleSheet, Text, TouchableOpacity} from 'react-native'
-
 import {TokenTransformer, useTheme} from '@sparkle/theme'
+
+import {StyleSheet, Text, TouchableOpacity} from 'react-native'
 
 function ThemedButton({children}: {children: string}) {
   const {theme} = useTheme()
@@ -300,8 +293,6 @@ function ThemedButton({children}: {children: string}) {
 
 The `TokenTransformer` is used internally by theme providers but can also be used directly:
 
-<!-- eslint-disable -->
-
 ```tsx
 // Web - CSS variables are automatically injected
 import {ThemeProvider} from '@sparkle/theme'
@@ -313,6 +304,11 @@ function App() {
     </ThemeProvider>
   )
 }
+```
+
+```tsx
+// React Native - Use transformer to convert tokens as needed
+import {NativeThemeProvider} from '@sparkle/theme'
 
 // React Native - Use transformer to convert tokens as needed
 import {NativeThemeProvider} from '@sparkle/theme'
