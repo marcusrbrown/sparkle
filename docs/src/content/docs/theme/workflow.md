@@ -3,8 +3,6 @@ title: Theme System Workflow
 description: Complete guide to the end-to-end workflow from token definition to component usage in Sparkle's theme system.
 ---
 
-<!-- eslint-disable @typescript-eslint/no-unused-expressions -->
-
 ## Overview
 
 This guide walks through the complete workflow of Sparkle's theme system, from initial token definition to final component implementation. Understanding this workflow will help you effectively use and extend the theme system for your applications.
@@ -330,10 +328,8 @@ Tokens are automatically transformed to platform-appropriate formats:
 
 **React Native (StyleSheet Values):**
 
-<!-- eslint-disable @typescript-eslint/consistent-type-definitions -->
-
 ```typescript
-type StyleSheetTokens = {
+interface StyleSheetTokens {
   colorPrimary500: '#0ea5e9',
   spacingMd: 16,
   fontSizeBase: 16,
