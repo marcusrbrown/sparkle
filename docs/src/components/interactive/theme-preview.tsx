@@ -65,7 +65,7 @@ export function ThemePreview({
           )}
         </div>
       )}
-      <div className={`theme-preview-content`} data-theme={theme}>
+      <div className="theme-preview-content" data-theme={theme}>
         {children}
       </div>
     </div>

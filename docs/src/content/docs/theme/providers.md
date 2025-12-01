@@ -3,9 +3,6 @@ title: Theme Providers
 description: Learn how to use ThemeProvider and NativeThemeProvider to manage themes across web and React Native applications.
 ---
 
-<!-- eslint-disable @typescript-eslint/no-unused-expressions -->
-<!-- eslint-disable no-duplicate-imports -->
-
 ## Overview
 
 Sparkle provides two specialized theme providers to manage theme state and make design tokens available throughout your application:
@@ -156,8 +153,6 @@ Use these variables directly in your CSS:
 ### Server-Side Rendering (SSR)
 
 The `ThemeProvider` handles SSR scenarios gracefully:
-
-<!-- eslint-disable @typescript-eslint/naming-convention -->
 
 ```tsx
 // Next.js example
@@ -558,8 +553,6 @@ function NativeApp() {
 ## Best Practices
 
 ### 1. Use Appropriate Provider for Platform
-
-<!-- eslint-disable import-x/no-duplicates, no-duplicate-imports -->
 
 ```typescript
 // ✅ Good - Use platform-specific providers

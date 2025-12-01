@@ -540,8 +540,6 @@ zig build --verbose
 3. Add logging to worker message handlers
 4. Test worker isolation by running commands directly
 
-<!-- eslint-disable no-restricted-globals,unicorn/prefer-add-event-listener -->
-
 ```typescript
 // Add debugging to worker communication
 self.onmessage = (event) => {
