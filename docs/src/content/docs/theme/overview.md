@@ -21,8 +21,6 @@ Sparkle's theme system is built around design tokens - a unified approach to man
 
 Semantic color tokens for consistent branding:
 
-<!-- eslint-disable -->
-
 ```typescript
 // Primary brand colors
 tokens.color.primary.value     // '#3b82f6'
@@ -38,8 +36,6 @@ tokens.color.error.value       // '#ef4444'
 
 Consistent spacing scale for layouts:
 
-<!-- eslint-disable -->
-
 ```typescript
 // Spacing scale
 tokens.spacing.xs.value        // '0.25rem'
@@ -52,8 +48,6 @@ tokens.spacing.xl.value        // '2rem'
 ### Typography
 
 Type scale and font definitions:
-
-<!-- eslint-disable -->
 
 ```typescript
 // Font sizes

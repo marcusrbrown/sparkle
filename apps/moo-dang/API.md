@@ -798,8 +798,6 @@ interface ShellWorkerResponse {
 
 ### Usage Example
 
-<!-- eslint-disable -->
-
 ```typescript
 // Create worker
 const worker = new Worker('/shell.worker.js')
@@ -985,14 +983,12 @@ interface TerminalTheme {
 
 #### `ShellError`
 
-<!-- eslint-disable -->
-
 ```typescript
 class ShellError extends Error {
   constructor(
     message: string,
     public readonly code: string,
-    public readonly exitCode: number = 1
+    public readonly exitCode = 1
   ) {
     super(message)
     this.name = 'ShellError'
@@ -1001,8 +997,6 @@ class ShellError extends Error {
 ```
 
 #### `WasmError`
-
-<!-- eslint-disable -->
 
 ```typescript
 class WasmError extends Error {
@@ -1018,8 +1012,6 @@ class WasmError extends Error {
 ```
 
 #### `FileSystemError`
-
-<!-- eslint-disable -->
 
 ```typescript
 class FileSystemError extends Error {

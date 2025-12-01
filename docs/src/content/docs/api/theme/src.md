@@ -1159,7 +1159,7 @@ Base theme configuration
 
 ###### overrideTheme
 
-`ThemeConfig`
+`Partial`\<`ThemeConfig`\>
 
 Theme configuration to merge on top
 
