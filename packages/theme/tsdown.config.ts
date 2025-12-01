@@ -4,6 +4,12 @@ export default defineConfig({
   entry: ['./src/index.ts', './src/tailwind/index.ts', './src/react-native/index.ts'],
   outDir: 'dist',
   format: ['esm', 'cjs'],
+  outExtensions: ctx => {
+    if (ctx.format === 'cjs') {
+      return {js: '.cjs', dts: '.d.cts'}
+    }
+    return {js: '.js', dts: '.d.ts'}
+  },
   dts: {
     sourcemap: true,
   },
