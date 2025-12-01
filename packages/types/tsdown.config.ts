@@ -4,6 +4,10 @@ export default defineConfig({
   entry: ['./src/index.ts'],
   outDir: 'dist',
   format: ['esm'],
+  outExtensions: () => ({
+    js: '.js',
+    dts: '.d.ts',
+  }),
   dts: {
     sourcemap: true,
   },

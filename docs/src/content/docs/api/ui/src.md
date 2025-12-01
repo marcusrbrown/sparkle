@@ -323,7 +323,7 @@ across light/dark modes and supports validation states with semantic colors.
 
 ### createComponent()
 
-> **createComponent**\<`Props`, `DefaultElement`\>(`render`, `defaultElement`): (`props`) => `null` \| `ReactElement`\<`unknown`, `string` \| `JSXElementConstructor`\<`any`\>\> & `object`
+> **createComponent**\<`Props`, `DefaultElement`\>(`render`, `defaultElement`): (`props`) => `ReactElement`\<`unknown`, `string` \| `JSXElementConstructor`\<`any`\>\> \| `null` & `object`
 
 Creates a type-safe component factory
 
@@ -341,7 +341,7 @@ Creates a type-safe component factory
 
 ##### render
 
-(`props`) => `null` \| `ReactElement`\<`unknown`, `string` \| `JSXElementConstructor`\<`any`\>\>
+(`props`) => `ReactElement`\<`unknown`, `string` \| `JSXElementConstructor`\<`any`\>\> \| `null`
 
 ##### defaultElement
 
@@ -349,7 +349,7 @@ Creates a type-safe component factory
 
 #### Returns
 
-(`props`) => `null` \| `ReactElement`\<`unknown`, `string` \| `JSXElementConstructor`\<`any`\>\> & `object`
+(`props`) => `ReactElement`\<`unknown`, `string` \| `JSXElementConstructor`\<`any`\>\> \| `null` & `object`
 
 ***
 
@@ -363,7 +363,7 @@ Combines multiple class names into a single string
 
 ##### args
 
-...(`undefined` \| `null` \| `string` \| `false` \| `Record`\<`string`, `boolean`\>)[]
+...(`string` \| `false` \| `Record`\<`string`, `boolean`\> \| `null` \| `undefined`)[]
 
 #### Returns
 

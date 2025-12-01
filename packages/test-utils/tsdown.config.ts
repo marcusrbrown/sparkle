@@ -11,6 +11,10 @@ export default defineConfig({
   ],
   outDir: 'dist',
   format: ['esm'],
+  outExtensions: () => ({
+    js: '.js',
+    dts: '.d.ts',
+  }),
   dts: true,
   clean: true,
 })

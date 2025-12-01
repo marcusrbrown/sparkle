@@ -109,7 +109,7 @@ The truncated string
 
 ### useAsync()
 
-> **useAsync**\<`T`\>(`asyncFn`): \[`boolean`, `null` \| `Error`, (...`args`) => `Promise`\<`ReturnType`\<`T`\>\>\]
+> **useAsync**\<`T`\>(`asyncFn`): \[`boolean`, `Error` \| `null`, (...`args`) => `Promise`\<`ReturnType`\<`T`\>\>\]
 
 Custom hook for handling async operations safely
 
@@ -129,7 +129,7 @@ The async function to execute
 
 #### Returns
 
-\[`boolean`, `null` \| `Error`, (...`args`) => `Promise`\<`ReturnType`\<`T`\>\>\]
+\[`boolean`, `Error` \| `null`, (...`args`) => `Promise`\<`ReturnType`\<`T`\>\>\]
 
 Tuple containing loading state, error state, and memoized callback
 
@@ -137,7 +137,7 @@ Tuple containing loading state, error state, and memoized callback
 
 ### useClickOutside()
 
-> **useClickOutside**\<`T`\>(`handler`): `RefObject`\<`null` \| `T`\>
+> **useClickOutside**\<`T`\>(`handler`): `RefObject`\<`T` \| `null`\>
 
 Custom hook for handling click outside events
 
@@ -157,7 +157,7 @@ The callback to execute when clicking outside
 
 #### Returns
 
-`RefObject`\<`null` \| `T`\>
+`RefObject`\<`T` \| `null`\>
 
 Ref to attach to the element
 

@@ -302,7 +302,7 @@ Currently selected theme mode (user preference)
 
 ##### error
 
-> **error**: `null` \| `Error`
+> **error**: `Error` \| `null`
 
 Error state if theme loading or validation fails
 
@@ -801,7 +801,7 @@ Promise resolving to true if AsyncStorage is supported and accessible
 
 ##### load()
 
-> **load**(`storageKey`): `Promise`\<`null` \| [`ThemeMode`](#thememode)\>
+> **load**(`storageKey`): `Promise`\<[`ThemeMode`](#thememode) \| `null`\>
 
 Loads theme preference from AsyncStorage
 
@@ -815,7 +815,7 @@ The key to use for AsyncStorage
 
 ###### Returns
 
-`Promise`\<`null` \| [`ThemeMode`](#thememode)\>
+`Promise`\<[`ThemeMode`](#thememode) \| `null`\>
 
 Promise resolving to the stored theme mode or null if not found
 
@@ -928,7 +928,7 @@ Promise<boolean> indicating success of migration
 
 ### ThemeContext
 
-> `const` **ThemeContext**: `Context`\<`null` \| [`ThemeContextValue`](#themecontextvalue)\>
+> `const` **ThemeContext**: `Context`\<[`ThemeContextValue`](#themecontextvalue) \| `null`\>
 
 React Context for theme management across the application
 
@@ -977,7 +977,7 @@ boolean or Promise<boolean> depending on platform
 
 ##### load()
 
-> **load**(`storageKey?`): `null` \| [`ThemeMode`](#thememode) \| `Promise`\<ThemeMode \| null\>
+> **load**(`storageKey?`): [`ThemeMode`](#thememode) \| `Promise`\<ThemeMode \| null\> \| `null`
 
 Loads theme preference from appropriate storage
 
@@ -991,7 +991,7 @@ The key to use for storage
 
 ###### Returns
 
-`null` \| [`ThemeMode`](#thememode) \| `Promise`\<ThemeMode \| null\>
+[`ThemeMode`](#thememode) \| `Promise`\<ThemeMode \| null\> \| `null`
 
 Theme mode or Promise<ThemeMode> depending on platform
 
@@ -1079,7 +1079,7 @@ Array of differences found
 
 ##### extractColorPalette()
 
-> **extractColorPalette**(`theme`, `colorKey`): `undefined` \| `Record`\<`string` \| `number`, `string`\>
+> **extractColorPalette**(`theme`, `colorKey`): `Record`\<`string` \| `number`, `string`\> \| `undefined`
 
 Extract specific color palette from theme
 
@@ -1099,7 +1099,7 @@ Color key to extract (e.g., 'primary', 'neutral')
 
 ###### Returns
 
-`undefined` \| `Record`\<`string` \| `number`, `string`\>
+`Record`\<`string` \| `number`, `string`\> \| `undefined`
 
 Color scale object
 
@@ -1159,7 +1159,7 @@ Base theme configuration
 
 ###### overrideTheme
 
-`Partial`\<`ThemeConfig`\>
+`ThemeConfig`
 
 Theme configuration to merge on top
 
@@ -1193,7 +1193,7 @@ true if localStorage is supported and accessible
 
 ##### load()
 
-> **load**(`storageKey`): `null` \| [`ThemeMode`](#thememode)
+> **load**(`storageKey`): [`ThemeMode`](#thememode) \| `null`
 
 Loads theme preference from localStorage
 
@@ -1207,7 +1207,7 @@ The key to use for localStorage
 
 ###### Returns
 
-`null` \| [`ThemeMode`](#thememode)
+[`ThemeMode`](#thememode) \| `null`
 
 The stored theme mode or null if not found
 
