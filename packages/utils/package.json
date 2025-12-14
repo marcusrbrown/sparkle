@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@sparkle/types": "workspace:*",
-    "react": "19.2.2"
+    "react": "19.2.3"
   },
   "devDependencies": {
     "@types/react": "~19.2.0"
