@@ -12,8 +12,8 @@ importers:
   .:
     devDependencies:
       '@axe-core/cli':
-        specifier: 4.11.0
-        version: 4.11.0
+        specifier: 4.11.1
+        version: 4.11.1
       '@bfra.me/eslint-config':
         specifier: 0.47.7
         version: 0.47.7(@typescript-eslint/eslint-plugin@8.51.0(@typescript-eslint/parser@8.51.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(@typescript-eslint/utils@8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(chokidar@5.0.0)(eslint-config-prettier@10.1.8(eslint@9.39.2(jiti@2.6.1)))(eslint-plugin-prettier@5.5.5(eslint-config-prettier@10.1.8(eslint@9.39.2(jiti@2.6.1)))(eslint@9.39.2(jiti@2.6.1))(prettier@3.8.1))(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
@@ -282,8 +282,8 @@ importers:
         version: 3.22.0
     devDependencies:
       '@axe-core/cli':
-        specifier: 4.11.0
-        version: 4.11.0
+        specifier: 4.11.1
+        version: 4.11.1
       '@axe-core/playwright':
         specifier: 4.11.0
         version: 4.11.0(playwright-core@1.58.1)
@@ -700,8 +700,8 @@ packages:
   '@astrojs/yaml2ts@0.2.2':
     resolution: {integrity: sha512-GOfvSr5Nqy2z5XiwqTouBBpy5FyI6DEe+/g/Mk5am9SjILN1S5fOEvYK0GuWHg98yS/dobP4m8qyqw/URW35fQ==}
 
-  '@axe-core/cli@4.11.0':
-    resolution: {integrity: sha512-FBzR/+m63FXWMnbrDm2iMccvsWd56wsUB6wk/AUy0Qr9TXF5GXCRDO6KPeymJ8cgsMHBTL5bjFVVXGWhRyTJEQ==}
+  '@axe-core/cli@4.11.1':
+    resolution: {integrity: sha512-xC7doMReoy7QnQ18azdpIZHoYL1HcG5c5wvEcCpm5kWny520RGTRrBcnAZENaQ9nTQAkE7fXZFK4Z1cfBDTBFg==}
     engines: {node: '>=8'}
     hasBin: true
 
@@ -710,8 +710,8 @@ packages:
     peerDependencies:
       playwright-core: '>= 1.0.0'
 
-  '@axe-core/webdriverjs@4.11.0':
-    resolution: {integrity: sha512-Qt9DWcCQIPU9TMfCQnibFn0JDuvoSzfGs4nZM7LJeae/i3bpZ5qqLjc94U09BUneYQjTicfwHlKTcr9mmAb2cg==}
+  '@axe-core/webdriverjs@4.11.1':
+    resolution: {integrity: sha512-UVq7uBsqaQlHj7PQPg+WhE0nV6ccYtE0cnGglStS5RE3RAB+gQcb30R1k3usI+Q/xyROSJHhusOus4BzqrlZ1w==}
     peerDependencies:
       selenium-webdriver: '>3.0.0-beta  || >=2.53.1 || >4.0.0-alpha'
 
@@ -8575,8 +8575,8 @@ packages:
     resolution: {integrity: sha512-3A6sD0WYP7+QrjbfNA2FN3FsOaGGFoekCVgTyypy53gPxhbkCIjtO6YWgdrfM+n/8sI8JeXZOIxsHjMTNxQ4nQ==}
     engines: {node: ^14.0.0 || >=16.0.0}
 
-  selenium-webdriver@4.35.0:
-    resolution: {integrity: sha512-Baaeiuyu7BIIsSYf0SI7Mi55gsNmdI00KM0Hcofw1RnAY+0QEVpdh5yAxueDxgTZS8vcbGZFU0NJ6Qc1riIrLg==}
+  selenium-webdriver@4.39.0:
+    resolution: {integrity: sha512-NAs9jCU+UeZ/ZmRb8R6zOp7N8eMklefdBYASnaRmCNXdgFE8w3OCxxZmLixkwqnGDHY5VF7hCulfw1Mls43N/A==}
     engines: {node: '>= 20.0.0'}
 
   sembear@0.7.0:
@@ -10241,15 +10241,15 @@ snapshots:
     dependencies:
       yaml: 2.8.2
 
-  '@axe-core/cli@4.11.0':
+  '@axe-core/cli@4.11.1':
     dependencies:
-      '@axe-core/webdriverjs': 4.11.0(selenium-webdriver@4.35.0)
+      '@axe-core/webdriverjs': 4.11.1(selenium-webdriver@4.39.0)
       axe-core: 4.11.1
       chromedriver: 145.0.1
       colors: 1.4.0
       commander: 9.5.0
       dotenv: 17.2.3
-      selenium-webdriver: 4.35.0
+      selenium-webdriver: 4.39.0
     transitivePeerDependencies:
       - bufferutil
       - debug
@@ -10261,10 +10261,10 @@ snapshots:
       axe-core: 4.11.1
       playwright-core: 1.58.1
 
-  '@axe-core/webdriverjs@4.11.0(selenium-webdriver@4.35.0)':
+  '@axe-core/webdriverjs@4.11.1(selenium-webdriver@4.39.0)':
     dependencies:
       axe-core: 4.11.1
-      selenium-webdriver: 4.35.0
+      selenium-webdriver: 4.39.0
 
   '@babel/code-frame@7.10.4':
     dependencies:
@@ -19901,7 +19901,7 @@ snapshots:
       refa: 0.12.1
       regexp-ast-analysis: 0.7.1
 
-  selenium-webdriver@4.35.0:
+  selenium-webdriver@4.39.0:
     dependencies:
       '@bazel/runfiles': 6.5.0
       jszip: 3.10.1
