@@ -69,7 +69,7 @@
   },
   "devDependencies": {
     "@axe-core/cli": "4.11.1",
-    "@axe-core/playwright": "4.11.0",
+    "@axe-core/playwright": "4.11.1",
     "@microsoft/api-extractor": "7.56.0",
     "@types/node": "24.10.9",
     "@types/react": "~19.2.0",
