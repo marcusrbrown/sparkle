@@ -68,10 +68,10 @@
     "turbo": "2.8.7",
     "typescript": "5.9.3"
   },
-  "packageManager": "pnpm@10.28.1",
+  "packageManager": "pnpm@10.28.2",
   "engines": {
     "node": ">=22.13.1",
-    "pnpm": ">=9.15.4"
+    "pnpm": ">=10.28.2"
   },
   "publishConfig": {
     "linkDirectory": true
