@@ -15,7 +15,6 @@ import type {ShellWorkerRequest} from './shell/types'
 
 import {ThemeProvider} from '@sparkle/theme'
 import {act, fireEvent, render, screen, waitFor} from '@testing-library/react'
-
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest'
 
 import App from './App'

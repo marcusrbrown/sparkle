@@ -148,7 +148,6 @@ Replace old theme imports with new ones:
 import { darkTokens, lightTokens, ThemeProvider, useTheme } from '@sparkle/theme'
 // Before
 import { theme, ThemeProvider } from '@sparkle/ui'
-
 import { useTheme } from '@sparkle/ui/hooks'
 ```
 

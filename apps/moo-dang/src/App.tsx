@@ -1,7 +1,6 @@
 import type {ReactElement} from 'react'
 import type {ShellWorkerRequest, ShellWorkerResponse} from './shell/types'
 import {ThemeProvider} from '@sparkle/theme'
-
 import {consola} from 'consola'
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react'
 import {
@@ -11,7 +10,6 @@ import {
   ScreenReaderHelper,
   type CommandTerminalHandle,
 } from './components'
-
 // Import worker using Vite's query suffix method
 import ShellWorker from './workers/shell.worker?worker'
 

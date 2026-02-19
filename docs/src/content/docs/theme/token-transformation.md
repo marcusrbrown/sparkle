@@ -259,7 +259,6 @@ function ThemedButton({children}: {children: React.ReactNode}) {
 
 ```tsx
 import {TokenTransformer, useTheme} from '@sparkle/theme'
-
 import {StyleSheet, Text, TouchableOpacity} from 'react-native'
 
 function ThemedButton({children}: {children: string}) {
@@ -309,7 +308,6 @@ function App() {
 ```tsx
 // React Native - Use transformer to convert tokens as needed
 import {NativeThemeProvider} from '@sparkle/theme'
-
 // React Native - Use transformer to convert tokens as needed
 import {NativeThemeProvider} from '@sparkle/theme'
 
@@ -337,7 +335,6 @@ export {globalTransformer as transformer}
 
 ```typescript
 import {TokenTransformer, useTheme} from '@sparkle/theme'
-
 import {useMemo} from 'react'
 
 function useNativeTokens() {

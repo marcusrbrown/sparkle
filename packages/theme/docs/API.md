@@ -740,7 +740,6 @@ function ErrorBoundaryWithTheme({ children }) {
 ```tsx
 // Good: Selective imports
 import { useTheme } from '@sparkle/theme'
-
 // Better: Tree-shakeable imports
 import { useTheme } from '@sparkle/theme/hooks'
 

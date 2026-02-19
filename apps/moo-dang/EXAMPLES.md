@@ -703,9 +703,9 @@ chmod +x monitor.sh
 Example of integrating moo-dang terminal into a React application:
 
 ```tsx
-import {Terminal} from '@/components/Terminal'
 // Terminal integration component
 import {useEffect, useRef, useState} from 'react'
+import {Terminal} from '@/components/Terminal'
 
 interface ShellIntegrationProps {
   onCommandExecuted?: (command: string, result: string) => void

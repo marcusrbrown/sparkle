@@ -101,7 +101,6 @@ const {theme} = useTheme()
 ```tsx
 // ❌ Bad: Using web ThemeProvider in React Native
 import {ThemeProvider} from '@sparkle/theme'
-
 // ✅ Good: Use platform-specific provider
 import {NativeThemeProvider} from '@sparkle/theme'
 
@@ -447,7 +446,6 @@ function useTokens() {
 ```typescript
 // ❌ Bad: Imports entire theme package
 import * as theme from '@sparkle/theme'
-
 // ✅ Good: Import only what you need
 import {TokenTransformer} from '@sparkle/theme'
 import {useTheme} from '@sparkle/theme/hooks'
