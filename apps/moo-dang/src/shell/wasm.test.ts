@@ -7,7 +7,6 @@
  */
 
 import type {ExecutionContext} from '../shell/types'
-
 import type {WasmModuleLoader} from '../shell/wasm-types'
 import {suppressConsola} from '@sparkle/test-utils/console'
 import {consola} from 'consola'

@@ -100,7 +100,6 @@ Import from specific subpaths to enable better tree-shaking:
 ```typescript
 // ❌ Avoid - importing everything
 import { capitalize } from '@sparkle/utils'
-
 // ✅ Good - specific import
 import { capitalize } from '@sparkle/utils/string'
 ```

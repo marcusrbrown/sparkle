@@ -3,9 +3,9 @@
  * https://docs.expo.io/guides/color-schemes/
  */
 
-import Colors from '@/constants/Colors'
-
 import {Text as DefaultText, View as DefaultView} from 'react-native'
+
+import Colors from '@/constants/Colors'
 import {useColorScheme} from './use-color-scheme'
 
 interface ThemeProps {

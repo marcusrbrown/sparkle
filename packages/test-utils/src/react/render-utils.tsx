@@ -1,5 +1,4 @@
 import type {ThemeConfig} from '@sparkle/types'
-
 import type {ReactElement} from 'react'
 
 import {ThemeProvider} from '@sparkle/theme'

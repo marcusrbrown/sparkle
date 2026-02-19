@@ -750,8 +750,8 @@ interface CommandTerminalProps extends TerminalProps {
 Convert Sparkle theme to xterm.js theme format.
 
 ```tsx
-import {convertTheme} from '@/components/theme-utils'
 import {useTheme} from '@sparkle/theme'
+import {convertTheme} from '@/components/theme-utils'
 
 function TerminalWrapper() {
   const {theme} = useTheme()

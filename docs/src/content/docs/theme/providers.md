@@ -558,7 +558,6 @@ function NativeApp() {
 // ✅ Good - Use platform-specific providers
 // Web
 import {ThemeProvider} from '@sparkle/theme'
-
 // React Native
 import {NativeThemeProvider} from '@sparkle/theme'
 

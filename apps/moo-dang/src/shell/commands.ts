@@ -16,7 +16,6 @@ import {COMMAND_HELP_REGISTRY} from './command-help'
 import {createConfigManager} from './config-manager'
 import {createHelpSystem} from './help-system'
 import {createHistoryManager} from './history-manager'
-
 import {createShellScriptExecutor} from './script-executor'
 import {createShellScriptParser} from './script-parser'
 

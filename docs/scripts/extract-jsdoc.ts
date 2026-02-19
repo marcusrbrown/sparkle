@@ -3,7 +3,6 @@ import {dirname, join, relative} from 'node:path'
 import process from 'node:process'
 import {fileURLToPath} from 'node:url'
 import {consola} from 'consola'
-
 import {parse as parseJSDoc, type Annotation} from 'doctrine'
 import {Project, SyntaxKind, type FunctionDeclaration, type VariableDeclaration} from 'ts-morph'
 
