@@ -4705,8 +4705,8 @@ packages:
     engines: {node: '>=12.13.0'}
     hasBin: true
 
-  chromedriver@145.0.6:
-    resolution: {integrity: sha512-qobFdfjk7G7U9GKB6RYGBuqQ8L0QG1M30p90sNIWLKdpeobhsedfBhVxRqT4m/nWAtM0PhNb9GDD9qzDwSSGlA==}
+  chromedriver@146.0.0:
+    resolution: {integrity: sha512-fDAbuEy+Dn9F/h8fphiQIUEyUDOTGlfjZHfI9dJZz75+ui/LIHqWzStQt87vpwA9oV3ut4C2W3flfvbn3KELFQ==}
     engines: {node: '>=20'}
     hasBin: true
 
@@ -10296,7 +10296,7 @@ snapshots:
     dependencies:
       '@axe-core/webdriverjs': 4.11.1(selenium-webdriver@4.39.0)
       axe-core: 4.11.1
-      chromedriver: 145.0.6
+      chromedriver: 146.0.0
       colors: 1.4.0
       commander: 9.5.0
       dotenv: 17.3.1
@@ -14915,7 +14915,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  chromedriver@145.0.6:
+  chromedriver@146.0.0:
     dependencies:
       '@testim/chrome-version': 1.1.4
       axios: 1.13.5
