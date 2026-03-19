@@ -50,7 +50,7 @@
     "theme:generate": "tsx scripts/generate-theme-css.ts >| src/styles/sparkle-theme.css"
   },
   "dependencies": {
-    "@astrojs/check": "0.9.7",
+    "@astrojs/check": "0.9.8",
     "@astrojs/mdx": "4.3.14",
     "@astrojs/react": "4.4.2",
     "@astrojs/starlight": "^0.36.0",
