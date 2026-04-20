@@ -50,7 +50,7 @@
     "@bfra.me/eslint-config": "0.51.0",
     "@bfra.me/prettier-config": "0.16.8",
     "@bfra.me/tsconfig": "0.13.0",
-    "@changesets/cli": "2.30.0",
+    "@changesets/cli": "2.31.0",
     "@lhci/cli": "0.15.1",
     "@manypkg/cli": "0.25.1",
     "@types/node": "24.12.2",
