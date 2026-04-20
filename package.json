@@ -46,7 +46,7 @@
   },
   "prettier": "@bfra.me/prettier-config/120-proof",
   "devDependencies": {
-    "@axe-core/cli": "4.11.1",
+    "@axe-core/cli": "4.11.2",
     "@bfra.me/eslint-config": "0.51.0",
     "@bfra.me/prettier-config": "0.16.8",
     "@bfra.me/tsconfig": "0.13.0",
