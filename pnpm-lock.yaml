@@ -21,8 +21,8 @@ importers:
         specifier: 0.16.9
         version: 0.16.9(prettier@3.8.3)
       '@bfra.me/tsconfig':
-        specifier: 0.13.0
-        version: 0.13.0
+        specifier: 0.13.1
+        version: 0.13.1
       '@changesets/cli':
         specifier: 2.31.0
         version: 2.31.0(@types/node@24.12.4)
@@ -1271,8 +1271,8 @@ packages:
     peerDependencies:
       prettier: ^3.0.0
 
-  '@bfra.me/tsconfig@0.13.0':
-    resolution: {integrity: sha512-OxM0MSVis41XffI2K3Ydmc1SS9oV+Viad6i3Kp/fiqpGwf/qKr0cKca9ScJxqYtNTwBs6rD20a8nUzvZTljDKg==}
+  '@bfra.me/tsconfig@0.13.1':
+    resolution: {integrity: sha512-GyMAvOLBFtxbUjZru5VMoIXY21HTPYZcI5jKm3c1gojEx7Hss1nyGth3pd2t4v4pIQBAlJQASe9o0C8rnFa0VA==}
 
   '@capsizecss/unpack@4.0.0':
     resolution: {integrity: sha512-VERIM64vtTP1C4mxQ5thVT9fK0apjPFobqybMtA1UdUujWka24ERHbRHFGmpbbhp73MhV+KSsHQH9C6uOTdEQA==}
@@ -11141,7 +11141,7 @@ snapshots:
     dependencies:
       prettier: 3.8.3
 
-  '@bfra.me/tsconfig@0.13.0': {}
+  '@bfra.me/tsconfig@0.13.1': {}
 
   '@capsizecss/unpack@4.0.0':
     dependencies:

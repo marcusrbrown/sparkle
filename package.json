@@ -49,7 +49,7 @@
     "@axe-core/cli": "4.11.3",
     "@bfra.me/eslint-config": "0.51.1",
     "@bfra.me/prettier-config": "0.16.9",
-    "@bfra.me/tsconfig": "0.13.0",
+    "@bfra.me/tsconfig": "0.13.1",
     "@changesets/cli": "2.31.0",
     "@lhci/cli": "0.15.1",
     "@manypkg/cli": "0.25.1",
