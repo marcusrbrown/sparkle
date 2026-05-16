@@ -18,8 +18,8 @@ importers:
         specifier: 0.51.1
         version: 0.51.1(@typescript-eslint/eslint-plugin@8.59.3(@typescript-eslint/parser@8.59.3(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.3))(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.3))(@typescript-eslint/rule-tester@8.59.2(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.3))(@typescript-eslint/typescript-estree@8.59.3(typescript@5.9.3))(@typescript-eslint/utils@8.59.3(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.3))(chokidar@5.0.0)(eslint-config-prettier@10.1.8(eslint@9.39.4(jiti@2.7.0)))(eslint-plugin-prettier@5.5.5(eslint-config-prettier@10.1.8(eslint@9.39.4(jiti@2.7.0)))(eslint@9.39.4(jiti@2.7.0))(prettier@3.8.3))(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.3)
       '@bfra.me/prettier-config':
-        specifier: 0.16.8
-        version: 0.16.8(prettier@3.8.3)
+        specifier: 0.16.9
+        version: 0.16.9(prettier@3.8.3)
       '@bfra.me/tsconfig':
         specifier: 0.13.0
         version: 0.13.0
@@ -1266,8 +1266,8 @@ packages:
       eslint-plugin-react-refresh:
         optional: true
 
-  '@bfra.me/prettier-config@0.16.8':
-    resolution: {integrity: sha512-za9XRq/GQUe2hO3uIKlJfTAKm8cJxjObvavlAaHebuKx/aHkM33tgPKnCQWRf+q8lB6nwphVzCqTGk6z6rfnXg==}
+  '@bfra.me/prettier-config@0.16.9':
+    resolution: {integrity: sha512-SW24PtVnYjN+Ar/Anegn2+s1ABt6u8iJx3Xc2DiSSZ4xlBzf1tYqn7BWW/zqeeV2Nk/G0BuRB/eeR4WrYYEvhQ==}
     peerDependencies:
       prettier: ^3.0.0
 
@@ -11137,7 +11137,7 @@ snapshots:
       - supports-color
       - typescript
 
-  '@bfra.me/prettier-config@0.16.8(prettier@3.8.3)':
+  '@bfra.me/prettier-config@0.16.9(prettier@3.8.3)':
     dependencies:
       prettier: 3.8.3
 
