@@ -1,0 +1,740 @@
+---
+name: Fro Bot
+
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+  discussion_comment:
+    types: [created]
+  issues:
+    types: [opened, edited]
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, review_requested]
+  schedule:
+    # Autoheal at 05:00 UTC — staggered off other repos in the portfolio
+    # (mrbro.dev: 03:30, marcusrbrown: 04:30, tokentoilet: 03:30).
+    - cron: '0 5 * * *'
+    # Maintenance report at 17:00 UTC — staggered after marcusrbrown's
+    # 16:30 run and mrbro.dev's 15:30 run.
+    - cron: '0 17 * * *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Operation mode
+        type: choice
+        options:
+          - review
+          - maintenance
+          - autoheal
+        default: autoheal
+      prompt:
+        description: Custom prompt for review mode
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: >-
+    fro-bot-${{
+      github.event.issue.number ||
+      github.event.pull_request.number ||
+      github.event.discussion.number ||
+      (github.event_name == 'schedule' && github.event.schedule) ||
+      github.run_id
+    }}
+  cancel-in-progress: false
+
+env:
+  PR_REVIEW_PROMPT: |
+    You are reviewing a pull request for marcusrbrown/sparkle — a TypeScript
+    playground monorepo (pnpm workspaces + Turborepo). Cross-platform design
+    system, React component library (`@sparkle/ui`), Expo mobile app
+    (`fro-jive`), Zig+WASM web shell (`moo-dang`), and an Astro Starlight
+    docs site that deploys to https://sparkle.mrbro.dev.
+
+    Read llms.txt for the project map and .github/copilot-instructions.md
+    for the authoritative conventions before reviewing.
+
+    Focus your review on:
+
+    1. CORRECTNESS & EDGE CASES
+       - Logic errors, off-by-one, null/undefined paths
+       - Cross-package side effects (changes in `@sparkle/types` /
+         `@sparkle/theme` / `@sparkle/utils` are consumed by `@sparkle/ui`
+         and the apps — verify downstream impact)
+       - Turborepo task graph integrity (`build` → `^build`,
+         `dev`/`test` depend on `^build`); per-package `build:<name>`
+         dependencies declared correctly in `turbo.json`
+       - ESM-only invariants (`"type": "module"`, `exports` map covers
+         types + import; no accidental CJS leak)
+       - Workspace protocol usage (`workspace:*` for internal packages,
+         never a pinned version)
+       - State management correctness in React components (effects,
+         refs, controlled vs uncontrolled inputs)
+       - WASM/Zig boundary correctness in `apps/moo-dang/` (shell API
+         contract in `shell_api.zig`, Worker message protocol)
+
+    2. TYPE SAFETY (TypeScript strict)
+       - No `any`, no `@ts-ignore`, no `@ts-expect-error`
+       - Prefer `unknown` over `any` when type is uncertain
+       - Discriminated unions over optional properties; `as const` for
+         literal types
+       - Explicit return types on exported functions
+       - Leverage utility types (`Pick`, `Omit`, `Partial`, `Required`,
+         `Record`)
+       - Vitest type-checks (`expectTypeOf`) on type-shaped tests
+       - No type widening from accidental `let` declarations or
+         non-`const` assertions
+
+    3. THEME & CROSS-PLATFORM
+       - Design tokens defined under `packages/theme/src/tokens/`
+       - Web tokens via `TokenTransformer.toWeb` (CSS custom properties);
+         native via `TokenTransformer.toNative` (StyleSheet values)
+       - Components consume theme via `useTheme` (web) or
+         `useNativeTheme` (RN), not hardcoded values
+       - Visual regression coverage exists for new/changed UI
+         (`packages/storybook/test/visual-regression/*.visual.test.ts`)
+         across light/dark themes and required viewports
+
+    4. TESTING
+       - New/changed behavior has Vitest coverage
+       - Factory-based mocks from `@sparkle/test-utils` are used
+         (`createLocalStorageMock`, `createMediaQueryListMock`,
+         `createTerminalMock`, `mockConsola`, etc.)
+       - `standardBeforeEach()` and `standardAfterEach()` for mock
+         lifecycle — no shared mock instances that accumulate state
+       - Error-scenario tests use `TestScenarioBuilder` from
+         `@sparkle/error-testing`
+       - Tests assert behavior, not implementation details
+       - Working tests are mandatory — fix failing tests rather than
+         simplifying them
+
+    5. SECURITY
+       - No secrets in logs, comments, code, or committed config
+       - User input is validated before consumption (parse, don't
+         validate)
+       - Third-party actions in `.github/workflows/` pinned to full SHA,
+         not floating tags
+       - Token scopes are minimum-necessary
+       - No new external network calls without justification
+
+    6. STYLING & CONVENTIONS
+       - YAML extension: `.yaml`, not `.yml`
+       - Package manager: pnpm (the repo pins `packageManager:
+         pnpm@10.x`); never `npm` or `yarn`
+       - Node: aligned to `.node-version`
+       - Avoid ES6 classes (exception: extending `Error` for custom
+         error types)
+       - Logging via `consola`, never `console`
+       - File naming: kebab-case for configs, PascalCase for components
+       - Types/interfaces PascalCase; functions/variables camelCase
+       - JSDoc on public APIs (explain *why*, not *what*)
+       - Internal packages use `workspace:*` protocol
+       - Components use `React.forwardRef` with `displayName` set
+
+    7. CHANGESETS & VERSIONING
+       - Public-API-affecting changes have a corresponding changeset
+         (`.changeset/*.md`) with appropriate bump type
+       - Changeset description communicates value, not just file
+         changes
+
+    Skip style nits — ESLint, Prettier, and manypkg handle formatting
+    and workspace consistency.
+
+    Do NOT push commits, modify code, or create branches. Review only.
+    Use inline comments for file-specific issues. Reserve the review
+    body for the structured summary below.
+
+    You MUST structure your review using exactly these headings:
+    ## Verdict: [PASS | CONDITIONAL | REJECT]
+    CONDITIONAL = can merge after addressing the listed blocking issues.
+    ### Blocking issues
+    ### Non-blocking concerns
+    ### Missing tests
+    ### Risk assessment (LOW/MED/HIGH) + rationale
+    Evaluate likelihood of regression in: cross-package consumers,
+    docs site build, visual regression baselines, mobile platform,
+    WASM shell, CI pipeline.
+    If a section has no items, write "None" under the heading.
+    Do not omit any heading.
+
+  MAINTENANCE_PROMPT: |
+    Perform daily repository maintenance for marcusrbrown/sparkle — a
+    TypeScript playground monorepo (pnpm workspaces + Turborepo).
+
+    Read llms.txt and .github/copilot-instructions.md for the project
+    map and conventions before analyzing.
+
+    Update a SINGLE perpetual issue titled "Daily Maintenance Report" in
+    this repository. There must be exactly one open maintenance issue at
+    all times.
+
+    Finding the perpetual issue:
+    1. Search for an open issue titled "Daily Maintenance Report" (exact match).
+    2. If found, use that issue for all updates.
+    3. If not found, create a new issue with that exact title.
+    4. If the most recent matching issue is closed, reopen it instead of
+       creating a new one.
+
+    Perpetual issue hygiene: after selecting the single rolling issue,
+    search for any other open issues with the exact title "Daily Maintenance
+    Report" or "Daily Maintenance Report — YYYY-MM-DD" and close them with a
+    brief comment (e.g., "Consolidating into the perpetual maintenance
+    issue."). There must be exactly one open maintenance issue at all times.
+
+    PREPEND a new dated section to the TOP of the issue body using
+    "## YYYY-MM-DD (UTC)". Newest update is always first.
+
+    To keep the issue bounded: after prepending today's section, replace any
+    individual daily sections older than 14 days with a single
+    "## Historical Summary" section that lists only the count of prior runs
+    and any items that remained unresolved across those runs. If a Historical
+    Summary already exists, update it in place — do not create a second one.
+
+    When the issue body approaches 50,000 characters, archive older updates
+    by removing all but the 30 most recent daily sections, and note the
+    archival in a line like: "_[Archived N older updates on YYYY-MM-DD]_"
+
+    Include links only (no full content duplication). Keep it concise and
+    actionable. Flag items that appear in the stale list for the first time
+    (not present in the previous dated section) with a ★ marker.
+
+    Sections (in order):
+    - Summary metrics (issues opened since last run, currently open PRs,
+      stale issues/PRs count, main branch check status, security alerts if
+      accessible, Renovate dashboard state from issue #212, last successful
+      deploy-docs run, last successful regenerate-docs run, npm-side
+      abandoned-deps count from the Renovate dashboard)
+    - Stale issues (no activity >30 days; recommend next step)
+    - Stale PRs (no activity >7 days; stale >14 days). Always include the
+      Renovate dashboard pending-approval queue for visibility.
+    - Automation health (workflow runs over last 7 days: success/failure/
+      skipped counts per workflow; flag any workflow with >50% failure rate
+      or scheduled runs that produced zero successful artifacts when they
+      should have — e.g., deploy-docs hasn't deployed in N days when docs
+      content changed)
+    - Dependency posture (open Renovate PRs by category — security/
+      majors/minors/patches; abandoned dependencies from the dependency
+      dashboard with last-release age; pinned-version drift in
+      `.github/workflows/` against latest released SHA)
+    - Docs site health (`sparkle.mrbro.dev` deploy status; broken-link
+      hints if accessible; auto-generated API docs freshness vs package
+      source under `packages/*/src/`)
+    - Cross-project intelligence (check marcusrbrown/mrbro.dev,
+      marcusrbrown/marcusrbrown, marcusrbrown/tokentoilet,
+      marcusrbrown/vbs for adoptable patterns: Fro Bot prompt evolution,
+      hygiene rules, scope caps, CI improvements. Include only if relevant
+      findings exist.)
+    - Recommended actions (bulleted checklist)
+    - Notes (use "data unavailable" for any inaccessible data source)
+
+    Do NOT comment on or modify individual issues/PRs (except for closing
+    duplicate maintenance issues per the perpetual issue hygiene exception
+    above). Do NOT apply labels. Do NOT open PRs. This run must update ONE
+    primary issue only (duplicate closures are permitted as the sole
+    exception).
+
+  AUTOHEAL_PROMPT: |
+    Perform daily repository autohealing for marcusrbrown/sparkle — a
+    TypeScript playground monorepo (pnpm workspaces + Turborepo) with a
+    public docs site at https://sparkle.mrbro.dev.
+
+    Read llms.txt and .github/copilot-instructions.md for the project map
+    and conventions before making changes.
+
+    EXECUTION MODEL
+    Analyze all categories independently, but perform write actions serially.
+    Do not keep multiple branches checked out at once. Complete one mutation,
+    return to a clean working tree, then continue.
+
+    DEDUPLICATION (applies to ALL categories)
+    Before creating any new PR or issue, search for an existing open
+    bot-authored PR/issue for the same root cause. Reuse or update the
+    existing item instead of creating a duplicate.
+
+    SCOPE CAP
+    If the smallest safe fix is not clearly minimal and reversible (e.g.,
+    broad refactor, architecture change, or many-file edit), do not
+    auto-heal it. Open or update an issue and log it under "Needs Human
+    Attention".
+
+    DEPENDENCY OWNERSHIP
+    Renovate owns routine dependency/version bumps (configured via
+    marcusrbrown/renovate-config preset). You may change dependency versions
+    only when remediating a confirmed security advisory (critical/high) or
+    repairing an existing security-update PR. Do not create non-security
+    version-bump PRs, and do not batch unrelated dependency changes into a
+    security fix. Do NOT modify package.json versions outside category 2
+    security remediation.
+
+    TRUSTED AUTHORS
+    Trusted PR authors for branch repair are Marcus and these automation bots:
+    - renovate[bot]
+    - dependabot[bot]
+    - mrbro-bot[bot]
+    - fro-bot
+
+    1. ERRORED PRs
+       Find open PRs with failing CI checks. Skip dependency/security update
+       PRs here; handle them only in category 2.
+       Only fix PRs whose head branch is in this repository, writable by
+       this token, and authored by a trusted source (repository
+       owner/collaborator with write access, or an approved automation bot
+       such as Renovate/Dependabot/mrbro-bot). If author trust cannot be
+       established, skip the PR and log it under "Needs Human Attention".
+       If the PR touches workflows, automation prompts, package-manager
+       config, lockfiles, or execution scripts, do not run project commands
+       from that branch. Skip it and log why.
+       For each fixable PR:
+       a. Check out the PR branch.
+       b. Read the failing check logs to diagnose the root cause.
+       c. Fix the issue (type errors, lint failures, test regressions,
+          Turborepo task config, manypkg workspace inconsistencies,
+          docs-build failures, visual regression baseline drift).
+       d. Commit with a clear conventional-commit message and push to the
+          PR branch.
+       e. Comment on the PR explaining what failed and what was fixed.
+       f. Never modify .github/workflows/ or this prompt while repairing
+          an errored PR. If the failing run appears caused by the Fro Bot
+          workflow, skip the PR and log it under "Needs Human Attention".
+
+    2. SECURITY
+       Review Dependabot/Renovate alerts and open PRs for vulnerable deps.
+       - If a security update PR exists but has conflicts or failures,
+         fix and push to that PR branch. Coordinate grouped upgrades
+         (e.g., Astro major + Starlight major must land together).
+       - For unaddressed critical/high advisories with no existing PR,
+         create a new PR with the remediation.
+       - Do NOT bulk-update unrelated deps in a security PR.
+       If security advisory/alert data is unavailable to the token or CLI,
+       skip this category and note "security alerts unavailable" under
+       "Needs Human Attention". Do not guess.
+
+    3. CODE QUALITY & REPO HYGIENE
+       This category is primarily report-only. Focus on things only a
+       code-aware agent can catch:
+       - Run `pnpm check` and report any failures (format + types +
+         monorepo consistency).
+       - Run `pnpm lint` and report any failures.
+       - Run `pnpm test` and report any failures or coverage regressions.
+       - Run `pnpm check:monorepo` (manypkg) and report any workspace
+         inconsistencies (mismatched dep versions, missing `workspace:*`
+         protocol on internal deps).
+       - Run `pnpm health-check` and report environment / setup drift.
+       - Scan for stale TODO/FIXME/HACK annotations older than 90 days
+         (use git blame). Collect into a single issue or update an existing
+         "Stale TODOs" issue.
+       - Verify convention compliance:
+         * No `any`, no `@ts-ignore`, no `@ts-expect-error` in `src/`
+           across packages and apps
+         * No `console.*` usage in source — must use `consola`
+         * No ES6 `class` declarations outside of `Error` subclasses
+         * All `.github/workflows/` third-party actions pinned to full SHA
+         * YAML files use `.yaml` extension, not `.yml`
+         * Internal package deps use `workspace:*`, not pinned versions
+         * Package.json `exports` maps cover both `types` and `import`
+       - Documentation drift: run
+         `pnpm --filter @sparkle/docs docs:automation` and check whether
+         it produces a non-empty diff under `docs/src/content/docs/api/`.
+         If it does, the auto-regenerate-docs workflow is silently lagging
+         — flag it.
+       - Changeset coverage: for any merged PR in the last 7 days that
+         changed `packages/*/src/`, verify a corresponding changeset was
+         included or that the changeset queue covers it.
+       - Workflow health: check the last 7 days of runs for each workflow.
+         Flag any workflow where >50% of expected runs failed, or where
+         scheduled runs produced zero successful artifacts when they
+         should have (e.g., deploy-docs hasn't deployed in N days when
+         docs content changed).
+       - Check that llms.txt accurately reflects the current workspace
+         layout, scripts, and conventions. If drift is found, open an
+         issue (not a PR) describing the drift.
+       Report findings but put actual code fixes into category 4.
+
+    4. DEVELOPER EXPERIENCE
+       Ensure consistent linting, formatting, type-safety, and workspace
+       hygiene.
+       Run `pnpm fix` (which combines `pnpm fix:es` + `pnpm fix:monorepo`).
+       Fix any failures including convention violations found in category 3.
+       Open a PR for all fixes — never commit directly to the default
+       branch. Group related lint/format/convention fixes into a single PR.
+       Use a clear conventional-commit title like
+       `chore(lint): apply auto-fixes from autohealing run`.
+
+    5. QUALITY GATES VERIFICATION
+       Verify the project's quality gates pass on the default branch:
+       a. `pnpm check` — clean (format + types + monorepo consistency)
+       b. `pnpm lint` — 0 errors (warnings acceptable but reported)
+       c. `pnpm test` — all unit tests passing
+       d. `pnpm build` — Turborepo build clean across all packages and
+          apps. Treat `@sparkle/docs#build` failures as gating because
+          the docs site is the public surface.
+       e. `pnpm test:build-pipeline` — build artifact + performance
+          validation passes
+       f. `actionlint .github/workflows/*.yaml` — if actionlint is on
+          PATH; otherwise skip silently
+
+       For each failing gate:
+       - Identify the root cause from command output.
+       - If the fix is minimal and safe, include it in a category 4 PR.
+       - If the fix is complex, open an issue with diagnosis and
+         recommended approach.
+
+    6. DOCS SITE HEALTH (LIVE)
+       Validate the public docs site at https://sparkle.mrbro.dev using
+       `npx agent-browser`.
+
+       Acceptance criteria (report any failure as a finding):
+       - Site loads (200 OK, no blank page, no fatal SSR errors)
+       - Theme toggle works (light ↔ dark)
+       - Sidebar navigation renders and at least the Getting Started + API
+         sections are reachable
+       - Console shows no errors (warnings acceptable but reported)
+       - At least one auto-generated API page loads with content (drift
+         signal — if API pages are blank, `docs:automation` likely
+         regressed)
+       - No broken images / 404s in the rendered shell
+
+       If findings are caused by a recent deploy:
+       - Trace to the last successful deploy-docs run and the commit that
+         shipped.
+       - If a clear single-commit regression and the fix is minimal/safe,
+         apply under category 4.
+       - Otherwise open an issue with the screenshot/console output and
+         log it under "Needs Human Attention".
+
+       Hard boundaries for this category:
+       - Read-only browser session. Do not submit forms or interact with
+         third-party services.
+       - Do not modify production deploy or DNS configuration.
+       - Findings only — fixes flow through normal category 4 PRs.
+
+    7. CROSS-PROJECT INTELLIGENCE (INBOUND ONLY)
+       Survey Marcus's other repos for patterns, tooling, and conventions
+       that could improve THIS repo. Observation only — never modify
+       other repos.
+
+       Focus repos (the list should evolve over time — drop repos that
+       consistently have nothing actionable, add repos that become
+       relevant):
+       - `marcusrbrown/marcusrbrown` — profile repo; unified Fro Bot
+         template, perpetual issue hygiene, scope caps, dependency
+         ownership, cross-project intelligence, Sunday-only categories
+       - `marcusrbrown/mrbro.dev` — portfolio sibling; split Fro Bot
+         layout, live-site review via agent-browser, perpetual autoheal
+         issue
+       - `marcusrbrown/tokentoilet` — Fro Bot prompt evolution for
+         single-issue autohealing
+       - `marcusrbrown/vbs` — Vite/TypeScript patterns, CI safety
+       - `marcusrbrown/renovate-config` — dependency governance preset
+         evolution (this repo extends it)
+       - `bfra-me/.github` — upstream of the update-repo-settings
+         reusable workflow this repo consumes
+       - `fro-bot/agent` — Fro Bot/OpenCode runtime capabilities and
+         release notes
+
+       For each focus repo, check:
+       a. Fro Bot version: compare `fro-bot/agent@` SHA if present.
+       b. CI patterns: any workflow improvements worth adopting?
+       c. Renovate config: any preset evolution worth adopting?
+       d. Prompt evolution: any new categories, hygiene rules, or scope
+          caps in sibling autoheal/maintenance prompts worth porting?
+       e. New conventions worth evaluating.
+
+       Keep findings actionable and specific to marcusrbrown/sparkle.
+       Skip repos with nothing notable.
+
+       Hard boundaries:
+       - NEVER modify other repositories. Observation only.
+       - NEVER open PRs, issues, or comments in other repositories.
+       - NEVER clone or check out other repositories.
+       - All findings go into the perpetual summary issue in THIS
+         repository only.
+       - If a `gh` query fails for a repo, skip it and note why.
+
+    8. UPSTREAM MODERNIZATION WATCH (SUNDAYS UTC ONLY)
+       On Sundays UTC, review release notes for pinned upstreams:
+       - `fro-bot/agent` used by .github/workflows/fro-bot.yaml
+       - `actions/checkout`, `actions/setup-node`, `actions/cache`,
+         `pnpm/action-setup`, `mlugg/setup-zig`, and any other actions
+         pinned across `.github/workflows/`
+       - `bfra-me/.github` reusable workflow consumed by
+         update-repo-settings.yaml
+       - Astro / Starlight / React / React Native / Expo / Turborepo /
+         Vitest / tsdown major version cadence (do NOT bump — Renovate
+         owns these — but surface upcoming majors and known migration
+         work)
+       - OpenCode/Fro Bot runtime docs relevant to opencode run, HTTP
+         mode, configured tools, skills, agents, hooks, and durable
+         session state
+
+       Identify new hardening or observability features worth adopting.
+       Do not bump versions or modify workflows in this category.
+       Document findings in the perpetual issue.
+
+       Cadence: this category runs only when the IS_SUNDAY_UTC environment
+       variable is 'true' (Sunday UTC, as detected by the workflow's
+       preflight). Before doing any category 8 work, read this variable.
+       On other days, skip entirely and omit the corresponding section
+       from the daily summary.
+
+    SINGLE ISSUE MANAGEMENT
+    Manage a SINGLE perpetual issue titled "Daily Autohealing Report".
+
+    Finding the perpetual issue:
+    1. Search for an open issue titled "Daily Autohealing Report" (exact match).
+    2. If found, use that issue for all updates.
+    3. If not found, create a new issue with that exact title.
+    4. If the most recent matching issue is closed, reopen it instead of
+       creating a new one.
+
+    Perpetual issue hygiene: search for any other open issues with titles
+    matching "Daily Autohealing Report" or "Daily Autohealing Report — YYYY-MM-DD"
+    and close them, keeping only the most recently updated one. If the most
+    recent issue has a dated title, rename it to the perpetual title. There
+    must be exactly one open autohealing issue at all times.
+
+    Updating the issue:
+    PREPEND a new dated section to the TOP of the issue body. Newest
+    update is always first. If a section has no rows, do not emit an
+    empty table — write "None." directly under that heading.
+
+    ## Update — YYYY-MM-DD (UTC)
+
+    ### Errored PRs
+    | PR | Failure | Fix | Status |
+    | --- | --- | --- | --- |
+    | #N | [root cause] | [what was fixed] | ✅ Fixed / ⚠️ Needs review / ⏭️ Skipped |
+
+    ### Security
+    | Advisory / PR | Severity | Action Taken |
+    | --- | --- | --- |
+    | [advisory or #N] | Critical/High/Medium | [fix pushed / PR created / skipped / unavailable] |
+
+    ### Code Quality & Repo Hygiene
+    | Check | Result | Action |
+    | --- | --- | --- |
+    | `pnpm check` | ✅ Clean / ⚠️ Warnings / ❌ Errors | [details or #N] |
+    | Lint | ✅ Clean / ⚠️ Warnings / ❌ Errors | [details or #N] |
+    | Tests | ✅ Pass / ❌ Fail | [details or #N] |
+    | manypkg | ✅ Consistent / ⚠️ Drift | [details or #N] |
+    | health-check | ✅ Clean / ⚠️ Issues | [details or #N] |
+    | Docs drift (`docs:automation`) | ✅ Aligned / ⚠️ Drift | [details or #N] |
+    | Changeset coverage (last 7d) | ✅ Covered / ⚠️ Missing | [PR list or None] |
+    | Stale TODOs | N found | [#N or None] |
+    | Convention drift | ✅ Clean / ⚠️ Issues | [details or #N] |
+    | Workflow health | ✅ Healthy / ⚠️ Degraded | [workflow names with stats] |
+    | llms.txt accuracy | ✅ Current / ⚠️ Drifted | [#N or None] |
+
+    ### Developer Experience
+    - [list of each PR or commit-sized fix with summary link]
+
+    ### Quality Gates
+    | Gate | Status | Details |
+    | --- | --- | --- |
+    | `pnpm check` | ✅ / ❌ | [details] |
+    | Lint | ✅ / ❌ | [error count or clean] |
+    | Tests | ✅ / ❌ | [pass/fail count] |
+    | `pnpm build` | ✅ / ❌ | [failed packages or clean] |
+    | `pnpm test:build-pipeline` | ✅ / ❌ | [details] |
+    | actionlint | ✅ / ❌ / N/A | [details or "not on PATH"] |
+
+    ### Docs Site Health (live)
+    | Check | Result | Notes |
+    | --- | --- | --- |
+    | Load (200 OK) | ✅ / ❌ | [details] |
+    | Theme toggle | ✅ / ❌ | [details] |
+    | Navigation | ✅ / ❌ | [sections reachable] |
+    | Console clean | ✅ / ⚠️ / ❌ | [error/warning count] |
+    | API pages render | ✅ / ❌ | [sample page checked] |
+    | Broken assets | None / N | [list] |
+
+    ### Cross-Project Intelligence (Inbound)
+    | Repo | Finding | Actionable for sparkle? | Priority |
+    | --- | --- | --- | --- |
+    | [repo] | [what they do that we don't] | [specific action or monitor] | High/Med/Low |
+
+    ### Upstream Modernization Watch
+    [Sunday-only section. On Sundays UTC, include findings or write "Scan
+    clean" if no actionable items. On other days, omit this entire
+    section from the daily update.]
+
+    ### Needs Human Attention
+    - [items that could not be auto-fixed, with context]
+
+    Rules for the perpetual issue:
+    - DO NOT create new daily issues. Always update the perpetual issue.
+    - DO NOT close the perpetual issue.
+    - ALWAYS prepend new updates to existing content (newest at top).
+    - When the issue body approaches 50,000 characters, archive older
+      updates by removing all but the 30 most recent daily sections, and
+      note the archival in a line like:
+      "_[Archived N older updates on YYYY-MM-DD]_"
+    - DO NOT comment on individual issues or PRs unless category 1 fixed
+      a failing PR (then ONLY post the fix-summary comment on that PR).
+
+    Hard boundaries:
+    - Never force-push, rewrite history, or delete branches.
+    - Never push directly to the default branch. Direct pushes are allowed
+      only to an existing non-default PR branch you are repairing under
+      category 1 or category 2.
+    - Never merge PRs, submit reviews/approvals, close/reopen PRs or
+      issues, or modify branch protection, EXCEPT for closing duplicate
+      "Daily Autohealing Report" or "Daily Maintenance Report" issues as
+      described in the perpetual issue hygiene section above. This
+      workflow may only push fixes, open/update PRs, open/update issues,
+      and comment on PRs when a fix was pushed.
+    - Never modify secrets, org settings, environments, or branch
+      protection.
+    - Never make checks pass by disabling tests, deleting failing
+      assertions, lowering coverage budgets, weakening lint rules, or
+      editing workflows/configuration only to suppress failures.
+    - If the smallest safe fix would weaken a guardrail or reduce
+      validation, skip it and log it under "Needs Human Attention".
+    - Cross-project intelligence (category 7) MUST NOT modify other repos.
+    - Upstream modernization watch (category 8) MUST NOT bump pinned
+      versions (Renovate-owned) or modify upstream repositories.
+    - Do not create multiple summary issues.
+    - Never edit Marcus's first-person content (README intro, marketing
+      copy, etc.). Report stale claims; don't rewrite them.
+
+    Project conventions (MUST follow for code changes):
+    - TypeScript strict mode: no `any`, no `@ts-ignore`, no `@ts-expect-error`
+    - Package manager: pnpm (not npm/yarn); repo pins via `packageManager`
+    - YAML extension: .yaml, not .yml
+    - ESM-only (`"type": "module"`); internal deps use `workspace:*`
+    - Tests use factory mocks from `@sparkle/test-utils` with
+      `standardBeforeEach`/`standardAfterEach`
+    - Logging via `consola`, never `console`
+    - Workflow third-party actions pinned to full SHA
+    - No `continue-on-error: true` on deterministic local steps
+    - All tests must pass before completing tasks
+
+jobs:
+  fro-bot:
+    name: Fro Bot
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      discussions: write
+    if: >-
+      (
+        github.event.pull_request == null ||
+        (
+          !github.event.pull_request.head.repo.fork &&
+          !endsWith(github.event.pull_request.user.login || '', '[bot]')
+        )
+      ) && (
+        (
+          github.event_name == 'issues' &&
+          !endsWith(github.event.issue.user.login || '', '[bot]') &&
+          (github.event.issue.user.login || '') != 'fro-bot' &&
+          contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.issue.author_association || '')
+        ) ||
+        (
+          github.event_name == 'pull_request' &&
+          !endsWith(github.event.pull_request.user.login || '', '[bot]') &&
+          (github.event.pull_request.user.login || '') != 'fro-bot'
+        ) ||
+        github.event_name == 'schedule' ||
+        github.event_name == 'workflow_dispatch' ||
+        (
+          (github.event_name == 'issue_comment' ||
+           github.event_name == 'pull_request_review_comment' ||
+           github.event_name == 'discussion_comment') &&
+          contains(github.event.comment.body || '', '@fro-bot') &&
+          (github.event.comment.user.login || '') != 'fro-bot' &&
+          contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association || '')
+        )
+      )
+    steps:
+      - name: Refuse fork PR heads from comment triggers
+        # issue_comment events carry no pull_request payload, so the
+        # job-level fork guard does not see comment-triggered checkouts
+        # of PR heads. Resolve the PR via the API and refuse fork heads
+        # before any code from that ref runs.
+        if: github.event_name == 'issue_comment' && github.event.issue.pull_request
+        env:
+          GH_TOKEN: ${{ secrets.FRO_BOT_PAT }}
+        run: |
+          pr_number="${{ github.event.issue.number }}"
+          is_fork=$(gh api "repos/${{ github.repository }}/pulls/${pr_number}" --jq '.head.repo.fork // "unknown"')
+          if [ "$is_fork" != "false" ]; then
+            echo "::error::Refusing to check out fork PR head from comment trigger (PR #${pr_number}, fork=${is_fork})."
+            exit 1
+          fi
+
+      - name: Detect Sunday UTC for category 8 cadence
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: |
+          if [ "$(date -u +%u)" = "7" ]; then
+            echo "IS_SUNDAY_UTC=true" >> "$GITHUB_ENV"
+          else
+            echo "IS_SUNDAY_UTC=false" >> "$GITHUB_ENV"
+          fi
+
+      - name: Validate review mode inputs
+        if: github.event_name == 'workflow_dispatch' && inputs.mode == 'review'
+        env:
+          PROMPT: ${{ inputs.prompt }}
+        run: |
+          if [ -z "$PROMPT" ]; then
+            echo "::error::Review mode requires a custom prompt. Provide one via the 'prompt' input, or choose a different mode."
+            exit 1
+          fi
+
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          # Check out PR code when:
+          # 1. Issue comment on PR: refs/pull/{number}/head
+          # 2. Direct PR event: pull_request.head.sha
+          # 3. Other events: default to workflow ref
+          ref: >-
+            ${{
+              (github.event.issue.pull_request && format('refs/pull/{0}/head', github.event.issue.number))
+              || github.event.pull_request.head.sha
+              || ''
+            }}
+          # FRO_BOT_PAT scope: contents/issues/pull-requests/discussions
+          # write permissions, scoped to this repo only. No org/admin/
+          # secrets scopes.
+          token: ${{ secrets.FRO_BOT_PAT }}
+          persist-credentials: false
+
+      - name: Setup project
+        uses: ./.github/actions/setup-ci
+        with:
+          install-zig: 'true'
+
+      - name: Run Fro Bot
+        uses: fro-bot/agent@b928e79729f01b563feabee26a0525a3b48501a6 # v0.44.3
+        env:
+          OPENCODE_PROMPT_ARTIFACT: 'true'
+          IS_SUNDAY_UTC: ${{ env.IS_SUNDAY_UTC || 'false' }}
+          PROMPT: >-
+            ${{
+              (github.event_name == 'workflow_dispatch' && inputs.mode == 'review' && inputs.prompt)
+              || (github.event_name == 'workflow_dispatch' && inputs.mode == 'maintenance' && env.MAINTENANCE_PROMPT)
+              || (github.event_name == 'workflow_dispatch' && inputs.mode == 'autoheal' && env.AUTOHEAL_PROMPT)
+              || (github.event_name == 'workflow_dispatch' && !inputs.mode && env.AUTOHEAL_PROMPT)
+              || (github.event_name == 'schedule' && github.event.schedule == '0 17 * * *' && env.MAINTENANCE_PROMPT)
+              || (github.event_name == 'schedule' && github.event.schedule == '0 5 * * *' && env.AUTOHEAL_PROMPT)
+              || (github.event_name == 'pull_request' && env.PR_REVIEW_PROMPT)
+              || ''
+            }}
+        with:
+          auth-json: ${{ secrets.OPENCODE_AUTH_JSON }}
+          github-token: ${{ secrets.FRO_BOT_PAT }}
+          model: ${{ vars.FRO_BOT_MODEL }}
+          omo-providers: ${{ secrets.OMO_PROVIDERS }}
+          opencode-config: ${{ secrets.OPENCODE_CONFIG }}
+          prompt: ${{ env.PROMPT }}
+          timeout: 0
