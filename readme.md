@@ -2,190 +2,143 @@
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-blue?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org) [![React](https://img.shields.io/badge/React-blue?style=for-the-badge&logo=react&logoColor=white)](https://reactjs.org) [![React Native](https://img.shields.io/badge/React%20Native-blue?style=for-the-badge&logo=react&logoColor=white)](https://reactnative.dev) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-A modern TypeScript playground and monorepo showcasing cutting-edge web and mobile development technologies. Built with React, React Native, and a comprehensive suite of tools for building production-ready applications.
+A TypeScript playground monorepo for exploring modern web, mobile, and WASM development patterns. Cross-platform design system, React component library, Expo mobile app, and a WASM-powered web shell — all under one Turborepo + pnpm workspace roof.
 
 <!-- prettier-ignore-start -->
 > [!NOTE]
-> This is an experimental playground project focused on exploring modern development patterns, monorepo architecture, and cross-platform solutions.
+> Sparkle is an experimental playground. APIs and architecture evolve aggressively as new patterns are explored.
 <!-- prettier-ignore-end -->
 
 ## Features
 
-- **🎨 Design System**: Comprehensive theme management with design tokens, light/dark modes, and cross-platform support
-- **🧩 Component Library**: Modern, accessible React components built with Radix UI primitives and Tailwind CSS
-- **📱 Mobile App**: Expo/React Native application demonstrating cross-platform development
-- **📚 Documentation**: Interactive Storybook environment for component development and testing
-- **🔧 Developer Experience**: TypeScript-first development with comprehensive tooling and testing
-- **⚡ Modern Tooling**: Turborepo, pnpm workspaces, Vite, and automated workflows
+- **🎨 Design System** — Cross-platform design tokens with light/dark theming via `@sparkle/theme`
+- **🧩 Component Library** — Accessible React components built on Radix UI primitives + Tailwind CSS
+- **📱 Mobile App** — Expo / React Native application (`fro-jive`) demonstrating cross-platform patterns
+- **🐚 WASM Web Shell** — Unix-like terminal in the browser (`moo-dang`) with Zig-compiled WASM executables
+- **📚 Docs Site** — Astro Starlight docs with automated JSDoc extraction at <https://sparkle.mrbro.dev>
+- **🔧 Developer Experience** — TypeScript-first, Vitest, Storybook, visual regression, and comprehensive tooling
 
 ## Quick Start
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org) v22.13.1 or higher
-- [pnpm](https://pnpm.io) v9.15.4 or higher
+- [Node.js](https://nodejs.org) `>=22.13.1` (CI runs Node 24)
+- [pnpm](https://pnpm.io) `>=10` (this repo pins via `packageManager` in `package.json`)
 
 ### Installation
 
 ```bash
-# Clone the repository
 git clone https://github.com/marcusrbrown/sparkle.git
 cd sparkle
-
-# Install dependencies
 pnpm bootstrap
-
-# Start the development environment
 pnpm dev
 ```
 
-This will start:
+`pnpm dev` starts the full development environment (UI, Storybook, mobile, docs) via Turborepo.
 
-- Storybook at <http://localhost:6006>
-- Mobile app with Expo (follow CLI instructions)
-- Component library in watch mode
-
-## Packages
+## Workspace Layout
 
 ### Core Libraries
 
-| Package                              | Description                                        | Status    |
-| ------------------------------------ | -------------------------------------------------- | --------- |
-| [`@sparkle/ui`](./packages/ui)       | Modern, accessible React component library         | ✅ Active |
-| [`@sparkle/theme`](./packages/theme) | Cross-platform theme management with design tokens | ✅ Active |
-| [`@sparkle/types`](./packages/types) | Shared TypeScript type definitions                 | ✅ Active |
-| [`@sparkle/utils`](./packages/utils) | Utility functions and React hooks                  | ✅ Active |
+| Package                              | Description                                                   | Status    |
+| ------------------------------------ | ------------------------------------------------------------- | --------- |
+| [`@sparkle/ui`](./packages/ui)       | Accessible React component library (Radix + Tailwind)         | ✅ Active |
+| [`@sparkle/theme`](./packages/theme) | Cross-platform design tokens + theme providers (web + native) | ✅ Active |
+| [`@sparkle/types`](./packages/types) | Shared TypeScript type definitions                            | ✅ Active |
+| [`@sparkle/utils`](./packages/utils) | Utility functions and React hooks                             | ✅ Active |
 
 ### Applications
 
-| Package                                      | Description                                         | Status    |
-| -------------------------------------------- | --------------------------------------------------- | --------- |
-| [`packages/storybook`](./packages/storybook) | Component documentation and development environment | ✅ Active |
-| [`apps/fro-jive`](./apps/fro-jive)           | Expo/React Native mobile application                | ✅ Active |
+| Package                                      | Description                                           | Status    |
+| -------------------------------------------- | ----------------------------------------------------- | --------- |
+| [`apps/fro-jive`](./apps/fro-jive)           | Expo / React Native mobile application                | ✅ Active |
+| [`apps/moo-dang`](./apps/moo-dang)           | WASM-powered web shell with Zig executables           | ✅ Active |
+| [`packages/storybook`](./packages/storybook) | Component documentation, playground, and visual tests | ✅ Active |
+| [`docs/`](./docs)                            | Astro Starlight documentation site                    | ✅ Active |
 
 ### Development Tools
 
-| Package                                              | Description                                | Status    |
-| ---------------------------------------------------- | ------------------------------------------ | --------- |
-| [`@sparkle/config`](./packages/config)               | Shared build and linting configurations    | ✅ Active |
-| [`@sparkle/error-testing`](./packages/error-testing) | Error handling utilities and testing tools | ✅ Active |
+| Package | Description | Status |
+| --- | --- | --- |
+| [`@sparkle/config`](./packages/config) | Shared build, lint, and Tailwind configurations | ✅ Active |
+| [`@sparkle/test-utils`](./packages/test-utils) | Factory-based mocks (storage, console, xterm, media queries, etc.) | ✅ Active |
+| [`@sparkle/error-testing`](./packages/error-testing) | Fluent error-scenario builder (`TestScenarioBuilder`) | ✅ Active |
 
-## Development
-
-### Common Commands
+## Common Commands
 
 ```bash
-# Install dependencies
-pnpm bootstrap
-
-# Start development servers
-pnpm dev
-
-# Build all packages
-pnpm build
-
-# Run tests
-pnpm test
-
-# Type checking
-pnpm check:types
-
-# Linting and formatting
-pnpm lint
-pnpm check
-
-# Clean build artifacts
-pnpm clean
+pnpm bootstrap        # Install all workspace dependencies
+pnpm dev              # Start all dev servers (UI, Storybook, mobile, docs)
+pnpm build            # Build every package via Turborepo
+pnpm build:types:watch # Watch mode for TypeScript declarations
+pnpm test             # Run all package test suites
+pnpm check            # Format, type-check, and monorepo consistency
+pnpm check:monorepo   # manypkg workspace consistency check
+pnpm fix              # Auto-fix monorepo + ESLint issues
+pnpm health-check     # Comprehensive environment validation
+pnpm clean            # Clean build artifacts
 ```
 
-### Package Management
-
-This monorepo uses [pnpm workspaces](https://pnpm.io/workspaces) and [Turborepo](https://turbo.build) for efficient package management and build orchestration:
+### Workspace Filtering
 
 ```bash
-# Add dependency to specific package
+# Add a dep to one package
 pnpm add --filter @sparkle/ui react
 
-# Run command in specific package
+# Run a script in one package
 pnpm --filter @sparkle/ui build
 
-# Run command in all packages
+# Run a script in every package
 pnpm -r build
 ```
 
-### Creating Components
+### Documentation Site
 
-```tsx
-// packages/ui/src/components/NewComponent/NewComponent.tsx
-import {forwardRef} from 'react'
-
-export interface NewComponentProps {
-  children: React.ReactNode
-  variant?: 'default' | 'accent'
-}
-
-export const NewComponent = forwardRef<HTMLDivElement, NewComponentProps>(
-  ({children, variant = 'default', ...props}, ref) => {
-    return (
-      <div ref={ref} className={`new-component new-component--${variant}`} {...props}>
-        {children}
-      </div>
-    )
-  }
-)
-
-NewComponent.displayName = 'NewComponent'
+```bash
+pnpm --filter @sparkle/docs dev          # Local docs server
+pnpm --filter @sparkle/docs build        # Production build
+pnpm --filter @sparkle/docs docs:automation # Re-extract JSDoc → Markdown
 ```
 
-## Technology Stack
-
-### Core Technologies
-
-- [TypeScript](https://www.typescriptlang.org) - Type-safe JavaScript
-- [React](https://reactjs.org) - UI library for web applications
-- [React Native](https://reactnative.dev) - Cross-platform mobile development
-- [Expo](https://expo.dev) - Mobile app development platform
-
-### Build Tools
-
-- [Turborepo](https://turbo.build) - High-performance build system
-- [pnpm](https://pnpm.io) - Fast, disk space efficient package manager
-- [Vite](https://vitejs.dev) - Lightning-fast build tool
-- [tsdown](https://tsdown.vercel.app) - TypeScript bundler
-
-### UI & Styling
-
-- [Tailwind CSS](https://tailwindcss.com) - Utility-first CSS framework
-- [Radix UI](https://www.radix-ui.com) - Unstyled, accessible components
-- [Storybook](https://storybook.js.org) - Component development environment
-
-### Testing & Quality
-
-- [Vitest](https://vitest.dev) - Fast testing framework
-- [Testing Library](https://testing-library.com) - Simple testing utilities
-- [ESLint](https://eslint.org) - JavaScript linter
-- [Prettier](https://prettier.io) - Code formatter
+Live site: <https://sparkle.mrbro.dev>
 
 ## Architecture
 
 ```text
 sparkle/
+├── apps/
+│   ├── fro-jive/        # Expo mobile app
+│   └── moo-dang/        # WASM web shell (Zig + xterm.js)
 ├── packages/
 │   ├── ui/              # React component library
 │   ├── theme/           # Cross-platform theme system
 │   ├── types/           # Shared TypeScript definitions
 │   ├── utils/           # Utility functions and hooks
-│   ├── config/          # Build and lint configurations
-│   ├── storybook/       # Component documentation
-│   ├── fro-jive/        # Mobile application
-│   └── error-testing/   # Error handling utilities
-├── docs/                # Project documentation
+│   ├── config/          # Shared build/lint configs
+│   ├── test-utils/      # Test mocks and helpers
+│   ├── error-testing/   # Error-scenario testing
+│   └── storybook/       # Component docs + visual regression
+├── docs/                # Astro Starlight docs site
 ├── scripts/             # Build and maintenance scripts
-└── ...config files
+├── turbo.json           # Turborepo pipeline
+└── pnpm-workspace.yaml  # Workspace definition
 ```
+
+## Technology Stack
+
+**Languages & Runtimes**: [TypeScript](https://www.typescriptlang.org) · [React](https://reactjs.org) · [React Native](https://reactnative.dev) / [Expo](https://expo.dev) · [Zig](https://ziglang.org) (WASM)
+
+**Build & Workspace**: [Turborepo](https://turbo.build) · [pnpm workspaces](https://pnpm.io/workspaces) · [Vite](https://vitejs.dev) · [tsdown](https://tsdown.vercel.app)
+
+**UI & Styling**: [Tailwind CSS](https://tailwindcss.com) · [Radix UI](https://www.radix-ui.com) · [Storybook](https://storybook.js.org) · [xterm.js](https://xtermjs.org)
+
+**Docs**: [Astro](https://astro.build) · [Starlight](https://starlight.astro.build)
+
+**Testing & Quality**: [Vitest](https://vitest.dev) · [Playwright](https://playwright.dev) (visual regression) · [Testing Library](https://testing-library.com) · [ESLint](https://eslint.org) · [Prettier](https://prettier.io)
 
 ## Resources
 
-- [Project Guide](./docs/project-guide.md) - Comprehensive development guide
-- [Best Practices](./docs/best-practices-for-sparkle-development.md) - Development standards and guidelines
-- [Storybook](http://localhost:6006) - Interactive component documentation (when running locally)
+- 📖 [Documentation site](https://sparkle.mrbro.dev) — Full guides, API reference, and component playground
+- 🧩 [Storybook](http://localhost:6006) — Interactive component documentation (run `pnpm dev` first)
+- 🤖 [`.github/copilot-instructions.md`](./.github/copilot-instructions.md) — Agent and contributor conventions
+- 📝 [Changesets workflow](https://github.com/changesets/changesets) — `pnpm changeset` → `pnpm changeset version` → commit
