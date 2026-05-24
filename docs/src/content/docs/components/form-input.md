@@ -26,7 +26,7 @@ import { FormInput } from '@sparkle/ui'
 | `disabled` | `boolean \| undefined` |  | `` | Whether the field is disabled |
 | `required` | `boolean \| undefined` |  | `` | Whether the field is required |
 | `value` | `string \| undefined` |  | `` | Input value |
-| `onChange` | `((event: React.ChangeEvent<HTMLInputElement>) => void) \| undefined` |  | `` | Input change handler |
+| `onChange` | `((event: React.ChangeEvent<HTMLInputElement, Element>) => void) \| undefined` |  | `` | Input change handler |
 | `onFocus` | `((event: React.FocusEvent<HTMLInputElement, Element>) => void) \| undefined` |  | `` | Input focus handler |
 | `onBlur` | `((event: React.FocusEvent<HTMLInputElement, Element>) => void) \| undefined` |  | `` | Input blur handler |
 | `onKeyDown` | `((event: React.KeyboardEvent<HTMLInputElement>) => void) \| undefined` |  | `` | Input key down handler for keyboard navigation |
