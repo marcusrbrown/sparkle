@@ -1,0 +1,72 @@
+# Sparkle
+
+> TypeScript playground monorepo for exploring modern web, mobile, and WASM development patterns. Cross-platform design system, React component library, Expo mobile app, Astro Starlight docs, and a Zig+WASM web shell — all under one Turborepo + pnpm workspace roof.
+
+For full agent and contributor conventions read [.github/copilot-instructions.md](.github/copilot-instructions.md) — it is the authoritative source for naming, testing, build pipeline, theme system, and workflow rules. This file is the project map.
+
+## Workspace layout
+
+- `apps/fro-jive/` — Expo / React Native mobile app
+- `apps/moo-dang/` — WASM web shell. xterm.js UI + Zig-compiled WASM executables (`src/wasm/zig/`). 446+ tests.
+- `packages/ui/` — `@sparkle/ui`. React component library on Radix UI primitives + Tailwind CSS, `forwardRef` pattern. Exports via `src/index.ts`.
+- `packages/theme/` — `@sparkle/theme`. Cross-platform design token system. `TokenTransformer` converts tokens for web (CSS custom properties) and React Native (StyleSheet values). `ThemeProvider` (web) / `NativeThemeProvider` (RN).
+- `packages/types/` — `@sparkle/types`. Shared TypeScript definitions (`ThemeConfig`, `BaseProps`, `HTMLProperties`).
+- `packages/utils/` — `@sparkle/utils`. Utility functions and React hooks (`useDebounce`, etc.).
+- `packages/config/` — `@sparkle/config`. Shared Tailwind, TypeScript, ESLint configs consumed by other packages.
+- `packages/test-utils/` — `@sparkle/test-utils`. Factory-based mocks (`createLocalStorageMock`, `createMediaQueryListMock`, `createTerminalMock`, `mockConsola`, `standardBeforeEach`, `standardAfterEach`) to prevent state pollution between tests.
+- `packages/error-testing/` — `@sparkle/error-testing`. Fluent `TestScenarioBuilder` for type-safe error-scenario tests.
+- `packages/storybook/` — `@sparkle/storybook`. Component playground, accessibility testing, and Playwright visual regression suites (`test/visual-regression/`).
+- `docs/` — `@sparkle/docs`. Astro Starlight documentation site. Automated JSDoc extraction via `docs/scripts/generate-docs.ts` → `docs/src/content/docs/api/`. Deploys to <https://sparkle.mrbro.dev>.
+- `scripts/` — Build, validation, and maintenance scripts (`validate-build.ts`, `health-check`).
+
+## Key scripts (root `package.json`)
+
+- `pnpm bootstrap` — install all workspace dependencies
+- `pnpm dev` — start all dev servers (UI, Storybook, mobile, docs)
+- `pnpm build` — Turborepo orchestrated build
+- `pnpm build:types:watch` — incremental TypeScript declarations
+- `pnpm check` — format + types + monorepo consistency
+- `pnpm check:monorepo` — manypkg workspace consistency
+- `pnpm check:types` — `tsc --noEmit` across the workspace
+- `pnpm test` — all package test suites (Vitest)
+- `pnpm lint` / `pnpm fix` / `pnpm fix:es` / `pnpm fix:monorepo` — quality + auto-fix
+- `pnpm health-check` — environment validation
+- `pnpm test:build-pipeline` — build artifact + performance validation
+
+Per-package: `pnpm --filter <name> <script>`. Package-specific Turborepo build tasks use `build:<name>` convention (`build:ui`, `build:theme`, `build:config`, `build:moo-dang`).
+
+## Build & tooling
+
+- Package manager: **pnpm** (root `packageManager: pnpm@10.33.4`)
+- Node: pinned via `.node-version` (24.x) — repo `engines` floor is `>=22.13.1`
+- Monorepo: **Turborepo** with task graph (`build` → `^build`, `dev`/`test` depend on `^build`)
+- Bundler: **tsdown** (`tsdown.config.ts` per package, `defineConfig({entry: ['./src/index.ts'], outDir: 'dist', dts: true})`)
+- ESM-only (`"type": "module"`); workspace deps use `workspace:*` protocol
+- Tests: Vitest, `globals: true`, type-checking enabled
+- Visual regression: Playwright (`packages/storybook/test/visual-regression/*.visual.test.ts`)
+- Linting/format: ESLint + Prettier via Turborepo, `@bfra.me/eslint-config` + `@bfra.me/prettier-config`
+- Versioning: **Changesets** (`pnpm changeset` → `pnpm changeset version` → commit)
+- Renovate-managed dependencies; dashboard at issue #212
+
+## Workflows (`.github/workflows/`)
+
+- `main.yaml` — primary CI: setup, check, build
+- `deploy-docs.yaml` — GitHub Pages deployment for sparkle.mrbro.dev
+- `regenerate-docs.yaml` — auto-regenerate API docs on package source changes
+- `update-repo-settings.yaml` — sync repo settings from `bfra-me/.github` preset
+- `cleanup-cache.yaml` — workflow cache cleanup on PR close + weekly
+- `renovate.yaml` — Renovate self-hosted runs
+- `fro-bot.yaml` — Fro Bot (PR review + daily maintenance + autoheal)
+
+## Public surface
+
+- Docs site: <https://sparkle.mrbro.dev>
+- Repo: <https://github.com/marcusrbrown/sparkle>
+
+## Conventions (quick reference; see copilot-instructions.md for the full set)
+
+- Types/Interfaces: PascalCase. Functions/variables: camelCase. Components: PascalCase with explicit return types. Files: kebab-case for configs, PascalCase for components.
+- Avoid ES6 classes (exception: custom `Error` subclasses). Prefer utility types, `as const`, discriminated unions, `parse, don't validate`.
+- Logging: **`consola`**, never `console`.
+- Tests must pass before completing tasks. Use factory mocks from `@sparkle/test-utils` with `standardBeforeEach`/`standardAfterEach`. JSDoc on all public APIs. Document *why*, not *what*.
+- YAML extension: `.yaml`, not `.yml`. All third-party actions in workflows must be pinned to a full SHA.
