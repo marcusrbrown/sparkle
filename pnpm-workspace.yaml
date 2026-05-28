@@ -22,7 +22,7 @@ onlyBuiltDependencies:
   - unrs-resolver
 
 overrides:
-  tmp@<0.2.4: ^0.2.4
+  tmp@<0.2.6: ^0.2.6
 
 preferWorkspacePackages: true
 
