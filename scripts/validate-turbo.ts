@@ -128,11 +128,13 @@ class TurboValidator {
           'packages/config',
           'packages/error-testing',
           'packages/storybook',
+          'packages/test-utils',
           'packages/theme',
           'packages/types',
           'packages/ui',
           'packages/utils',
           'apps/fro-jive',
+          'apps/moo-dang',
           'docs',
         ]
 
