@@ -50,7 +50,7 @@
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react-swc": "^4.0.0",
     "@vitest/coverage-v8": "4.1.8",
-    "happy-dom": "20.9.0",
+    "happy-dom": "20.10.1",
     "postcss": "^8.5.2",
     "react": "19.2.7",
     "react-dom": "19.2.7",
