@@ -173,7 +173,14 @@
       "env": ["NODE_ENV"]
     },
     "test": {
-      "dependsOn": ["^build:types", "^build:utils", "^build:theme", "^build:config", "^build:ui"],
+      "dependsOn": [
+        "^build:types",
+        "^build:utils",
+        "^build:theme",
+        "^build:config",
+        "^build:ui",
+        "@sparkle/test-utils#build"
+      ],
       "inputs": [
         "src/**/*.{ts,tsx}",
         "test/**/*.{ts,tsx}",
@@ -199,7 +206,14 @@
       "cache": true
     },
     "test:coverage": {
-      "dependsOn": ["^build:types", "^build:utils", "^build:theme", "^build:config", "^build:ui"],
+      "dependsOn": [
+        "^build:types",
+        "^build:utils",
+        "^build:theme",
+        "^build:config",
+        "^build:ui",
+        "@sparkle/test-utils#build"
+      ],
       "outputs": ["coverage/**"],
       "inputs": [
         "src/**/*.{ts,tsx}",
@@ -250,7 +264,14 @@
       "cache": false
     },
     "test:watch": {
-      "dependsOn": ["^build:types", "^build:utils", "^build:theme", "^build:config", "^build:ui"],
+      "dependsOn": [
+        "^build:types",
+        "^build:utils",
+        "^build:theme",
+        "^build:config",
+        "^build:ui",
+        "@sparkle/test-utils#build"
+      ],
       "persistent": true,
       "cache": false,
       "inputs": [
