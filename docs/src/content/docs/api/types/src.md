@@ -87,19 +87,19 @@ Field name for form submission and validation
 
 ##### size?
 
-> `optional` **size**: `"sm"` \| `"md"` \| `"lg"`
+> `optional` **size?**: `"sm"` \| `"md"` \| `"lg"`
 
 Size variant for the field
 
 ##### type?
 
-> `optional` **type**: `"text"` \| `"email"` \| `"password"` \| `"textarea"` \| `"select"`
+> `optional` **type?**: `"text"` \| `"email"` \| `"password"` \| `"textarea"` \| `"select"`
 
 Field type for input elements
 
 ##### validationState?
 
-> `optional` **validationState**: `"default"` \| `"error"` \| `"success"`
+> `optional` **validationState?**: `"default"` \| `"error"` \| `"success"`
 
 Validation state of the field
 
@@ -115,9 +115,9 @@ Form validation message props
 
 #### Properties
 
-##### match()?
+##### match?
 
-> `optional` **match**: (`value`, `formData`) => `boolean` \| `Promise`\<`boolean`\>
+> `optional` **match?**: (`value`, `formData`) => `boolean` \| `Promise`\<`boolean`\>
 
 Custom validation function
 
@@ -137,7 +137,7 @@ Custom validation function
 
 ##### validationType?
 
-> `optional` **validationType**: `"valueMissing"` \| `"typeMismatch"` \| `"patternMismatch"` \| `"tooLong"` \| `"tooShort"` \| `"rangeUnderflow"` \| `"rangeOverflow"` \| `"stepMismatch"` \| `"badInput"`
+> `optional` **validationType?**: `"valueMissing"` \| `"typeMismatch"` \| `"patternMismatch"` \| `"tooLong"` \| `"tooShort"` \| `"rangeUnderflow"` \| `"rangeOverflow"` \| `"stepMismatch"` \| `"badInput"`
 
 Built-in validation type
 

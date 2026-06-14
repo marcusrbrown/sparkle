@@ -50,6 +50,8 @@ the `@sparkle/theme` system for consistent styling across light/dark modes.
 
 #### Examples
 
+**Basic usage**
+
 ```tsx
 import { Button } from '@sparkle/ui'
 
@@ -61,6 +63,8 @@ function Example() {
   )
 }
 ```
+
+**Style variants**
 
 ```tsx
 <>
@@ -77,6 +81,8 @@ function Example() {
   <Button variant="ghost">Dismiss</Button>
 </>
 ```
+
+**Semantic colors for contextual actions**
 
 ```tsx
 <>
@@ -97,6 +103,8 @@ function Example() {
 </>
 ```
 
+**Size variants**
+
 ```tsx
 <>
   // Small button for compact UI
@@ -109,6 +117,8 @@ function Example() {
   <Button size="lg">Large CTA</Button>
 </>
 ```
+
+**Form submission**
 
 ```tsx
 function ContactForm() {
@@ -126,6 +136,8 @@ function ContactForm() {
   )
 }
 ```
+
+**Loading state**
 
 ```tsx
 function SaveButton() {
@@ -148,6 +160,8 @@ function SaveButton() {
 }
 ```
 
+**Button with icons**
+
 ```tsx
 import { PlusIcon } from '@your-icon-library'
 
@@ -164,6 +178,8 @@ import { PlusIcon } from '@your-icon-library'
   </Button>
 </>
 ```
+
+**Confirmation dialog**
 
 ```tsx
 function DeleteConfirmation({ onConfirm, onCancel }) {

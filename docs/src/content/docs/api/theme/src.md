@@ -34,7 +34,7 @@ if (!result.isValid) {
 
 ##### validate()
 
-> **validate**(`theme`, `options`): [`ValidationResult`](#validationresult)
+> **validate**(`theme`, `options?`): [`ValidationResult`](#validationresult)
 
 Validate a theme configuration
 
@@ -46,7 +46,7 @@ Validate a theme configuration
 
 Theme configuration to validate
 
-###### options
+###### options?
 
 [`ValidationOptions`](#validationoptions) = `{}`
 
@@ -110,7 +110,7 @@ Get cache statistics
 
 ##### toNative()
 
-> **toNative**(`tokens`, `options`): [`NativeTheme`](#nativetheme)
+> **toNative**(`tokens`, `options?`): [`NativeTheme`](#nativetheme)
 
 Transform tokens to native format (React Native StyleSheet)
 
@@ -122,7 +122,7 @@ Transform tokens to native format (React Native StyleSheet)
 
 Source theme configuration
 
-###### options
+###### options?
 
 `Omit`\<[`TransformOptions`](#transformoptions), `"platform"`\> = `{}`
 
@@ -136,7 +136,7 @@ Native theme object
 
 ##### toWeb()
 
-> **toWeb**(`tokens`, `options`): [`CSSCustomProperties`](#csscustomproperties)
+> **toWeb**(`tokens`, `options?`): [`CSSCustomProperties`](#csscustomproperties)
 
 Transform tokens to web format (CSS custom properties)
 
@@ -148,7 +148,7 @@ Transform tokens to web format (CSS custom properties)
 
 Source theme configuration
 
-###### options
+###### options?
 
 `Omit`\<[`TransformOptions`](#transformoptions), `"platform"`\> = `{}`
 
@@ -222,7 +222,7 @@ Child components that will have access to the theme context
 
 ##### defaultTheme?
 
-> `optional` **defaultTheme**: [`ThemeMode`](#thememode)
+> `optional` **defaultTheme?**: [`ThemeMode`](#thememode)
 
 Default theme mode to use on first load
 
@@ -234,7 +234,7 @@ Default theme mode to use on first load
 
 ##### disableSystemTheme?
 
-> `optional` **disableSystemTheme**: `boolean`
+> `optional` **disableSystemTheme?**: `boolean`
 
 Whether to disable system theme detection
 
@@ -246,7 +246,7 @@ false
 
 ##### storageKey?
 
-> `optional` **storageKey**: `string`
+> `optional` **storageKey?**: `string`
 
 Storage key for persisting theme preference
 
@@ -258,7 +258,7 @@ Storage key for persisting theme preference
 
 ##### themes?
 
-> `optional` **themes**: [`ThemeCollection`](#themecollection)
+> `optional` **themes?**: [`ThemeCollection`](#themecollection)
 
 Custom theme configurations to override defaults
 
@@ -270,7 +270,7 @@ Custom theme configurations to override defaults
 
 ##### updateStatusBar?
 
-> `optional` **updateStatusBar**: `boolean`
+> `optional` **updateStatusBar?**: `boolean`
 
 Whether to automatically update StatusBar style based on theme
 
@@ -312,7 +312,7 @@ Error state if theme loading or validation fails
 
 Loading state during theme initialization or transitions
 
-##### setTheme()
+##### setTheme
 
 > **setTheme**: (`theme`) => `void`
 
@@ -351,25 +351,25 @@ Configuration options for the theme plugin
 
 ##### darkMode?
 
-> `optional` **darkMode**: `boolean`
+> `optional` **darkMode?**: `boolean`
 
 Whether to include dark mode support (default: true)
 
 ##### includeCSSVariables?
 
-> `optional` **includeCSSVariables**: `boolean`
+> `optional` **includeCSSVariables?**: `boolean`
 
 Whether to include CSS custom properties in base layer (default: true)
 
 ##### prefix?
 
-> `optional` **prefix**: `string`
+> `optional` **prefix?**: `string`
 
 Prefix for CSS custom properties (default: 'theme')
 
 ##### rootSelector?
 
-> `optional` **rootSelector**: `string`
+> `optional` **rootSelector?**: `string`
 
 Selector for CSS custom properties (default: ':root')
 
@@ -389,7 +389,7 @@ Child components that will have access to the theme context
 
 ##### cssSelector?
 
-> `optional` **cssSelector**: `string`
+> `optional` **cssSelector?**: `string`
 
 CSS selector for injecting CSS variables
 
@@ -401,7 +401,7 @@ CSS selector for injecting CSS variables
 
 ##### defaultTheme?
 
-> `optional` **defaultTheme**: [`ThemeMode`](#thememode)
+> `optional` **defaultTheme?**: [`ThemeMode`](#thememode)
 
 Default theme mode to use on first load
 
@@ -413,7 +413,7 @@ Default theme mode to use on first load
 
 ##### disableSystemTheme?
 
-> `optional` **disableSystemTheme**: `boolean`
+> `optional` **disableSystemTheme?**: `boolean`
 
 Whether to disable system theme detection
 
@@ -425,7 +425,7 @@ false
 
 ##### storageKey?
 
-> `optional` **storageKey**: `string`
+> `optional` **storageKey?**: `string`
 
 Storage key for persisting theme preference
 
@@ -437,7 +437,7 @@ Storage key for persisting theme preference
 
 ##### themes?
 
-> `optional` **themes**: [`ThemeCollection`](#themecollection)
+> `optional` **themes?**: [`ThemeCollection`](#themecollection)
 
 Custom theme configurations to override defaults
 
@@ -457,13 +457,13 @@ Theme examples and showcase components (Phase 5)
 
 ##### className?
 
-> `optional` **className**: `string`
+> `optional` **className?**: `string`
 
 Additional CSS classes for the showcase container
 
 ##### showColorPalette?
 
-> `optional` **showColorPalette**: `boolean`
+> `optional` **showColorPalette?**: `boolean`
 
 Whether to show the color palette demonstration
 
@@ -475,7 +475,7 @@ true
 
 ##### showComponents?
 
-> `optional` **showComponents**: `boolean`
+> `optional` **showComponents?**: `boolean`
 
 Whether to show component demonstrations
 
@@ -487,7 +487,7 @@ true
 
 ##### showSemanticColors?
 
-> `optional` **showSemanticColors**: `boolean`
+> `optional` **showSemanticColors?**: `boolean`
 
 Whether to show semantic color demonstrations
 
@@ -507,13 +507,13 @@ Token transformation options
 
 ##### baseFontSize?
 
-> `optional` **baseFontSize**: `number`
+> `optional` **baseFontSize?**: `number`
 
 Base font size for rem calculations (default: 16)
 
 ##### flattenColors?
 
-> `optional` **flattenColors**: `boolean`
+> `optional` **flattenColors?**: `boolean`
 
 Whether to flatten nested color objects for easier access (native only)
 
@@ -525,13 +525,13 @@ Target platform for transformation
 
 ##### prefix?
 
-> `optional` **prefix**: `string`
+> `optional` **prefix?**: `string`
 
 Optional prefix for CSS variables (web only)
 
 ##### selector?
 
-> `optional` **selector**: `string`
+> `optional` **selector?**: `string`
 
 CSS selector for CSS variables (web only, default: ':root')
 
@@ -589,7 +589,7 @@ Validation error with specific context
 
 ##### expected?
 
-> `optional` **expected**: `string`
+> `optional` **expected?**: `string`
 
 Expected value type or format
 
@@ -627,37 +627,37 @@ Validation options for theme configuration
 
 ##### checkRequiredProperties?
 
-> `optional` **checkRequiredProperties**: `boolean`
+> `optional` **checkRequiredProperties?**: `boolean`
 
 Whether to check for missing required properties (default: true)
 
 ##### minContrastRatio?
 
-> `optional` **minContrastRatio**: `number`
+> `optional` **minContrastRatio?**: `number`
 
 Minimum contrast ratio for WCAG compliance (default: 4.5 for AA)
 
 ##### strictMode?
 
-> `optional` **strictMode**: `boolean`
+> `optional` **strictMode?**: `boolean`
 
 Whether to treat warnings as errors (default: false)
 
 ##### validateColorContrast?
 
-> `optional` **validateColorContrast**: `boolean`
+> `optional` **validateColorContrast?**: `boolean`
 
 Whether to validate color contrast ratios (default: true)
 
 ##### validateCSSValues?
 
-> `optional` **validateCSSValues**: `boolean`
+> `optional` **validateCSSValues?**: `boolean`
 
 Whether to validate CSS value formats (default: true)
 
 ##### validateSpacingScale?
 
-> `optional` **validateSpacingScale**: `boolean`
+> `optional` **validateSpacingScale?**: `boolean`
 
 Whether to validate spacing scale consistency (default: true)
 
@@ -801,13 +801,13 @@ Promise resolving to true if AsyncStorage is supported and accessible
 
 ##### load()
 
-> **load**(`storageKey`): `Promise`\<[`ThemeMode`](#thememode) \| `null`\>
+> **load**(`storageKey?`): `Promise`\<[`ThemeMode`](#thememode) \| `null`\>
 
 Loads theme preference from AsyncStorage
 
 ###### Parameters
 
-###### storageKey
+###### storageKey?
 
 `string` = `DEFAULT_THEME_STORAGE_KEY`
 
@@ -821,13 +821,13 @@ Promise resolving to the stored theme mode or null if not found
 
 ##### remove()
 
-> **remove**(`storageKey`): `Promise`\<`void`\>
+> **remove**(`storageKey?`): `Promise`\<`void`\>
 
 Removes theme preference from AsyncStorage
 
 ###### Parameters
 
-###### storageKey
+###### storageKey?
 
 `string` = `DEFAULT_THEME_STORAGE_KEY`
 
@@ -839,7 +839,7 @@ The key to use for AsyncStorage
 
 ##### save()
 
-> **save**(`theme`, `storageKey`): `Promise`\<`void`\>
+> **save**(`theme`, `storageKey?`): `Promise`\<`void`\>
 
 Saves theme preference to AsyncStorage
 
@@ -851,7 +851,7 @@ Saves theme preference to AsyncStorage
 
 The theme mode to save
 
-###### storageKey
+###### storageKey?
 
 `string` = `DEFAULT_THEME_STORAGE_KEY`
 
@@ -894,7 +894,7 @@ true if the value is a valid ThemeMode
 
 ##### migrate()
 
-> **migrate**(`oldKey`, `newKey`, `removeOld`): `Promise`\<`boolean`\>
+> **migrate**(`oldKey`, `newKey`, `removeOld?`): `Promise`\<`boolean`\>
 
 Migrates theme preference from old key to new key
 
@@ -912,7 +912,7 @@ The old storage key
 
 The new storage key
 
-###### removeOld
+###### removeOld?
 
 `boolean` = `true`
 
@@ -1193,13 +1193,13 @@ true if localStorage is supported and accessible
 
 ##### load()
 
-> **load**(`storageKey`): [`ThemeMode`](#thememode) \| `null`
+> **load**(`storageKey?`): [`ThemeMode`](#thememode) \| `null`
 
 Loads theme preference from localStorage
 
 ###### Parameters
 
-###### storageKey
+###### storageKey?
 
 `string` = `DEFAULT_THEME_STORAGE_KEY`
 
@@ -1213,13 +1213,13 @@ The stored theme mode or null if not found
 
 ##### remove()
 
-> **remove**(`storageKey`): `void`
+> **remove**(`storageKey?`): `void`
 
 Removes theme preference from localStorage
 
 ###### Parameters
 
-###### storageKey
+###### storageKey?
 
 `string` = `DEFAULT_THEME_STORAGE_KEY`
 
@@ -1231,7 +1231,7 @@ The key to use for localStorage
 
 ##### save()
 
-> **save**(`theme`, `storageKey`): `void`
+> **save**(`theme`, `storageKey?`): `void`
 
 Saves theme preference to localStorage
 
@@ -1243,7 +1243,7 @@ Saves theme preference to localStorage
 
 The theme mode to save
 
-###### storageKey
+###### storageKey?
 
 `string` = `DEFAULT_THEME_STORAGE_KEY`
 
@@ -1326,7 +1326,7 @@ const styleUtils = createNativeStyleUtils(theme)
 
 ### createThemePlugin()
 
-> **createThemePlugin**(`themes`, `options`): `PluginWithConfig`
+> **createThemePlugin**(`themes`, `options?`): `PluginWithConfig`
 
 Creates a Tailwind CSS plugin for theme integration
 
@@ -1336,7 +1336,7 @@ Creates a Tailwind CSS plugin for theme integration
 
 `Record`\<`string`, `ThemeConfig`\>
 
-##### options
+##### options?
 
 [`ThemePluginOptions`](#themepluginoptions) = `{}`
 
@@ -1348,7 +1348,7 @@ Creates a Tailwind CSS plugin for theme integration
 
 ### cssPropertiesToString()
 
-> **cssPropertiesToString**(`cssVariables`, `selector`): `string`
+> **cssPropertiesToString**(`cssVariables`, `selector?`): `string`
 
 Converts CSS custom properties object to CSS string
 for injection into stylesheets or CSS-in-JS
@@ -1361,7 +1361,7 @@ for injection into stylesheets or CSS-in-JS
 
 Object of CSS custom properties
 
-##### selector
+##### selector?
 
 `string` = `':root'`
 
@@ -1434,7 +1434,7 @@ cssVar('spacing', 'md', '1rem', 'app')
 
 ### generateCSSVariables()
 
-> **generateCSSVariables**(`tokens`, `prefix`): [`CSSCustomProperties`](#csscustomproperties)
+> **generateCSSVariables**(`tokens`, `prefix?`): [`CSSCustomProperties`](#csscustomproperties)
 
 Generates CSS custom properties (CSS variables) from design tokens
 for web platform integration with Tailwind CSS and other frameworks
@@ -1447,7 +1447,7 @@ for web platform integration with Tailwind CSS and other frameworks
 
 Theme configuration object with design tokens
 
-##### prefix
+##### prefix?
 
 `string` = `'sparkle'`
 
@@ -1470,7 +1470,7 @@ const cssVars = generateCSSVariables(lightTokens)
 
 ### generateNativeTheme()
 
-> **generateNativeTheme**(`tokens`, `options`): [`NativeTheme`](#nativetheme)
+> **generateNativeTheme**(`tokens`, `options?`): [`NativeTheme`](#nativetheme)
 
 Generates React Native StyleSheet compatible theme object from design tokens
 Converts CSS values to React Native compatible numeric and string values
@@ -1483,7 +1483,7 @@ Converts CSS values to React Native compatible numeric and string values
 
 Theme configuration object with design tokens
 
-##### options
+##### options?
 
 Configuration options for conversion
 
@@ -1521,7 +1521,7 @@ const styles = StyleSheet.create({
 
 ### generateThemeCSS()
 
-> **generateThemeCSS**(`tokens`, `options`): `string`
+> **generateThemeCSS**(`tokens`, `options?`): `string`
 
 Generates CSS custom properties string directly from theme tokens
 Convenience function that combines generateCSSVariables and cssPropertiesToString
@@ -1534,7 +1534,7 @@ Convenience function that combines generateCSSVariables and cssPropertiesToStrin
 
 Theme configuration object
 
-##### options
+##### options?
 
 Configuration options
 
@@ -1626,7 +1626,7 @@ function App() {
 
 ### parseNumericValue()
 
-> **parseNumericValue**(`value`, `baseFontSize`): `number`
+> **parseNumericValue**(`value`, `baseFontSize?`): `number`
 
 Converts a CSS dimension string to a React Native numeric value
 Handles rem, px, and numeric values
@@ -1635,11 +1635,11 @@ Handles rem, px, and numeric values
 
 ##### value
 
+`string` \| `number`
+
 CSS dimension string (e.g., '1rem', '16px', '1.5')
 
-`string` | `number`
-
-##### baseFontSize
+##### baseFontSize?
 
 `number` = `16`
 
