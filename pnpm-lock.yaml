@@ -286,7 +286,7 @@ importers:
         version: 4.11.3
       '@axe-core/playwright':
         specifier: 4.11.3
-        version: 4.11.3(playwright-core@1.61.0)
+        version: 4.11.3(playwright-core@1.61.1)
       '@microsoft/api-extractor':
         specifier: 7.58.9
         version: 7.58.9(@types/node@24.13.2)
@@ -309,8 +309,8 @@ importers:
         specifier: 3.0.0
         version: 3.0.0
       playwright:
-        specifier: 1.61.0
-        version: 1.61.0
+        specifier: 1.61.1
+        version: 1.61.1
       ts-morph:
         specifier: 27.0.2
         version: 27.0.2
@@ -401,8 +401,8 @@ importers:
         version: 4.3.0
     devDependencies:
       '@playwright/test':
-        specifier: 1.61.0
-        version: 1.61.0
+        specifier: 1.61.1
+        version: 1.61.1
       '@storybook/addon-a11y':
         specifier: 10.4.6
         version: 10.4.6(storybook@10.4.2(@testing-library/dom@10.4.1)(@types/react@19.2.17)(prettier@3.8.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))
@@ -440,8 +440,8 @@ importers:
         specifier: ^10.4.20
         version: 10.5.0(postcss@8.5.15)
       playwright:
-        specifier: 1.61.0
-        version: 1.61.0
+        specifier: 1.61.1
+        version: 1.61.1
       postcss:
         specifier: ^8.5.2
         version: 8.5.15
@@ -2683,8 +2683,8 @@ packages:
     resolution: {integrity: sha512-SEeaJLb3qBNF/OaXnaR1NmmBbFYk1zC0ZH/52fATcRPLFg/p791YrcyFFy44Bo9sLaGuSuLp5Q6axbb/O+v/RA==}
     engines: {node: ^14.18.0 || >=16.0.0}
 
-  '@playwright/test@1.61.0':
-    resolution: {integrity: sha512-cKA5B6lpFEMyMGjxF54QihfYpB4FkEGH+qZhtArDEG+wezQAJY8Pq6C7T1SjWz+FFzt3TbyoXBQYk/0292TdJA==}
+  '@playwright/test@1.61.1':
+    resolution: {integrity: sha512-8nKv6+0RJSL9FE4jYOEGXnPeM/Hg12qZpmqzZjRh3qM0Y7c3z1mrOTfFLids72RDQYVh9WpLEfR5WdpNX4fkig==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -8481,13 +8481,13 @@ packages:
   pkg-types@2.3.1:
     resolution: {integrity: sha512-y+ichcgc2LrADuhLNAx8DFjVfgz91pRxfZdI3UDhxHvcVEZsenLO+7XaU5vOp0u/7V/wZ+plyuQxtrDlZJ+yeg==}
 
-  playwright-core@1.61.0:
-    resolution: {integrity: sha512-caX7TrY3Ml6egyDX0WUcTHDxodl/b51y5wJOdCEA36QviK/s2g081hvmGs8eaE3DWb6NYZQ6BjO/QkNRPenoPA==}
+  playwright-core@1.61.1:
+    resolution: {integrity: sha512-h7Qlt6m4REp25qvIdvbDtVmD4LqVXfpRxhORv9L0jzETM05p4fuPJ3dKyuSXQxDSbXnmS79HAgi9589lGSpLkg==}
     engines: {node: '>=18'}
     hasBin: true
 
-  playwright@1.61.0:
-    resolution: {integrity: sha512-Z+7BeeqQPRRzklHsVFP4KTGIyMxKUmfeRA4WisM6G3/XW6nwGeX6fX9qYaDa+CiUqpOkb2f6X3nar05R3kSuJQ==}
+  playwright@1.61.1:
+    resolution: {integrity: sha512-DWnY5o3YbLWK4GovuAVwpqL+1VwGNdUGrRr++8j8PtQQzvAVZUIMjKQ90fY689sEJZJBbZVw1rXaOKSTitkzPQ==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -10764,10 +10764,10 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@axe-core/playwright@4.11.3(playwright-core@1.61.0)':
+  '@axe-core/playwright@4.11.3(playwright-core@1.61.1)':
     dependencies:
       axe-core: 4.11.4
-      playwright-core: 1.61.0
+      playwright-core: 1.61.1
 
   '@axe-core/webdriverjs@4.11.3(selenium-webdriver@4.41.0)':
     dependencies:
@@ -13099,9 +13099,9 @@ snapshots:
 
   '@pkgr/core@0.3.6': {}
 
-  '@playwright/test@1.61.0':
+  '@playwright/test@1.61.1':
     dependencies:
-      playwright: 1.61.0
+      playwright: 1.61.1
 
   '@pnpm/config.env-replace@1.1.0': {}
 
@@ -14166,8 +14166,8 @@ snapshots:
       jest-serializer-html: 7.1.0
       jest-watch-typeahead: 3.0.1(jest@30.4.2(@types/node@24.13.2))
       nyc: 15.1.0
-      playwright: 1.61.0
-      playwright-core: 1.61.0
+      playwright: 1.61.1
+      playwright-core: 1.61.1
       rimraf: 3.0.2
       storybook: 10.4.2(@testing-library/dom@10.4.1)(@types/react@19.2.17)(prettier@3.8.4)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       uuid: 8.3.2
@@ -20165,11 +20165,11 @@ snapshots:
       exsolve: 1.0.8
       pathe: 2.0.3
 
-  playwright-core@1.61.0: {}
+  playwright-core@1.61.1: {}
 
-  playwright@1.61.0:
+  playwright@1.61.1:
     dependencies:
-      playwright-core: 1.61.0
+      playwright-core: 1.61.1
     optionalDependencies:
       fsevents: 2.3.2
 
