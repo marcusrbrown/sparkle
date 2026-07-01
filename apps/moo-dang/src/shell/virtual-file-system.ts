@@ -383,15 +383,13 @@ export function createVirtualFileSystem(enableDebugLogging = false): VirtualFile
         throw createDirectoryError(path, 'Not a directory')
       }
 
-      const details = Array.from(node.children.entries()).map(
-        ([name, childNode]): DirectoryEntry => ({
-          name,
-          type: childNode.type,
-          permissions: childNode.permissions,
-          size: childNode.type === 'file' ? childNode.content?.length || 0 : 0,
-          lastModified: new Date(childNode.lastModified),
-        }),
-      )
+      const details = Array.from(node.children.entries()).map(([name, childNode]): DirectoryEntry => ({
+        name,
+        type: childNode.type,
+        permissions: childNode.permissions,
+        size: childNode.type === 'file' ? childNode.content?.length || 0 : 0,
+        lastModified: new Date(childNode.lastModified),
+      }))
 
       // Sort by name for consistent ordering
       details.sort((a, b) => a.name.localeCompare(b.name))
