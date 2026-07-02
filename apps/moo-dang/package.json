@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "npm run build:wasm && vite build",
+    "build:moo-dang": "npm run build",
     "build:types": "tsc",
     "build:wasm": "./scripts/build-wasm.sh",
     "build:wasm:clean": "cd src/wasm && rm -rf zig-out",
