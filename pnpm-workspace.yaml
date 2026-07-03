@@ -13,6 +13,14 @@ packages:
   - docs
   - scripts
 
+allowBuilds:
+  '@swc/core': true
+  chromedriver: true
+  esbuild: true
+  sharp: true
+  simple-git-hooks: true
+  unrs-resolver: true
+
 onlyBuiltDependencies:
   - '@swc/core'
   - chromedriver
