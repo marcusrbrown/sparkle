@@ -36,6 +36,7 @@
     "react-dom": "19.2.7"
   },
   "devDependencies": {
+    "@sparkle/test-utils": "workspace:*",
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^16.0.0",
     "@types/react": "~19.2.0",
