@@ -10,14 +10,25 @@ on:
       - main
     paths:
       # Monitor all source packages that generate documentation
-      - packages/ui/src/**/*.{ts,tsx,js,jsx}
-      - packages/types/src/**/*.{ts,tsx}
-      - packages/utils/src/**/*.{ts,tsx}
-      - packages/theme/src/**/*.{ts,tsx}
-      - packages/error-testing/src/**/*.{ts,tsx}
+      # Note: GitHub Actions path filters do not support brace expansion
+      # (e.g. `*.{ts,tsx}`), so each extension is listed as its own pattern.
+      - packages/ui/src/**/*.ts
+      - packages/ui/src/**/*.tsx
+      - packages/ui/src/**/*.js
+      - packages/ui/src/**/*.jsx
+      - packages/types/src/**/*.ts
+      - packages/types/src/**/*.tsx
+      - packages/utils/src/**/*.ts
+      - packages/utils/src/**/*.tsx
+      - packages/theme/src/**/*.ts
+      - packages/theme/src/**/*.tsx
+      - packages/error-testing/src/**/*.ts
+      - packages/error-testing/src/**/*.tsx
       # Exclude test and build artifacts
-      - '!**/*.test.{ts,tsx}'
-      - '!**/*.spec.{ts,tsx}'
+      - '!**/*.test.ts'
+      - '!**/*.test.tsx'
+      - '!**/*.spec.ts'
+      - '!**/*.spec.tsx'
       - '!**/*.d.ts'
       - '!**/dist/**'
   workflow_dispatch:
