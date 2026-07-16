@@ -37,7 +37,7 @@ Per-package: `pnpm --filter <name> <script>`. Package-specific Turborepo build t
 
 ## Build & tooling
 
-- Package manager: **pnpm** (root `packageManager: pnpm@11.10.0`)
+- Package manager: **pnpm** (root `packageManager: pnpm@11.11.0`)
 - Node: pinned via `.node-version` (24.x) — repo `engines` floor is `>=22.13.1`
 - Monorepo: **Turborepo** with task graph (`build` → `^build`, `dev`/`test` depend on `^build`)
 - Bundler: **tsdown** (`tsdown.config.ts` per package, `defineConfig({entry: ['./src/index.ts'], outDir: 'dist', dts: true})`)
