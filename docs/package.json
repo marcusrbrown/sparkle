@@ -51,9 +51,9 @@
   },
   "dependencies": {
     "@astrojs/check": "0.9.9",
-    "@astrojs/mdx": "^5.0.0",
+    "@astrojs/mdx": "^7.0.0",
     "@astrojs/react": "^5.0.0",
-    "@astrojs/starlight": "^0.38.0",
+    "@astrojs/starlight": "^0.41.0",
     "@monaco-editor/react": "4.7.0",
     "@sparkle/theme": "workspace:*",
     "@sparkle/types": "workspace:*",
