@@ -690,7 +690,7 @@ jobs:
           fi
 
       - name: Checkout repository
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           fetch-depth: 0
           # Check out PR code when:
@@ -715,7 +715,7 @@ jobs:
           install-zig: 'true'
 
       - name: Run Fro Bot
-        uses: fro-bot/agent@a4976f45a51458c349eb232aa1795f6fa25d5500 # v0.93.1
+        uses: fro-bot/agent@d8f130ee41923598d2ca93a0871f37c804c6c57d # v0.94.1
         env:
           OPENCODE_PROMPT_ARTIFACT: 'true'
           IS_SUNDAY_UTC: ${{ env.IS_SUNDAY_UTC || 'false' }}
