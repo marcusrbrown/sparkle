@@ -30,6 +30,7 @@ onlyBuiltDependencies:
   - unrs-resolver
 
 overrides:
+  postcss@<8.5.12: ^8.5.12
   tmp@<0.2.6: ^0.2.6
 
 preferWorkspacePackages: true
