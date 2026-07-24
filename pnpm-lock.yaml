@@ -193,6 +193,9 @@ importers:
         specifier: 19.2.7
         version: 19.2.7(react@19.2.7)
     devDependencies:
+      '@sparkle/test-utils':
+        specifier: workspace:*
+        version: link:../../packages/test-utils
       '@testing-library/jest-dom':
         specifier: ^6.4.2
         version: 6.9.1

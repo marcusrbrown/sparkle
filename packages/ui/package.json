@@ -24,6 +24,7 @@
     "build:js": "tsdown",
     "build:types": "tsdown --dts-only",
     "build:types:watch": "tsdown --dts-only --watch",
+    "build:ui": "pnpm build",
     "build:watch": "tsdown --watch",
     "dev": "vite",
     "lint": "eslint",
