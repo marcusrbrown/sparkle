@@ -5,6 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
+  adm-zip@<0.6.0: ^0.6.0
   tmp@<0.2.6: ^0.2.6
 
 importers:
@@ -4641,9 +4642,9 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
-  adm-zip@0.5.18:
-    resolution: {integrity: sha512-ufJnssQGbxzLNS1Ho9bCtX4rQKCCvoVuDLHoJyc3F9dOGDB4BkWs2Ci0kv53lqocAEQ/Cbi+I2XCsNYGqVYqng==}
-    engines: {node: '>=12.0'}
+  adm-zip@0.6.0:
+    resolution: {integrity: sha512-XleryMhbuksdKtofnWZ9Sk+4CUTbms4Mb/EU32SZwToAyZ5RgVos/ki8n+yr0LWHOGKuakbXTuuYNHLQjhddgg==}
+    engines: {node: '>=14.0'}
 
   agent-base@6.0.2:
     resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
@@ -15226,7 +15227,7 @@ snapshots:
 
   acorn@8.17.0: {}
 
-  adm-zip@0.5.18: {}
+  adm-zip@0.6.0: {}
 
   agent-base@6.0.2(supports-color@8.1.1):
     dependencies:
@@ -15967,7 +15968,7 @@ snapshots:
   chromedriver@151.0.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1):
     dependencies:
       '@testim/chrome-version': 1.1.4
-      adm-zip: 0.5.18
+      adm-zip: 0.6.0
       axios: 1.18.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       compare-versions: 6.1.1
       proxy-agent: 8.0.2(supports-color@8.1.1)

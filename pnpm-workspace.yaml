@@ -30,6 +30,7 @@ onlyBuiltDependencies:
   - unrs-resolver
 
 overrides:
+  adm-zip@<0.6.0: ^0.6.0
   tmp@<0.2.6: ^0.2.6
 
 preferWorkspacePackages: true
