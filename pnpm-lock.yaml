@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  postcss@<8.5.12: ^8.5.12
+  postcss@<8.5.18: ^8.5.18
   tmp@<0.2.6: ^0.2.6
 
 importers:
@@ -444,7 +444,7 @@ importers:
         specifier: 1.61.1
         version: 1.61.1
       postcss:
-        specifier: ^8.5.12
+        specifier: ^8.5.18
         version: 8.5.20
       rimraf:
         specifier: ^6.0.0
@@ -591,7 +591,7 @@ importers:
         specifier: 20.11.0
         version: 20.11.0
       postcss:
-        specifier: ^8.5.12
+        specifier: ^8.5.18
         version: 8.5.20
       react:
         specifier: 19.2.7
@@ -4857,7 +4857,7 @@ packages:
     engines: {node: ^10 || ^12 || >=14}
     hasBin: true
     peerDependencies:
-      postcss: ^8.5.12
+      postcss: ^8.5.18
 
   axe-core@4.12.1:
     resolution: {integrity: sha512-s7iGf5GaVMxEG0ENN9x+xTr7GFZCb1ZP/1uATUpCEK2X78nDB3RwbtFCo9pGAf9ru+VwoQ464DkaLEeRM08wJA==}
@@ -8590,7 +8590,7 @@ packages:
     resolution: {integrity: sha512-HQbt28KulC5AJzG+cZtj9kvKB93CFCdLvog1WFLf1D+xmMvPGlBstkpTEZfK5+AN9hfJocyBFCNiqyS48bpgzQ==}
     engines: {node: '>=12.0'}
     peerDependencies:
-      postcss: ^8.5.12
+      postcss: ^8.5.18
 
   postcss-selector-parser@6.1.4:
     resolution: {integrity: sha512-bIoJLOmjCO1S9XdY/DcnR5hJxvrDir1PbGChrzXG3vw0/FOliy/fA3dmdhQ441kah4gKv+TwckGzex6wNS5cnQ==}
