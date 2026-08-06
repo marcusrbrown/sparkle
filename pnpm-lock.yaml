@@ -404,8 +404,8 @@ importers:
         specifier: 1.62.1
         version: 1.62.1
       '@storybook/addon-a11y':
-        specifier: 10.5.5
-        version: 10.5.5(storybook@10.5.5(@types/react@19.2.18)(prettier@3.9.6)(react@19.2.8))
+        specifier: 10.5.6
+        version: 10.5.6(storybook@10.5.5(@types/react@19.2.18)(prettier@3.9.6)(react@19.2.8))
       '@storybook/addon-docs':
         specifier: ^10.0.0
         version: 10.5.5(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(esbuild@0.28.1)(rollup@4.62.4)(storybook@10.5.5(@types/react@19.2.18)(prettier@3.9.6)(react@19.2.8))(vite@7.3.6(@types/node@24.13.3)(jiti@2.7.0)(lightningcss@1.33.0)(terser@5.49.0)(tsx@4.23.5)(yaml@2.9.0))
@@ -3765,10 +3765,10 @@ packages:
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
 
-  '@storybook/addon-a11y@10.5.5':
-    resolution: {integrity: sha512-nsMnSRe7pzepXIkUUqI/rL7sp8juXOluyypU4Dz0UuYHhw/cKaxfzuO+3WJN5EtEr/gcnKYb4awxH/duPGavUw==}
+  '@storybook/addon-a11y@10.5.6':
+    resolution: {integrity: sha512-pMqbmtvkIgb7/kVE2BTNovGhSerRXWsVag62zpwQe0SwYYkgN+1Q9h4TYuIe2+npGkxgwALCjwtqkcnpOoND+A==}
     peerDependencies:
-      storybook: ^10.5.5
+      storybook: ^10.5.6
 
   '@storybook/addon-docs@10.5.5':
     resolution: {integrity: sha512-0YpKlimS4XE0kQ8Maa5coeefQxdyDrBHg1wOP3WTPuBe4FolFSCDveR0ge2+vuUBk+fZfn2+l+3Q2jmAWaRGDg==}
@@ -5282,8 +5282,8 @@ packages:
     engines: {node: '>=12.13.0'}
     hasBin: true
 
-  chromedriver@151.0.2:
-    resolution: {integrity: sha512-p2NI0qrBSpoksa9S4lxqpML28I1U1oMtNPyvbjiMlBB+JOn9qRQC/cuiAWPf36lAdsYgrqhQczb12UH2he04MQ==}
+  chromedriver@151.0.3:
+    resolution: {integrity: sha512-WoRTSJiYTFTt3bLLwfvFJpa0u8YxNzKYdcm3S+XOoccjVnjn6/0Zb+cW4YpvYCsBtZWWz3L7nYjj5PduAak9tA==}
     engines: {node: '>=22'}
     hasBin: true
 
@@ -11101,7 +11101,7 @@ snapshots:
     dependencies:
       '@axe-core/webdriverjs': 4.12.1(selenium-webdriver@4.44.0)
       axe-core: 4.12.1
-      chromedriver: 151.0.2(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      chromedriver: 151.0.3(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       colors: 1.4.0
       commander: 9.5.0
       dotenv: 17.4.2
@@ -14464,7 +14464,7 @@ snapshots:
 
   '@standard-schema/spec@1.1.0': {}
 
-  '@storybook/addon-a11y@10.5.5(storybook@10.5.5(@types/react@19.2.18)(prettier@3.9.6)(react@19.2.8))':
+  '@storybook/addon-a11y@10.5.6(storybook@10.5.5(@types/react@19.2.18)(prettier@3.9.6)(react@19.2.8))':
     dependencies:
       '@storybook/global': 5.0.0
       axe-core: 4.12.1
@@ -16155,7 +16155,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  chromedriver@151.0.2(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1):
+  chromedriver@151.0.3(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1):
     dependencies:
       '@testim/chrome-version': 1.1.4
       adm-zip: 0.5.18
