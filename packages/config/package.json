@@ -23,6 +23,7 @@
   ],
   "scripts": {
     "build": "tsdown",
+    "build:config": "npm run build",
     "clean": "rm -rf dist",
     "lint": "eslint",
     "typecheck": "tsc --noEmit"

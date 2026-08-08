@@ -29,6 +29,7 @@
     "a11y:playwright": "playwright test --config accessibility.config.ts",
     "astro": "astro",
     "build": "npm run docs:automation && astro build",
+    "build:docs": "npm run build",
     "build:force": "npm run docs:automation:force && astro build",
     "build:perf": "tsx scripts/build-performance.ts",
     "dev": "astro dev",

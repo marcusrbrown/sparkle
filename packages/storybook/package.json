@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "storybook build",
+    "build:storybook": "npm run build",
     "clean": "rimraf .turbo node_modules dist storybook-static test-results",
     "dev": "storybook dev -p 6006",
     "lint": "eslint",
