@@ -5,6 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
+  postcss@<8.5.18: ^8.5.18
   tmp@<0.2.6: ^0.2.6
 
 importers:
@@ -443,7 +444,7 @@ importers:
         specifier: 1.62.1
         version: 1.62.1
       postcss:
-        specifier: ^8.5.2
+        specifier: ^8.5.18
         version: 8.5.25
       rimraf:
         specifier: ^6.0.0
@@ -590,7 +591,7 @@ importers:
         specifier: 20.11.1
         version: 20.11.1
       postcss:
-        specifier: ^8.5.2
+        specifier: ^8.5.18
         version: 8.5.25
       react:
         specifier: 19.2.8
@@ -4893,7 +4894,7 @@ packages:
     engines: {node: ^10 || ^12 || >=14}
     hasBin: true
     peerDependencies:
-      postcss: ^8.1.0
+      postcss: ^8.5.18
 
   axe-core@4.12.1:
     resolution: {integrity: sha512-s7iGf5GaVMxEG0ENN9x+xTr7GFZCb1ZP/1uATUpCEK2X78nDB3RwbtFCo9pGAf9ru+VwoQ464DkaLEeRM08wJA==}
@@ -5282,8 +5283,8 @@ packages:
     engines: {node: '>=12.13.0'}
     hasBin: true
 
-  chromedriver@151.0.3:
-    resolution: {integrity: sha512-WoRTSJiYTFTt3bLLwfvFJpa0u8YxNzKYdcm3S+XOoccjVnjn6/0Zb+cW4YpvYCsBtZWWz3L7nYjj5PduAak9tA==}
+  chromedriver@151.0.4:
+    resolution: {integrity: sha512-/oWsyvXzRqmsUOhV7rpLx0cXDTdTDj5Fg82L5HLWm5wYxy/J7A7FTaI0tKTltIokn5+PkIKaZDFca7RmfSEIkA==}
     engines: {node: '>=22'}
     hasBin: true
 
@@ -8718,7 +8719,7 @@ packages:
     resolution: {integrity: sha512-HQbt28KulC5AJzG+cZtj9kvKB93CFCdLvog1WFLf1D+xmMvPGlBstkpTEZfK5+AN9hfJocyBFCNiqyS48bpgzQ==}
     engines: {node: '>=12.0'}
     peerDependencies:
-      postcss: ^8.2.14
+      postcss: ^8.5.18
 
   postcss-selector-parser@6.1.4:
     resolution: {integrity: sha512-bIoJLOmjCO1S9XdY/DcnR5hJxvrDir1PbGChrzXG3vw0/FOliy/fA3dmdhQ441kah4gKv+TwckGzex6wNS5cnQ==}
@@ -8726,10 +8727,6 @@ packages:
 
   postcss-value-parser@4.2.0:
     resolution: {integrity: sha512-1NNCs6uurfkVbeXG4S8JFT9t19m45ICnif8zWLd5oPSZ50QnwMfK+H3jv408d4jw/7Bttv5axS5IiHoLaVNHeQ==}
-
-  postcss@8.4.49:
-    resolution: {integrity: sha512-OCVPnIObs4N29kxTjzLfUryOkvZEq+pf8jTF0lg8E7uETuWHA+v7j3c/xJmiqpX450191LlmZfUKkXxkTry7nA==}
-    engines: {node: ^10 || ^12 || >=14}
 
   postcss@8.5.25:
     resolution: {integrity: sha512-DTPx3RWSSnWyzLxQnlH0rJP+EW5ekl16ZU4/psbIhA0e53kJfdgaN5vKM+xP7yJtXVu+nfdVFmlgFDEKAe4Pyw==}
@@ -11101,7 +11098,7 @@ snapshots:
     dependencies:
       '@axe-core/webdriverjs': 4.12.1(selenium-webdriver@4.44.0)
       axe-core: 4.12.1
-      chromedriver: 151.0.3(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      chromedriver: 151.0.4(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       colors: 1.4.0
       commander: 9.5.0
       dotenv: 17.4.2
@@ -12474,7 +12471,7 @@ snapshots:
       jsc-safe-url: 0.2.4
       lightningcss: 1.33.0
       picomatch: 4.0.5
-      postcss: 8.4.49
+      postcss: 8.5.25
       resolve-from: 5.0.0
     optionalDependencies:
       expo: 54.0.36(@babel/core@7.29.7(supports-color@8.1.1))(@expo/metro-runtime@6.1.2)(expo-router@6.0.24)(react-native@0.82.1(@babel/core@7.29.7(supports-color@8.1.1))(@types/react@19.2.18)(react@19.2.8)(supports-color@8.1.1))(react@19.2.8)(supports-color@8.1.1)(typescript@5.9.3)
@@ -16155,7 +16152,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  chromedriver@151.0.3(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1):
+  chromedriver@151.0.4(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1):
     dependencies:
       '@testim/chrome-version': 1.1.4
       adm-zip: 0.5.18
@@ -20668,12 +20665,6 @@ snapshots:
       util-deprecate: 1.0.2
 
   postcss-value-parser@4.2.0: {}
-
-  postcss@8.4.49:
-    dependencies:
-      nanoid: 3.3.16
-      picocolors: 1.1.1
-      source-map-js: 1.2.1
 
   postcss@8.5.25:
     dependencies:
