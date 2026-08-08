@@ -1,3 +1,4 @@
+import {consola} from 'consola'
 import React from 'react'
 
 interface AccessibleCodeBlockProps {
@@ -39,7 +40,7 @@ export function AccessibleCodeBlock({code, language, title, description}: Access
         }
       }, 2000)
     } catch (error) {
-      console.error('Failed to copy code:', error)
+      consola.error('Failed to copy code:', error)
       if (announcementRef.current) {
         announcementRef.current.textContent = 'Failed to copy code'
       }
