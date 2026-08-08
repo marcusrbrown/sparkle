@@ -5,6 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
+  adm-zip@<0.6.0: ^0.6.0
   tmp@<0.2.6: ^0.2.6
 
 importers:
@@ -4678,9 +4679,9 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
-  adm-zip@0.5.18:
-    resolution: {integrity: sha512-ufJnssQGbxzLNS1Ho9bCtX4rQKCCvoVuDLHoJyc3F9dOGDB4BkWs2Ci0kv53lqocAEQ/Cbi+I2XCsNYGqVYqng==}
-    engines: {node: '>=12.0'}
+  adm-zip@0.6.0:
+    resolution: {integrity: sha512-XleryMhbuksdKtofnWZ9Sk+4CUTbms4Mb/EU32SZwToAyZ5RgVos/ki8n+yr0LWHOGKuakbXTuuYNHLQjhddgg==}
+    engines: {node: '>=14.0'}
 
   agent-base@6.0.2:
     resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
@@ -5282,8 +5283,8 @@ packages:
     engines: {node: '>=12.13.0'}
     hasBin: true
 
-  chromedriver@151.0.3:
-    resolution: {integrity: sha512-WoRTSJiYTFTt3bLLwfvFJpa0u8YxNzKYdcm3S+XOoccjVnjn6/0Zb+cW4YpvYCsBtZWWz3L7nYjj5PduAak9tA==}
+  chromedriver@151.0.4:
+    resolution: {integrity: sha512-/oWsyvXzRqmsUOhV7rpLx0cXDTdTDj5Fg82L5HLWm5wYxy/J7A7FTaI0tKTltIokn5+PkIKaZDFca7RmfSEIkA==}
     engines: {node: '>=22'}
     hasBin: true
 
@@ -11101,7 +11102,7 @@ snapshots:
     dependencies:
       '@axe-core/webdriverjs': 4.12.1(selenium-webdriver@4.44.0)
       axe-core: 4.12.1
-      chromedriver: 151.0.3(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      chromedriver: 151.0.4(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       colors: 1.4.0
       commander: 9.5.0
       dotenv: 17.4.2
@@ -15417,7 +15418,7 @@ snapshots:
 
   acorn@8.18.0: {}
 
-  adm-zip@0.5.18: {}
+  adm-zip@0.6.0: {}
 
   agent-base@6.0.2(supports-color@8.1.1):
     dependencies:
@@ -16155,10 +16156,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  chromedriver@151.0.3(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1):
+  chromedriver@151.0.4(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1):
     dependencies:
       '@testim/chrome-version': 1.1.4
-      adm-zip: 0.5.18
+      adm-zip: 0.6.0
       axios: 1.19.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       compare-versions: 6.1.1
       proxy-agent: 8.0.2(supports-color@8.1.1)
