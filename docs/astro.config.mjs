@@ -243,23 +243,23 @@ export default defineConfig({
               items: [
                 {
                   label: 'UI Components',
-                  autogenerate: {directory: 'api/ui'},
+                  items: [{autogenerate: {directory: 'api/ui'}}],
                 },
                 {
                   label: 'Theme System',
-                  autogenerate: {directory: 'api/theme'},
+                  items: [{autogenerate: {directory: 'api/theme'}}],
                 },
                 {
                   label: 'Types',
-                  autogenerate: {directory: 'api/types'},
+                  items: [{autogenerate: {directory: 'api/types'}}],
                 },
                 {
                   label: 'Utilities',
-                  autogenerate: {directory: 'api/utils'},
+                  items: [{autogenerate: {directory: 'api/utils'}}],
                 },
                 {
                   label: 'Error Testing',
-                  autogenerate: {directory: 'api/error-testing'},
+                  items: [{autogenerate: {directory: 'api/error-testing'}}],
                 },
               ],
             },
