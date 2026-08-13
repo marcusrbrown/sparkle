@@ -64,7 +64,7 @@
     "scripts": "workspace:*",
     "simple-git-hooks": "2.13.1",
     "tsdown": "0.16.8",
-    "tsx": "4.23.11",
+    "tsx": "4.23.12",
     "turbo": "2.10.9",
     "typescript": "5.9.3"
   },
