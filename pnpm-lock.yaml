@@ -12,8 +12,8 @@ importers:
   .:
     devDependencies:
       '@axe-core/cli':
-        specifier: 4.12.1
-        version: 4.12.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+        specifier: 4.13.0
+        version: 4.13.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       '@bfra.me/eslint-config':
         specifier: 0.51.1
         version: 0.51.1(@typescript-eslint/eslint-plugin@8.59.3(@typescript-eslint/parser@8.59.3(eslint@9.39.5(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3))(eslint@9.39.5(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3))(@typescript-eslint/rule-tester@8.65.0(eslint@9.39.5(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3))(@typescript-eslint/typescript-estree@8.65.0(supports-color@8.1.1)(typescript@5.9.3))(@typescript-eslint/utils@8.65.0(eslint@9.39.5(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3))(chokidar@5.0.0)(eslint-config-prettier@10.1.8(eslint@9.39.5(jiti@2.7.0)(supports-color@8.1.1)))(eslint-plugin-prettier@5.5.6(eslint-config-prettier@10.1.8(eslint@9.39.5(jiti@2.7.0)(supports-color@8.1.1)))(eslint@9.39.5(jiti@2.7.0)(supports-color@8.1.1))(prettier@3.9.6))(eslint@9.39.5(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)
@@ -282,11 +282,11 @@ importers:
         version: 3.23.0
     devDependencies:
       '@axe-core/cli':
-        specifier: 4.12.1
-        version: 4.12.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+        specifier: 4.13.0
+        version: 4.13.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       '@axe-core/playwright':
-        specifier: 4.12.1
-        version: 4.12.1(playwright-core@1.62.1)
+        specifier: 4.13.0
+        version: 4.13.0(playwright-core@1.62.1)
       '@microsoft/api-extractor':
         specifier: 7.58.12
         version: 7.58.12(@types/node@24.13.3)
@@ -779,18 +779,18 @@ packages:
   '@astrojs/yaml2ts@0.2.4':
     resolution: {integrity: sha512-8oddpOae35pJsXPQXhTkM0ypfKPskVsh2bCxRtbf7e+/Epw2nReakFYpLKjZMEr75CsoF203PMnCocpfz0s69A==}
 
-  '@axe-core/cli@4.12.1':
-    resolution: {integrity: sha512-S3wF1AsX3wbJ9IAbk7eHLPpK+7elprXggNWCTPPiMVL+1HE+d3zuoI/KJP4470GUObggCYwfuAK/3Z23Jhjq5A==}
+  '@axe-core/cli@4.13.0':
+    resolution: {integrity: sha512-LWjR4MQ28J/nDPC6mXG2kStRz/27jexFZzPeB40zMMkpW5dY1r+rMExEtsfY2aK8HHd2nLVphEn2ONsa6r2jEQ==}
     engines: {node: '>=8'}
     hasBin: true
 
-  '@axe-core/playwright@4.12.1':
-    resolution: {integrity: sha512-rMd7xriptqKpP+w5265i4Hdkv2X5kbu6uiBi/B2I7uf3hieRBM3qDCfaKPtxfiYb2mKXfF+yLODJwIx+Jv1GDw==}
+  '@axe-core/playwright@4.13.0':
+    resolution: {integrity: sha512-6YLx+kxXu5GJceG4ozFg+33a2EMTdjYwWGloJ3sb9Kta5pp+ZNS53uxGVog5JetIY8s++P5UrtX+cri+u0VAVg==}
     peerDependencies:
       playwright-core: '>= 1.0.0'
 
-  '@axe-core/webdriverjs@4.12.1':
-    resolution: {integrity: sha512-upuzHjOk3/oJBDpyOdlkYNwFHd90XzuuseY0WmaxMTzLE4De+ntXxSksb9Xmf0dEDPnajkiJGsMSlGuPo8P7og==}
+  '@axe-core/webdriverjs@4.13.0':
+    resolution: {integrity: sha512-FKNgdOA7gYPhak0M18j5aMth8ZQRDvKhpDvINwzM2SbdffnuLFgW3bXmCibps9dGAhUej14l2pwAiAP+yiyA+Q==}
     peerDependencies:
       selenium-webdriver: '>3.0.0-beta  || >=2.53.1 || >4.0.0-alpha'
 
@@ -4896,10 +4896,6 @@ packages:
     hasBin: true
     peerDependencies:
       postcss: ^8.1.0
-
-  axe-core@4.12.1:
-    resolution: {integrity: sha512-s7iGf5GaVMxEG0ENN9x+xTr7GFZCb1ZP/1uATUpCEK2X78nDB3RwbtFCo9pGAf9ru+VwoQ464DkaLEeRM08wJA==}
-    engines: {node: '>=4'}
 
   axe-core@4.13.0:
     resolution: {integrity: sha512-UzGt8zg7Ny8djbYMhxl2zuEevVa7r2gJjYY5Lwr1xM7+XU2nd6CkIWFTVcCIbAP63vSz71NaVyyuSk9lHKcy0A==}
@@ -11103,10 +11099,10 @@ snapshots:
     dependencies:
       yaml: 2.9.0
 
-  '@axe-core/cli@4.12.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)':
+  '@axe-core/cli@4.13.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)':
     dependencies:
-      '@axe-core/webdriverjs': 4.12.1(selenium-webdriver@4.44.0)
-      axe-core: 4.12.1
+      '@axe-core/webdriverjs': 4.13.0(selenium-webdriver@4.44.0)
+      axe-core: 4.13.0
       chromedriver: 151.0.5(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       colors: 1.4.0
       commander: 9.5.0
@@ -11119,14 +11115,14 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@axe-core/playwright@4.12.1(playwright-core@1.62.1)':
+  '@axe-core/playwright@4.13.0(playwright-core@1.62.1)':
     dependencies:
-      axe-core: 4.12.1
+      axe-core: 4.13.0
       playwright-core: 1.62.1
 
-  '@axe-core/webdriverjs@4.12.1(selenium-webdriver@4.44.0)':
+  '@axe-core/webdriverjs@4.13.0(selenium-webdriver@4.44.0)':
     dependencies:
-      axe-core: 4.12.1
+      axe-core: 4.13.0
       selenium-webdriver: 4.44.0
 
   '@babel/code-frame@7.10.4':
@@ -15694,8 +15690,6 @@ snapshots:
       picocolors: 1.1.1
       postcss: 8.5.25
       postcss-value-parser: 4.2.0
-
-  axe-core@4.12.1: {}
 
   axe-core@4.13.0: {}
 
