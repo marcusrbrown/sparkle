@@ -56,6 +56,7 @@ if (!documentation) {
 </div>
 
 <script>
+  import {consola} from 'consola'
   import React from 'react'
   import {createRoot} from 'react-dom/client'
   import {ComponentShowcase} from './ComponentShowcase'
@@ -86,7 +87,7 @@ if (!documentation) {
             })
           )
         } catch (error) {
-          console.error(`Failed to render showcase for ${componentName}:`, error)
+          consola.error(`Failed to render showcase for ${componentName}:`, error)
           element.innerHTML = `<p class="error">Failed to load ${componentName} showcase</p>`
         }
       }
