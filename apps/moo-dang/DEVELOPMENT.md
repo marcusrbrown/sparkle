@@ -648,7 +648,7 @@ git push origin feature/description
 
 Follow [Conventional Commits](https://conventionalcommits.org/):
 
-```
+```text
 type(scope): description
 
 [optional body]
@@ -660,7 +660,7 @@ type(scope): description
 
 **Examples**:
 
-```
+```text
 feat(shell): add new grep command with regex support
 fix(wasm): resolve memory leak in module cleanup
 docs(readme): update installation instructions

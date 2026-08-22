@@ -75,7 +75,7 @@ pnpm --filter @sparkle/theme build:analyze
 
 ## Project Structure
 
-```
+```text
 packages/theme/
 ├── src/
 │   ├── context/          # React Context implementation
@@ -267,7 +267,7 @@ Use descriptive branch names:
 
 Follow conventional commit format:
 
-```
+```text
 feat(theme): add support for custom color spaces
 fix(validation): improve contrast ratio calculation
 docs(api): update theme configuration examples
