@@ -43,3 +43,6 @@ saveWorkspaceProtocol: rolling
 shamefullyHoist: true
 
 strictPeerDependencies: false
+
+minimumReleaseAgeExclude:
+  - '@bfra.me/eslint-config@0.51.2'
