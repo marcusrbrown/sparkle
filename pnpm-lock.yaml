@@ -288,8 +288,8 @@ importers:
         specifier: 4.13.0
         version: 4.13.0(playwright-core@1.62.1)
       '@microsoft/api-extractor':
-        specifier: 7.58.12
-        version: 7.58.12(@types/node@24.13.3)
+        specifier: 7.58.13
+        version: 7.58.13(@types/node@24.13.3)
       '@types/node':
         specifier: 24.13.3
         version: 24.13.3
@@ -2337,11 +2337,13 @@ packages:
       '@types/react': '>=16'
       react: '>=16'
 
-  '@microsoft/api-extractor-model@7.33.10':
-    resolution: {integrity: sha512-uPUK17xGxeQ3av6TN7awp+dTTSTvx8fZC0XFL1gyt7hFapYuxND3XLXH8vkmI7UjfW92oogzFAFqHSifmJROaw==}
+  '@microsoft/api-extractor-model@7.33.11':
+    resolution: {integrity: sha512-iDu1AtuRC2Z8XVs2SieZieVavF1FXPBX1C9pMexJh8Dx/Dd/3ZZ4nRQp/PU2Vk2rUHWuBz1wOyL4DcuhVnBXwg==}
+    engines: {node: '>=20.9.0'}
 
-  '@microsoft/api-extractor@7.58.12':
-    resolution: {integrity: sha512-VNpgC/1LaroLbn+UKmwDYspq+9r3EHyj4vJ3qUy/g8vB0rKt+1Wgs7WFj/JGpgxhG8SNyXs1XwYwe7nqkk8IDg==}
+  '@microsoft/api-extractor@7.58.13':
+    resolution: {integrity: sha512-htjkWdR+ovlBiQuBbMutIuiu/dzKYpFrBRRuHGlpo7J81cPzmMTBKxE8j+aWSs5HxvXHCvatVe4vQ9CKqSvZaA==}
+    engines: {node: '>=20.9.0'}
     hasBin: true
 
   '@microsoft/tsdoc-config@0.18.1':
@@ -3618,8 +3620,9 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@rushstack/node-core-library@5.23.3':
-    resolution: {integrity: sha512-f6uuza7Um65bwsIJgf0MRs7IPA5IG+A+zs1AYGQvpZmLjtTGdfHowhQw4kwF0pPhJCrU4UHNhK8Qa6tLygYZCA==}
+  '@rushstack/node-core-library@5.24.0':
+    resolution: {integrity: sha512-g/Z47ZwARn/VkTnHcyJslrR26erRf1G5JbqPlfGZGBCrOcrEt8fTQXXDVhUDDNl/g/v3TXI1dNiAAT5FEks8BA==}
+    engines: {node: '>=20.9.0'}
     peerDependencies:
       '@types/node': '*'
     peerDependenciesMeta:
@@ -3637,16 +3640,18 @@ packages:
   '@rushstack/rig-package@0.7.3':
     resolution: {integrity: sha512-aAA518n6wxxjCfnTAOjQnm7ngNE0FVHxHAw2pxKlIhxrMn0XQjGcXKF0oKWpjBgJOmsaJpVob/v+zr3zxgPWuA==}
 
-  '@rushstack/terminal@0.24.2':
-    resolution: {integrity: sha512-KB7PpvzDyKMw/RGU3TxOwxTs3OwZ4gq6+WHlTJN/JfQH4ezliNtWIqver78jTaAJyz/ZAAlJGH7a/M1WyFLFSw==}
+  '@rushstack/terminal@0.24.3':
+    resolution: {integrity: sha512-KxphDhPGC4xDrKg8O4yrWCEpPMi87aJc1iycXqMVh1dLgV0M34hiH9ZTgWjBRmcrT/OIHoOeWf48npcQFzgp+g==}
+    engines: {node: '>=20.9.0'}
     peerDependencies:
       '@types/node': '*'
     peerDependenciesMeta:
       '@types/node':
         optional: true
 
-  '@rushstack/ts-command-line@5.3.12':
-    resolution: {integrity: sha512-Vg2n24arSf7JvUNga2DMHYTbxnVq9L5OtVCp4Gfr8YC/kmL/bmdR8FQhGcpMzMYNY9Vdw3+TaimG11Sf+z1Tpw==}
+  '@rushstack/ts-command-line@5.3.13':
+    resolution: {integrity: sha512-+jNbxhh8CkrZYxMk9X3GRYM2+Myr1xCCj+eHbJ9Vp+PCdNHS0TUl5QQFT6UbM/aTFRCzs5jiBTKYzBRpe5uYbQ==}
+    engines: {node: '>=20.9.0'}
 
   '@sentry-internal/tracing@7.120.4':
     resolution: {integrity: sha512-Fz5+4XCg3akeoFK+K7g+d7HqGMjmnLoY2eJlpONJmaeT9pXY7yfUyXKZMmMajdE2LxxKJgQ2YKvSCaGVamTjHw==}
@@ -4646,10 +4651,12 @@ packages:
   '@xmldom/xmldom@0.8.14':
     resolution: {integrity: sha512-T4EDRUBVZYRldYApjEJiU0e1stYWaRAX7CuSnKzrpwdZKo53zGV8/pqfzV6FfwNl9YThD2OumQYvqtvjvgG7aQ==}
     engines: {node: '>=10.0.0'}
+    deprecated: this version has critical issues, please update to the latest version
 
   '@xmldom/xmldom@0.9.11':
     resolution: {integrity: sha512-tW8bcK3hsG0/uqSnNz6TK4BkcuZSezoU7DlnYssILmZDktPnSHHuDJJFM0AJv+13gz2r0iGdrj6qqKeUnxXEDg==}
     engines: {node: '>=14.6'}
+    deprecated: this version has critical issues, please update to the latest version
 
   '@xterm/addon-fit@0.10.0':
     resolution: {integrity: sha512-UFYkDm4HUahf2lnEyHvio51TNGiLK66mqP2JoATy7hRZeXaGMRDr00JiSF7m63vR5WKATF605yEggJKsw0JpMQ==}
@@ -5288,8 +5295,8 @@ packages:
     engines: {node: '>=12.13.0'}
     hasBin: true
 
-  chromedriver@152.0.0:
-    resolution: {integrity: sha512-JBMT88W2bMGSytKcIy6A3F/0DrGJeKTO1ZSThSNICeexSY+xBAEuAvjzlsGkIMaebqNF0KkDUI203CJ+GTA12g==}
+  chromedriver@152.0.1:
+    resolution: {integrity: sha512-8zet2yPAFOSlYxUIcQ/1yOOC1xP4ooPZiKFRdlJhFawBKvlZIHDU6qv4LDOfPEw1yXbyu+tQTzbL0Vfb+vHdQQ==}
     engines: {node: '>=22'}
     hasBin: true
 
@@ -11125,7 +11132,7 @@ snapshots:
     dependencies:
       '@axe-core/webdriverjs': 4.13.0(selenium-webdriver@4.44.0)
       axe-core: 4.13.0
-      chromedriver: 152.0.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      chromedriver: 152.0.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       colors: 1.4.0
       commander: 9.5.0
       dotenv: 17.4.2
@@ -13220,23 +13227,23 @@ snapshots:
       '@types/react': 19.2.18
       react: 19.2.8
 
-  '@microsoft/api-extractor-model@7.33.10(@types/node@24.13.3)':
+  '@microsoft/api-extractor-model@7.33.11(@types/node@24.13.3)':
     dependencies:
       '@microsoft/tsdoc': 0.16.0
       '@microsoft/tsdoc-config': 0.18.1
-      '@rushstack/node-core-library': 5.23.3(@types/node@24.13.3)
+      '@rushstack/node-core-library': 5.24.0(@types/node@24.13.3)
     transitivePeerDependencies:
       - '@types/node'
 
-  '@microsoft/api-extractor@7.58.12(@types/node@24.13.3)':
+  '@microsoft/api-extractor@7.58.13(@types/node@24.13.3)':
     dependencies:
-      '@microsoft/api-extractor-model': 7.33.10(@types/node@24.13.3)
+      '@microsoft/api-extractor-model': 7.33.11(@types/node@24.13.3)
       '@microsoft/tsdoc': 0.16.0
       '@microsoft/tsdoc-config': 0.18.1
-      '@rushstack/node-core-library': 5.23.3(@types/node@24.13.3)
+      '@rushstack/node-core-library': 5.24.0(@types/node@24.13.3)
       '@rushstack/rig-package': 0.7.3
-      '@rushstack/terminal': 0.24.2(@types/node@24.13.3)
-      '@rushstack/ts-command-line': 5.3.12(@types/node@24.13.3)
+      '@rushstack/terminal': 0.24.3(@types/node@24.13.3)
+      '@rushstack/ts-command-line': 5.3.13(@types/node@24.13.3)
       diff: 8.0.4
       minimatch: 10.2.3
       resolve: 1.22.12
@@ -14295,7 +14302,7 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.62.4':
     optional: true
 
-  '@rushstack/node-core-library@5.23.3(@types/node@24.13.3)':
+  '@rushstack/node-core-library@5.24.0(@types/node@24.13.3)':
     dependencies:
       ajv: 8.20.0
       ajv-draft-04: 1.0.0(ajv@8.20.0)
@@ -14317,17 +14324,17 @@ snapshots:
       jju: 1.4.0
       resolve: 1.22.12
 
-  '@rushstack/terminal@0.24.2(@types/node@24.13.3)':
+  '@rushstack/terminal@0.24.3(@types/node@24.13.3)':
     dependencies:
-      '@rushstack/node-core-library': 5.23.3(@types/node@24.13.3)
+      '@rushstack/node-core-library': 5.24.0(@types/node@24.13.3)
       '@rushstack/problem-matcher': 0.2.1(@types/node@24.13.3)
       supports-color: 8.1.1
     optionalDependencies:
       '@types/node': 24.13.3
 
-  '@rushstack/ts-command-line@5.3.12(@types/node@24.13.3)':
+  '@rushstack/ts-command-line@5.3.13(@types/node@24.13.3)':
     dependencies:
-      '@rushstack/terminal': 0.24.2(@types/node@24.13.3)
+      '@rushstack/terminal': 0.24.3(@types/node@24.13.3)
       '@types/argparse': 1.0.38
       argparse: 1.0.10
       string-argv: 0.3.2
@@ -16189,7 +16196,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  chromedriver@152.0.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1):
+  chromedriver@152.0.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1):
     dependencies:
       '@testim/chrome-version': 1.1.4
       adm-zip: 0.6.0
