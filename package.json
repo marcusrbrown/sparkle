@@ -48,7 +48,7 @@
   "devDependencies": {
     "@axe-core/cli": "4.13.0",
     "@bfra.me/eslint-config": "0.51.2",
-    "@bfra.me/prettier-config": "0.16.10",
+    "@bfra.me/prettier-config": "0.16.11",
     "@bfra.me/tsconfig": "0.13.1",
     "@changesets/cli": "2.31.1",
     "@lhci/cli": "0.15.1",
