@@ -21,8 +21,8 @@ importers:
         specifier: 0.16.11
         version: 0.16.11(prettier@3.9.6)
       '@bfra.me/tsconfig':
-        specifier: 0.13.1
-        version: 0.13.1
+        specifier: 0.13.2
+        version: 0.13.2
       '@changesets/cli':
         specifier: 2.31.1
         version: 2.31.1(@types/node@24.13.3)
@@ -1350,8 +1350,8 @@ packages:
     peerDependencies:
       prettier: ^3.0.0
 
-  '@bfra.me/tsconfig@0.13.1':
-    resolution: {integrity: sha512-GyMAvOLBFtxbUjZru5VMoIXY21HTPYZcI5jKm3c1gojEx7Hss1nyGth3pd2t4v4pIQBAlJQASe9o0C8rnFa0VA==}
+  '@bfra.me/tsconfig@0.13.2':
+    resolution: {integrity: sha512-lmfaW+8/nJQbv5lI4OngPpwWvA1CAgRCmpfnesUiWIAH6/H0itCyouZfDANu3ESbXQ214+36pgwtSYjVI8CUQg==}
 
   '@bruits/satteri-darwin-arm64@0.9.5':
     resolution: {integrity: sha512-iw4nZgx9v30lWo/MTngQqi1pI78KI0DnkSm+lVJGYdmPLgAyDNJigVhpG42/Iq55A6c1Ll8q66ljyyRiQUxwow==}
@@ -11750,7 +11750,7 @@ snapshots:
     dependencies:
       prettier: 3.9.6
 
-  '@bfra.me/tsconfig@0.13.1': {}
+  '@bfra.me/tsconfig@0.13.2': {}
 
   '@bruits/satteri-darwin-arm64@0.9.5':
     optional: true
