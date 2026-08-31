@@ -62,7 +62,7 @@
     "nano-staged": "0.8.0",
     "prettier": "3.9.6",
     "scripts": "workspace:*",
-    "simple-git-hooks": "2.13.1",
+    "simple-git-hooks": "2.14.0",
     "tsdown": "0.16.8",
     "tsx": "4.23.12",
     "turbo": "2.10.12",

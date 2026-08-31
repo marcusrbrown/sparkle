@@ -60,8 +60,8 @@ importers:
         specifier: workspace:*
         version: link:scripts
       simple-git-hooks:
-        specifier: 2.13.1
-        version: 2.13.1
+        specifier: 2.14.0
+        version: 2.14.0
       tsdown:
         specifier: 0.16.8
         version: 0.16.8(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.3)(oxc-resolver@11.24.2)(synckit@0.11.13)(typescript@5.9.3)
@@ -9429,8 +9429,8 @@ packages:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
 
-  simple-git-hooks@2.13.1:
-    resolution: {integrity: sha512-WszCLXwT4h2k1ufIXAgsbiTOazqqevFCIncOuUBZJ91DdvWcC5+OFkluWRQPrcuSYd8fjq+o2y1QfWqYMoAToQ==}
+  simple-git-hooks@2.14.0:
+    resolution: {integrity: sha512-kkTORPAuxQz2g1QUuN0J8yGWT28tjGBfPOdJ4xT7Vbeu30veKUZQIoID2qGgCDAakaQn59UeZJJ4cFGB8PVP2A==}
     hasBin: true
 
   simple-plist@1.3.1:
@@ -21597,7 +21597,7 @@ snapshots:
 
   signal-exit@4.1.0: {}
 
-  simple-git-hooks@2.13.1: {}
+  simple-git-hooks@2.14.0: {}
 
   simple-plist@1.3.1:
     dependencies:
