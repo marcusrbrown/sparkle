@@ -715,7 +715,7 @@ jobs:
           install-zig: 'true'
 
       - name: Run Fro Bot
-        uses: fro-bot/agent@d8c47fdac44f39f6ef8fb4bab65609c6e645c58d # v0.106.1
+        uses: fro-bot/agent@99a3294263075edc85554e7c8e4eded56530c360 # v0.106.2
         env:
           OPENCODE_PROMPT_ARTIFACT: 'true'
           IS_SUNDAY_UTC: ${{ env.IS_SUNDAY_UTC || 'false' }}
