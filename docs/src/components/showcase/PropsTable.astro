@@ -1,4 +1,6 @@
 ---
+import {consola} from 'consola'
+
 export interface Props {
   /** Component name to load props for */
   componentName: string
@@ -17,7 +19,7 @@ try {
   const componentDoc = allDocs.find(doc => doc.name === componentName)
   props = componentDoc?.props || []
 } catch (error) {
-  console.warn(`Failed to load props for ${componentName}:`, error)
+  consola.warn(`Failed to load props for ${componentName}:`, error)
 }
 ---
 
