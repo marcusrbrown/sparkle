@@ -722,7 +722,7 @@ async function loadThemeById(themeId: string): Promise<ThemeConfig> {
 
 Organize your theme files for maintainability:
 
-```
+```text
 your-app/
 ├── theme/
 │   ├── index.ts              # Main theme exports
