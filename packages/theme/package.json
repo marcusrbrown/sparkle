@@ -66,7 +66,8 @@
   },
   "dependencies": {
     "@sparkle/types": "workspace:*",
-    "@sparkle/utils": "workspace:*"
+    "@sparkle/utils": "workspace:*",
+    "consola": "3.4.2"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.4.2",

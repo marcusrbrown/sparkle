@@ -1,6 +1,7 @@
 import type {ThemeConfig} from '@sparkle/types'
 import type {ReactNode} from 'react'
 import type {SystemColorScheme, ThemeCollection, ThemeMode} from '../context/ThemeContext.js'
+import {consola} from 'consola'
 import {useCallback, useEffect, useMemo, useState} from 'react'
 
 import {ThemeContext} from '../context/ThemeContext.js'
@@ -101,7 +102,7 @@ function loadStoredTheme(storageKey: string): ThemeMode | null {
       return stored as ThemeMode
     }
   } catch (error) {
-    console.warn('Failed to load theme from localStorage:', error)
+    consola.warn('Failed to load theme from localStorage:', error)
   }
 
   return null
@@ -125,7 +126,7 @@ function saveTheme(storageKey: string, theme: ThemeMode): void {
       window.localStorage.setItem(storageKey, theme)
     }
   } catch (error) {
-    console.warn('Failed to save theme to localStorage:', error)
+    consola.warn('Failed to save theme to localStorage:', error)
   }
 }
 
@@ -154,7 +155,7 @@ function injectCSSVariables(theme: ThemeConfig, selector: string): void {
     // Update the CSS content with new variables
     styleElement.textContent = `${selector} {\n${cssVariables}\n}`
   } catch (error) {
-    console.error('Failed to inject CSS variables:', error)
+    consola.error('Failed to inject CSS variables:', error)
   }
 }
 
@@ -211,7 +212,7 @@ export function ThemeProvider({
       if (!validation.isValid) {
         const error = new Error(`Invalid theme configuration: ${validation.errors.join(', ')}`)
         setError(error)
-        console.error('Theme validation failed:', validation.errors)
+        consola.error('Theme validation failed:', validation.errors)
         // Fallback to light theme
         return themes.light
       }
@@ -220,7 +221,7 @@ export function ThemeProvider({
     } catch (validationError) {
       const error = validationError instanceof Error ? validationError : new Error('Theme validation failed')
       setError(error)
-      console.error('Theme validation error:', error)
+      consola.error('Theme validation error:', error)
       return themes.light
     }
   }, [resolvedTheme, themes])
