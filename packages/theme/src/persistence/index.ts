@@ -1,4 +1,5 @@
 import type {ThemeMode} from '../context/ThemeContext.js'
+import {consola} from 'consola'
 
 /**
  * Default storage key for theme persistence
@@ -25,7 +26,7 @@ export const webPersistence = {
         return stored as ThemeMode
       }
     } catch (error) {
-      console.warn('Failed to load theme from localStorage:', error)
+      consola.warn('Failed to load theme from localStorage:', error)
     }
 
     return null
@@ -44,7 +45,7 @@ export const webPersistence = {
     try {
       window.localStorage.setItem(storageKey, theme)
     } catch (error) {
-      console.warn('Failed to save theme to localStorage:', error)
+      consola.warn('Failed to save theme to localStorage:', error)
     }
   },
 
@@ -60,7 +61,7 @@ export const webPersistence = {
     try {
       window.localStorage.removeItem(storageKey)
     } catch (error) {
-      console.warn('Failed to remove theme from localStorage:', error)
+      consola.warn('Failed to remove theme from localStorage:', error)
     }
   },
 
@@ -104,7 +105,7 @@ export const nativePersistence = {
         return stored as ThemeMode
       }
     } catch (error) {
-      console.warn('Failed to load theme from AsyncStorage:', error)
+      consola.warn('Failed to load theme from AsyncStorage:', error)
     }
 
     return null
@@ -122,7 +123,7 @@ export const nativePersistence = {
       const AsyncStorage = require('@react-native-async-storage/async-storage').default
       await AsyncStorage.setItem(storageKey, theme)
     } catch (error) {
-      console.warn('Failed to save theme to AsyncStorage:', error)
+      consola.warn('Failed to save theme to AsyncStorage:', error)
     }
   },
 
@@ -137,7 +138,7 @@ export const nativePersistence = {
       const AsyncStorage = require('@react-native-async-storage/async-storage').default
       await AsyncStorage.removeItem(storageKey)
     } catch (error) {
-      console.warn('Failed to remove theme from AsyncStorage:', error)
+      consola.warn('Failed to remove theme from AsyncStorage:', error)
     }
   },
 
@@ -254,7 +255,7 @@ export const persistenceMigration = {
 
       return false
     } catch (error) {
-      console.warn('Failed to migrate theme preference:', error)
+      consola.warn('Failed to migrate theme preference:', error)
       return false
     }
   },
