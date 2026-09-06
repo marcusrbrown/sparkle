@@ -714,30 +714,51 @@ jobs:
         with:
           install-zig: 'true'
 
-      - name: Enable authenticated git push for autoheal fixes
+      - name: Resolve delivery mode
+        # Single source of truth for whether this run delivers via branch-pr.
+        # Both the credential step and the agent's output-mode input read from
+        # here, so the two can never drift apart -- which is the exact class of
+        # bug this workflow already hit once.
+        #
+        # Only autoheal delivers fixes. MAINTENANCE_PROMPT forbids opening PRs
+        # (it updates one perpetual issue, which the API token covers) and
+        # PR_REVIEW_PROMPT is review-only, so both stay working-dir regardless
+        # of whether they arrive by cron or by dispatch.
+        #
+        # A bare API dispatch with no mode field resolves AUTOHEAL_PROMPT, so
+        # it is treated as autoheal here too.
+        #
+        # issue_comment, mention, and pull_request runs are absent by
+        # construction: resolveOutputMode() returns null for those events and
+        # ignores the input entirely.
+        id: gate
+        env:
+          DELIVERS_BRANCH_PR: >-
+            ${{
+              (github.event_name == 'workflow_dispatch'
+                && (inputs.mode == 'autoheal' || inputs.mode == ''))
+              || (github.event_name == 'schedule' && github.event.schedule == '0 5 * * *')
+            }}
+        run: |
+          set -euo pipefail
+          if [ "${DELIVERS_BRANCH_PR}" = 'true' ]; then
+            mode='branch-pr'
+          else
+            mode='working-dir'
+          fi
+          echo "branch-pr=${DELIVERS_BRANCH_PR}" >> "$GITHUB_OUTPUT"
+          echo "output-mode=${mode}" >> "$GITHUB_OUTPUT"
+          echo "Resolved delivery mode: ${mode}"
+
+      - name: Enable authenticated git push for branch-pr delivery
         # Checkout uses persist-credentials: false so the PAT is never written
-        # into .git/config on the fork-PR-head comment path. Without a
-        # credential on disk the agent has no pushable remote, so every
-        # scheduled autoheal run degrades to working-dir mode and its fixes
-        # have nowhere to land.
-        #
-        # Scoped to the 05:00 autoheal cron and dispatched autoheal runs only.
-        # The 17:00 maintenance cron is excluded because MAINTENANCE_PROMPT
-        # forbids opening PRs -- it only updates one perpetual issue, which
-        # the API token already covers. Review-mode dispatch is excluded for
-        # the same reason.
-        #
-        # Deliberately NOT enabled for issue_comment / mention runs:
-        # fro-bot/agent classifies those as credential-withheld and FAILS
-        # CLOSED when it finds an on-disk http.*.extraheader, so writing one
-        # there would break the agent rather than enable push.
+        # into .git/config on the fork-PR-head comment path. Runs that deliver
+        # via branch-pr need a credential restored afterwards or the push fails.
         #
         # The credential is written to disk rather than passed via env or the
         # gh credential helper because fro-bot/agent scrubs its child
         # environment.
-        if: >-
-          (github.event_name == 'schedule' && github.event.schedule == '0 5 * * *')
-          || (github.event_name == 'workflow_dispatch' && inputs.mode == 'autoheal')
+        if: steps.gate.outputs.branch-pr == 'true'
         env:
           FRO_BOT_PAT: ${{ secrets.FRO_BOT_PAT }}
         run: |
@@ -768,5 +789,10 @@ jobs:
           model: ${{ vars.FRO_BOT_MODEL }}
           omo-providers: ${{ secrets.OMO_PROVIDERS }}
           opencode-config: ${{ secrets.OPENCODE_CONFIG }}
+          # resolveOutputMode() only consults this input for schedule and
+          # workflow_dispatch; every other event returns null and ignores it.
+          # The `auto` default resolves to working-dir, which is why autoheal
+          # fixes previously had nowhere to land -- branch-pr must be explicit.
+          output-mode: ${{ steps.gate.outputs.output-mode }}
           prompt: ${{ env.PROMPT }}
           timeout: 0
