@@ -9,7 +9,7 @@
 
 import type {ExecutionContext, ShellCommand, VirtualFileSystem} from './types'
 
-import {beforeEach, describe, expect, it} from 'vitest'
+import {afterEach, beforeEach, describe, expect, it} from 'vitest'
 
 import {createStandardCommands} from './commands'
 import {ShellEnvironment} from './environment'
@@ -35,6 +35,10 @@ describe('Standard Shell Commands', () => {
       },
       processId: 1,
     }
+  })
+
+  afterEach(() => {
+    environment.dispose()
   })
 
   function getCommand(name: string): ShellCommand {
@@ -421,6 +425,8 @@ describe('Standard Shell Commands', () => {
       const result = await lsCommand.execute([], executionContext)
       expect(result.exitCode).toBe(1)
       expect(result.stderr).toContain('ls:')
+
+      errorEnvironment.dispose()
     })
 
     it('should maintain consistent error format across commands', async () => {

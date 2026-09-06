@@ -128,4 +128,7 @@ export interface JobController {
 
   /** Cleanup completed jobs based on retention policy */
   readonly cleanup: () => void
+
+  /** Dispose of the job control system, stopping any internal timers. Safe to call more than once. */
+  readonly dispose: () => void
 }

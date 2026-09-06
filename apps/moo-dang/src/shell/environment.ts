@@ -341,6 +341,16 @@ export class ShellEnvironment {
   }
 
   /**
+   * Release resources owned by the job controller.
+   *
+   * Callers that construct an environment outside a Web Worker must call this, since
+   * nothing else stops the controller's cleanup timer.
+   */
+  dispose(): void {
+    this.jobController.dispose()
+  }
+
+  /**
    * Start a job (integrates with existing process creation).
    */
   startJob(command: string, background: boolean): ProcessInfo {
