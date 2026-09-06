@@ -187,53 +187,6 @@ export async function runQuickPerformanceCheck(options: BenchmarkOptions = {}): 
 }
 
 /**
- * Runs performance regression detection for CI/CD integration.
- */
-export async function runPerformanceRegression(baselineFile?: string): Promise<boolean> {
-  consola.info('Running performance regression detection...')
-
-  if (!baselineFile) {
-    consola.warn('No baseline file provided, running benchmarks without comparison')
-  }
-
-  const startTime = performance.now()
-  const hasRegression = false
-
-  try {
-    // Run with reduced iterations for CI speed
-    const ciOptions: BenchmarkOptions = {
-      iterations: 20,
-      warmupIterations: 5,
-      collectMemoryStats: true,
-      timeout: 30000, // 30 second timeout for CI
-    }
-
-    await runFullPerformanceSuite(ciOptions)
-
-    // TODO: Load baseline and compare results
-    if (baselineFile) {
-      consola.info(`Would compare against baseline: ${baselineFile}`)
-      // Implement baseline comparison logic here
-    }
-
-    const totalTime = performance.now() - startTime
-    consola.info(`Performance regression check completed in ${totalTime.toFixed(2)}ms`)
-
-    if (hasRegression) {
-      consola.error('Performance regression detected!')
-      process.exit(1)
-    } else {
-      consola.success('No performance regression detected')
-    }
-  } catch (error) {
-    consola.error('Error during performance regression check:', error)
-    throw error
-  }
-
-  return hasRegression
-}
-
-/**
  * CLI entry point for performance benchmarking.
  */
 export async function runBenchmarkCLI(): Promise<void> {
@@ -248,9 +201,6 @@ export async function runBenchmarkCLI(): Promise<void> {
       case 'quick':
         await runQuickPerformanceCheck()
         break
-      case 'regression':
-        await runPerformanceRegression(args[1])
-        break
       case 'wasm':
         await runWasmBenchmarkSuite()
         break
@@ -262,7 +212,7 @@ export async function runBenchmarkCLI(): Promise<void> {
         break
       default:
         consola.error(`Unknown benchmark mode: ${mode}`)
-        consola.info('Available modes: full, quick, regression, wasm, command, terminal')
+        consola.info('Available modes: full, quick, wasm, command, terminal')
         process.exit(1)
     }
   } catch (error) {
