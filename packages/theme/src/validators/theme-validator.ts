@@ -467,12 +467,20 @@ export class ThemeValidator {
         const currentValue = sortedValues[i - 1]
         const nextValue = sortedValues[i]
 
-        if (prevValue && currentValue && nextValue) {
+        // Skip windows anchored on a zero value: a 0 baseline is common in spacing
+        // scales and produces a meaningless (division-by-zero) ratio.
+        if (
+          prevValue !== undefined &&
+          currentValue !== undefined &&
+          nextValue !== undefined &&
+          prevValue !== 0 &&
+          currentValue !== 0
+        ) {
           const ratio1 = currentValue / prevValue
           const ratio2 = nextValue / currentValue
 
           // Allow some tolerance in ratio consistency
-          if (Math.abs(ratio1 - ratio2) > 0.5) {
+          if (Math.abs(ratio1 - ratio2) > 0.3) {
             isConsistent = false
             break
           }
