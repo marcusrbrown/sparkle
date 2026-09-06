@@ -7,7 +7,7 @@
 
 import type {JobController} from './job-types'
 
-import {describe, expect, it} from 'vitest'
+import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest'
 import {createJobController} from './job-controller'
 
 describe('JobController', () => {
@@ -19,6 +19,10 @@ describe('JobController', () => {
       enableNotifications: true,
       jobRetentionMs: 5000,
     })
+  })
+
+  afterEach(() => {
+    jobController.dispose()
   })
 
   describe('Job Creation and Management', () => {
@@ -205,6 +209,50 @@ describe('JobController', () => {
       }).toThrow('Maximum number of jobs')
     })
   })
+
+  describe('Cleanup Timer Disposal', () => {
+    // These tests construct their own controller under fake timers instead of
+    // relying on the shared `jobController` from the outer `beforeEach`, since
+    // fake timers must be active before the constructor starts the interval.
+    beforeEach(() => {
+      vi.useFakeTimers()
+    })
+
+    afterEach(() => {
+      vi.useRealTimers()
+    })
+
+    it('leaks the periodic cleanup timer when never disposed', () => {
+      const leakedController = createJobController({jobRetentionMs: 5000})
+      const cleanupSpy = vi.spyOn(leakedController, 'cleanup')
+
+      // Advance well past several 30-second intervals.
+      vi.advanceTimersByTime(30000 * 5)
+
+      expect(cleanupSpy).toHaveBeenCalledTimes(5)
+
+      leakedController.dispose()
+    })
+
+    it('should stop the cleanup timer when disposed', () => {
+      const controller = createJobController({jobRetentionMs: 5000})
+      const cleanupSpy = vi.spyOn(controller, 'cleanup')
+
+      controller.dispose()
+      vi.advanceTimersByTime(30000 * 5)
+
+      expect(cleanupSpy).not.toHaveBeenCalled()
+    })
+
+    it('should be idempotent when disposed multiple times', () => {
+      const controller = createJobController()
+
+      expect(() => {
+        controller.dispose()
+        controller.dispose()
+      }).not.toThrow()
+    })
+  })
 })
 
 describe('Job Control Commands Integration', () => {
@@ -231,5 +279,21 @@ describe('Job Control Commands Integration', () => {
     expect(jobsCommand?.name).toBe('jobs')
     expect(jobsCommand?.description).toContain('background jobs')
     expect(typeof jobsCommand?.execute).toBe('function')
+
+    environment.dispose()
+  })
+
+  it('should dispose its job controller when the environment is disposed', async () => {
+    const {createVirtualFileSystem} = await import('./virtual-file-system')
+    const {ShellEnvironment} = await import('./environment')
+
+    const fileSystem = createVirtualFileSystem(false)
+    const environment = new ShellEnvironment(fileSystem)
+    const controller = environment.getJobController()
+    const disposeSpy = vi.spyOn(controller, 'dispose')
+
+    environment.dispose()
+
+    expect(disposeSpy).toHaveBeenCalledTimes(1)
   })
 })

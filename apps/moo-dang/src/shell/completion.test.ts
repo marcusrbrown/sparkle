@@ -8,7 +8,7 @@
 import type {CompletionProvider, CompletionSuggestion} from './completion-types'
 import type {VirtualFileSystem} from './types'
 
-import {beforeEach, describe, expect, it} from 'vitest'
+import {afterEach, beforeEach, describe, expect, it} from 'vitest'
 import {createCompletionEngine} from './completion-engine'
 import {createCompletionProviders} from './completion-providers'
 import {ShellEnvironment} from './environment'
@@ -419,6 +419,10 @@ describe('Completion Providers', () => {
     providers = createCompletionProviders(commands, fileSystem, environment)
   })
 
+  afterEach(() => {
+    environment.dispose()
+  })
+
   describe('Command Completion Provider', () => {
     it('should complete command names', async () => {
       const commandProvider = providers.find(p => p.id === 'commands')
@@ -745,5 +749,7 @@ describe('Integration Tests', () => {
     // Test environment variable completion
     const envResult = await engine.getCompletions('echo $PA', 8, '/', {PATH: '/bin'})
     expect(envResult.suggestions.find((s: CompletionSuggestion) => s.text === '$PATH')).toBeDefined()
+
+    environment.dispose()
   })
 })

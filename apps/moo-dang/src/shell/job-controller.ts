@@ -41,6 +41,7 @@ export class JobControlSystem implements JobController {
   private readonly jobs: Map<number, Job> = new Map()
   private readonly notifications: JobNotification[] = []
   private nextJobId = 1
+  private cleanupIntervalId: ReturnType<typeof setInterval> | undefined
 
   constructor(options: Partial<JobControlOptions> = {}) {
     this.options = {
@@ -344,6 +345,20 @@ export class JobControlSystem implements JobController {
   }
 
   /**
+   * Stop the periodic cleanup timer. Idempotent.
+   *
+   * Owners must call this (see `ShellEnvironment.dispose`). Skipping it is harmless in
+   * production, where worker termination tears the interval down, but leaks one interval
+   * per instance across test runs.
+   */
+  readonly dispose = (): void => {
+    if (this.cleanupIntervalId !== undefined) {
+      clearInterval(this.cleanupIntervalId)
+      this.cleanupIntervalId = undefined
+    }
+  }
+
+  /**
    * Internal method to update job status without external validation.
    */
   private updateJobStatusInternal(jobId: number, status: JobStatus): void {
@@ -364,7 +379,7 @@ export class JobControlSystem implements JobController {
    * Start cleanup timer to periodically remove old completed jobs.
    */
   private startCleanupTimer(): void {
-    setInterval(() => {
+    this.cleanupIntervalId = setInterval(() => {
       this.cleanup()
     }, 30000) // Run cleanup every 30 seconds
   }
