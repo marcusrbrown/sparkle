@@ -15,17 +15,22 @@ import type {CommandPipeline, IORedirection, ParsedCommand, RedirectionOperator}
  * This distinction is critical because shell conventions require different expansion rules
  * for single-quoted, double-quoted, and unquoted text.
  */
-type QuoteType = 'none' | 'single' | 'double'
+export type QuoteType = 'none' | 'single' | 'double'
 
 /**
- * Internal representation of a parsed command token with its quoting context.
+ * A parsed command token with its raw position in the source string.
  *
- * Separating content from quote type allows the parser to apply shell-compliant
- * variable expansion rules after tokenization is complete.
+ * Exposed (unlike the internal tokenizer state) because consumers like tab completion
+ * need the raw span - including any opening quote character - to correctly replace
+ * text in the original input rather than just the unquoted logical value.
  */
-interface ParsedToken {
+export interface CommandToken {
   readonly content: string
   readonly quoteType: QuoteType
+  /** Index of the token's first raw character (the opening quote, if any) in the source string. */
+  readonly start: number
+  /** Index one past the token's last raw character in the source string. */
+  readonly end: number
 }
 
 /**
@@ -94,46 +99,11 @@ export function expandVariables(text: string, environmentVariables: Record<strin
  * ```
  */
 export function parseCommand(command: string, environmentVariables?: Record<string, string>): string[] {
-  const tokens: ParsedToken[] = []
-  let currentTokenContent = ''
-  let inQuotes = false
-  let quoteChar = ''
-  let currentQuoteType: QuoteType = 'none'
-
-  const characters = Array.from(command)
-
-  for (const char of characters) {
-    if ((char === '"' || char === "'") && !inQuotes) {
-      // Start of quoted section - quote character is consumed but not included in content
-      inQuotes = true
-      quoteChar = char
-      currentQuoteType = char === '"' ? 'double' : 'single'
-    } else if (char === quoteChar && inQuotes) {
-      // End of quoted section - quote character is consumed but not included in content
-      // Preserve currentQuoteType to track that this token was quoted
-      inQuotes = false
-      quoteChar = ''
-    } else if (char === ' ' && !inQuotes) {
-      // Unquoted space acts as token separator
-      if (currentTokenContent || currentQuoteType !== 'none') {
-        tokens.push({content: currentTokenContent, quoteType: currentQuoteType})
-        currentTokenContent = ''
-        currentQuoteType = 'none'
-      }
-    } else {
-      // Regular character becomes part of current token
-      currentTokenContent += char
-    }
-  }
-
-  // Add final token if any content or if it was an empty quoted string
-  if (currentTokenContent || currentQuoteType !== 'none') {
-    tokens.push({content: currentTokenContent, quoteType: currentQuoteType})
-  }
+  const tokens = tokenizeCommandLine(command)
 
   // Apply variable expansion based on quote type and return final command parts
   if (environmentVariables) {
-    return tokens.map((token: ParsedToken) => {
+    return tokens.map((token: CommandToken) => {
       if (token.quoteType === 'single') {
         // Single quotes preserve literal content - no variable expansion
         return token.content
@@ -145,7 +115,76 @@ export function parseCommand(command: string, environmentVariables?: Record<stri
   }
 
   // No environment variables - return content and filter empty strings for backward compatibility
-  return tokens.map((token: ParsedToken) => token.content).filter((content: string) => content !== '')
+  return tokens.map((token: CommandToken) => token.content).filter((content: string) => content !== '')
+}
+
+/**
+ * Tokenize a command string into tokens carrying both unquoted content and raw source position.
+ *
+ * Shares the same quote-handling state machine as `parseCommand` (unterminated quotes never
+ * throw, since mid-typing input almost always has an open quote) but additionally tracks each
+ * token's raw span, including its opening quote character. Consumers that need to replace text
+ * in the original input - like tab completion - need that raw span; `parseCommand`'s stripped
+ * strings alone cannot locate where a quoted argument started.
+ *
+ * @param command - Raw command string to tokenize
+ * @returns Array of tokens with unquoted content, quote type, and raw start/end offsets
+ */
+export function tokenizeCommandLine(command: string): CommandToken[] {
+  const tokens: CommandToken[] = []
+  let currentTokenContent = ''
+  let inQuotes = false
+  let quoteChar = ''
+  let currentQuoteType: QuoteType = 'none'
+  let tokenStart = -1
+
+  const characters = Array.from(command)
+
+  // Iterate by code point (surrogate pairs stay single characters) but track offsets in
+  // UTF-16 code units separately, since slice/length/cursorPosition are all code-unit based
+  let unitIndex = 0
+
+  for (const char of characters) {
+    if ((char === '"' || char === "'") && !inQuotes) {
+      // Start of quoted section - quote character is consumed but not included in content,
+      // though it does mark the start of the token's raw span
+      if (tokenStart === -1) {
+        tokenStart = unitIndex
+      }
+      inQuotes = true
+      quoteChar = char
+      currentQuoteType = char === '"' ? 'double' : 'single'
+    } else if (char === quoteChar && inQuotes) {
+      // End of quoted section - quote character is consumed but not included in content
+      // Preserve currentQuoteType to track that this token was quoted
+      inQuotes = false
+      quoteChar = ''
+    } else if (char === ' ' && !inQuotes) {
+      // Unquoted space acts as token separator
+      if (currentTokenContent || currentQuoteType !== 'none') {
+        tokens.push({content: currentTokenContent, quoteType: currentQuoteType, start: tokenStart, end: unitIndex})
+        currentTokenContent = ''
+        currentQuoteType = 'none'
+        tokenStart = -1
+      }
+    } else {
+      // Regular character becomes part of current token
+      if (tokenStart === -1) {
+        tokenStart = unitIndex
+      }
+      currentTokenContent += char
+    }
+
+    unitIndex += char.length
+  }
+
+  // Add final token if any content or if it was an empty quoted string - covers unterminated
+  // quotes too, since the loop simply ends without ever closing them
+  if (currentTokenContent || currentQuoteType !== 'none') {
+    tokens.push({content: currentTokenContent, quoteType: currentQuoteType, start: tokenStart, end: unitIndex})
+  }
+
+  return tokens
 }
 
 /**

@@ -70,6 +70,13 @@ export interface CompletionContext {
   readonly currentPartIndex: number
   /** Text of the current part being completed */
   readonly currentPart: string
+  /**
+   * Raw offset in `input` where the current part begins, including its opening quote
+   * character if quoted. Needed because `currentPart` itself has quotes stripped, so it
+   * cannot alone locate where a quoted argument's replacement span starts. Optional so
+   * hand-built test contexts that predate shell-aware tokenizing remain valid.
+   */
+  readonly currentPartStart?: number
   /** Working directory for file completion */
   readonly workingDirectory: string
   /** Available environment variables */
