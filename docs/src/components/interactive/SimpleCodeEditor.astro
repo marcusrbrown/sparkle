@@ -50,6 +50,8 @@ const editorId = `monaco-editor-${Math.random().toString(36).substr(2, 9)}`
 </div>
 
 <script type="module">
+  import {consola} from 'consola'
+
   // Wait for DOM to be ready
   document.addEventListener('DOMContentLoaded', async () => {
     try {
@@ -104,7 +106,7 @@ const editorId = `monaco-editor-${Math.random().toString(36).substr(2, 9)}`
       })
 
     } catch (error) {
-      console.error('Failed to load Monaco Editor:', error)
+      consola.error('Failed to load Monaco Editor:', error)
 
       // Show error fallback
       const containers = document.querySelectorAll('.editor-container')

@@ -1,5 +1,6 @@
 import type {ReactNode} from 'react'
 import type {SystemColorScheme, ThemeCollection, ThemeMode} from '../context/ThemeContext.js'
+import {consola} from 'consola'
 import {useCallback, useEffect, useMemo, useState} from 'react'
 
 import {ThemeContext} from '../context/ThemeContext.js'
@@ -93,7 +94,7 @@ async function loadStoredTheme(storageKey: string): Promise<ThemeMode | null> {
       return stored as ThemeMode
     }
   } catch (error) {
-    console.warn('Failed to load theme from AsyncStorage:', error)
+    consola.warn('Failed to load theme from AsyncStorage:', error)
   }
 
   return null
@@ -111,7 +112,7 @@ async function saveTheme(storageKey: string, theme: ThemeMode): Promise<void> {
     const AsyncStorage = require('@react-native-async-storage/async-storage').default
     await AsyncStorage.setItem(storageKey, theme)
   } catch (error) {
-    console.warn('Failed to save theme to AsyncStorage:', error)
+    consola.warn('Failed to save theme to AsyncStorage:', error)
   }
 }
 
@@ -133,7 +134,7 @@ function updateStatusBarStyle(isDark: boolean): void {
       StatusBar.setBackgroundColor(isDark ? '#000000' : '#ffffff', true)
     }
   } catch (error) {
-    console.warn('Failed to update StatusBar style:', error)
+    consola.warn('Failed to update StatusBar style:', error)
   }
 }
 
@@ -190,7 +191,7 @@ export function NativeThemeProvider({
       if (!validation.isValid) {
         const error = new Error(`Invalid theme configuration: ${validation.errors.join(', ')}`)
         setError(error)
-        console.error('Theme validation failed:', validation.errors)
+        consola.error('Theme validation failed:', validation.errors)
         // Fallback to light theme
         return themes.light
       }
@@ -199,7 +200,7 @@ export function NativeThemeProvider({
     } catch (validationError) {
       const error = validationError instanceof Error ? validationError : new Error('Theme validation failed')
       setError(error)
-      console.error('Theme validation error:', error)
+      consola.error('Theme validation error:', error)
       return themes.light
     }
   }, [resolvedTheme, themes])
@@ -217,7 +218,7 @@ export function NativeThemeProvider({
           setActiveTheme(storedTheme)
         }
       } catch (error) {
-        console.warn('Failed to initialize theme:', error)
+        consola.warn('Failed to initialize theme:', error)
       } finally {
         if (isMounted) {
           setIsLoading(false)
@@ -251,7 +252,7 @@ export function NativeThemeProvider({
 
       return () => subscription?.remove()
     } catch (error) {
-      console.warn('Failed to set up system theme listener:', error)
+      consola.warn('Failed to set up system theme listener:', error)
       return undefined
     }
   }, [disableSystemTheme])
