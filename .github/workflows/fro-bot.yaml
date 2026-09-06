@@ -714,30 +714,29 @@ jobs:
         with:
           install-zig: 'true'
 
-      - name: Enable authenticated git push for autoheal fixes
+      - name: Enable authenticated git push for branch-pr delivery
         # Checkout uses persist-credentials: false so the PAT is never written
-        # into .git/config on the fork-PR-head comment path. Without a
-        # credential on disk the agent has no pushable remote, so every
-        # scheduled autoheal run degrades to working-dir mode and its fixes
-        # have nowhere to land.
+        # into .git/config on the fork-PR-head comment path. Runs that deliver
+        # via branch-pr need a credential restored afterwards or the push fails.
         #
-        # Scoped to the 05:00 autoheal cron and dispatched autoheal runs only.
+        # This condition must stay in lockstep with the output-mode expression
+        # on the agent step below: every run resolving to branch-pr needs the
+        # credential, and no run resolving to working-dir should have it.
+        #
         # The 17:00 maintenance cron is excluded because MAINTENANCE_PROMPT
-        # forbids opening PRs -- it only updates one perpetual issue, which
-        # the API token already covers. Review-mode dispatch is excluded for
-        # the same reason.
+        # forbids opening PRs -- it only updates one perpetual issue, which the
+        # API token already covers.
         #
-        # Deliberately NOT enabled for issue_comment / mention runs:
-        # fro-bot/agent classifies those as credential-withheld and FAILS
-        # CLOSED when it finds an on-disk http.*.extraheader, so writing one
-        # there would break the agent rather than enable push.
+        # Deliberately NOT enabled for issue_comment / mention or pull_request
+        # runs. resolveOutputMode() returns null for those events, so they can
+        # never reach branch-pr delivery and have no use for a pushable remote.
         #
         # The credential is written to disk rather than passed via env or the
         # gh credential helper because fro-bot/agent scrubs its child
         # environment.
         if: >-
-          (github.event_name == 'schedule' && github.event.schedule == '0 5 * * *')
-          || (github.event_name == 'workflow_dispatch' && inputs.mode == 'autoheal')
+          github.event_name == 'workflow_dispatch'
+          || (github.event_name == 'schedule' && github.event.schedule == '0 5 * * *')
         env:
           FRO_BOT_PAT: ${{ secrets.FRO_BOT_PAT }}
         run: |
@@ -768,5 +767,17 @@ jobs:
           model: ${{ vars.FRO_BOT_MODEL }}
           omo-providers: ${{ secrets.OMO_PROVIDERS }}
           opencode-config: ${{ secrets.OPENCODE_CONFIG }}
+          # resolveOutputMode() only consults this input for schedule and
+          # workflow_dispatch; every other event returns null and ignores it.
+          # The `auto` default resolves to working-dir, which is why autoheal
+          # fixes previously had nowhere to land -- branch-pr must be explicit.
+          #
+          # Keep this in lockstep with the credential step's condition above.
+          output-mode: >-
+            ${{
+              (github.event_name == 'workflow_dispatch'
+                || (github.event_name == 'schedule' && github.event.schedule == '0 5 * * *'))
+              && 'branch-pr' || 'working-dir'
+            }}
           prompt: ${{ env.PROMPT }}
           timeout: 0
