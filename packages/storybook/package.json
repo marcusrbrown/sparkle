@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "storybook build",
+    "build:storybook": "npm run build",
     "clean": "rimraf .turbo node_modules dist storybook-static test-results",
     "dev": "storybook dev -p 6006",
     "lint": "eslint",
@@ -28,8 +29,8 @@
     "tailwindcss": "^4.0.6"
   },
   "devDependencies": {
-    "@playwright/test": "1.62.0",
-    "@storybook/addon-a11y": "10.5.4",
+    "@playwright/test": "1.62.1",
+    "@storybook/addon-a11y": "10.6.0",
     "@storybook/addon-docs": "^10.0.0",
     "@storybook/addon-links": "^10.0.0",
     "@storybook/addon-onboarding": "^10.0.0",
@@ -38,10 +39,10 @@
     "@storybook/test-runner": "0.24.4",
     "@tailwindcss/vite": "^4.0.6",
     "@types/react": "~19.2.0",
-    "@types/react-dom": "19.2.3",
+    "@types/react-dom": "19.2.7",
     "@vitejs/plugin-react-swc": "^4.0.0",
     "autoprefixer": "^10.4.20",
-    "playwright": "1.62.0",
+    "playwright": "1.62.1",
     "postcss": "^8.5.2",
     "rimraf": "^6.0.0",
     "serve": "^14.2.1",
