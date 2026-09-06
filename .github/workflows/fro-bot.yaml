@@ -714,6 +714,38 @@ jobs:
         with:
           install-zig: 'true'
 
+      - name: Enable authenticated git push for autoheal fixes
+        # Checkout uses persist-credentials: false so the PAT is never written
+        # into .git/config on the fork-PR-head comment path. Without a
+        # credential on disk the agent has no pushable remote, so every
+        # scheduled autoheal run degrades to working-dir mode and its fixes
+        # have nowhere to land.
+        #
+        # Scoped to the 05:00 autoheal cron and dispatched autoheal runs only.
+        # The 17:00 maintenance cron is excluded because MAINTENANCE_PROMPT
+        # forbids opening PRs -- it only updates one perpetual issue, which
+        # the API token already covers. Review-mode dispatch is excluded for
+        # the same reason.
+        #
+        # Deliberately NOT enabled for issue_comment / mention runs:
+        # fro-bot/agent classifies those as credential-withheld and FAILS
+        # CLOSED when it finds an on-disk http.*.extraheader, so writing one
+        # there would break the agent rather than enable push.
+        #
+        # The credential is written to disk rather than passed via env or the
+        # gh credential helper because fro-bot/agent scrubs its child
+        # environment.
+        if: >-
+          (github.event_name == 'schedule' && github.event.schedule == '0 5 * * *')
+          || (github.event_name == 'workflow_dispatch' && inputs.mode == 'autoheal')
+        env:
+          FRO_BOT_PAT: ${{ secrets.FRO_BOT_PAT }}
+        run: |
+          set -euo pipefail
+          auth="$(printf '%s' "x-access-token:${FRO_BOT_PAT}" | base64 | tr -d '\n')"
+          echo "::add-mask::${auth}"
+          git config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ${auth}"
+
       - name: Run Fro Bot
         uses: fro-bot/agent@9d45b92e7c9f95f3e9d9d32cc0b361b4a59e79d7 # v0.109.3
         env:
