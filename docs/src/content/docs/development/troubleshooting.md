@@ -33,7 +33,7 @@ These commands will identify most common issues and provide specific guidance fo
 
 **Symptoms:**
 
-```
+```text
 error TS2307: Cannot find module '@sparkle/ui' or its corresponding type declarations.
 ```
 

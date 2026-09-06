@@ -46,10 +46,10 @@
   },
   "prettier": "@bfra.me/prettier-config/120-proof",
   "devDependencies": {
-    "@axe-core/cli": "4.12.1",
-    "@bfra.me/eslint-config": "0.51.1",
-    "@bfra.me/prettier-config": "0.16.9",
-    "@bfra.me/tsconfig": "0.13.1",
+    "@axe-core/cli": "4.13.0",
+    "@bfra.me/eslint-config": "0.51.2",
+    "@bfra.me/prettier-config": "0.16.11",
+    "@bfra.me/tsconfig": "0.13.2",
     "@changesets/cli": "2.31.1",
     "@lhci/cli": "0.15.1",
     "@manypkg/cli": "0.25.1",
@@ -62,13 +62,13 @@
     "nano-staged": "0.8.0",
     "prettier": "3.9.6",
     "scripts": "workspace:*",
-    "simple-git-hooks": "2.13.1",
+    "simple-git-hooks": "2.14.0",
     "tsdown": "0.16.8",
-    "tsx": "4.23.10",
-    "turbo": "2.10.8",
+    "tsx": "4.23.13",
+    "turbo": "2.10.12",
     "typescript": "5.9.3"
   },
-  "packageManager": "pnpm@11.20.0",
+  "packageManager": "pnpm@11.25.0",
   "engines": {
     "node": ">=22.13.1",
     "pnpm": ">=11.8.0"

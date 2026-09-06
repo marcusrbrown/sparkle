@@ -30,6 +30,7 @@ onlyBuiltDependencies:
   - unrs-resolver
 
 overrides:
+  nanoid@<3.3.17: ^3.3.17
   tmp@<0.2.6: ^0.2.6
 
 preferWorkspacePackages: true
@@ -43,3 +44,8 @@ saveWorkspaceProtocol: rolling
 shamefullyHoist: true
 
 strictPeerDependencies: false
+
+minimumReleaseAgeExclude:
+  - '@bfra.me/eslint-config@0.51.2'
+  - '@bfra.me/prettier-config@0.16.10 || 0.16.11'
+  - '@bfra.me/tsconfig@0.13.2'
