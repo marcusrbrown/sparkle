@@ -1,3 +1,4 @@
+import {consola} from 'consola'
 import {useEffect, useRef, type RefObject} from 'react'
 
 /**
@@ -455,7 +456,7 @@ export function useSkipNavigation(options: SkipNavigationOptions = {}): SkipNavi
     }
 
     if (debug) {
-      console.warn('No skip navigation target found on page')
+      consola.warn('No skip navigation target found on page')
     }
 
     return null
@@ -476,7 +477,7 @@ export function useSkipNavigation(options: SkipNavigationOptions = {}): SkipNavi
 
     if (!target) {
       if (debug) {
-        console.warn(`Skip target not found: ${selector}`)
+        consola.warn(`Skip target not found: ${selector}`)
       }
       return
     }
@@ -500,12 +501,12 @@ export function useSkipNavigation(options: SkipNavigationOptions = {}): SkipNavi
         target.focus({preventScroll: true})
 
         if (debug) {
-          console.warn(`Skipped to element: ${selector}`)
+          consola.warn(`Skipped to element: ${selector}`)
         }
       }, 150)
     } catch (error) {
       if (debug) {
-        console.error('Error during skip navigation:', error)
+        consola.error('Error during skip navigation:', error)
       }
     }
   }
