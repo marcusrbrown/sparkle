@@ -1635,9 +1635,9 @@ interface ConfigOptions {
 /**
  * Top-level configuration sections that support `config list --section` and
  * `config reset --section`. Shared between validation and display so the two
- * commands can't drift out of sync with each other.
+ * commands can't drift out of sync with each other. The `satisfies` clause
+ * fails to compile if a section is renamed or removed from ShellConfig.
  */
-// satisfies fails to compile if a section is renamed or removed from ShellConfig.
 const CONFIG_SECTION_NAMES = [
   'appearance',
   'behavior',
