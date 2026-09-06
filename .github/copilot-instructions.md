@@ -22,7 +22,7 @@ pnpm test            # Run tests
 **Critical Principles:**
 - ✅ All tests must pass before task completion
 - ✅ Use `consola` for logging, not `console`
-- ✅ Avoid ES6 classes except for Error extensions
+- ✅ Prefer functions and closure factories; classes need justification and a lint suppression
 - ✅ All packages use ESM-only (`"type": "module"`)
 - ✅ Workspace dependencies use `workspace:*` protocol
 
@@ -282,7 +282,7 @@ turbo run test --filter=...[origin/main]
 
 #### Code Style Conventions
 
-- **Avoid ES6 Classes**: Use function declarations and object patterns instead of class syntax (exception: extending Error for custom error types)
+- **Classes Require Justification**: Prefer functions and closure factories. Classes are allowed only for `Error` or required platform subclasses, fluent builders, or cohesive stateful resources with meaningful instance lifecycle or identity. Do not use classes as namespaces, static utility bags, passive data holders, or application inheritance hierarchies. Every permitted standalone class must carry a local lint suppression explaining why a factory would be less clear.
 - **Utility Types**: Leverage built-in utility types extensively:
   - `Pick<T, K>` for selecting specific properties
   - `Omit<T, K>` for excluding properties

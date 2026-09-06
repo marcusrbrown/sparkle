@@ -76,6 +76,7 @@ const DEFAULT_PAGES = [
 /**
  * Simple accessibility auditor using available tools
  */
+// eslint-disable-next-line no-restricted-syntax -- Owns configured options and manages an audit run's initialize/check/report lifecycle.
 class AccessibilityAuditor {
   private options: Required<AuditOptions>
 

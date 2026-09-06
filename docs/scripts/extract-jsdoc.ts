@@ -42,6 +42,7 @@ interface PropDocumentation {
 /**
  * Extracts JSDoc comments and component metadata from @sparkle/ui components
  */
+// eslint-disable-next-line no-restricted-syntax -- Owns a ts-morph Project instance and configured paths for the extraction run.
 export class JSDocExtractor {
   private project: Project
   private uiPackagePath: string

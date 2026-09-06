@@ -44,6 +44,7 @@ interface GenerationOptions {
  * The automation ensures proper order of operations, handles errors gracefully,
  * and provides detailed logging for debugging issues.
  */
+// eslint-disable-next-line no-restricted-syntax -- Owns generation options and accumulated run state (start time, generated files) across a multi-step pipeline.
 export class DocumentationAutomator {
   private options: GenerationOptions
   private startTime = 0

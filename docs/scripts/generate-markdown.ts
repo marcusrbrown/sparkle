@@ -43,6 +43,7 @@ interface PropDocumentation {
 /**
  * Generates Markdown documentation from extracted JSDoc component data
  */
+// eslint-disable-next-line no-restricted-syntax -- Owns loaded component-docs state and output path across a generation run.
 export class MarkdownGenerator {
   private outputPath: string
   private componentDocs: ComponentDocumentation[]

@@ -3,6 +3,7 @@ import type {ErrorRecoveryStrategy, TestContext, TestResult, TestScenarioConfig}
 /**
  * A fluent builder for creating type-safe error test scenarios.
  */
+// eslint-disable-next-line no-restricted-syntax -- Fluent builder; progressive configuration through chained calls is the API.
 export class TestScenarioBuilder<TError extends Error = Error, TState = unknown> {
   private config: Partial<TestScenarioConfig<TError, TState>> = {}
 

@@ -74,6 +74,7 @@ export interface TransformResult {
  * const nativeResult = transformer.transform(lightTokens, { platform: 'native' })
  * ```
  */
+// eslint-disable-next-line no-restricted-syntax -- Owns cache state with an explicit clearCache/getCacheStats lifecycle.
 export class TokenTransformer {
   private cache = new Map<string, TransformResult>()
 

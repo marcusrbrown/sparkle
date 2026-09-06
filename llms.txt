@@ -66,7 +66,7 @@ Per-package: `pnpm --filter <name> <script>`. Package-specific Turborepo build t
 ## Conventions (quick reference; see copilot-instructions.md for the full set)
 
 - Types/Interfaces: PascalCase. Functions/variables: camelCase. Components: PascalCase with explicit return types. Files: kebab-case for configs, PascalCase for components.
-- Avoid ES6 classes (exception: custom `Error` subclasses). Prefer utility types, `as const`, discriminated unions, `parse, don't validate`.
+- Prefer functions and closure factories. Classes need explicit justification and a local lint suppression; limited to Error/platform subclasses, fluent builders, or stateful resources with real lifecycle. Prefer utility types, `as const`, discriminated unions, `parse, don't validate`.
 - Logging: **`consola`**, never `console`.
 - Tests must pass before completing tasks. Use factory mocks from `@sparkle/test-utils` with `standardBeforeEach`/`standardAfterEach`. JSDoc on all public APIs. Document *why*, not *what*.
 - YAML extension: `.yaml`, not `.yml`. All third-party actions in workflows must be pinned to a full SHA.

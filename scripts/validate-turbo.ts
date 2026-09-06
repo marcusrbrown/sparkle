@@ -62,6 +62,7 @@ interface ExpectedTaskConfig {
 
 type ColorKey = keyof typeof colors
 
+// eslint-disable-next-line no-restricted-syntax -- Owns accumulated validation errors/warnings and loaded turbo config across a run.
 class TurboValidator {
   private errors: string[] = []
   private warnings: string[] = []

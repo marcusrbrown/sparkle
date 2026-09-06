@@ -47,6 +47,7 @@ const DEFAULT_ENVIRONMENT_VARIABLES: Record<string, string> = {
  * Provides secure process isolation, state management, and execution context
  * for commands running in the Web Worker environment.
  */
+// eslint-disable-next-line no-restricted-syntax -- Owns process, filesystem, and job-controller state for a shell session.
 export class ShellEnvironment {
   private state: ShellEnvironmentState
   private readonly fileSystem: VirtualFileSystem
