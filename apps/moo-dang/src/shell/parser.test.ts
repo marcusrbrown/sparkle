@@ -11,7 +11,7 @@
 
 import {describe, expect, it} from 'vitest'
 
-import {expandVariables, parseCommand, parseCommandPipeline} from './parser.js'
+import {expandVariables, parseCommand, parseCommandPipeline, tokenizeCommandLine} from './parser.js'
 
 describe('expandVariables', () => {
   describe('basic variable expansion', () => {
@@ -637,5 +637,21 @@ describe('parseCommandPipeline', () => {
         }
       }
     })
+  })
+})
+
+describe('tokenizeCommandLine', () => {
+  it('should emit UTF-16 code-unit offsets that round-trip through slice for astral characters', () => {
+    const command = 'echo 😀 "my doc"'
+    const tokens = tokenizeCommandLine(command)
+
+    const quotedToken = tokens[2]
+    expect(quotedToken).toBeDefined()
+    expect(quotedToken?.content).toBe('my doc')
+    expect(command.slice(quotedToken?.start, quotedToken?.end)).toBe('"my doc"')
+
+    const emojiToken = tokens[1]
+    expect(emojiToken).toBeDefined()
+    expect(command.slice(emojiToken?.start, emojiToken?.end)).toBe('😀')
   })
 })

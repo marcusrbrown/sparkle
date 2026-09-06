@@ -140,12 +140,16 @@ export function tokenizeCommandLine(command: string): CommandToken[] {
 
   const characters = Array.from(command)
 
-  for (const [index, char] of characters.entries()) {
+  // Iterate by code point (surrogate pairs stay single characters) but track offsets in
+  // UTF-16 code units separately, since slice/length/cursorPosition are all code-unit based
+  let unitIndex = 0
+
+  for (const char of characters) {
     if ((char === '"' || char === "'") && !inQuotes) {
       // Start of quoted section - quote character is consumed but not included in content,
       // though it does mark the start of the token's raw span
       if (tokenStart === -1) {
-        tokenStart = index
+        tokenStart = unitIndex
       }
       inQuotes = true
       quoteChar = char
@@ -158,7 +162,7 @@ export function tokenizeCommandLine(command: string): CommandToken[] {
     } else if (char === ' ' && !inQuotes) {
       // Unquoted space acts as token separator
       if (currentTokenContent || currentQuoteType !== 'none') {
-        tokens.push({content: currentTokenContent, quoteType: currentQuoteType, start: tokenStart, end: index})
+        tokens.push({content: currentTokenContent, quoteType: currentQuoteType, start: tokenStart, end: unitIndex})
         currentTokenContent = ''
         currentQuoteType = 'none'
         tokenStart = -1
@@ -166,16 +170,18 @@ export function tokenizeCommandLine(command: string): CommandToken[] {
     } else {
       // Regular character becomes part of current token
       if (tokenStart === -1) {
-        tokenStart = index
+        tokenStart = unitIndex
       }
       currentTokenContent += char
     }
+
+    unitIndex += char.length
   }
 
   // Add final token if any content or if it was an empty quoted string - covers unterminated
   // quotes too, since the loop simply ends without ever closing them
   if (currentTokenContent || currentQuoteType !== 'none') {
-    tokens.push({content: currentTokenContent, quoteType: currentQuoteType, start: tokenStart, end: characters.length})
+    tokens.push({content: currentTokenContent, quoteType: currentQuoteType, start: tokenStart, end: unitIndex})
   }
 
   return tokens

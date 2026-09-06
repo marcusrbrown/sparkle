@@ -334,6 +334,63 @@ describe('Shell-Aware Tokenization (quote handling)', () => {
     expect(newInput).toBe('cat my doc.txt')
     expect(newCursorPosition).toBe(14)
   })
+
+  it('should keep offsets correct when an astral character precedes the completion target', async () => {
+    const engine = createCompletionEngine()
+    const input = 'echo 😀 "my doc'
+    const cursorPosition = input.length
+
+    const result = await engine.getCompletions(input, cursorPosition, '/', {})
+    expect(result.context.currentPart).toBe('my doc')
+
+    const suggestion: CompletionSuggestion = {
+      text: 'my doc.txt',
+      type: 'file',
+      description: 'File',
+      priority: 'high',
+    }
+
+    const {newInput} = engine.applySuggestion(input, suggestion, cursorPosition)
+    expect(newInput).toBe('echo 😀 my doc.txt')
+  })
+
+  it('should keep start offsets correct across multiple quoted/unquoted token transitions', async () => {
+    const engine = createCompletionEngine()
+    const input = 'cp "my doc" dest'
+    const cursorPosition = input.length
+
+    const result = await engine.getCompletions(input, cursorPosition, '/', {})
+    expect(result.context.commandParts).toEqual(['cp', 'my doc', 'dest'])
+    expect(result.context.currentPartIndex).toBe(2)
+    expect(result.context.currentPart).toBe('dest')
+
+    const suggestion: CompletionSuggestion = {
+      text: 'destination.txt',
+      type: 'file',
+      description: 'File',
+      priority: 'high',
+    }
+
+    const {newInput} = engine.applySuggestion(input, suggestion, cursorPosition)
+    expect(newInput).toBe('cp "my doc" destination.txt')
+  })
+
+  it('should add a trailing space after a quoted-span suggestion replacement when requiresSpace is set', () => {
+    const engine = createCompletionEngine()
+
+    const suggestion: CompletionSuggestion = {
+      text: 'my folder',
+      type: 'directory',
+      description: 'Directory',
+      priority: 'high',
+      requiresSpace: true,
+    }
+
+    const {newInput, newCursorPosition} = engine.applySuggestion('cd "my fol', suggestion, 10)
+
+    expect(newInput).toBe('cd my folder ')
+    expect(newCursorPosition).toBe(13)
+  })
 })
 
 describe('Completion Providers', () => {
