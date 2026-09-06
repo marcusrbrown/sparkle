@@ -27,8 +27,10 @@ export class TestScenarioBuilder<TError extends Error = Error, TState = unknown>
    * @param errorType - The constructor for the error type
    */
   withErrorType<E extends Error>(errorType: new (...args: any[]) => E): TestScenarioBuilder<E, TState> {
-    ;(this.config as any).errorType = errorType
-    return this as any
+    // This method changes the builder's error type parameter (TError -> E),
+    // which TypeScript can't track through in-place mutation of `this`.
+    ;(this.config as Partial<TestScenarioConfig<E, TState>>).errorType = errorType
+    return this as unknown as TestScenarioBuilder<E, TState>
   }
 
   /**

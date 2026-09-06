@@ -305,6 +305,27 @@ describe('tokenUtils', () => {
       const differences = tokenUtils.compareThemes(mockBaseTheme, extendedTheme)
       expect(differences).toContain('colors.tertiary: missing in first theme')
     })
+
+    it('should report a mismatch instead of throwing when a value is null in one theme', () => {
+      const themeWithObject = {
+        ...mockBaseTheme,
+        colors: {
+          ...mockBaseTheme.colors,
+          primary: mockBaseTheme.colors.primary,
+        },
+      }
+      const themeWithNull = {
+        ...mockBaseTheme,
+        colors: {
+          ...mockBaseTheme.colors,
+          primary: null,
+        },
+      } as unknown as ThemeConfig
+
+      expect(() => tokenUtils.compareThemes(themeWithObject, themeWithNull)).not.toThrow()
+      const differences = tokenUtils.compareThemes(themeWithObject, themeWithNull)
+      expect(differences.some(diff => diff.startsWith('colors.primary'))).toBe(true)
+    })
   })
 
   describe('mergeThemes()', () => {
@@ -353,6 +374,26 @@ describe('tokenUtils', () => {
 
       // Should add new typography property
       expect(merged.typography.fontSize.xl).toBe('1.25rem')
+    })
+
+    it('should replace a non-object target value with the override object cleanly', () => {
+      const stringValuedBase = {
+        ...mockBaseTheme,
+        colors: {
+          ...mockBaseTheme.colors,
+          primary: 'not-an-object',
+        },
+      } as unknown as ThemeConfig
+      const objectOverride: Partial<ThemeConfig> = {
+        colors: {
+          primary: {500: '#ff0000'},
+        },
+      }
+
+      const merged = tokenUtils.mergeThemes(stringValuedBase, objectOverride)
+
+      expect(merged.colors.primary).toEqual({500: '#ff0000'})
+      expect(Object.keys(merged.colors.primary as Record<string, string>)).not.toContain('0')
     })
   })
 

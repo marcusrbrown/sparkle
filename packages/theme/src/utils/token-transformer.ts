@@ -229,33 +229,35 @@ export const tokenUtils = {
     const differences: string[] = []
 
     // Simple deep comparison for differences
-    const compare = (obj1: any, obj2: any, path = ''): void => {
+    const compare = (obj1: unknown, obj2: unknown, path = ''): void => {
       if (typeof obj1 !== typeof obj2) {
         differences.push(`${path}: type mismatch`)
         return
       }
 
-      if (typeof obj1 === 'object' && obj1 !== null) {
-        const keys1 = Object.keys(obj1)
-        const keys2 = Object.keys(obj2)
+      if (typeof obj1 === 'object' && obj1 !== null && typeof obj2 === 'object' && obj2 !== null) {
+        const record1 = obj1 as Record<string, unknown>
+        const record2 = obj2 as Record<string, unknown>
+        const keys1 = Object.keys(record1)
+        const keys2 = Object.keys(record2)
 
         for (const key of keys1) {
-          if (Object.prototype.hasOwnProperty.call(obj2, key)) {
-            compare(obj1[key], obj2[key], path ? `${path}.${key}` : key)
+          if (Object.prototype.hasOwnProperty.call(record2, key)) {
+            compare(record1[key], record2[key], path ? `${path}.${key}` : key)
           } else {
             differences.push(`${path}.${key}: missing in second theme`)
           }
         }
 
         for (const key of keys2) {
-          if (Object.prototype.hasOwnProperty.call(obj1, key)) {
+          if (Object.prototype.hasOwnProperty.call(record1, key)) {
             // Already processed above
           } else {
             differences.push(`${path}.${key}: missing in first theme`)
           }
         }
       } else if (obj1 !== obj2) {
-        differences.push(`${path}: value mismatch (${obj1} vs ${obj2})`)
+        differences.push(`${path}: value mismatch (${String(obj1)} vs ${String(obj2)})`)
       }
     }
 
@@ -272,22 +274,33 @@ export const tokenUtils = {
    */
   mergeThemes(baseTheme: ThemeConfig, overrideTheme: Partial<ThemeConfig>): ThemeConfig {
     // Deep merge implementation
-    const deepMerge = (target: any, source: any): any => {
+    const deepMerge = (target: Record<string, unknown>, source: Record<string, unknown>): Record<string, unknown> => {
       const result = {...target}
 
       const sourceKeys = Object.keys(source)
       for (const key of sourceKeys) {
-        if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
-          result[key] = deepMerge(target[key] || {}, source[key])
+        const sourceValue = source[key]
+        if (sourceValue && typeof sourceValue === 'object' && !Array.isArray(sourceValue)) {
+          const targetValue = target[key]
+          result[key] = deepMerge(
+            targetValue && typeof targetValue === 'object' ? (targetValue as Record<string, unknown>) : {},
+            sourceValue as Record<string, unknown>,
+          )
         } else {
-          result[key] = source[key]
+          result[key] = sourceValue
         }
       }
 
       return result
     }
 
-    return deepMerge(baseTheme, overrideTheme)
+    // Recursive structural merge can't be expressed as type-preserving without
+    // significant machinery; this boundary cast reflects that the merged shape
+    // is a ThemeConfig by construction.
+    return deepMerge(
+      baseTheme as unknown as Record<string, unknown>,
+      overrideTheme as unknown as Record<string, unknown>,
+    ) as unknown as ThemeConfig
   },
 
   /**

@@ -654,4 +654,14 @@ describe('Standard Shell Commands', () => {
       })
     })
   })
+
+  describe('config command', () => {
+    it('should reject resetting an unknown section without touching the config manager', async () => {
+      const configCommand = getCommand('config')
+      const result = await configCommand.execute(['reset', '--section', 'nonexistent-section'], executionContext)
+
+      expect(result.exitCode).toBe(1)
+      expect(result.stderr).toMatch(/config reset: section 'nonexistent-section' not found/)
+    })
+  })
 })
