@@ -55,5 +55,19 @@ jobs:
         uses: ./.github/actions/setup-ci
         with:
           install-zig: 'true'
+      - name: DIAGNOSTIC typedoc resolution
+        run: |
+          echo "node: $(node --version)  pnpm: $(pnpm --version)"
+          echo "--- root node_modules/typedoc ---"
+          ls -la node_modules/typedoc 2>&1 | head -3 || echo "ABSENT"
+          echo "--- resolved package.json exports/main ---"
+          node -e "const p=require('./node_modules/typedoc/package.json');console.log('version',p.version);console.log('main',p.main);console.log('exports',JSON.stringify(p.exports))" 2>&1 | head -6
+          echo "--- resolve from plugin dir ---"
+          PLUGIN=$(find node_modules/.pnpm -maxdepth 4 -type d -name typedoc-plugin-frontmatter | head -1)
+          echo "plugin at: $PLUGIN"
+          (cd "$PLUGIN" && node --input-type=module -e "import('typedoc').then(m=>console.log('IMPORT OK',typeof m.ReflectionKind)).catch(e=>console.log('IMPORT FAIL',e.code,e.message))") 2>&1 | head -4
+          echo "--- plugin-local typedoc link ---"
+          ls -la "$PLUGIN/../typedoc" 2>&1 | head -2 || echo "no sibling typedoc"
+        shell: bash -Eeuo pipefail {0}
       - name: Build project
         run: pnpm build
