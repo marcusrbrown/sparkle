@@ -83,7 +83,7 @@ export type {Platform, TransformOptions, TransformResult} from './utils/token-tr
 /**
  * Theme validation (Phase 2)
  */
-export {isValidTheme, ThemeValidator, validateTheme} from './validators/theme-validator.js'
+export {isValidTheme, validateTheme} from './validators/theme-validator.js'
 
 export type {ValidationError, ValidationOptions, ValidationResult} from './validators/theme-validator.js'
 

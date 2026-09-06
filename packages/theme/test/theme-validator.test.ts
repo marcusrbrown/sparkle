@@ -1,6 +1,6 @@
 import type {ThemeConfig} from '@sparkle/types'
-import {beforeEach, describe, expect, it} from 'vitest'
-import {ThemeValidator, type ValidationOptions} from '../src/validators/theme-validator'
+import {describe, expect, it} from 'vitest'
+import {validateTheme, type ValidationOptions} from '../src/validators/theme-validator'
 
 // Mock complete theme configuration
 const mockValidTheme: ThemeConfig = {
@@ -96,21 +96,9 @@ const mockValidTheme: ThemeConfig = {
 }
 
 describe('ThemeValidator', () => {
-  let validator: ThemeValidator
-
-  beforeEach(() => {
-    validator = new ThemeValidator()
-  })
-
-  describe('constructor', () => {
-    it('should create a new validator instance', () => {
-      expect(validator).toBeInstanceOf(ThemeValidator)
-    })
-  })
-
   describe('validate()', () => {
     it('should validate a complete valid theme', () => {
-      const result = validator.validate(mockValidTheme)
+      const result = validateTheme(mockValidTheme)
 
       expect(result.isValid).toBe(true)
       expect(result.errors).toHaveLength(0)
@@ -124,7 +112,7 @@ describe('ThemeValidator', () => {
         // Missing other required properties
       } as unknown as ThemeConfig
 
-      const result = validator.validate(incompleteTheme)
+      const result = validateTheme(incompleteTheme)
 
       expect(result.isValid).toBe(false)
       expect(result.errors.length).toBeGreaterThan(0)
@@ -138,7 +126,7 @@ describe('ThemeValidator', () => {
         strictMode: true,
       }
 
-      const result = validator.validate(mockValidTheme, options)
+      const result = validateTheme(mockValidTheme, options)
 
       expect(result.isValid).toBe(true)
       expect(result.summary.checkedProperties).toBeGreaterThan(0)
@@ -156,8 +144,8 @@ describe('ThemeValidator', () => {
         },
       }
 
-      const resultNormal = validator.validate(themeWithWarnings, {strictMode: false})
-      const resultStrict = validator.validate(themeWithWarnings, {strictMode: true})
+      const resultNormal = validateTheme(themeWithWarnings, {strictMode: false})
+      const resultStrict = validateTheme(themeWithWarnings, {strictMode: true})
 
       // Should have warnings about inconsistent spacing
       expect(resultNormal.warnings.length).toBeGreaterThan(0)
@@ -179,7 +167,7 @@ describe('ThemeValidator', () => {
         },
       }
 
-      const result = validator.validate(lowContrastTheme, {
+      const result = validateTheme(lowContrastTheme, {
         validateColorContrast: true,
         minContrastRatio: 4.5,
       })
@@ -199,7 +187,7 @@ describe('ThemeValidator', () => {
         },
       }
 
-      const result = validator.validate(lowContrastTheme, {
+      const result = validateTheme(lowContrastTheme, {
         validateColorContrast: false,
       })
 
@@ -220,7 +208,7 @@ describe('ThemeValidator', () => {
         },
       }
 
-      const result = validator.validate(invalidCSSTheme, {
+      const result = validateTheme(invalidCSSTheme, {
         validateCSSValues: true,
       })
 
@@ -240,7 +228,7 @@ describe('ThemeValidator', () => {
         },
       }
 
-      const result = validator.validate(inconsistentSpacingTheme, {
+      const result = validateTheme(inconsistentSpacingTheme, {
         validateSpacingScale: true,
       })
 
@@ -275,7 +263,7 @@ describe('ThemeValidator', () => {
         },
       }
 
-      const result = validator.validate(invalidTypographyTheme)
+      const result = validateTheme(invalidTypographyTheme)
 
       expect(result.errors.some(err => err.path.includes('typography'))).toBe(true)
     })
@@ -289,7 +277,7 @@ describe('ThemeValidator', () => {
         },
       }
 
-      const result = validator.validate(invalidShadowTheme)
+      const result = validateTheme(invalidShadowTheme)
 
       expect(result.errors.some(err => err.path.includes('shadows') && err.message.includes('invalid'))).toBe(true)
     })
@@ -313,7 +301,7 @@ describe('ThemeValidator', () => {
         },
       }
 
-      const result = validator.validate(invalidAnimationTheme)
+      const result = validateTheme(invalidAnimationTheme)
 
       expect(result.errors.some(err => err.path.includes('animation'))).toBe(true)
     })
@@ -324,7 +312,7 @@ describe('ThemeValidator', () => {
         // Missing other required properties
       } as unknown as ThemeConfig
 
-      const result = validator.validate(invalidTheme)
+      const result = validateTheme(invalidTheme)
 
       expect(result.isValid).toBe(false)
       expect(result.errors.length).toBeGreaterThan(0)
@@ -341,7 +329,7 @@ describe('ThemeValidator', () => {
     })
 
     it('should generate validation summary', () => {
-      const result = validator.validate(mockValidTheme)
+      const result = validateTheme(mockValidTheme)
 
       expect(result.summary).toHaveProperty('totalErrors')
       expect(result.summary).toHaveProperty('totalWarnings')
@@ -357,19 +345,19 @@ describe('ThemeValidator', () => {
     it('should handle null values', () => {
       const nullTheme = null as unknown as ThemeConfig
 
-      expect(() => validator.validate(nullTheme)).not.toThrow()
+      expect(() => validateTheme(nullTheme)).not.toThrow()
     })
 
     it('should handle undefined values', () => {
       const undefinedTheme = undefined as unknown as ThemeConfig
 
-      expect(() => validator.validate(undefinedTheme)).not.toThrow()
+      expect(() => validateTheme(undefinedTheme)).not.toThrow()
     })
 
     it('should handle empty objects', () => {
       const emptyTheme = {} as ThemeConfig
 
-      const result = validator.validate(emptyTheme)
+      const result = validateTheme(emptyTheme)
 
       expect(result.isValid).toBe(false)
       expect(result.errors.length).toBeGreaterThan(0)
@@ -389,7 +377,7 @@ describe('ThemeValidator', () => {
         },
       } as unknown as ThemeConfig
 
-      const result = validator.validate(deeplyInvalidTheme)
+      const result = validateTheme(deeplyInvalidTheme)
 
       expect(result.errors.some(err => err.path.includes('colors'))).toBe(true)
     })
@@ -397,7 +385,7 @@ describe('ThemeValidator', () => {
 
   describe('validation options', () => {
     it('should use default options when none provided', () => {
-      const result = validator.validate(mockValidTheme)
+      const result = validateTheme(mockValidTheme)
 
       expect(result).toBeDefined()
       expect(result.summary.checkedProperties).toBeGreaterThan(0)
@@ -410,7 +398,7 @@ describe('ThemeValidator', () => {
         // Other options should use defaults
       }
 
-      const result = validator.validate(mockValidTheme, customOptions)
+      const result = validateTheme(mockValidTheme, customOptions)
 
       expect(result).toBeDefined()
       expect(result.summary.checkedProperties).toBeGreaterThan(0)
@@ -424,7 +412,7 @@ describe('ThemeValidator', () => {
         validateSpacingScale: false,
       }
 
-      const result = validator.validate(mockValidTheme, disabledOptions)
+      const result = validateTheme(mockValidTheme, disabledOptions)
 
       expect(result).toBeDefined()
       // With most validations disabled, should still check basic structure
@@ -450,7 +438,7 @@ describe('ThemeValidator', () => {
       }
 
       const startTime = performance.now()
-      const result = validator.validate(largeTheme)
+      const result = validateTheme(largeTheme)
       const endTime = performance.now()
 
       expect(result).toBeDefined()
