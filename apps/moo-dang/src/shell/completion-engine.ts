@@ -19,6 +19,7 @@ import type {
 } from './completion-types'
 
 import {consola} from 'consola'
+import {tokenizeCommandLine} from './parser'
 
 /**
  * Default configuration for completion behavior.
@@ -53,28 +54,30 @@ function createCompletionContext(
   // Get the part of the input up to the cursor for parsing
   const inputToCursor = input.slice(0, safeCursorPosition)
 
-  // Parse command parts using simple whitespace splitting for now
-  // TODO: Enhance with proper shell parsing that handles quotes, escaping, etc.
-  const commandParts = inputToCursor
-    .trim()
-    .split(/\s+/)
-    .filter(part => part.length > 0)
+  // Reuse the shell's real tokenizer (quote-aware, never throws on unterminated quotes -
+  // mid-typing input almost always has an open quote) instead of naive whitespace splitting
+  const tokens = tokenizeCommandLine(inputToCursor)
+  const commandParts = tokens.map(token => token.content)
 
   // Determine which part we're currently completing
   let currentPartIndex = 0
   let currentPart = ''
+  let currentPartStart = safeCursorPosition
 
-  if (commandParts.length > 0) {
+  if (tokens.length > 0) {
     // Check if cursor is after whitespace (starting new part)
     const lastChar = inputToCursor.slice(-1)
     const isAfterWhitespace = lastChar === ' ' || lastChar === '\t'
 
     if (isAfterWhitespace) {
-      currentPartIndex = commandParts.length
+      currentPartIndex = tokens.length
       currentPart = ''
+      currentPartStart = safeCursorPosition
     } else {
-      currentPartIndex = commandParts.length - 1
-      currentPart = commandParts[currentPartIndex] ?? ''
+      currentPartIndex = tokens.length - 1
+      const currentToken = tokens[currentPartIndex]
+      currentPart = currentToken?.content ?? ''
+      currentPartStart = currentToken?.start ?? safeCursorPosition
     }
   }
 
@@ -86,6 +89,7 @@ function createCompletionContext(
     commandParts,
     currentPartIndex,
     currentPart,
+    currentPartStart,
     workingDirectory,
     environmentVariables,
     isNewCommand,
@@ -329,24 +333,14 @@ function createCompletionEngineImpl(config: CompletionConfig): CompletionEngine 
         newInput = before + suggestion.text + after
         newCursorPosition = suggestion.range.start + suggestion.text.length
       } else {
-        // Replace current part being completed
-        const beforeCursor = input.slice(0, cursorPosition)
+        // Replace current part being completed, using the shell-aware span from context so a
+        // quoted argument's opening quote is replaced along with its content
         const afterCursor = input.slice(cursorPosition)
+        const wordStart = context.currentPartStart ?? cursorPosition
+        const before = input.slice(0, wordStart)
 
-        // Find the start of the current part
-        const words = beforeCursor.split(/\s+/)
-        const currentWord = words.at(-1) ?? ''
-        const wordStart = beforeCursor.lastIndexOf(currentWord)
-
-        if (wordStart === -1) {
-          // Fallback: insert at cursor position
-          newInput = beforeCursor + suggestion.text + afterCursor
-          newCursorPosition = cursorPosition + suggestion.text.length
-        } else {
-          const before = input.slice(0, wordStart)
-          newInput = before + suggestion.text + afterCursor
-          newCursorPosition = wordStart + suggestion.text.length
-        }
+        newInput = before + suggestion.text + afterCursor
+        newCursorPosition = wordStart + suggestion.text.length
       }
 
       // Add space if required by the suggestion

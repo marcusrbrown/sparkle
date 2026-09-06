@@ -269,6 +269,73 @@ describe('Completion Engine (TASK-028)', () => {
   })
 })
 
+describe('Shell-Aware Tokenization (quote handling)', () => {
+  it('should tokenize a double-quoted argument containing a space as a single completion part', async () => {
+    const engine = createCompletionEngine()
+
+    const result = await engine.getCompletions('cat "my doc', 11, '/', {})
+
+    expect(result.context.commandParts).toEqual(['cat', 'my doc'])
+    expect(result.context.currentPart).toBe('my doc')
+  })
+
+  it('should tokenize a single-quoted argument containing a space as a single completion part', async () => {
+    const engine = createCompletionEngine()
+
+    const result = await engine.getCompletions("cat 'my doc", 11, '/', {})
+
+    expect(result.context.commandParts).toEqual(['cat', 'my doc'])
+    expect(result.context.currentPart).toBe('my doc')
+  })
+
+  it('should not throw on an unterminated quote and should yield a sensible partial token', async () => {
+    const engine = createCompletionEngine()
+
+    await expect(engine.getCompletions('cat "partial', 12, '/', {})).resolves.toBeDefined()
+
+    const result = await engine.getCompletions('cat "partial', 12, '/', {})
+    expect(result.context.currentPart).toBe('partial')
+  })
+
+  it('should tokenize unquoted input exactly as before (regression guard)', async () => {
+    const engine = createCompletionEngine()
+
+    const result = await engine.getCompletions('cat file.txt', 13, '/', {})
+
+    expect(result.context.commandParts).toEqual(['cat', 'file.txt'])
+    expect(result.context.currentPart).toBe('file.txt')
+    expect(result.context.currentPartIndex).toBe(1)
+    expect(result.context.isNewCommand).toBe(false)
+  })
+
+  it('should start a new empty part when the cursor is positioned after a trailing space', async () => {
+    const engine = createCompletionEngine()
+
+    const result = await engine.getCompletions('cat ', 4, '/', {})
+
+    expect(result.context.commandParts).toEqual(['cat'])
+    expect(result.context.currentPartIndex).toBe(1)
+    expect(result.context.currentPart).toBe('')
+    expect(result.context.isNewCommand).toBe(false)
+  })
+
+  it('should replace the quoted span, including the opening quote, when applying a suggestion', () => {
+    const engine = createCompletionEngine()
+
+    const suggestion: CompletionSuggestion = {
+      text: 'my doc.txt',
+      type: 'file',
+      description: 'File',
+      priority: 'high',
+    }
+
+    const {newInput, newCursorPosition} = engine.applySuggestion('cat "my doc', suggestion, 11)
+
+    expect(newInput).toBe('cat my doc.txt')
+    expect(newCursorPosition).toBe(14)
+  })
+})
+
 describe('Completion Providers', () => {
   let fileSystem: VirtualFileSystemImpl
   let environment: ShellEnvironment
