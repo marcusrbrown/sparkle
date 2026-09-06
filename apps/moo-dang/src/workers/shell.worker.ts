@@ -24,6 +24,7 @@ import type {
   ShellCommand,
   ShellWorkerRequest,
   ShellWorkerResponse,
+  VirtualFileSystem,
 } from '../shell/types'
 import type {WasmModuleLoader} from '../shell/wasm-types'
 
@@ -34,13 +35,13 @@ import {createCompletionProviders} from '../shell/completion-providers'
 import {ShellEnvironment} from '../shell/environment'
 import {parseCommand, parseCommandPipeline} from '../shell/parser'
 import {executePipeline} from '../shell/pipeline'
-import {VirtualFileSystemImpl} from '../shell/virtual-file-system'
+import {createVirtualFileSystem} from '../shell/virtual-file-system'
 import {createWasmExecutableCommands} from '../shell/wasm-commands'
 import {createWasmModuleLoader} from '../shell/wasm-loader'
 
 interface ShellWorkerState {
   readonly environment: ShellEnvironment
-  readonly fileSystem: VirtualFileSystemImpl
+  readonly fileSystem: VirtualFileSystem
   readonly commands: Map<string, ShellCommand>
   readonly wasmLoader: WasmModuleLoader
   readonly completionEngine: import('../shell/completion-types').CompletionEngine
@@ -53,7 +54,7 @@ interface ShellWorkerState {
  * resource limits to prevent browser performance issues.
  */
 function createShellWorkerState(): ShellWorkerState {
-  const fileSystem = new VirtualFileSystemImpl(false)
+  const fileSystem = createVirtualFileSystem(false)
 
   const environment = new ShellEnvironment(fileSystem, {
     enableDebugLogging: false,

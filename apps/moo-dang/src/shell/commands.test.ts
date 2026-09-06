@@ -7,22 +7,22 @@
  * and command result handling in the shell environment.
  */
 
-import type {ExecutionContext, ShellCommand} from './types'
+import type {ExecutionContext, ShellCommand, VirtualFileSystem} from './types'
 
 import {beforeEach, describe, expect, it} from 'vitest'
 
 import {createStandardCommands} from './commands'
 import {ShellEnvironment} from './environment'
-import {VirtualFileSystemImpl} from './virtual-file-system'
+import {createVirtualFileSystem} from './virtual-file-system'
 
 describe('Standard Shell Commands', () => {
-  let fileSystem: VirtualFileSystemImpl
+  let fileSystem: VirtualFileSystem
   let environment: ShellEnvironment
   let commands: Map<string, ShellCommand>
   let executionContext: ExecutionContext
 
   beforeEach(() => {
-    fileSystem = new VirtualFileSystemImpl(false)
+    fileSystem = createVirtualFileSystem(false)
     environment = new ShellEnvironment(fileSystem)
     commands = createStandardCommands(fileSystem, environment)
     executionContext = {
