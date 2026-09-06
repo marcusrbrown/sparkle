@@ -28,13 +28,14 @@
   ],
   "scripts": {
     "build": "tsdown",
+    "build:utils": "npm run build",
     "clean": "rm -rf dist",
     "lint": "eslint",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@sparkle/types": "workspace:*",
-    "react": "19.2.7"
+    "react": "19.2.8"
   },
   "devDependencies": {
     "@types/react": "~19.2.0"
