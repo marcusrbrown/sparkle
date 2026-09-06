@@ -42,6 +42,13 @@ function ThemeWrapper({children}: {children: ReactNode}) {
   return <ThemeContext.Provider value={mockThemeContextValue}>{children}</ThemeContext.Provider>
 }
 
+// Forces the null-context branch of useTheme's guard. Kept at module scope
+// because it closes over nothing -- the other wrappers in this file stay
+// inside their tests since each one captures a locally built context value.
+function NullContextWrapper({children}: {children: ReactNode}) {
+  return <ThemeContext.Provider value={null}>{children}</ThemeContext.Provider>
+}
+
 describe('useTheme', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -73,10 +80,6 @@ describe('useTheme', () => {
 
   it('should throw error when context is null', () => {
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
-
-    function NullContextWrapper({children}: {children: ReactNode}) {
-      return <ThemeContext.Provider value={null}>{children}</ThemeContext.Provider>
-    }
 
     expect(() => {
       renderHook(() => useTheme(), {
