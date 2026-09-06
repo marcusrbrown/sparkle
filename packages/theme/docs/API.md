@@ -637,17 +637,15 @@ const tokens = {
 
 ### Theme Validator
 
-Class-based validator for complex validation scenarios.
+Function-based validator for complex validation scenarios.
 
 ```tsx
-import { ThemeValidator } from '@sparkle/theme'
+import { validateTheme } from '@sparkle/theme'
 
-const validator = new ThemeValidator({
-  checkContrast: true,
+const result = validateTheme(themeConfig, {
+  validateColorContrast: true,
   minContrastRatio: 4.5
 })
-
-const result = validator.validate(themeConfig)
 ```
 
 ### Validation Errors
