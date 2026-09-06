@@ -5,15 +5,17 @@
  * file/directory operations, error handling, and edge cases.
  */
 
+import type {VirtualFileSystem} from './types'
+
 import {beforeEach, describe, expect, it} from 'vitest'
 
-import {VirtualFileSystemImpl} from './virtual-file-system'
+import {createVirtualFileSystem} from './virtual-file-system'
 
-describe('VirtualFileSystemImpl', () => {
-  let vfs: VirtualFileSystemImpl
+describe('createVirtualFileSystem', () => {
+  let vfs: VirtualFileSystem
 
   beforeEach(() => {
-    vfs = new VirtualFileSystemImpl(false)
+    vfs = createVirtualFileSystem(false)
   })
 
   describe('initialization', () => {

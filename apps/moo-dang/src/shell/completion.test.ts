@@ -6,12 +6,13 @@
  */
 
 import type {CompletionProvider, CompletionSuggestion} from './completion-types'
+import type {VirtualFileSystem} from './types'
 
 import {beforeEach, describe, expect, it} from 'vitest'
 import {createCompletionEngine} from './completion-engine'
 import {createCompletionProviders} from './completion-providers'
 import {ShellEnvironment} from './environment'
-import {VirtualFileSystemImpl} from './virtual-file-system'
+import {createVirtualFileSystem} from './virtual-file-system'
 
 describe('Completion Engine (TASK-028)', () => {
   describe('Core Engine Functionality', () => {
@@ -394,13 +395,13 @@ describe('Shell-Aware Tokenization (quote handling)', () => {
 })
 
 describe('Completion Providers', () => {
-  let fileSystem: VirtualFileSystemImpl
+  let fileSystem: VirtualFileSystem
   let environment: ShellEnvironment
   let commands: Map<string, unknown>
   let providers: CompletionProvider[]
 
   beforeEach(async () => {
-    fileSystem = new VirtualFileSystemImpl(false)
+    fileSystem = createVirtualFileSystem(false)
     environment = new ShellEnvironment(fileSystem)
     commands = new Map([
       ['echo', {}],
@@ -716,7 +717,7 @@ describe('Completion Providers', () => {
 
 describe('Integration Tests', () => {
   it('should provide comprehensive completion for shell commands', async () => {
-    const fileSystem = new VirtualFileSystemImpl(false)
+    const fileSystem = createVirtualFileSystem(false)
     const environment = new ShellEnvironment(fileSystem)
     const commands = new Map([
       ['echo', {}],

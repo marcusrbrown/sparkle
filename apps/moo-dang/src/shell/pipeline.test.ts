@@ -2,11 +2,11 @@
  * Tests for command pipeline parsing, execution, and I/O redirection functionality.
  */
 
-import type {CommandPipeline, ExecutionContext, ShellCommand} from './types'
+import type {CommandPipeline, ExecutionContext, ShellCommand, VirtualFileSystem} from './types'
 import {beforeEach, describe, expect, it} from 'vitest'
 import {parseCommandPipeline} from './parser'
 import {executePipeline} from './pipeline'
-import {VirtualFileSystemImpl} from './virtual-file-system'
+import {createVirtualFileSystem} from './virtual-file-system'
 
 describe('parseCommandPipeline', () => {
   it('should parse simple commands without pipelines', () => {
@@ -85,12 +85,12 @@ describe('parseCommandPipeline', () => {
 })
 
 describe('executePipeline', () => {
-  let fileSystem: VirtualFileSystemImpl
+  let fileSystem: VirtualFileSystem
   let commands: Map<string, ShellCommand>
   let context: ExecutionContext
 
   beforeEach(() => {
-    fileSystem = new VirtualFileSystemImpl(false)
+    fileSystem = createVirtualFileSystem(false)
     commands = new Map()
     context = {
       workingDirectory: '/test',

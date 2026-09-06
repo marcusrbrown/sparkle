@@ -213,10 +213,10 @@ describe('Job Control Commands Integration', () => {
     // For now, we'll just verify the commands exist and have proper structure
 
     const {createStandardCommands} = await import('./commands')
-    const {VirtualFileSystemImpl} = await import('./virtual-file-system')
+    const {createVirtualFileSystem} = await import('./virtual-file-system')
     const {ShellEnvironment} = await import('./environment')
 
-    const fileSystem = new VirtualFileSystemImpl(false)
+    const fileSystem = createVirtualFileSystem(false)
     const environment = new ShellEnvironment(fileSystem)
     const commands = createStandardCommands(fileSystem, environment)
 
