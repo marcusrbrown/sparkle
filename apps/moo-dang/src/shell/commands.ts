@@ -7,6 +7,7 @@
  * debugging and maintain consistent error reporting patterns.
  */
 
+import type {ShellConfig} from './config-types'
 import type {ShellEnvironment} from './environment'
 import type {ScriptStatement} from './script-types'
 import type {CommandExecutionResult, ExecutionContext, ShellCommand, VirtualFileSystem} from './types'
@@ -181,12 +182,37 @@ async function executeShellScript(
 }
 
 /**
+ * A shell command error carrying the failing command and its exit code.
+ *
+ * Distinguishes structured command failures (built via `Object.defineProperty`
+ * below) from arbitrary errors, so callers can recover the exit code without
+ * casting.
+ */
+export interface ShellCommandError extends Error {
+  readonly command: string
+  readonly exitCode: number
+}
+
+/**
+ * Type guard narrowing an unknown error to a {@link ShellCommandError}.
+ */
+export function isShellCommandError(error: unknown): error is ShellCommandError {
+  return (
+    error instanceof Error &&
+    'exitCode' in error &&
+    typeof (error as {exitCode: unknown}).exitCode === 'number' &&
+    'command' in error &&
+    typeof (error as {command: unknown}).command === 'string'
+  )
+}
+
+/**
  * Creates a shell command error for command execution failures.
  *
  * Provides structured error information with specific exit codes that match
  * Unix conventions, enabling scripts to handle errors appropriately.
  */
-export function createShellCommandError(command: string, exitCode: number, message: string): Error {
+export function createShellCommandError(command: string, exitCode: number, message: string): ShellCommandError {
   const error = new Error(`${command}: ${message}`)
 
   Object.defineProperty(error, 'name', {
@@ -204,7 +230,9 @@ export function createShellCommandError(command: string, exitCode: number, messa
     configurable: true,
   })
 
-  return error
+  // Object.defineProperty attaches the fields at runtime; the static type
+  // can't see them, so this boundary cast is the one place asserting the shape.
+  return error as ShellCommandError
 }
 
 /**
@@ -212,7 +240,7 @@ export function createShellCommandError(command: string, exitCode: number, messa
  *
  * Uses exit code 1 for compatibility with existing test suite and simpler error handling.
  */
-export function createInvalidArgumentError(command: string, message: string): Error {
+export function createInvalidArgumentError(command: string, message: string): ShellCommandError {
   const error = createShellCommandError(command, 1, message)
 
   Object.defineProperty(error, 'name', {
@@ -823,15 +851,8 @@ function createExportCommand(environment: ShellEnvironment): ShellCommand {
 
         return createCommandResult(context, `export ${args.join(' ')}`, '', '', 0, startTime)
       } catch (error) {
-        if (error instanceof Error && 'exitCode' in error && typeof (error as any).exitCode === 'number') {
-          return createCommandResult(
-            context,
-            `export ${args.join(' ')}`,
-            '',
-            error.message,
-            (error as any).exitCode,
-            startTime,
-          )
+        if (isShellCommandError(error)) {
+          return createCommandResult(context, `export ${args.join(' ')}`, '', error.message, error.exitCode, startTime)
         }
 
         // Unexpected errors should be logged for debugging
@@ -1042,15 +1063,8 @@ function createWhichCommand(fileSystem: VirtualFileSystem): ShellCommand {
 
         return createCommandResult(context, `which ${args.join(' ')}`, output, '', exitCode, startTime)
       } catch (error) {
-        if (error instanceof Error && 'exitCode' in error && typeof (error as any).exitCode === 'number') {
-          return createCommandResult(
-            context,
-            `which ${args.join(' ')}`,
-            '',
-            error.message,
-            (error as any).exitCode,
-            startTime,
-          )
+        if (isShellCommandError(error)) {
+          return createCommandResult(context, `which ${args.join(' ')}`, '', error.message, error.exitCode, startTime)
         }
 
         consola.error('Unexpected error in which command', {
@@ -1619,6 +1633,30 @@ interface ConfigOptions {
 }
 
 /**
+ * Top-level configuration sections that support `config list --section` and
+ * `config reset --section`. Shared between validation and display so the two
+ * commands can't drift out of sync with each other.
+ */
+// satisfies fails to compile if a section is renamed or removed from ShellConfig.
+const CONFIG_SECTION_NAMES = [
+  'appearance',
+  'behavior',
+  'security',
+  'accessibility',
+  'advanced',
+] as const satisfies readonly (keyof ShellConfig)[]
+
+type ConfigSectionName = (typeof CONFIG_SECTION_NAMES)[number]
+
+/**
+ * Type guard validating that a user-supplied section name is one of the
+ * known configuration sections.
+ */
+function isConfigSectionName(value: string): value is ConfigSectionName {
+  return (CONFIG_SECTION_NAMES as readonly string[]).includes(value)
+}
+
+/**
  * Parse configuration command arguments.
  */
 function parseConfigOptions(args: string[]): ConfigOptions {
@@ -1781,7 +1819,7 @@ function handleConfigList(
 
       output = `Configuration section: ${options.section}\n`
       output += `${'='.repeat(30 + options.section.length)}\n\n`
-      output += _formatFullConfig({[options.section]: sectionConfig} as any, 'readable')
+      output += _formatFullConfig({[options.section]: sectionConfig} as Partial<ShellConfig>, 'readable')
     } else {
       // Show all configuration
       output = 'Complete Shell Configuration\n'
@@ -1813,7 +1851,18 @@ async function handleConfigReset(
 ): Promise<CommandExecutionResult> {
   try {
     if (options.section) {
-      await configManager.reset(options.section as any)
+      if (!isConfigSectionName(options.section)) {
+        return createCommandResult(
+          context,
+          `config reset ${options.section}`,
+          '',
+          `config reset: section '${options.section}' not found`,
+          1,
+          startTime,
+        )
+      }
+
+      await configManager.reset(options.section)
       const output = `Configuration section '${options.section}' has been reset to defaults.\n`
       return createCommandResult(context, `config reset ${options.section}`, output, '', 0, startTime)
     } else {
@@ -2026,7 +2075,7 @@ function formatConfigSection(section: string, value: unknown, format: string): s
 /**
  * Format full configuration for display.
  */
-function _formatFullConfig(config: import('./config-types').ShellConfig, format: string): string {
+function _formatFullConfig(config: Partial<ShellConfig>, format: string): string {
   if (format === 'json') {
     return JSON.stringify(config, null, 2)
   }
@@ -2034,9 +2083,7 @@ function _formatFullConfig(config: import('./config-types').ShellConfig, format:
   let output = 'Complete Shell Configuration\n'
   output += '===========================\n\n'
 
-  const sections = ['appearance', 'behavior', 'security', 'accessibility', 'advanced'] as const
-
-  for (const section of sections) {
+  for (const section of CONFIG_SECTION_NAMES) {
     output += `${formatConfigSection(section, config[section], 'text')}\n`
   }
 
