@@ -13,53 +13,6 @@ layout: ~/layouts/api.astro
 
 ## Classes
 
-### ThemeValidator
-
-Theme configuration validator
-Provides comprehensive validation for design token integrity, accessibility compliance,
-and platform compatibility
-
-#### Example
-
-```typescript
-const validator = new ThemeValidator()
-const result = validator.validate(lightTokens)
-
-if (!result.isValid) {
-  console.error('Theme validation failed:', result.errors)
-}
-```
-
-#### Methods
-
-##### validate()
-
-> **validate**(`theme`, `options?`): [`ValidationResult`](#validationresult)
-
-Validate a theme configuration
-
-###### Parameters
-
-###### theme
-
-`ThemeConfig`
-
-Theme configuration to validate
-
-###### options?
-
-[`ValidationOptions`](#validationoptions) = `{}`
-
-Validation options
-
-###### Returns
-
-[`ValidationResult`](#validationresult)
-
-Validation result with errors and warnings
-
-***
-
 ### TokenTransformer
 
 Cross-platform token transformer
@@ -1785,8 +1738,9 @@ Error if used outside of ThemeProvider or NativeThemeProvider
 
 > **validateTheme**(`theme`, `options?`): [`ValidationResult`](#validationresult)
 
-Quick validation function for theme configuration
-Convenience function that creates a validator instance and runs validation
+Validate a theme configuration
+Provides comprehensive validation for design token integrity, accessibility compliance,
+and platform compatibility
 
 #### Parameters
 
@@ -1798,7 +1752,7 @@ Theme configuration to validate
 
 ##### options?
 
-[`ValidationOptions`](#validationoptions)
+[`ValidationOptions`](#validationoptions) = `{}`
 
 Validation options
 
@@ -1806,13 +1760,14 @@ Validation options
 
 [`ValidationResult`](#validationresult)
 
-Validation result
+Validation result with errors and warnings
 
 #### Example
 
 ```typescript
-const result = validateTheme(lightTokens, { strictMode: true })
+const result = validateTheme(lightTokens)
+
 if (!result.isValid) {
-  console.error('Theme validation failed')
+  console.error('Theme validation failed:', result.errors)
 }
 ```
