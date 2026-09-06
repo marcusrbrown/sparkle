@@ -6,6 +6,24 @@ export default await composeConfig(config)
       name: 'sparkle/rules',
       rules: {
         'markdown/no-missing-label-refs': 'off',
+        'no-restricted-syntax': [
+          'error',
+          'TSEnumDeclaration[const=true]',
+          'TSExportAssignment',
+          'ForInStatement',
+          'LabeledStatement',
+          'WithStatement',
+          {
+            selector: 'ClassDeclaration[superClass=null]',
+            message:
+              'Prefer a function or closure factory. If this class is justified by a fluent builder or cohesive stateful lifecycle, add an eslint-disable-next-line with the reason.',
+          },
+          {
+            selector: 'ClassExpression[superClass=null]',
+            message:
+              'Prefer a function or closure factory. If this class is justified by a fluent builder or cohesive stateful lifecycle, add an eslint-disable-next-line with the reason.',
+          },
+        ],
       },
     },
     {
@@ -13,6 +31,7 @@ export default await composeConfig(config)
       rules: {
         '@typescript-eslint/explicit-member-accessibility': 'off',
         'no-restricted-globals': 'off',
+        'no-restricted-syntax': 'off',
         'unicorn/prefer-add-event-listener': 'off',
       },
     },
@@ -28,6 +47,7 @@ export default await composeConfig(config)
         '@typescript-eslint/no-extraneous-class': 'off',
         'import-x/no-duplicates': 'off',
         'no-duplicate-imports': 'off',
+        'no-restricted-syntax': 'off',
       },
     },
   )

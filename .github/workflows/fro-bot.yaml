@@ -127,8 +127,10 @@ env:
        - Package manager: pnpm (the repo pins `packageManager:
          pnpm@10.x`); never `npm` or `yarn`
        - Node: aligned to `.node-version`
-       - Avoid ES6 classes (exception: extending `Error` for custom
-         error types)
+       - Prefer functions and closure factories. Classes require explicit
+         justification and are limited to Error/platform subclasses,
+         fluent builders, or cohesive stateful resources with real
+         lifecycle or identity.
        - Logging via `consola`, never `console`
        - File naming: kebab-case for configs, PascalCase for components
        - Types/interfaces PascalCase; functions/variables camelCase

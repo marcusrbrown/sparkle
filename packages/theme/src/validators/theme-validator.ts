@@ -97,6 +97,7 @@ export interface ValidationOptions {
  * }
  * ```
  */
+// eslint-disable-next-line no-restricted-syntax -- Known violation, conversion tracked in #1937.
 export class ThemeValidator {
   private readonly defaultOptions: Required<ValidationOptions> = {
     validateColorContrast: true,

@@ -280,6 +280,7 @@ export async function compareBenchmark<T = void>(
 /**
  * Creates and manages a suite of related benchmarks.
  */
+// eslint-disable-next-line no-restricted-syntax -- Represents one benchmark run with accumulated results and elapsed time.
 export class BenchmarkSuite {
   private results: BenchmarkResult[] = []
   private readonly metadata: Record<string, unknown> = {}

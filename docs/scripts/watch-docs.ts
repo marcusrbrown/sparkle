@@ -36,6 +36,7 @@ interface WatchOptions {
  * - Development-optimized regeneration (faster, incremental)
  * - Real-time status reporting
  */
+// eslint-disable-next-line no-restricted-syntax -- Owns a debounce timer, change queue, and nested automator across a watch session's lifecycle.
 export class DocumentationWatcher {
   private automator: DocumentationAutomator
   private options: WatchOptions

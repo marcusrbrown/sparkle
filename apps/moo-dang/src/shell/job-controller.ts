@@ -36,6 +36,7 @@ const DEFAULT_JOB_CONTROL_OPTIONS: JobControlOptions = {
  * for commands executed in background mode. Simulates Unix shell job control
  * semantics within browser Web Worker constraints.
  */
+// eslint-disable-next-line no-restricted-syntax -- Owns job lifecycle and the cleanup timer it disposes.
 export class JobControlSystem implements JobController {
   private readonly options: JobControlOptions
   private readonly jobs: Map<number, Job> = new Map()

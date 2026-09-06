@@ -33,6 +33,7 @@ interface PerformanceReport {
  * - Chunk distribution
  * - Performance recommendations
  */
+// eslint-disable-next-line no-restricted-syntax -- Owns dist path and start-time state across a monitoring session.
 export class BuildPerformanceMonitor {
   private distPath: string
   private startTime = 0

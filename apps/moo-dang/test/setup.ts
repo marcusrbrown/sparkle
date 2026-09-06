@@ -23,6 +23,7 @@ Object.defineProperty(window, 'matchMedia', {
 })
 
 // Mock ResizeObserver for components that might use it
+// eslint-disable-next-line no-restricted-syntax -- Platform mock replicating the ResizeObserver constructor shape for tests.
 globalThis.ResizeObserver = class ResizeObserver {
   observe() {
     // Mock implementation

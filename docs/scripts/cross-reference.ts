@@ -38,6 +38,7 @@ interface CrossReference {
  * - Links from component docs to API documentation
  * - "See also" sections with related components
  */
+// eslint-disable-next-line no-restricted-syntax -- Owns options and accumulated component data across a generation run.
 export class CrossReferenceGenerator {
   private options: CrossReferenceOptions
   private scriptDir: string
