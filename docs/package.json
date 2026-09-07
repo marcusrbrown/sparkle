@@ -48,6 +48,7 @@
     "preview": "astro preview",
     "sr:test": "tsx scripts/screen-reader-testing.ts",
     "start": "astro dev",
+    "test": "vitest run",
     "theme:generate": "tsx scripts/generate-theme-css.ts >| src/styles/sparkle-theme.css"
   },
   "dependencies": {
@@ -84,6 +85,7 @@
     "typedoc": "0.28.20",
     "typedoc-plugin-frontmatter": "1.3.1",
     "typedoc-plugin-markdown": "4.13.0",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "vitest": "^4.0.0"
   }
 }
