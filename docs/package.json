@@ -62,7 +62,7 @@
     "@sparkle/utils": "workspace:*",
     "astro": "^7.0.0",
     "consola": "3.4.2",
-    "monaco-editor": "0.54.0",
+    "monaco-editor": "0.56.0",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "sharp": "^0.35.0",
