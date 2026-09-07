@@ -62,6 +62,7 @@ Per-package: `pnpm --filter <name> <script>`. Package-specific Turborepo build t
 
 - Docs site: <https://sparkle.mrbro.dev>
 - Repo: <https://github.com/marcusrbrown/sparkle>
+- Decision graph: not yet published; see `docs/brainstorms/2026-05-24-sparkle-decision-graph-requirements.md` and `docs/plans/2026-05-24-001-feat-sparkle-decision-graph-plan.md` for the in-progress design
 
 ## Conventions (quick reference; see copilot-instructions.md for the full set)
 

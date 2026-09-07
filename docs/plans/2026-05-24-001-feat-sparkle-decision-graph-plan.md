@@ -367,7 +367,7 @@ Fro Bot's CI consumption (Unit 7) reads the committed record store via `deciduou
 - File is present and parseable.
 - `git diff` shows a single-file addition.
 
-- [ ] **Unit 3: Initialize Deciduous in sparkle repo**
+- [x] **Unit 3: Initialize Deciduous in sparkle repo**
 
 **Goal:** Land the `.deciduous/` skeleton (config + empty record store) at the repo root, plus the `.gitignore`/`.gitattributes` entries Deciduous needs, without adopting `init`'s sparkle-colliding scaffolding.
 

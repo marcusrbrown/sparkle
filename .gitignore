@@ -130,3 +130,8 @@ storybook-static/
 .expo/
 
 test-results/
+
+# Deciduous: local database stays private, shared graph records are tracked
+.deciduous/*
+!.deciduous/config.toml
+!.deciduous/sync/
