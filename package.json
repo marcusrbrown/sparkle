@@ -51,7 +51,6 @@
     "@bfra.me/prettier-config": "0.16.11",
     "@bfra.me/tsconfig": "0.13.2",
     "@changesets/cli": "2.31.1",
-    "@lhci/cli": "0.15.1",
     "@manypkg/cli": "0.25.1",
     "@types/node": "24.13.3",
     "consola": "3.4.2",
