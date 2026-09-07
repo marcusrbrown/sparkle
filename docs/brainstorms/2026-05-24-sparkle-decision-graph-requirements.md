@@ -5,6 +5,8 @@ topic: sparkle-decision-graph
 
 # Sparkle Decision Graph
 
+> **Superseded in part (2026-09-06):** the storage, viewer, and OpenCode/MCP assumptions below describe Deciduous v0.15.0 and were replaced against v0.17.1. See the revision note in `docs/plans/2026-05-24-001-feat-sparkle-decision-graph-plan.md`, which is authoritative where the two disagree.
+
 ## Summary
 
 Adopt [Deciduous](https://notactuallytreyanastasio.github.io/deciduous/) to build and publish a living decision graph for `marcusrbrown/sparkle`, seeded from sparkle's git history and the curated `.ai/` planning archive, refreshed weekly, exposed as (a) a published graph viewer at `sparkle.mrbro.dev/graph` and (b) input context for Fro Bot's scheduled maintenance and autoheal runs. PR-time inline citation in reviews is explicitly deferred to a post-v1 iteration.

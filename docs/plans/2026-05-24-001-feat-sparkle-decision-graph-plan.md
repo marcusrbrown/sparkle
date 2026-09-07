@@ -617,7 +617,7 @@ Fro Bot's CI consumption (Unit 7) reads the committed record store via `deciduou
 
 | Risk | Mitigation |
 | --- | --- |
-| Deciduous (bus factor 1, 5.5 months old) becomes unmaintained mid-v1 | Validation spike (Unit 1) is the local-evidence gate. Key Decision in origin doc: "user + contributor" stance — upstream PRs if needed. If upstream stalls, the graph data (SQLite + JSON exports) remains queryable indefinitely. |
+| Deciduous (ownership concentrated in one maintainer; created 2025-12-09) becomes unmaintained mid-v1 | Validation spike (Unit 1) is the local-evidence gate. Key Decision in origin doc: "user + contributor" stance — upstream PRs if needed. If upstream stalls, the committed `.deciduous/sync/` record store and `docs/public/graph-data.json` remain readable indefinitely as plain JSON — no Deciduous install required to query them. The local SQLite cache is disposable and irrelevant to that guarantee. |
 | Bootstrap script's node-classification heuristic produces noisy graph | Scope boundary: "good enough to query, not perfect history." Fix script for systemic issues; use `deciduous archaeology pivot` for individual corrections. |
 | Incremental weekly refresh re-ingests already-recorded inputs (or misses new ones) if its tracking mechanism is wrong | The exact mechanism (watermark file, querying existing `.deciduous/sync/` records, or an input-age cutoff) is an open question for the implementing unit — pick one, cover it with Unit 4's parser/orchestration tests, and verify against a full week of real inputs before enabling the schedule (Open Questions). |
 | Fro Bot prompt context payload exceeds agent input limits | Defer until measured. Filtering / pagination strategy is in Open Questions. Pre-empt the threshold rather than wait for breakage. |
@@ -636,7 +636,7 @@ Fro Bot's CI consumption (Unit 7) reads the committed record store via `deciduou
 
 ## Documentation / Operational Notes
 
-- **README**: Unit 3 adds a "Decision graph" section in the root `README.md` pointing at `sparkle.mrbro.dev/graph`, explaining that `.deciduous/` is intentionally committed, and stating that hand-editing the SQLite DB is unsupported (use Deciduous commands or rebuild from event logs).
+- **README**: Unit 3 adds a "Decision graph" section in the root `README.md` pointing at `sparkle.mrbro.dev/graph`, explaining that only `.deciduous/config.toml` and `.deciduous/sync/` are committed (the SQLite cache, `narratives.md`, and `documents/` stay local), and stating that hand-editing the record-store JSON is unsupported — use Deciduous commands, which respect the registered merge driver.
 - **`.github/copilot-instructions.md`**: brief note that the decision graph is the canonical "why did we do X" lookup; CI consumers query it via `deciduous graph` JSON dump. MCP access (if pursued) requires a separate, manual server registration — `deciduous init --opencode` does not provide it.
 - **`llms.txt`**: add a workflow entry for `decision-graph.yaml` once Unit 5 lands; also add the `sparkle.mrbro.dev/graph` URL under Public surface.
 - **Deciduous CLI version pinning**: track explicitly in `.github/workflows/decision-graph.yaml`'s install step AND in `.github/workflows/fro-bot.yaml`'s preflight install step. `.deciduous/.version` is Deciduous-managed; treat it as compatibility metadata only.
