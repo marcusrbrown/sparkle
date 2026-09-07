@@ -335,7 +335,7 @@ Fro Bot's CI consumption (Unit 7) reads the committed record store via `deciduou
 - An initial `.deciduous/` size-budget threshold is recorded: provisional warning at ~2 MB of committed record-store JSON (roughly 4,500–5,000 records at the measured sample's ~400–500 bytes/record average), estimated from actual spike-seed measurements, not a guarantee — re-measure after real usage before treating it as policy.
 - If any spike step fails: this plan pauses; brainstorm is reopened.
 
-- [ ] **Unit 2: Persist Lane 5 `.ai/` triage report**
+- [x] **Unit 2: Persist Lane 5 `.ai/` triage report**
 
 **Goal:** Move the Lane 5 triage classification (currently in the prior session's history) into a committed artifact at `.ai/_archive/triage-2026-05-24.md` so Unit 4's bootstrap script has a deterministic, re-readable input.
 
