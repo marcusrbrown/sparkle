@@ -149,6 +149,8 @@ git config merge.deciduous.driver "deciduous merge-record %O %A %B"
 
 Conflicts can still require manual resolution even with the driver registered.
 
+If the driver is registered locally but `deciduous` isn't on `PATH` when Git invokes it (e.g. a synced `.git/config` on a machine without the CLI installed), the merge fails outright with a nonzero exit and an unmerged index rather than silently succeeding — run `deciduous --version` to check it's installed and reachable, then re-run the merge.
+
 ## Resources
 
 - 📖 [Documentation site](https://sparkle.mrbro.dev) — Full guides, API reference, and component playground

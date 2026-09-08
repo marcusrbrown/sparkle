@@ -235,6 +235,11 @@ class TurboValidator {
           // Package-specific dependency like "@sparkle/types#build:types"
           const [packageName, packageTask] = dependency.split('#')
 
+          if (!packageName || !packageTask) {
+            this.error(`Task "${taskName}" has a malformed package-specific dependency "${dependency}"`)
+            continue
+          }
+
           if (!this.validPackageNames.has(packageName)) {
             this.error(`Task "${taskName}" depends on package "${packageName}" which does not exist`)
           }

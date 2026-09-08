@@ -24,6 +24,10 @@ async function main(): Promise<void> {
 
   const reporter = EnhancedErrorReporter
   const [command, ...commandArgs] = args
+  if (!command) {
+    consola.error('Usage: enhanced-error-wrapper <command> [args...]')
+    process.exit(1)
+  }
 
   const exitCode = await reporter.runWithEnhancedErrors(command, commandArgs)
   process.exit(exitCode)
