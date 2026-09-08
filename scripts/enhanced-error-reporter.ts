@@ -150,6 +150,9 @@ function parseErrorContext(
   const tsMatch = errorLine.match(/^(.+)\((\d+),(\d+)\):\s+(error|warning|info)\s+TS(\d+):\s(.*)$/i)
   if (tsMatch) {
     const [, file, line, column, severity, code, message] = tsMatch
+    if (!file || !line || !column || !severity || !code || !message) {
+      return null
+    }
     return {
       file: file.trim(),
       line: Number.parseInt(line, 10),
@@ -167,6 +170,9 @@ function parseErrorContext(
   const fileMatch = errorLine.match(/^([^:]+):(\d+):(\d+):\s+(error|warning|info):\s(.*)$/i)
   if (fileMatch) {
     const [, file, line, column, severity, message] = fileMatch
+    if (!file || !line || !column || !severity || !message) {
+      return null
+    }
     return {
       file: file.trim(),
       line: Number.parseInt(line, 10),
@@ -531,6 +537,10 @@ async function main(): Promise<void> {
 
   const reporter = createEnhancedErrorReporter()
   const [command, ...commandArgs] = args
+  if (!command) {
+    consola.error(`${colors.red}Usage: enhanced-error-reporter <command> [args...]${colors.reset}`)
+    process.exit(1)
+  }
 
   consola.log(
     `${colors.blue}${colors.bold}🚀 Running with enhanced error reporting:${colors.reset} ${command} ${commandArgs.join(' ')}`,

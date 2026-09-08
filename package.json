@@ -10,6 +10,7 @@
   "type": "module",
   "scripts": {
     "bootstrap": "pnpm install --prefer-offline --loglevel warn",
+    "bootstrap-graph": "tsx scripts/bootstrap-graph.ts",
     "build": "turbo run build",
     "build:types": "turbo run build:types",
     "build:types:watch": "tsc --build --watch --preserveWatchOutput",
@@ -18,7 +19,7 @@
     "check:dependencies": "tsx scripts/validate-dependencies.ts",
     "check:monorepo": "manypkg check",
     "check:turbo": "tsx scripts/validate-turbo.ts",
-    "check:types": "tsx scripts/enhanced-error-reporter.ts tsc --noEmit",
+    "check:types": "turbo run build --filter=@sparkle/test-utils... && tsx scripts/enhanced-error-reporter.ts tsc --noEmit && tsc --noEmit -p scripts/tsconfig.json",
     "clean": "turbo run clean && rm -rf node_modules",
     "dev": "turbo run dev --parallel",
     "fix": "pnpm fix:monorepo && pnpm fix:es",

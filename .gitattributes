@@ -9,3 +9,5 @@
 pnpm-lock.yaml -diff linguist-generated=true
 
 llms.txt text linguist-language=Markdown
+
+.deciduous/sync/** merge=deciduous linguist-generated=true

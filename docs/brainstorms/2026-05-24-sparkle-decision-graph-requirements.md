@@ -6,6 +6,8 @@ topic: sparkle-decision-graph
 # Sparkle Decision Graph
 
 > **Superseded in part (2026-09-06):** the storage, viewer, and OpenCode/MCP assumptions below describe Deciduous v0.15.0 and were replaced against v0.17.1. See the revision note in `docs/plans/2026-05-24-001-feat-sparkle-decision-graph-plan.md`, which is authoritative where the two disagree.
+>
+> **Revised scope (2026-09-07):** AE1 below overstated Unit 1's viewer-mode and Q&A/document-access acceptance. See the plan's Unit 1 and Scope Boundaries for the verified navigation surface and the explicit v1 deferrals.
 
 ## Summary
 
@@ -84,7 +86,7 @@ Manual compound-docs writing is a chore that did not happen during the treadmill
 
 ## Acceptance Examples
 
-- AE1. **Covers R1.** Given Marcus has run `deciduous init --opencode` in a sparkle worktree and seeded 5–10 nodes from recent PRs and one `.ai/plan/*` artifact, when he runs `deciduous serve --port 3000` and opens the viewer, the graph displays the expected node types with their edges, attached documents are accessible, and the Q&A pane responds to a trivial query.
+- AE1. **Covers R1.** Given Marcus has run `deciduous init` (without `--opencode` — verified it does not wire up MCP) in a scratch checkout and seeded 5–10 nodes from recent merged PRs and tracked `.ai/plan/*` artifacts: when he runs `deciduous serve`, the live graph and node metadata (including attached-document metadata) render correctly; separately, when he runs `deciduous sync` and serves the exported `docs/` directory as plain static files, the viewer renders the same graph across its static navigation (Chains, Timeline, Graph, DAG, Story, Log, Roadmap). A `deciduous archaeology pivot` correction is exercised via the CLI. Browser-based reading of attached-document bodies and model-backed Q&A are explicitly deferred beyond v1 — the acceptance does not require either; local CLI-level document attachment/metadata remains in scope.
 - AE2. **Covers R2, R3, R4.** Given the weekly workflow runs successfully and N new commits + M merged PRs landed since the previous run, when the workflow completes, the committed `.deciduous/deciduous.db` contains nodes for the new material, `.deciduous/web/graph-data.json` reflects the new state, and the docs site redeploys in the same workflow run.
 - AE3. **Covers R5, R6.** Given the published graph at `sparkle.mrbro.dev/graph` is loaded by a first-time visitor, when the page renders, the visitor sees the freshness indicator, the node-type legend, and (if the graph has <50 nodes) an empty-state explanation rather than an apparently-broken viewer.
 - AE4. **Covers R7.** Given Fro Bot's autoheal run encounters a failing PR whose root cause overlaps a prior `outcome` node committed in the graph, when the autoheal prompt executes its preflight, the graph query surfaces that prior outcome and the bot's fix narrative references it.

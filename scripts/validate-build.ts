@@ -492,11 +492,15 @@ function validateBundleSizes(
   // Display current sizes and compare with baseline
   for (const pkg of libraryPackages) {
     const sizeInfo = currentSizes[pkg.name]
+    if (!sizeInfo) {
+      continue
+    }
     const currentSize = sizeInfo.totalSize
     const formattedSize = formatBytes(currentSize)
 
-    if (baseline && baseline.packages[pkg.name]) {
-      const baselineSize = baseline.packages[pkg.name].totalSize
+    const baselinePackageInfo = baseline?.packages[pkg.name]
+    if (baselinePackageInfo) {
+      const baselineSize = baselinePackageInfo.totalSize
       const percentChange = ((currentSize - baselineSize) / baselineSize) * 100
       const isRegression = percentChange > BUNDLE_SIZE_CONFIG.regressionThreshold * 100
 

@@ -136,6 +136,21 @@ sparkle/
 
 **Testing & Quality**: [Vitest](https://vitest.dev) · [Playwright](https://playwright.dev) (visual regression) · [Testing Library](https://testing-library.com) · [ESLint](https://eslint.org) · [Prettier](https://prettier.io)
 
+## Decision graph
+
+Sparkle tracks architectural decisions in a git-native decision graph via [Deciduous](https://notactuallytreyanastasio.github.io/deciduous/). Only `.deciduous/config.toml` and `.deciduous/sync/` (one JSON record per node/edge/theme/tag) are committed; the SQLite cache, `narratives.md`, and `documents/` stay gitignored. Don't hand-edit the record-store JSON — use Deciduous's CLI/MCP commands.
+
+`.deciduous/sync/**` is tagged `merge=deciduous` in `.gitattributes`, so Git tries a custom merge driver on conflicting record edits, but only once it's registered locally (requires `deciduous` on `PATH`). Don't run `deciduous init` for this — it writes scaffolding this repo doesn't want — and `deciduous sync` isn't a setup step either; registering the driver directly is the supported path:
+
+```sh
+git config merge.deciduous.name "deciduous decision graph record"
+git config merge.deciduous.driver "deciduous merge-record %O %A %B"
+```
+
+Conflicts can still require manual resolution even with the driver registered.
+
+If the driver is registered locally but `deciduous` isn't on `PATH` when Git invokes it (e.g. a synced `.git/config` on a machine without the CLI installed), the merge fails outright with a nonzero exit and an unmerged index rather than silently succeeding — run `deciduous --version` to check it's installed and reachable, then re-run the merge.
+
 ## Resources
 
 - 📖 [Documentation site](https://sparkle.mrbro.dev) — Full guides, API reference, and component playground

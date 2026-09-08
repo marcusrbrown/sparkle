@@ -1,5 +1,5 @@
 ---
-title: 'feat: Sparkle decision graph via Deciduous'
+title: "feat: Sparkle decision graph via Deciduous"
 type: feat
 status: active
 date: 2026-05-24
@@ -8,6 +8,10 @@ origin: docs/brainstorms/2026-05-24-sparkle-decision-graph-requirements.md
 ---
 
 > **Revision note (2026-09-06):** Revised against Deciduous v0.17.1 following a hands-on spike; the v0.15.0-era storage assumptions (committed SQLite DB, JSONL event logs, vendored viewer) are replaced throughout with observed v0.17.0+ behavior.
+>
+> **Revision note (2026-09-07):** Approved scope correction: Unit 1's viewer-mode and Q&A/document-access acceptance criteria are corrected to match verified v0.17.1 behavior — see Scope Boundaries below and Units 1 and 6 for specifics. Browser-based document-body reading and model-backed Q&A success are explicitly deferred beyond v1.
+>
+> **Revision note (2026-09-07, Unit 4 design):** Unit 4 is redesigned around a staged, isolated build → validate → review → promote sequence (not an in-place script run) with an explicit refuse-if-already-seeded guard and a documented, non-atomic, recoverable-if-interrupted promotion step — no full-source rerun, resume ledger, or transaction framework is implied. Full git history and PR-body coverage are retained as originally scoped. Cross-unit node citations use the durable `change_id`, not a rebuild-unstable integer id.
 
 ## Overview
 
@@ -37,6 +41,8 @@ Sparkle has 1660+ commits and six months of pure dependency-bump activity since 
 - **No human-curated node-by-node review during bootstrap.** Trust the script; fix the script for systemic issues, use `deciduous archaeology pivot` for individual corrections. (origin scope boundary)
 - **No separate `/api/graph-architecture/` Starlight docs page.** Legend + freshness indicator inside the viewer carry the entry-level explanation. (origin scope boundary)
 - **No Astro Starlight theming of the embedded viewer for v1.** Stock Deciduous viewer styling is acceptable. (origin assumption)
+- **Browser-based reading of attached-document bodies is out of scope for v1** (added 2026-09-07). The live viewer's node-detail panel shows attachment metadata (filename, size, MIME type, description) only; the static viewer/export shows no attachment metadata at all. Local CLI/MCP-level document attachment and metadata remain in scope; a public document reader is a distinct, unbuilt feature.
+- **Successful model-backed Q&A in the published viewer is out of scope for v1** (added 2026-09-07). The viewer's `Ask about the code` control opens a local input without issuing a network request; a query was never submitted, so whether submission is wired end-to-end is untested, not disproven. A separate live-server backend (`/api/ask`) exists, backed by a local `claude -p` call — v1 adds no deployment backend for this, and the control may render without a working submit path.
 - **No direct-to-main pushes from `decision-graph.yaml` in v1.** Use auto-PR via `peter-evans/create-pull-request` matching `regenerate-docs.yaml`'s posture. Direct-push is a documented post-v1 fallback once weekly-PR review noise becomes a measurable problem.
 
 ### Deferred to Separate Tasks
@@ -186,14 +192,14 @@ See Scope Boundaries.
 - **Fro Bot CI query surface** → `deciduous graph` JSON dump from a bash preflight step, not MCP.
 - **Workflow concurrency** → `decision-graph-${{ github.ref }}` group with `cancel-in-progress: false`, matching `deploy-docs.yaml`'s shape.
 - **Commit posture for weekly refresh** → Auto-PR via `peter-evans/create-pull-request`, matching `regenerate-docs.yaml`. Direct-push deferred as post-v1 fallback.
-- **Publication path for `graph-data.json`** → `deciduous sync --output docs/public/graph-data.json` writes directly to the publication target. No mirror/prebuild step and no `deploy-docs.yaml` path-filter change needed — `docs/public/` already falls under its existing `docs/**` trigger.
+- **Publication path for `graph-data.json`** → `deciduous sync --output docs/public/graph-data.json` writes directly to the publication target, and in the same call writes a sibling `docs/public/git-history.json` (confirmed against the v0.17.1 source, not a separate mirrored step). No mirror/prebuild step and no `deploy-docs.yaml` path-filter change needed — `docs/public/` already falls under its existing `docs/**` trigger.
 - **Test file location for Unit 4** → Co-located `scripts/bootstrap-graph.test.ts` matching `apps/moo-dang/src/shell/parser.test.ts` pattern.
 
 ### Deferred to Implementation
 
 - **Node-classification heuristic in `scripts/bootstrap-graph.ts`** — how aggressively to map commits / PRs / `.ai/` files into `goal` / `decision` / `action` / `outcome` / `observation` types vs leaving the long tail as `observation`. Calibrate against F1 spike output.
 - **JSON payload size limits for Fro Bot prompts** — full graph may exceed practical input limits as it grows. Pick a filtering / pagination strategy when measurement shows it's needed; pre-empt the threshold (don't wait for the breakage).
-- **Retrieval-events metric implementation** — does the Fro Bot perpetual report need a structured `graph_citations: [<node_id>...]` field, or is a free-text grep for `[decision-graph node #` sufficient? Decide after Unit 7 lands.
+- **Retrieval-events metric implementation** — does the Fro Bot perpetual report need a structured `graph_citations: [<change_id>...]` field, or is a free-text grep for `[decision-graph node ` (keyed on `change_id`, per Unit 4's Idempotency constraint) sufficient? Decide after Unit 7 lands.
 - **Incremental-ingestion tracking mechanism for the weekly refresh** — the refresh must ingest only inputs it hasn't already recorded (full re-bootstrap is not an option — see Unit 4's Idempotency constraint). A watermark file, a query against existing `.deciduous/sync/` records, or ingesting only inputs newer than the last run are all plausible; the choice needs its own evidence and is deferred to the implementing unit.
 - **Initial size budget threshold for `.deciduous/`** — set during Unit 1 spike based on actual generated size; warn when exceeded.
 
@@ -286,7 +292,7 @@ Fro Bot's CI consumption (Unit 7) reads the committed record store via `deciduou
 
 ## Implementation Units
 
-- [ ] **Unit 1: Validation spike (local-only, no PR)**
+- [x] **Unit 1: Validation spike (local-only, no PR)**
 
 **Goal:** Confirm Deciduous's CLI + viewer + sync flow works against sparkle locally before any code change ships. This is the R1 gate.
 
@@ -303,31 +309,35 @@ Fro Bot's CI consumption (Unit 7) reads the committed record store via `deciduou
 - Install Deciduous via `cargo install deciduous` or Homebrew (per Deciduous install docs).
 - Run `deciduous init` (skip `--opencode` — verified it does not wire up MCP, see below) inside a scratch checkout, not the working worktree — `init` also writes `docs/index.html`, Pages-deploy workflows, and `.opencode/`/`AGENTS.md` scaffolding that would collide with sparkle's own (see Unit 3 for the full list and how it's scoped down).
 - Seed 5–10 nodes manually from recent PRs and 1–2 `.ai/plan/*.md` files using `deciduous add`, `deciduous link`, `deciduous doc attach`. Cover at least one `goal → option → decision → action → outcome` chain.
-- Run `deciduous serve --port 3000` and visually inspect the graph in all five viewer modes (Chains, Timeline, Graph, DAG, Archaeology).
-- Run `deciduous sync` and inspect the exported `docs/graph-data.json` (default path; `--output` overrides it — Unit 6 uses `--output docs/public/graph-data.json`). Document its `{nodes: [...], edges: [...]}` schema, including which fields present on committed `.deciduous/sync/` records (e.g. `author`) do or don't reach the export — this becomes the basis of the "public field allowlist" in Operational Notes.
-- Run `deciduous graph` and confirm JSON dump is structurally sound for downstream Fro Bot consumption.
-- Try one Q&A query in the viewer's Q&A pane to confirm interactive surface works.
+- Run `deciduous serve` and confirm the live graph and node metadata (including attached-document metadata) render correctly.
+- Run `deciduous sync`, then serve the exported `docs/` directory as plain static files and confirm the viewer renders the graph across its static navigation: `Chains`, `Timeline`, `Graph`, `DAG`, `Story`, `Log` (Git History), `Roadmap`. There is no dedicated `Archaeology` view; graph corrections are made via the CLI (see below). A missing `roadmap-items.json` renders a graceful empty state.
+- Inspect the exported `docs/graph-data.json` (default path; `--output` overrides it — Unit 6 uses `--output docs/public/graph-data.json`) and document its `{nodes: [...], edges: [...]}` schema, including which fields present on committed `.deciduous/sync/` records (e.g. `author`, tracked on both node and edge records) do or don't reach the export — this is the basis of the "public field allowlist" in Operational Notes. Separately: `--output` redirects only the graph JSON; `deciduous sync` writes `git-history.json` to its own default location regardless — the Git Log/Correlation/Timeline static views need `git-history.json` served alongside the viewer and `graph-data.json`, a bounded file-layout question for Unit 4/Unit 6 to resolve.
+- Run `deciduous graph` and confirm the JSON dump is structurally sound for downstream Fro Bot consumption.
+- Run `deciduous archaeology pivot` against a seeded node with the exact command logged, then confirm the DB, record store, and export agree via `deciduous sync`.
+- Confirm the viewer's `Ask about the code` control opens a local input without issuing a network request. Do not submit a query against it or against the live server's `/api/ask` backend — out of scope for Unit 1.
 - Measure size of generated `.deciduous/` for the small seed; multiply by an expected node count to set the initial `.deciduous/` size-budget threshold.
 
 **Patterns to follow:** Deciduous's own tutorial flow at <https://notactuallytreyanastasio.github.io/deciduous/>.
 
 **Test scenarios:**
 
-- Happy path: `deciduous serve` renders the graph with attached documents accessible from node detail panels.
-- Happy path: `deciduous sync` produces a non-empty, structurally-valid `graph-data.json`.
+- Happy path: `deciduous serve` (live mode) renders node detail panels with attached-document metadata (filename, size, MIME type, description) — metadata only, not document content/body.
+- Happy path: the exported static bundle, served as plain files (not via `deciduous serve`), renders the same graph across `Chains`, `Timeline`, `Graph`, `DAG`, `Story`, `Log`, `Roadmap`; the static node-detail view shows no attachment metadata at all — that's a live-viewer-only feature.
+- Happy path: `deciduous sync` produces a non-empty, structurally-valid `graph-data.json` and a separate `git-history.json`, both needed by the Git Log/Correlation/Timeline static views.
 - Happy path: `deciduous graph` JSON dump matches the schema described in the librarian research brief.
-- Edge case: confirm `deciduous archaeology pivot` works for correcting an individual node — this is the brainstorm's "correction story."
+- Edge case: `deciduous archaeology pivot` correctly corrects an individual node, with DB/record-store/export agreement re-verified via `deciduous sync` afterward.
 - Failure mode: capture any blocker (CLI gap, viewer regression, license/distribution issue, upstream signal of abandonment) and STOP the plan. If a blocker surfaces, open an issue describing the gap and reopen the brainstorm.
 
 **Verification:**
 
-- A working local graph exists and the viewer renders all five modes.
+- A working local graph exists; the static viewer renders across `Chains`, `Timeline`, `Graph`, `DAG`, `Story`, `Log`, `Roadmap`, and the CLI archaeology/pivot correction workflow is exercised and confirmed.
+- Browser-based reading of attached-document bodies and a successful model-backed Q&A response are not required for this verification (see Scope Boundaries).
 - The implementer has hands-on confidence that the brainstorm's premises hold.
-- The `docs/graph-data.json` schema is documented (field list + which fields are public-safe; note that `author` is present on committed `.deciduous/sync/` records but does not appear in the export).
-- An initial `.deciduous/` size-budget threshold is recorded.
+- The `docs/graph-data.json` schema is documented (field list; `author` is present on both node and edge committed `.deciduous/sync/` records but does not appear in the export — field-name absence from the export is not a guarantee that every remaining field's content is public-safe; see the public-field allowlist in Operational Notes).
+- An initial `.deciduous/` size-budget threshold is recorded: provisional warning at ~2 MB of committed record-store JSON (roughly 4,500–5,000 records at the measured sample's ~400–500 bytes/record average), estimated from actual spike-seed measurements, not a guarantee — re-measure after real usage before treating it as policy.
 - If any spike step fails: this plan pauses; brainstorm is reopened.
 
-- [ ] **Unit 2: Persist Lane 5 `.ai/` triage report**
+- [x] **Unit 2: Persist Lane 5 `.ai/` triage report**
 
 **Goal:** Move the Lane 5 triage classification (currently in the prior session's history) into a committed artifact at `.ai/_archive/triage-2026-05-24.md` so Unit 4's bootstrap script has a deterministic, re-readable input.
 
@@ -359,7 +369,7 @@ Fro Bot's CI consumption (Unit 7) reads the committed record store via `deciduou
 - File is present and parseable.
 - `git diff` shows a single-file addition.
 
-- [ ] **Unit 3: Initialize Deciduous in sparkle repo**
+- [x] **Unit 3: Initialize Deciduous in sparkle repo**
 
 **Goal:** Land the `.deciduous/` skeleton (config + empty record store) at the repo root, plus the `.gitignore`/`.gitattributes` entries Deciduous needs, without adopting `init`'s sparkle-colliding scaffolding.
 
@@ -394,9 +404,9 @@ Fro Bot's CI consumption (Unit 7) reads the committed record store via `deciduou
 - `git status` shows only the intended `.deciduous/config.toml` + `.deciduous/sync/` skeleton, `.gitignore`/`.gitattributes` additions, and the README + llms.txt additions.
 - `deciduous` commands run against the committed state without error.
 
-- [ ] **Unit 4: Bootstrap script (`scripts/bootstrap-graph.ts`)**
+- [x] **Unit 4: Bootstrap script (`scripts/bootstrap-graph.ts`)**
 
-**Goal:** A reproducible, re-runnable TypeScript script that walks the three sources and emits Deciduous CLI invocations to populate the graph. This is the heart of v1.
+**Goal:** Build `scripts/bootstrap-graph.ts` with build, validate, and promote logic all implemented and covered by tests against fixtures/scratch staging directories. Live execution against sparkle's real `.deciduous/sync/` — an actual build followed by an actual promotion into the committed graph — is a separate, explicitly authorized action, not part of this unit's scope; this unit's own tests never target that real destination.
 
 **Requirements:** R2, R3
 
@@ -404,55 +414,98 @@ Fro Bot's CI consumption (Unit 7) reads the committed record store via `deciduou
 
 **Files:**
 
-- Create: `scripts/bootstrap-graph.ts`
-- Create: `scripts/bootstrap-graph.test.ts` (co-located, Vitest)
-- Modify: `scripts/package.json` — add `"test": "vitest run"` so `scripts/` participates in `pnpm test` via the workspace test task
-- Modify: root `package.json` — add `bootstrap-graph` script wired as `tsx scripts/bootstrap-graph.ts`
-- Modify (as side-effect of running): `.deciduous/sync/{nodes,edges,themes,tags}/*.json` (new record files with fresh per-run UUIDs — see Idempotency constraint below), `docs/public/graph-data.json` (via `deciduous sync --output`); the local SQLite cache updates too but stays gitignored
+- Create: `scripts/bootstrap-graph.ts`, `scripts/bootstrap-graph/{snapshot,pr-source,source-evidence,reviewed-mapping}.ts`
+- Create co-located Vitest suites: `scripts/bootstrap-graph.test.ts`, `scripts/bootstrap-graph.cli.test.ts`, `scripts/bootstrap-graph.full-cli.test.ts`, `scripts/bootstrap-graph/{snapshot,pr-source,source-evidence}.test.ts`, plus `scripts/bootstrap-graph/test-fixtures/full-cli/` fixtures
+- Modify: `scripts/package.json` — add `"test": "vitest run"` (currently empty aside from package metadata) and Vitest + `@sparkle/test-utils` as devDependencies
+- Modify: root `package.json` — add a `bootstrap-graph` script wired to `tsx scripts/bootstrap-graph.ts`
+- Modify: `pnpm-lock.yaml` (dependency additions above)
+- Staged `.deciduous/`-shaped output lives under a persistent staging directory outside this repository (see Approach) until a separate, explicit promotion step copies accepted output into `.deciduous/sync/**` and `docs/public/{graph-data.json,git-history.json}`.
 
-**Approach:** The script runs three passes in a strict order so later passes can link to nodes earlier passes created:
+**Approach:**
 
-1. **Triage pass (first)**: Read `.ai/_archive/triage-2026-05-24.md`. For each PROMOTE + ARCHIVE classified file: invoke `deciduous add` (mapping triage category → node type per a small heuristic table), then `deciduous doc attach <node_id> <path> --ai-describe` for the source markdown, then `deciduous link` for any cross-references the triage report already identifies.
-2. **Git log pass (second)**: For each merged-to-main commit since repo inception: invoke `deciduous add action "<commit summary>" --commit <sha> --date <iso> -c <confidence>` where confidence is 80 for PR-merge commits, 60 for direct-to-main. `chore(deps)` commits batch into one periodic `observation` node per **bootstrap run-window** or per **consecutive deps-burst** (not calendar — empirical research showed 51.5% of recent commits are `chore(deps)` with no clean weekly/daily cadence).
-3. **PR-body pass (third)**: For merged PRs ≥12 months back + any PR referenced by an in-scope `.ai/` artifact: invoke `deciduous add decision "<PR title>" -p "<PR body summary>" --files "<file list from PR>" --commit <merge SHA> -c 75`. **The `-c 75` confidence holds only if the PR-body pass can link to action nodes the git-log pass already created**; if linking fails (commit-node-not-found), lower that PR's confidence to ~70.
-4. **Run `deciduous sync --output docs/public/graph-data.json`** to publish the export directly to its publication target.
+_Stage 1 — build (isolated, staged, restartable):_
 
-**Secrets/PII safety**: before any `deciduous add` or `doc attach`, the script's input normalizer scrubs known-secret patterns (`(?i)(token|secret|password|api[_-]?key|bearer|authorization)[:=]\s*\S+`, URLs containing `://user:pass@`, AWS-style access keys, etc.). Failed scrubs fail the run loudly rather than silently committing leaked content.
+- The build runs against a staged, isolated checkout with a fixed input snapshot (a pinned commit/ref for the git log + PR list, and a copy of the triage-referenced `.ai/` files) — not the live working tree. The script records the snapshot's provenance (commit SHA, PR-list fetch timestamp, per-file content hashes) inside the staging directory; local build metadata only, not published in any public doc.
+- Staging lives in a persistent directory outside the repository (not `/tmp`), so a build survives process restarts and stays inspectable afterward. No automatic destructive cleanup of a staging directory — discarding one is an explicit caller action.
+- **All-inputs preflight, before any `deciduous add` call**: the script verifies all 16 unique ARCHIVE-classified triage artifacts (4 of which additionally carry a PROMOTE annotation — the same files, not 20 distinct nodes) exist and are readable, from the working checkout or from an explicit `--source-root <path>` (an existing checkout where the gitignored files happen to be present on disk — e.g. a real local clone, not a fresh one — rather than some special "non-gitignored" checkout variant). 2 of the 16 (`.ai/docs/LESSONS_LEARNED.md`, `.ai/docs/IMPLEMENTATION_CHANGELOG.md`) are gitignored in a fresh clone and require `--source-root` to resolve; the third gitignored artifact, `.ai/docs/prompts.md`, is DELETE-classified and excluded from ingestion regardless. **Any missing required artifact fails preflight for the whole run**, before any node is added — there is no warn-and-skip path for a missing required artifact. A triage-identified **cross-reference link** whose target can't be resolved is a separate, lower-severity case: the link is skipped with a warning, the artifact's own node is still added.
+- The script also refuses to run its build stage against an already-seeded destination: it checks whether the real repo's `.deciduous/sync/` already contains records, and exits with a clear error if so.
+- On any build failure, the script preserves the staging directory as-is for diagnosis — no rollback, no deletion, no touching files outside the staging directory. Restarting means building again in a fresh staging directory; there is no resume ledger in Unit 4.
+- Once preflight passes, three passes populate the staged Deciduous instance, in order so later passes can link to nodes earlier passes created:
+  1. **Triage pass**: for each of the 16 verified artifacts, invoke `deciduous add` (triage category → node type via a small heuristic table), then `deciduous doc attach <node_id> <path> --description "<manual summary>"` (no `--ai-describe`, no model calls — see Secrets/PII safety), then `deciduous link` for triage-identified cross-references (warn-and-skip per artifact link, as above).
+  2. **Git log pass**: for every commit in the pinned snapshot's full history (full history retained; `chore(deps)` batching is a deliberate content decision, not a coverage cut), invoke `deciduous add action "<commit summary>" --commit <sha> --date <iso> -c <confidence>` (80 for PR-merge commits, 60 for direct-to-main). `chore(deps)` commits batch into one `observation` node per bootstrap run-window or per consecutive deps-burst (not calendar — 51.5% of recent commits are `chore(deps)` with no clean weekly/daily cadence).
+  3. **PR-body pass**: the eligible PR set is **merged PRs within the last 12 calendar months, ending at the build's captured snapshot timestamp** (inclusive of both the cutoff date — 12 calendar months before the snapshot — and the snapshot timestamp itself as the upper bound), **union** any older merged PR explicitly referenced by a selected in-scope `.ai/` artifact (de-duplicated against the calendar-window set so a PR matching both criteria is processed once). No open/unmerged PRs, no PRs merged after the captured snapshot timestamp. The cutoff date and the PR-list fetch timestamp are recorded in the staging directory's local provenance (see Stage 1 provenance above) alongside the other snapshot metadata. For each eligible PR, the script first looks for a matching action node to link against, THEN creates the decision node with `deciduous add decision "<PR title>" -d "<normalized summary>" --files "<file list from PR>" --commit <merge SHA> -c <confidence>` — no matching action found: creates at confidence 70 with a warning logged, no `deciduous link` is attempted; a matching action found: creates at confidence 75, then calls `deciduous link` to it — since v0.17.1's CLI has no confidence-edit command, a **failed** link attempt at this point cannot retroactively lower the already-created decision's confidence, so the whole build fails instead, preserving the staged output for diagnosis (no accept/promote proceeds). `-d`/`--description` is used for the normalized summary rather than `-p`/`--prompt` — the summary's role is a description, and no long-form prompt text is needed. `-d` never carries the raw PR body — the script builds a normalized summary first (see Secrets/PII safety); the raw body is read only in memory to produce it.
+- Run `deciduous sync --output docs/public/graph-data.json` inside the staging directory at the end of the build stage; this single call also writes a sibling `docs/public/git-history.json`.
 
-**Idempotency constraint (not a risk to mitigate)**: Deciduous record files embed a random UUID (`change_id`) and wall-clock timestamps at creation, and edge IDs derive from those UUIDs. Two runs seeding identical content produce entirely disjoint record sets — this is observed, deterministic Deciduous behavior, not a tuning problem to solve. The bootstrap is therefore a **one-shot seeding operation**: run once against the full source set, its output committed by this unit's PR, and never re-run wholesale afterward. Re-running the full bootstrap would rewrite every file under `.deciduous/sync/` and orphan the prior graph's node/edge IDs. Unit 5's weekly refresh runs in a distinct **incremental** mode that ingests only new inputs — see Unit 5 and the Open Questions entry on the ingestion-tracking mechanism.
+_Stage 2 — validate (staged output, before any repo write):_
 
-**Execution note:** Test-first for parsers in `scripts/bootstrap-graph.test.ts` (triage parser, commit classifier, PR-body normalizer, secret-scrub regex set). Characterization-test CLI orchestration with mocked `node:child_process` calls.
+- Validate three artifacts against their own pinned schemas, separately — the committed record JSON (`.deciduous/sync/{nodes,edges,themes,tags}/*.json`), `docs/public/graph-data.json`, and `docs/public/git-history.json`. `graph-data.json`'s node/edge field allowlist (Operational Notes) does not apply to `git-history.json`'s schema — they are different shapes; if `git-history.json`'s exact schema hasn't yet been captured with evidence, that capture is a small implementation-time task for whoever builds this script, not something to invent here.
+- **Secret-scrub, fail-closed, full-payload**: scans the complete record payload (every field, not only descriptions) and the complete serialized content of both export files — including the raw commit-message bodies `git-history.json` carries — for known-secret patterns (tokens, passwords, API keys, bearer/auth headers, credentialed URLs, AWS-style access keys, etc.). This runs once before any `deciduous add`/`doc attach` call (on the normalized inputs about to be written) and again over the fully staged output (records + both exports) before Stage 3 review. On a match, the build aborts and reports only the file path and which rule matched — never the matched value. A caught secret blocks promotion pending explicit human review; there is no automatic redact-and-continue path.
+- Grounded-chain check: the staged graph contains at least one complete, evidence-backed reviewed structure — a `goal` connected via a `maintainer-reviewed` reviewed-association (explicitly not a causal-intent claim) to a `decision`, with `rejected-option` edges from its `option`(s), a `commit-supported` edge to an `action`, and a `source-reported` edge to an `outcome`; every one of the 16 required triage artifacts is represented by at least one node; every generated node/edge traces back to a real source input (a commit SHA, a PR number, or a triage-report path). The one approved reviewed-association mapping (goal → ADR-001 decision, decision → the `rootDir` fix action via commit `236ba680`, sourced with exact path/line-range/commit references) lives in `scripts/bootstrap-graph/reviewed-mapping.ts`; the script never manufactures a node, edge, or additional mapping to hit a count target, and never publishes a review transcript. `validateReviewedGraph` enforces this as one connected structure, not disconnected fragments meeting the type-count individually.
+- **Attachment content validation happens before `doc attach` is invoked**, on the original file's own bytes (MIME/size sanity check against the source file, ahead of the copy) — a clean scrubbed summary is not a substitute for checking the original bytes Deciduous is about to copy unchanged into `.deciduous/documents/`. Local CLI attachments are kept — this unit does not drop `doc attach`; the durable graph's record fields (source path + sanitized summary) don't depend on the attachment row, local SQLite cache, or attachment body for CI/export consumption.
+- **Staged-content immutability**: content hashes for every staged file are captured once, at the end of this validate stage, before Stage 3 review begins. Promotion (Stage 4) re-verifies the staging directory's current hashes match those captured hashes before touching the destination at all — reviewed bytes cannot silently change between review and a later promotion attempt.
+
+_Stage 3 — review (human, before promotion):_
+
+- Staged output (record JSON, both exports, the Stage 2 validation report, and the captured content hashes) is left in the staging directory for explicit human review. This unit does not automate or skip this step.
+
+_Stage 4 — promote: two distinct operations, not one generalized ledger:_
+
+- **(a) Fresh promote** (first attempt against a given staged, reviewed output): precondition is that the destination `.deciduous/sync/` contains zero records **and** neither `docs/public/graph-data.json` nor `docs/public/git-history.json` already exists — an existing export file is protected, not silently overwritten. Either failing condition aborts with a clear error naming what's already present; no destructive overwrite.
+- **(b) Recovery promote** (retrying the _same_ reviewed staged output after an earlier promotion attempt was interrupted) — a separate, explicit operation, not a generic resume/ledger framework, and it does **not** pass through the fresh-promote empty-destination gate:
+  - Re-verifies the staging directory's current hashes against the hashes captured at the end of Stage 2 (staged-content immutability check above) before touching the destination.
+  - Compares the destination's current file set and content hashes against the staged, reviewed inventory.
+  - Accepts only the subset of destination files that are byte-identical to the reviewed staged inventory, and copies the remaining staged files that are not yet present at the destination.
+  - **Aborts with precise, manual recovery instructions naming the specific file** — no destructive overwrite — on any of: an unexpected destination file absent from the staged inventory (a possible new-record race since the interrupted attempt), a destination file whose content differs from the reviewed staged bytes, or a destination file that fails a basic integrity check (e.g. invalid JSON where JSON is expected — a torn/incomplete write).
+
+**Secrets/PII safety** (build and validate stages): the input normalizer scrubs known-secret patterns before any `deciduous add`/`doc attach` call, per the fail-closed rule in Stage 2. `-d`/`--description` values are always the normalizer's output, never a raw PR body. All shell-out invocations (`deciduous`, `gh`) pass argv arrays with `shell: false` — never string-interpolated into a shell command — because commit summaries, PR titles, and PR bodies are external content the script does not otherwise control.
+
+**Idempotency and rerun semantics:** committed record files (`.deciduous/sync/{nodes,edges}/*.json`) carry a random `change_id` — the durable identity — and wall-clock timestamps at creation, but no local integer id. The local SQLite cache and the `graph-data.json`/`git-history.json` exports additionally carry a separately assigned integer `id`, which can differ across rebuilds. Two runs seeding identical content produce disjoint record sets; repeated `add` calls create duplicate nodes, not rewritten or orphaned existing ones. The bootstrap is a one-shot seeding operation, enforced by Stage 1's already-seeded-destination refusal. Unit 5's incremental refresh is a distinct, separately tracked ingestion mode; its tracking mechanism remains an open decision for Unit 5 (see Open Questions) and is not prebuilt here. Cross-unit citations of a specific node use `change_id`, not the rebuild-unstable integer `id`.
+
+**Execution note:** test-first for the triage parser, commit classifier, PR-body normalizer, and secret-scrub rule set in `scripts/bootstrap-graph.test.ts`, using `@sparkle/test-utils`' `standardBeforeEach()`/`standardAfterEach()` lifecycle. Two distinct test layers: (1) mocked-argv characterization tests for CLI orchestration order (`node:child_process` mocked, asserting build-stage call sequence and argv-array shape, not real `deciduous` behavior), and (2) real-CLI integration tests that run the actual pinned v0.17.1 `deciduous` binary against scratch staging directories to verify build/validate/promote logic against real output — both layers, plus promotion's fixture-based tests, are implemented and run in this unit; none of it targets sparkle's real `.deciduous/sync/`.
 
 **Patterns to follow:**
 
-- `scripts/health-check.ts:44-65` — `runCommand()` shell-out wrapper with `execSync`, `silent`, `allowFailure`.
+- `scripts/health-check.ts:44-65` — `runCommand()` shell-out wrapper, cited for its error-handling shape (`silent`, `allowFailure`) only — it is not a precedent for safe invocation of externally-influenced data; this script's own shell-outs use argv arrays with `shell: false`, not the string form.
 - `scripts/validate-dependencies.ts:1-205` — typed interfaces, `consola` logging, structured error returns.
+- `scripts/validate-turbo.ts` — looping over an input list with structured per-item checks (replaces `scripts/accessibility-audit.sh`, which no longer exists in the tree).
 - `apps/moo-dang/src/shell/parser.test.ts` — co-located `.test.ts` style for parser units.
-- `scripts/accessibility-audit.sh:1-76` — shell-out patterns (looping over an input list).
 
 **Test scenarios:**
 
-- Happy path: Given a triage report with N PROMOTE entries and M ARCHIVE entries, running the script populates the DB with at least N+M nodes plus their attached source documents.
-- Happy path: Given a git log with K merged-to-main commits, running the script populates the DB with K `action` nodes (minus the `chore(deps)` batched ones) whose `--commit` metadata matches.
-- Happy path: PR-body decisions successfully link to existing action nodes when the merge SHA was already added.
-- Happy path: `chore(deps)` commits batch into a single `observation` node per bootstrap run; `deciduous nodes --type observation` returns exactly one such node after a full run.
-- Edge case: Empty git log (fresh repo) — script completes without error, DB has only the triage-derived nodes.
-- Edge case: Triage report references a file that no longer exists (file was moved or deleted) — script logs a warning, skips that node, continues.
-- Edge case: PR body contains markdown the parser can't handle (broken HTML, unexpected encoding) — script logs and skips, doesn't crash.
-- Edge case: PR-body pass cannot find the action node to link against — decision node is still created, confidence drops to ~70, warning logged.
-- Error path: `deciduous` binary not on PATH — script exits with a clear error message naming the missing dependency.
+- Happy path: a staged build against a fixed snapshot passes the Stage 2 grounded-chain check (≥1 complete chain overall, all 16 required artifacts represented, every node/edge traceable to a real source input).
+- Happy path: two independent staged builds against the same fixed input snapshot produce different `change_id` values (expected) but equal semantic/source coverage — same source commits/PRs/triage-artifacts represented, same node/edge counts by type. The test asserts coverage equality, not byte equality.
+- Happy path: the staged `deciduous sync --output docs/public/graph-data.json` call also produces a sibling `docs/public/git-history.json` in the same staging directory, in the same call.
+- Happy path: fresh promote against an empty destination with no pre-existing export files succeeds and copies all staged files.
+- Edge case: preflight is missing any one of the 16 required triage artifacts — the whole run fails before any `deciduous add`, naming exactly which artifact(s) are missing.
+- Edge case: `--source-root` is missing or lacks the 2 gitignored required artifacts — preflight fails, naming them.
+- Edge case: a triage-identified cross-reference link's target can't be resolved — the link is skipped with a warning; the artifact's own node is still added and the run continues.
+- Edge case (no matching action found, pre-creation): PR-body pass finds no matching action node to link against before creating the decision — decision node is created at confidence 70 with a warning logged; no `deciduous link` call is attempted.
+- Edge case (matching action found, link fails post-creation): PR-body pass finds a matching action node, creates the decision at confidence 75, then the `deciduous link` call itself fails — since v0.17.1 cannot edit confidence after creation, this fails the whole build, preserving the staging directory for diagnosis; no accept/promote proceeds.
+- Edge case (PR-window boundary, before cutoff): a merged PR dated one day before the 12-calendar-month cutoff, with no reference from any in-scope `.ai/` artifact, is excluded from the eligible set.
+- Edge case (PR-window boundary, at cutoff): a merged PR dated exactly at the 12-calendar-month cutoff date is included (cutoff is inclusive).
+- Edge case (PR-window boundary, after snapshot): a PR merged after the build's captured snapshot timestamp is excluded, even if it would otherwise fall inside the 12-month window.
+- Edge case (PR-window, older explicit reference): a merged PR older than the 12-month window but explicitly referenced by a selected in-scope `.ai/` artifact is included.
+- Edge case (PR-window, dedup): a merged PR that is both inside the 12-month window and explicitly referenced by an in-scope `.ai/` artifact is processed exactly once, not twice.
+- Edge case (promotion, fresh): destination `.deciduous/sync/` already has records, or an export file already exists — fresh promote refuses, naming what's already present.
+- Edge case (promotion, recovery — partial identical subset): recovery promote finds some destination files already byte-identical to the staged reviewed inventory — accepts them, copies only the remaining files.
+- Edge case (promotion, recovery — new-record race): recovery promote finds an unexpected destination file not in the staged inventory — aborts with manual recovery instructions, no overwrite.
+- Edge case (promotion, recovery — changed bytes): recovery promote finds a destination file whose content differs from the reviewed staged bytes — aborts, names the file, no overwrite.
+- Edge case (promotion, recovery — torn write): recovery promote finds a destination file that fails a basic integrity check — aborts with manual recovery instructions.
+- Edge case (promotion, wrong stage): promotion is attempted against a staging directory whose captured Stage-2 hashes don't match its current on-disk content — aborts before touching the destination.
+- Error path: `deciduous` binary not on PATH, or not exactly the pinned v0.17.1 — script exits with a clear error naming the mismatch.
 - Error path: `gh` CLI not authenticated — script exits with a clear remediation message.
-- Error path: Secret-scrub catches a token-like string in a PR body — script aborts the run with a clear remediation message (no partial commit).
-- Integration (`scripts/bootstrap-graph.test.ts`): parser units co-located with the script, covering triage / commit-classifier / PR-body / secret-scrub layers.
-- Integration: CLI orchestration tests mock `execSync` / `spawn` and assert call order across the three passes (triage → git log → PR bodies → sync).
-- Integration: After the one-shot bootstrap run, `docs/public/graph-data.json` contains the expected node/edge counts (validated against a baseline).
+- Error path: secret-scrub catches a token-like string, in either the pre-add scan or the full-payload post-build scan — build fails closed; error output names the file path and matched rule, never the matched value; promotion is blocked.
+- Integration (`scripts/bootstrap-graph.test.ts`): mocked-argv characterization tests for the triage/commit-classifier/PR-body-normalizer/secret-scrub parser units and for build-stage orchestration order.
+- Integration: real-CLI tests against the pinned v0.17.1 `deciduous` binary in scratch staging directories, covering build → validate → promote (fresh and recovery) on fixtures — no live-repo mutation.
+- Integration: a real-CLI crash test (kill the `deciduous` process mid-build) confirms the staging directory is left inspectable and a fresh build in a new staging directory succeeds without touching the crashed one.
 
 **Verification:**
 
-- `pnpm test --filter scripts` (or equivalent — once `scripts/package.json` has the test script) runs cleanly.
-- A full bootstrap run produces a queryable graph with at least one `goal`/`decision`/`action`/`outcome` chain per Lane 5 PROMOTE-classified artifact.
-- `deciduous serve` renders the produced graph and the chains read as plausibly correct (not perfect — "good enough to query" per origin scope).
-- `pnpm bootstrap-graph` is wired and works from a clean checkout. **Running it a second time against an already-seeded repo is a misuse, not a refresh** — see the Idempotency constraint above; the weekly incremental mode (Unit 5) is the only supported re-run path.
+- `pnpm --filter scripts test` runs cleanly.
+- A staged build produces a Stage 2 validation report with the grounded-chain check passing and each of the three artifacts (record JSON, `graph-data.json`, `git-history.json`) checked against its own schema, with full-payload secret-scrub applied to all three.
+- `deciduous serve` against the staged (not yet promoted) output renders a queryable graph.
+- Fresh-promote and recovery-promote behavior (including the new-record-race, changed-bytes, torn-write, and partial-identical-subset cases) are each covered by their own test scenario above, not asserted only in prose.
+- This unit's completion is "script + tests exist and pass against a staged scratch run" — it does not itself constitute or claim a completed live bootstrap of sparkle's real graph; that remains a separate, later, explicitly authorized action (see Execution note).
 
 - [ ] **Unit 5: Weekly refresh workflow (`.github/workflows/decision-graph.yaml`)**
 
@@ -478,9 +531,9 @@ Fro Bot's CI consumption (Unit 7) reads the committed record store via `deciduou
   3. Install Deciduous (cache the binary by version — explicit pin matching Unit 1's recorded version; either `cargo install deciduous` or download from GitHub Releases — pick the lower-overhead option in implementation).
   4. Run `pnpm bootstrap-graph --incremental` (Unit 4's script, in its incremental mode — ingests only inputs not already recorded; see Unit 4's Idempotency constraint and the Open Questions entry on the tracking mechanism. **Never run the full/one-shot mode here.**).
   5. Run `deciduous sync --output docs/public/graph-data.json` (the incremental script already runs this, but the workflow re-runs it explicitly for safety). Consider `deciduous sync --no-pages` if CI shouldn't also generate Pages-deploy scaffolding as a side effect — verify the flag's exact behavior during Unit 1.
-  6. Pre-PR audit: compute the delta vs `HEAD`'s `.deciduous/sync/` state; print a summary (changed paths, node/edge counts); fail if any change is outside `.deciduous/sync/**` or `docs/public/graph-data.json`.
+  6. Pre-PR audit: compute the delta vs `HEAD`'s `.deciduous/sync/` state; print a summary (changed paths, node/edge counts); fail if any change is outside `.deciduous/sync/**`, `docs/public/graph-data.json`, or `docs/public/git-history.json` (`sync --output` writes the latter two as a sibling pair in one call — both are legitimate output, not a scope violation).
   7. Run secret-scan over the staged delta — fail loudly on any match (defense in depth; the bootstrap script already runs this on inputs).
-  8. If non-empty delta: get a GitHub App token via `actions/create-github-app-token` (`APPLICATION_ID` + `APPLICATION_PRIVATE_KEY` secrets — already provisioned per repo conventions), then open an auto-PR via `peter-evans/create-pull-request` with title `chore(graph): weekly decision-graph refresh (YYYY-MM-DD)`, body containing the audit summary from step 6, labels `automation/decision-graph` + `automation`. Path scope: `.deciduous/sync/**` and `docs/public/graph-data.json`.
+  8. If non-empty delta: get a GitHub App token via `actions/create-github-app-token` (`APPLICATION_ID` + `APPLICATION_PRIVATE_KEY` secrets — already provisioned per repo conventions), then open an auto-PR via `peter-evans/create-pull-request` with title `chore(graph): weekly decision-graph refresh (YYYY-MM-DD)`, body containing the audit summary from step 6, labels `automation/decision-graph` + `automation`. Path scope: `.deciduous/sync/**`, `docs/public/graph-data.json`, and `docs/public/git-history.json`.
   9. Failure handling: any non-zero step appends or updates a single perpetual GitHub issue titled `Decision graph automation: needs attention` (labels `decision-graph`, `automation-failure`). One-issue-per-recurring-failure model matching Fro Bot's perpetual-issue pattern. On success after prior failure, the issue is closed with a brief comment.
 - Branch protection note: `main` does NOT currently require PR reviews per repo settings, so the PR can be merged by Marcus directly without a separate reviewer; this is intentional for v1 and reviewed if branch-protection policy tightens.
 
@@ -497,7 +550,7 @@ Fro Bot's CI consumption (Unit 7) reads the committed record store via `deciduou
 - Edge case: Workflow runs when the committed `.deciduous/sync/` record store doesn't exist yet (first deploy of this unit before Unit 4's initial bootstrap is committed) — fails fast with a clear error rather than silently corrupting state.
 - Failure path: Bootstrap script exits non-zero (e.g., `gh` rate-limited) — workflow fails, no partial commit, perpetual failure issue is opened/updated.
 - Failure path: GitHub App token fetch fails — workflow fails before any mutation, failure issue updated.
-- Failure path: Pre-PR audit detects a staged change outside `.deciduous/sync/**` or `docs/public/graph-data.json` — workflow fails loudly (this is the path-scope safety boundary).
+- Failure path: Pre-PR audit detects a staged change outside `.deciduous/sync/**`, `docs/public/graph-data.json`, or `docs/public/git-history.json` — workflow fails loudly (this is the path-scope safety boundary).
 - Failure path: Secret-scan finds a token-like string in the delta — workflow fails with the location; no PR opened.
 - Integration: Manual `workflow_dispatch` produces the same effect as a scheduled run.
 
@@ -524,8 +577,8 @@ Fro Bot's CI consumption (Unit 7) reads the committed record store via `deciduou
 
 **Approach:**
 
-- Implement `docs/src/pages/graph/index.astro` as a thin Starlight-themed wrapper around an `<iframe>` pointing at `/deciduous-viewer.html?data=/graph-data.json` (or whatever query-param mechanism the viewer expects to load arbitrary `graph-data.json` — verified during Unit 1).
-- Apply the most restrictive iframe `sandbox` attribute compatible with the viewer. Avoid `allow-same-origin` unless proven required by viewer features (Q&A pane, deep linking).
+- Implement `docs/src/pages/graph/index.astro` as a thin Starlight-themed wrapper around an `<iframe>` pointing at `/deciduous-viewer.html`. **Verified during Unit 1: there is no `?data=` query-parameter override** — the compiled viewer's data-source selection is a hard-coded runtime predicate (hostname/port based, not a query string) that resolves to fixed relative paths (`./graph-data.json`, `./git-history.json`, `./roadmap-items.json`) when the origin is not `localhost`/`127.0.0.1`/`0.0.0.0` and either has no explicit port or is a `.github.io` host. Based on the compiled predicate (inferred from source, not verified against an actual deployment), sparkle's production custom domain — no explicit port, non-`.github.io` hostname — should select the relative-path branch. `deciduous-viewer.html` and `graph-data.json` (and `git-history.json`, once Unit 4/6's file-layout question above is resolved) must be served side-by-side from the same `docs/public/` directory — no mirroring/rewriting step needed beyond that co-location.
+- Apply the most restrictive iframe `sandbox` attribute compatible with the viewer; exact requirements are implementation-time verification against the live embed, not proven by any standalone pass to date. Do not assume sandbox compatibility is already validated. Avoid `allow-same-origin` unless implementation-time testing proves a specific viewer feature requires it — the local Q&A affordance renders without a network call and does not, by itself, justify relaxing the sandbox.
 - Above the iframe: a small Astro-rendered legend (`goal` / `option` / `decision` / `action` / `outcome` / `observation` / `revisit` with one-line definitions) and a freshness indicator showing the last-sync timestamp read from `graph-data.json`'s metadata at build time.
 - Below the iframe: a small empty-state explanation that renders only when the graph has <50 nodes (Astro can compute this at build time by counting nodes in `graph-data.json`).
 - No docs-build sync/prebuild step is needed: `docs/public/graph-data.json` is written directly by `deciduous sync --output docs/public/graph-data.json` in Unit 4 (initial) and Unit 5 (weekly incremental refresh), and already falls under `deploy-docs.yaml`'s existing `docs/**` path trigger.
@@ -571,7 +624,7 @@ Fro Bot's CI consumption (Unit 7) reads the committed record store via `deciduou
 
 - The preflight step installs Deciduous (cached by version, matching Unit 5's install strategy) and dumps the graph JSON. Skip MCP — CI doesn't benefit from the round-trip.
 - The prompts get a new section header: "Decision graph context (available at `$SPARKLE_GRAPH_CONTEXT`)" with usage instructions specific to each prompt's existing structure.
-- Citations in Fro Bot's perpetual report use a structured form: `[decision-graph node #N: <title>]` — predictable enough for the retrieval-events metric to grep against later.
+- Citations in Fro Bot's perpetual report use a structured form keyed on the durable `change_id`, not a position-dependent integer id: `[decision-graph node <change_id>: <title>]` — predictable enough for the retrieval-events metric to grep against later, and stable across graph rebuilds (see Unit 4's Idempotency constraint).
 - The prompt explicitly requires node IDs when graph context informs a claim. Absence of weekly citations after rollout is a product signal that the integration isn't compounding, not just a test failure.
 - Do NOT add the graph to `PR_REVIEW_PROMPT` — that's R8 (cut from v1) territory per the brainstorm's scope boundary.
 
@@ -593,7 +646,7 @@ Fro Bot's CI consumption (Unit 7) reads the committed record store via `deciduou
 
 - A `gh workflow run fro-bot.yaml -f mode=maintenance` from a clean state produces a report citing at least one graph node.
 - A `gh workflow run fro-bot.yaml -f mode=autoheal` produces a report citing at least one graph node when relevant.
-- The success-criterion target of ≥1 retrieval event per week becomes measurable (free-text grep against the perpetual reports for the `[decision-graph node #` pattern is sufficient for v1).
+- The success-criterion target of ≥1 retrieval event per week becomes measurable (free-text grep against the perpetual reports for the `[decision-graph node ` pattern, keyed on `change_id`, is sufficient for v1).
 
 ## System-Wide Impact
 
@@ -626,10 +679,10 @@ Fro Bot's CI consumption (Unit 7) reads the committed record store via `deciduou
 | GitHub App token scope insufficient for auto-PR flow | Verified existing flow in `regenerate-docs.yaml` uses the same `APPLICATION_ID`/`APPLICATION_PRIVATE_KEY` pair with the same posture; scope is established. |
 | Visual regression in `/graph/` route during Astro/Starlight major upgrades | Iframe isolation means viewer is insulated from Starlight CSS changes. Sparkle's existing `packages/storybook/test/visual-regression/` infra can capture a `/graph/` baseline as a follow-up. |
 | Weekly graph refresh silently stops running or fails unnoticed | Failure creates a maintainer-visible GitHub signal via a single perpetual issue (`Decision graph automation: needs attention`, labels `decision-graph` + `automation-failure`). Fro Bot daily maintenance checks the latest `decision-graph.yaml` run status and reports stale/failing state. |
-| `.deciduous/` makes already-public planning/PR/commit data easier to search and correlate (PII surface) | Treat the graph as a public artifact. Bootstrap (Unit 4) ingests only public repo sources: tracked `.ai/` docs, public merged PR bodies, public git metadata. Before staging `.deciduous/sync/**` or `docs/public/graph-data.json` for commit, Unit 5 runs a secrets/PII scan. Fail the workflow on token-like strings, private keys, auth headers, signed URLs, emails beyond public GitHub noreply identities, or unexpected local machine paths. |
+| `.deciduous/` makes already-public planning/PR/commit data easier to search and correlate (PII surface) | Treat the graph as a public artifact. Bootstrap (Unit 4) ingests only public repo sources: tracked `.ai/` docs, public merged PR bodies, public git metadata. Before staging `.deciduous/sync/**`, `docs/public/graph-data.json`, or `docs/public/git-history.json` for commit, Unit 5 runs a secrets/PII scan. Fail the workflow on token-like strings, private keys, auth headers, signed URLs, emails beyond public GitHub noreply identities, or unexpected local machine paths. |
 | Fro Bot autoheal content may include CI error output containing secrets or sensitive environment details | v1 ingests Fro Bot reports only through public PR bodies, not workflow logs or private artifacts. Unit 4's PR-body normalizer strips masked-secret placeholders, bearer/basic auth headers, URLs with credentials/query tokens, environment dumps, and stack traces containing home-directory or runner-internal paths unless already present in public source. |
 | `.deciduous/sync/` records carry an `author` field on every node/edge (git-config identity, not OS username) | The record store is committed, so `author` values are visible to anyone with repo read access — equivalent in exposure to ordinary git-blame data on any tracked file. Confirmed during Unit 1: `author` does **not** reach the published `docs/public/graph-data.json` export, so the public surface is unaffected. |
-| `graph-data.json` is publicly fetchable from `sparkle.mrbro.dev/graph-data.json` | Observed export schema (Unit 1): node fields `id`, `change_id`, `node_type`, `title`, `description`, `status`, `created_at`, `updated_at`, `metadata_json`; edge fields `edge_id`, `edge_type`, `from_change_id`, `to_change_id`, `rationale`, `weight`, `created_at`. `author` is tracked on committed `.deciduous/sync/` records but does not reach this export — the one residual leak is the local timezone offset embedded in every timestamp. Not allowed without intentional acceptance beyond that: raw attached-document bodies, secrets, credentials, private URLs, raw workflow logs, local machine paths, non-public personal data. |
+| `graph-data.json` is publicly fetchable from `sparkle.mrbro.dev/graph-data.json` | Observed export schema (Unit 1): node fields `change_id`, `created_at`, `description`, `id`, `metadata_json`, `node_type`, `status`, `title`, `updated_at`; edge fields `created_at`, `edge_type`, `from_change_id`, `from_node_id`, `id`, `rationale`, `to_change_id`, `to_node_id`, `weight`. Committed `.deciduous/sync/` records carry additional fields not present in the export (e.g. `author`, `edge_id`) — field-name exclusion from the export is not a guarantee that every exported field's content is public-safe; content (titles, descriptions, metadata) still needs the secret-scrub in Unit 4/5. The one accepted residual leak is the local timezone offset embedded in every timestamp. Not allowed without intentional acceptance beyond that: raw attached-document bodies, secrets, credentials, private URLs, raw workflow logs, local machine paths, non-public personal data. |
 | Captured `docs/public/deciduous-viewer.html` is a large third-party executable HTML asset | It ships as `deciduous init`'s own output (captured in Unit 3), not a hand-authored artifact — updates are explicit Deciduous-version bumps with human diff review against the previous capture. Iframe wrapper uses the most restrictive sandbox compatible with the viewer; avoid `allow-same-origin` unless proven required. |
 | Auto-PR review fatigue (weekly mechanical PRs) | Apply `automation/decision-graph` + `automation` labels so the maintainer can filter / auto-merge if desired. Audit summary in PR body makes review fast. If review noise becomes a measurable problem, switch to direct-push per the documented post-v1 fallback. |
 | GitHub App token over-scope on the auto-PR flow | Least privilege per step: workflow-level `contents: read`; the App-token step requests `permission-contents: write` + `permission-pull-requests: write` only for the PR-opening step. Do not grant branch-protection bypass / admin override to the App. |
@@ -641,8 +694,8 @@ Fro Bot's CI consumption (Unit 7) reads the committed record store via `deciduou
 - **`llms.txt`**: add a workflow entry for `decision-graph.yaml` once Unit 5 lands; also add the `sparkle.mrbro.dev/graph` URL under Public surface.
 - **Deciduous CLI version pinning**: track explicitly in `.github/workflows/decision-graph.yaml`'s install step AND in `.github/workflows/fro-bot.yaml`'s preflight install step. `.deciduous/.version` is Deciduous-managed; treat it as compatibility metadata only.
 - **The decision graph is public.** Contributors should assume any rationale, PR-body excerpt, attached `.ai/` document summary, commit metadata, file path, and graph node title is visible at `sparkle.mrbro.dev/graph`.
-- **Public-field allowlist for `graph-data.json`** (recorded by Unit 1 against the real v0.17.1 export schema): node fields `id`, `change_id`, `node_type`, `title`, `description`, `status`, `created_at`, `updated_at`, `metadata_json`; edge fields `edge_id`, `edge_type`, `from_change_id`, `to_change_id`, `rationale`, `weight`, `created_at`. `author` is tracked on committed `.deciduous/sync/` records but does not reach the export; the one residual leak is the local timezone offset embedded in every timestamp — accepted, not actionable. NOT acceptable beyond that: secrets, credentials, private URLs, raw workflow logs, local machine paths, non-public personal data.
-- **Pre-commit generated-graph audit** (Unit 5 step 6 — but also run manually if a contributor edits `.deciduous/` directly): inspect `git diff --stat`; inspect changed paths (must all be under `.deciduous/sync/**` or `docs/public/graph-data.json`); run secret-scan; sample-inspect changed `.deciduous/sync/**/*.json` records for unexpected content; inspect `graph-data.json` top-level fields against the allowlist.
+- **Public-field allowlist for `graph-data.json`** (recorded by Unit 1 against the real v0.17.1 export schema): node fields `change_id`, `created_at`, `description`, `id`, `metadata_json`, `node_type`, `status`, `title`, `updated_at`; edge fields `created_at`, `edge_type`, `from_change_id`, `from_node_id`, `id`, `rationale`, `to_change_id`, `to_node_id`, `weight`. Committed `.deciduous/sync/` records carry additional fields the export omits (e.g. `author`, `edge_id`); omission from the export is not itself a content-safety guarantee — titles/descriptions/metadata still pass through the secret-scrub. The one accepted residual leak is the local timezone offset embedded in every timestamp. NOT acceptable beyond that: secrets, credentials, private URLs, raw workflow logs, local machine paths, non-public personal data.
+- **Pre-commit generated-graph audit** (Unit 5 step 6 — but also run manually if a contributor edits `.deciduous/` directly): inspect `git diff --stat`; inspect changed paths (must all be under `.deciduous/sync/**`, `docs/public/graph-data.json`, or `docs/public/git-history.json`); run secret-scan; sample-inspect changed `.deciduous/sync/**/*.json` records for unexpected content; inspect `graph-data.json` top-level fields against the allowlist.
 - **Deciduous viewer provenance**: `docs/public/deciduous-viewer.html` is captured verbatim from a scratch `deciduous init` run pinned to the same CLI version used elsewhere (Unit 3); there is no independent SHA256/provenance-pin process — an update means repeating the scratch capture and diffing the result.
 - **Auto-PR / direct-push posture**: Unit 5 uses auto-PR as the v1 default. If the team later switches to direct-push, document the reason explicitly in this section and list the guardrails: path allowlist, deletion threshold, generated-file validation, no workflow/source changes, no branch-protection bypass grant, failure-on-secret-scan. Start with auto-PR; switch to direct-push only after a few clean cycles produce review noise without value.
 - **Rollout**: see Rollout Verification below for the sequencing and gates.
