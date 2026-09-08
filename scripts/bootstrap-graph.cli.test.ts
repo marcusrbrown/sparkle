@@ -1516,7 +1516,15 @@ if (argv[0] === 'pr' && argv[1] === 'view') {
   process.exit(1)
 }
 if (argv[0] === 'api') {
-  process.stdout.write(JSON.stringify([{
+  const queryField = argv.find(a => a.startsWith('query='))
+  if (queryField !== undefined && queryField.includes('issueCount')) {
+    // Count-only query: single object, not slurped/paginated.
+    process.stdout.write(JSON.stringify({data: {search: {issueCount: 1}}}))
+    process.exit(0)
+  }
+  // Single-page query: single object, not slurped/paginated (count-first design never uses
+  // --paginate/--slurp — see scripts/bootstrap-graph/pr-source.ts).
+  process.stdout.write(JSON.stringify({
     data: {
       search: {
         pageInfo: {hasNextPage: false, endCursor: null},
@@ -1531,7 +1539,7 @@ if (argv[0] === 'api') {
         }],
       },
     },
-  }]))
+  }))
   process.exit(0)
 }
 process.stderr.write('fake gh: unhandled argv ' + JSON.stringify(argv))
@@ -2861,7 +2869,12 @@ describe('SAFETY (S1) real end-to-end: runCli build surfaces runBuildStage warni
 const argv = process.argv.slice(2)
 if (argv[0] === 'pr' && argv[1] === 'view') { process.exit(1) }
 if (argv[0] === 'api') {
-  process.stdout.write(JSON.stringify([{
+  const queryField = argv.find(a => a.startsWith('query='))
+  if (queryField !== undefined && queryField.includes('issueCount')) {
+    process.stdout.write(JSON.stringify({data: {search: {issueCount: 1}}}))
+    process.exit(0)
+  }
+  process.stdout.write(JSON.stringify({
     data: {
       search: {
         pageInfo: {hasNextPage: false, endCursor: null},
@@ -2876,7 +2889,7 @@ if (argv[0] === 'api') {
         }],
       },
     },
-  }]))
+  }))
   process.exit(0)
 }
 process.exit(1)
