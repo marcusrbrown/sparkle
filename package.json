@@ -10,6 +10,7 @@
   "type": "module",
   "scripts": {
     "bootstrap": "pnpm install --prefer-offline --loglevel warn",
+    "bootstrap-graph": "tsx scripts/bootstrap-graph.ts",
     "build": "turbo run build",
     "build:types": "turbo run build:types",
     "build:types:watch": "tsc --build --watch --preserveWatchOutput",
