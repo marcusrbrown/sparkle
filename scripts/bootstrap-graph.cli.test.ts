@@ -38,7 +38,7 @@ import {dirname, join, sep} from 'node:path'
 import process from 'node:process'
 import {promisify} from 'node:util'
 import {standardAfterEach, standardBeforeEach} from '@sparkle/test-utils/lifecycle'
-import {afterEach, beforeAll, beforeEach, describe, expect, it} from 'vitest'
+import {afterEach, beforeAll, beforeEach, describe, expect, it, vi} from 'vitest'
 import {
   acceptReviewedStage,
   captureStagedInventory,
@@ -617,6 +617,59 @@ describe('real-fixture: collectCommitsFromGitLog', () => {
     expect(commits.some(c => c.message === 'feature work' && !c.isPrMerge)).toBe(true)
     expect(commits.some(c => c.message.startsWith('Merge pull request') && c.isPrMerge)).toBe(true)
   })
+
+  it(
+    'Reliability P1 regression: bounds the git log subprocess with an explicit timeout, so a hung ' +
+      '`git log` (e.g. an unreachable/broken repo) cannot block the caller indefinitely — ' +
+      'collectCommitsFromGitLog is the only call site missing this today',
+    async () => {
+      let capturedOptions: Record<string, unknown> | undefined
+      const sep = '\u001F'
+
+      // A minimal callback-style execFile fake that also carries the same
+      // `util.promisify.custom` implementation Node's real execFile has, so
+      // `promisify(execFile)` (used both by bootstrap-graph.ts's own
+      // execFileAsync and this file's) still resolves `{stdout, stderr}`
+      // instead of falling back to promisify's generic single-value behavior.
+      const fakeExecFile = (
+        _file: string,
+        _args: readonly string[],
+        options: Record<string, unknown>,
+        callback: (error: Error | null, stdout: string, stderr: string) => void,
+      ) => {
+        capturedOptions = options
+        callback(null, `abc123${sep}${sep}${sep}2024-01-01${sep}fake commit\n`, '')
+      }
+      Object.defineProperty(fakeExecFile, promisify.custom, {
+        value: (file: string, args: readonly string[], options: Record<string, unknown>) =>
+          new Promise((resolve, reject) => {
+            fakeExecFile(file, args, options, (error, stdout, stderr) => {
+              if (error) reject(error)
+              else resolve({stdout, stderr})
+            })
+          }),
+      })
+
+      vi.resetModules()
+      vi.doMock('node:child_process', () => ({execFile: fakeExecFile}))
+
+      try {
+        const isolatedModule = await import('./bootstrap-graph.js')
+        const commits = await isolatedModule.collectCommitsFromGitLog(repoDir)
+
+        // No real subprocess ran (the mock resolved synchronously), so this assertion is instant --
+        // no 15-second wait, no hang, regardless of pass/fail. Asserts the exact value to mirror
+        // bootstrap-graph.ts's private (unexported) COMMAND_TIMEOUT_MS constant, not merely "some
+        // positive number" -- a regression that silently dropped or shrank the timeout would be caught.
+        expect(capturedOptions?.timeout).toBe(15_000)
+        expect(commits).toHaveLength(1)
+        expect(commits[0]?.message).toBe('fake commit')
+      } finally {
+        vi.doUnmock('node:child_process')
+        vi.resetModules()
+      }
+    },
+  )
 
   it(
     'regression: a real --no-ff merge commit succeeds via the fixture git runner even when this ' +

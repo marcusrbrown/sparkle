@@ -1014,6 +1014,7 @@ const execFileAsync = promisify(execFile)
 export async function collectCommitsFromGitLog(repoDir: string, ref = 'HEAD'): Promise<CommitInput[]> {
   const {stdout} = await execFileAsync('git', buildGitLogArgv(ref), {
     cwd: repoDir,
+    timeout: COMMAND_TIMEOUT_MS,
     maxBuffer: COMMAND_MAX_BUFFER_BYTES,
   })
   return parseGitLogOutput(stdout)
