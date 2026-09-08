@@ -98,12 +98,24 @@ export function loadSnapshotProvenance(stagingDir: string): SnapshotProvenance |
       sourceEvidence = parsed
     }
 
+    let buildWarnings: readonly string[] | undefined
+    if (record.buildWarnings !== undefined) {
+      // Same discipline as promotedArtifactPaths/sourceEvidence above: present-but-malformed is
+      // corrupted provenance, not "absent" — silently dropping a bad value here would let a
+      // truncated/tampered warnings record pass through as if the build had reported none.
+      if (!Array.isArray(record.buildWarnings) || !record.buildWarnings.every(w => typeof w === 'string')) {
+        return undefined
+      }
+      buildWarnings = record.buildWarnings
+    }
+
     return {
       requiredArtifactPaths,
       promotedArtifactPaths,
       commitSha: typeof record.commitSha === 'string' ? record.commitSha : undefined,
       prListFetchedAt: typeof record.prListFetchedAt === 'string' ? record.prListFetchedAt : undefined,
       sourceEvidence,
+      buildWarnings,
     }
   } catch {
     return undefined

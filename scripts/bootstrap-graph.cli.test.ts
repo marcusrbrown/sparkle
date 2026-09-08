@@ -45,6 +45,7 @@ import {
   checkDeciduousVersion,
   collectCommitsFromGitLog,
   createDeciduousRunner,
+  ensureIsolatedStagingDeciduous,
   executeFreshPromote,
   executeRecoveryPromote,
   getNodeChangeId,
@@ -425,6 +426,9 @@ function makeCanonicalAcceptedFixture(root: string): void {
     requiredArtifactPaths: [...CANONICAL_TRIAGE_ARCHIVE_PATHS],
     promotedArtifactPaths: [...CANONICAL_TRIAGE_PROMOTED_PATHS],
     sourceEvidence,
+    // A genuinely clean fixture: an explicit empty array, never omitted — omission is exactly
+    // what the WARNING-PERSISTENCE FIX's validate-stage guard now rejects (see below).
+    buildWarnings: [],
   })
 }
 
@@ -568,6 +572,73 @@ describe('real-CLI: checkDeciduousVersion + getNodeChangeId (pinned v0.17.1)', (
       expect(changeId).not.toBe(duplicateChangeId)
     }
   })
+})
+
+describe('real-CLI regression (PR #1221 class): a leading-dash PR title/description must not be misparsed as a CLI flag', () => {
+  let stagingDir: string
+
+  beforeEach(() => {
+    if (!deciduousAvailable) {
+      return
+    }
+    stagingDir = mkdtempSync(join(tmpdir(), 'bootstrap-graph-dash-argv-'))
+    ensureIsolatedStagingDeciduous(stagingDir)
+  })
+
+  afterEach(() => {
+    if (stagingDir !== undefined && existsSync(stagingDir)) {
+      rmSync(stagingDir, {recursive: true, force: true})
+    }
+  })
+
+  it(
+    'runBuildStage succeeds against the real pinned binary for a PR whose normalized title AND ' +
+      'description both start with a Markdown-bullet dash, and the created node round-trips the ' +
+      'exact text via `show --json` (title, multi-line description, commit/files/confidence retained)',
+    async () => {
+      if (!deciduousAvailable) {
+        console.warn('SKIP: deciduous v0.17.1 not on PATH — skipping real-CLI test')
+        return
+      }
+      const runner = createDeciduousRunner()
+      const mergeCommitSha = 'a'.repeat(40)
+      const prs = [
+        {
+          number: 1221,
+          title: '- a bullet-leading PR title',
+          body: '- first bullet line\nsecond line with `code` and a trailing dash -',
+          mergedAt: '2026-01-01T00:00:00Z',
+          files: ['a.ts', 'b.ts'],
+          mergeCommitSha,
+        },
+      ]
+
+      const result = await runBuildStage({
+        runner,
+        stagingDir,
+        triageArtifacts: [],
+        triageArtifactSourcePaths: {},
+        commits: [],
+        runWindowId: 'dash-argv-regression',
+        prs,
+      })
+
+      const changeId = result.decisionNodeChangeIds['1221']
+      expect(changeId).toBeDefined()
+      if (changeId === undefined) return
+
+      const shown = await runner(['show', changeId, '--json'], stagingDir)
+      expect(shown.exitCode).toBe(0)
+      const parsed: {title: string; description: string; metadata_json: string} = JSON.parse(shown.stdout)
+
+      expect(parsed.title).toBe('- a bullet-leading PR title')
+      expect(parsed.description).toBe('- first bullet line\nsecond line with `code` and a trailing dash -')
+      const metadata: {commit?: string; confidence?: number; files?: string[]} = JSON.parse(parsed.metadata_json)
+      expect(metadata.commit).toBe(mergeCommitSha)
+      expect(metadata.confidence).toBe(70)
+      expect(metadata.files).toEqual(['a.ts', 'b.ts'])
+    },
+  )
 })
 
 describe('real-fixture: collectCommitsFromGitLog', () => {
@@ -2210,6 +2281,7 @@ describe('INTEGRATION: runValidateStage cross-checks persisted SourceEvidencePro
     writeSnapshotProvenance(stagingDir, {
       requiredArtifactPaths: ['.ai/notes/x.md'],
       sourceEvidence: fixture.sourceEvidence,
+      buildWarnings: [],
     })
     const result = runValidateStage(stagingDir)
     const shapeGateErrors = result.errors.filter(
@@ -2400,6 +2472,59 @@ describe('SECURITY FIX (public runCli, RED-first): sourceEvidence is uncondition
     const result = runValidateStage(stagingDir)
     expect(result.ok).toBe(false)
     expect(result.errors.some(e => e.includes('is missing sourceEvidence'))).toBe(true)
+  })
+})
+
+describe('WARNING-PERSISTENCE FIX (public runValidateStage, RED-first): a MISSING buildWarnings field is rejected — absence is never silently treated as zero warnings', () => {
+  let stagingDir: string
+
+  beforeEach(() => {
+    stagingDir = mkdtempSync(join(tmpdir(), 'bootstrap-graph-sec-required-warnings-'))
+    makeCanonicalAcceptedFixture(stagingDir)
+  })
+
+  afterEach(() => {
+    rmSync(stagingDir, {recursive: true, force: true})
+  })
+
+  it('runValidateStage passes against the full canonical fixture (an explicit buildWarnings: [] — sanity baseline for the negative case below)', () => {
+    const result = runValidateStage(stagingDir)
+    expect(result.errors).toEqual([])
+    expect(result.ok).toBe(true)
+  })
+
+  it('deleting buildWarnings entirely from an otherwise-canonical provenance.json (simulating a legacy pre-fix stage, or the exact real regression: warnings never persisted because the write happened after a failed sync) fails closed — never silently treated as an empty/clean warning set', () => {
+    const provenancePath = join(stagingDir, 'provenance.json')
+    const raw = JSON.parse(readFileSync(provenancePath, 'utf8')) as Record<string, unknown>
+    delete raw.buildWarnings
+    writeFileSync(provenancePath, JSON.stringify(raw))
+
+    const result = runValidateStage(stagingDir)
+    expect(result.ok).toBe(false)
+    expect(result.errors.some(e => e.toLowerCase().includes('buildwarnings'))).toBe(true)
+  })
+
+  it('a present-but-malformed buildWarnings (not an array of strings) is treated as corrupted provenance, not silently dropped/ignored', () => {
+    const provenancePath = join(stagingDir, 'provenance.json')
+    const raw = JSON.parse(readFileSync(provenancePath, 'utf8')) as Record<string, unknown>
+    raw.buildWarnings = 'not-an-array'
+    writeFileSync(provenancePath, JSON.stringify(raw))
+
+    const result = runValidateStage(stagingDir)
+    expect(result.ok).toBe(false)
+  })
+
+  it('a real known raw-only redacted-source warning string survives a full loadSnapshotProvenance round-trip unchanged', () => {
+    const provenancePath = join(stagingDir, 'provenance.json')
+    const raw = JSON.parse(readFileSync(provenancePath, 'utf8')) as Record<string, unknown>
+    const warning = `PR #1821: redacted-source secret pattern(s) [credentialed-url] matched only in deterministically-omitted or budget-clipped source content, never in the retained description; raw body sha256=${'a'.repeat(
+      64,
+    )}`
+    raw.buildWarnings = [warning]
+    writeFileSync(provenancePath, JSON.stringify(raw))
+
+    const persisted = loadSnapshotProvenance(stagingDir)
+    expect(persisted?.buildWarnings).toEqual([warning])
   })
 })
 
@@ -2830,6 +2955,188 @@ describe('SAFETY (S1/S3/S5): runBuildStage warning surfacing and PR-link-failure
     expect(result.warnings.length).toBeGreaterThan(0)
     // The warning text itself must never carry a raw secret-shaped token even incidentally.
     expect(result.warnings.every(w => !/ghp_[A-Za-z0-9]{30,}/.test(w))).toBe(true)
+  })
+
+  it('a raw secret pattern present ONLY inside a deterministically-omitted release-notes block surfaces a redacted-source WARNING (never a hard fail) — the retained description contains no matching text', async () => {
+    const {runner} = makeFakeDeciduousRunner()
+    const sourcePaths = {'.ai/notes/fixture.md': triageSourcePath}
+    // Synthetic dummy credential shape, never a real one.
+    const dummyCredentialedUrl = 'https://user:pass@example.com/registry'
+    const body = [
+      'This PR contains the following updates:',
+      '',
+      '| Package | Change |',
+      '| --- | --- |',
+      '| widget | 1.0.0 -> 1.1.0 |',
+      '',
+      '<details>',
+      '<summary>widget (widget)</summary>',
+      '',
+      `pnpm no longer leaks credentials such as ${dummyCredentialedUrl} in its output.`,
+      '',
+      '</details>',
+    ].join('\n')
+    const prs = [
+      {
+        number: 1821,
+        title: 'chore(deps): update all non-major dependencies',
+        body,
+        mergedAt: '2026-07-13T01:04:39Z',
+        files: ['pnpm-lock.yaml'],
+        mergeCommitSha: 'no-such-sha',
+      },
+    ]
+
+    const result = await runBuildStage({
+      runner,
+      stagingDir,
+      triageArtifacts,
+      triageArtifactSourcePaths: sourcePaths,
+      commits: [],
+      runWindowId: 'redacted-source-test',
+      prs,
+    })
+
+    expect(Object.keys(result.decisionNodeChangeIds)).toEqual(['1821'])
+    expect(
+      result.warnings.some(
+        w => w.includes('PR #1821') && w.includes('redacted-source') && w.includes('credentialed-url'),
+      ),
+    ).toBe(true)
+    // Never the matched value or the raw body itself — only rule name + PR number + a hash.
+    expect(result.warnings.some(w => w.includes('user:pass'))).toBe(false)
+    expect(result.warnings.some(w => /sha256=[a-f0-9]{64}/.test(w))).toBe(true)
+  })
+
+  it('a raw secret pattern present in the RETAINED (ordinary, non-omitted) description text still hard-fails the whole build — redacted-source selection is never a bypass for real retained matches', async () => {
+    const {runner} = makeFakeDeciduousRunner()
+    const sourcePaths = {'.ai/notes/fixture.md': triageSourcePath}
+    const dummyToken = `ghp_${'5'.repeat(40)}`
+    const prs = [
+      {
+        number: 1822,
+        title: 'feat: ordinary PR',
+        body: `This PR does a thing.\n\ntoken: ${dummyToken}`,
+        mergedAt: '2026-07-13T01:04:39Z',
+        files: [],
+        mergeCommitSha: 'no-such-sha',
+      },
+    ]
+
+    await expect(
+      runBuildStage({
+        runner,
+        stagingDir,
+        triageArtifacts,
+        triageArtifactSourcePaths: sourcePaths,
+        commits: [],
+        runWindowId: 'hard-fail-still-works-test',
+        prs,
+      }),
+    ).rejects.toThrow(/secret-scrub/i)
+  })
+
+  it('WARNING-PERSISTENCE FIX: runBuildStage persists its complete, sanitized buildWarnings into provenance.json BEFORE returning — readable via loadSnapshotProvenance immediately after, independent of anything that might run later (e.g. sync)', async () => {
+    const {runner} = makeFakeDeciduousRunner()
+    const sourcePaths = {'.ai/notes/fixture.md': triageSourcePath}
+    const dummyCredentialedUrl = 'https://user:pass@example.com/registry'
+    const body = [
+      '<details>',
+      '<summary>x</summary>',
+      `pnpm no longer leaks credentials such as ${dummyCredentialedUrl}.`,
+      '</details>',
+    ].join('\n')
+    const prs = [
+      {
+        number: 1821,
+        title: 'chore(deps): update dep',
+        body,
+        mergedAt: '2026-07-13T01:04:39Z',
+        files: [],
+        mergeCommitSha: 'no-such-sha',
+      },
+    ]
+
+    const result = await runBuildStage({
+      runner,
+      stagingDir,
+      triageArtifacts,
+      triageArtifactSourcePaths: sourcePaths,
+      commits: [],
+      runWindowId: 'warning-persistence-test',
+      prs,
+    })
+
+    const persisted = loadSnapshotProvenance(stagingDir)
+    expect(persisted).toBeDefined()
+    expect(persisted?.buildWarnings).toEqual(result.warnings)
+    expect(persisted?.buildWarnings?.some(w => w.includes('redacted-source') && w.includes('sha256='))).toBe(true)
+  })
+
+  it('WARNING-PERSISTENCE FIX: buildWarnings survives on disk even when a LATER command (simulating deciduous sync) fails — the real regression this closes: warnings were previously only written after a successful sync', async () => {
+    const {runner} = makeFakeDeciduousRunner()
+    const sourcePaths = {'.ai/notes/fixture.md': triageSourcePath}
+    const prs = [
+      {
+        number: 99,
+        title: 'feat: no matching commit',
+        body: 'body',
+        mergedAt: '2026-01-01T00:00:00Z',
+        files: [],
+        mergeCommitSha: 'no-such-sha',
+      },
+    ]
+
+    const result = await runBuildStage({
+      runner,
+      stagingDir,
+      triageArtifacts,
+      triageArtifactSourcePaths: sourcePaths,
+      commits: [],
+      runWindowId: 'warning-survives-sync-failure-test',
+      prs,
+    })
+    expect(result.warnings.length).toBeGreaterThan(0)
+
+    // Simulate the real orchestration's later `deciduous sync` call failing (a real timeout, a
+    // real subprocess error) — runBuildStage already returned and already wrote provenance.json
+    // before this point, so a failure here must never retroactively lose the warnings already on
+    // disk.
+    // fake runner always succeeds; the assertion below (persisted warnings unaffected) is what actually matters
+    await runner(['sync', '-o', 'docs/public/graph-data.json'], stagingDir)
+
+    const persistedAfter = loadSnapshotProvenance(stagingDir)
+    expect(persistedAfter?.buildWarnings).toEqual(result.warnings)
+  })
+
+  it('an explicit empty buildWarnings array (a genuinely clean build) round-trips through provenance.json exactly — never conflated with a missing/absent field', async () => {
+    const {runner} = makeFakeDeciduousRunner()
+    const sourcePaths = {'.ai/notes/fixture.md': triageSourcePath}
+    const commits = [{sha: 'clean-sha-1', message: 'feat: clean commit', date: '2026-01-01T00:00:00Z', isPrMerge: true}]
+    const prs = [
+      {
+        number: 1,
+        title: 'feat: clean PR',
+        body: 'An ordinary clean PR body.',
+        mergedAt: '2026-01-01T00:00:00Z',
+        files: [],
+        mergeCommitSha: 'clean-sha-1',
+      },
+    ]
+
+    const result = await runBuildStage({
+      runner,
+      stagingDir,
+      triageArtifacts,
+      triageArtifactSourcePaths: sourcePaths,
+      commits,
+      runWindowId: 'clean-fixture-test',
+      prs,
+    })
+    expect(result.warnings).toEqual([])
+
+    const persisted = loadSnapshotProvenance(stagingDir)
+    expect(persisted?.buildWarnings).toEqual([])
   })
 })
 
