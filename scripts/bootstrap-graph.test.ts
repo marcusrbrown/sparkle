@@ -241,7 +241,19 @@ describe('batchDepsCommits', () => {
 })
 
 describe('normalizePrBody', () => {
-  it('produces a summary without the raw body text', () => {
+  // Full selection/clipping/redacted-source-warning coverage lives in the co-located
+  // scripts/bootstrap-graph/pr-normalize.test.ts. This describe block keeps only the handful of
+  // top-level-import smoke assertions.
+  //
+  // Reconciled: normalizePrBody no longer substitutes matched secret patterns with `[redacted]`
+  // before returning `summary` (that pre-emptive masking is exactly the "credential/token
+  // replacement used to turn a retained match into a pass" the policy now forbids). A secret
+  // pattern in ORDINARY (retained) PR-body text is left as-is in `summary` for the caller's
+  // hard-fail pre-add scan (scanPayloadForSecrets, in runBuildStage) to catch and block — this is
+  // no longer normalizePrBody's job. Only a secret pattern that is deterministically OMITTED
+  // (release-notes/sponsors/boilerplate) or budget-CLIPPED away is reported separately via
+  // `redactedSourceSecretRules`, a warning-only signal, never a substitute for that hard-fail scan.
+  it("leaves a secret pattern in ordinary (retained) body text untouched in summary — the caller's hard-fail scan, not normalizePrBody, is responsible for catching it", () => {
     const pr = {
       number: 100,
       title: 'feat: add graph bootstrap',
@@ -251,8 +263,9 @@ describe('normalizePrBody', () => {
       mergeCommitSha: 'abc123',
     }
     const normalized = normalizePrBody(pr)
-    expect(normalized.summary).not.toContain('ghp_1234567890abcdef1234567890abcdef1234')
+    expect(normalized.summary).toContain('ghp_1234567890abcdef1234567890abcdef1234')
     expect(normalized.summary).toContain('This PR adds the bootstrap script.')
+    expect(normalized.redactedSourceSecretRules).toEqual([])
   })
 
   it('defaults confidence to 75', () => {

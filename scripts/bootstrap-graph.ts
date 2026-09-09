@@ -711,19 +711,16 @@ async function runCliInner(argv: readonly string[]): Promise<{exitCode: number; 
       : `, ${Object.keys(buildResult.sourceEvidence.nodes).length} source-evidence node(s)/${buildResult.sourceEvidence.edges.length} edge(s) (reviewed mapping applied: ${buildResult.sourceEvidence.reviewedApplied})`
 
   // Every runBuildStage warning (unresolved links, lowered confidence, incomplete file lists,
-  // etc) is surfaced in the successful CLI output — never silently discarded — and also persisted
-  // into provenance.json below, both sanitized (never raw stderr/secret values). No arbitrary
+  // etc) is surfaced in the successful CLI output — never silently discarded. Persistence into
+  // provenance.json already happened inside runBuildStage itself (WARNING-PERSISTENCE FIX: the
+  // single owner of that write, before this function ever calls `sync` below) — no second write
+  // site here, so nothing can clobber or lose it if `sync` fails or times out. No arbitrary
   // warning-count threshold gates success; warnings are informational, not a failure signal (a
   // failure signal is a nonzero exit, as S3's link-failure hard-fail now does separately).
   const warningsSection =
     buildResult.warnings.length === 0
       ? ''
       : `\n\nWarnings:\n${buildResult.warnings.map(w => `- ${sanitizeCliOutput(w)}`).join('\n')}`
-
-  writeSnapshotProvenance(parsed.stagingDir, {
-    ...(loadSnapshotProvenance(parsed.stagingDir) ?? {requiredArtifactPaths: triageArtifacts.map(a => a.path)}),
-    buildWarnings: buildResult.warnings.map(w => sanitizeCliOutput(w)),
-  })
 
   return {
     exitCode: 0,

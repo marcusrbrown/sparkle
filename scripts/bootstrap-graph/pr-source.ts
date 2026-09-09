@@ -60,11 +60,22 @@ export interface MinimalPrInput {
 }
 
 // ---------------------------------------------------------------------------
-// Calendar-window search: gh api graphql --paginate --slurp (real pagination,
-// not a single-page --limit truncation)
+// Calendar-window search: a cheap COUNT-ONLY query decides whether a window
+// needs splitting BEFORE any rich data (bodies/files) is ever fetched, then
+// an under-cap window's PRs are fetched one bounded page at a time (never a
+// single aggregate `--paginate --slurp` gh process) — see
+// `fetchMergedPrsInWindow`'s doc comment for why.
 // ---------------------------------------------------------------------------
 
-const SEARCH_MERGED_PRS_QUERY = `query($searchQuery: String!, $endCursor: String) {
+/** Deliberately requests only `issueCount`, no `nodes` — the cheapest possible GraphQL shape for deciding whether a window needs splitting, before any PR body/file data is fetched. `first: 1` is a required-but-unused connection argument; nothing under `nodes` is ever selected. */
+const SEARCH_COUNT_QUERY = `query($searchQuery: String!) {
+  search(query: $searchQuery, type: ISSUE, first: 1) {
+    issueCount
+  }
+}`
+
+/** Fetches exactly ONE page (never `--paginate`) of real PR data for an already-confirmed-under-cap window; the caller drives pagination itself, one bounded `gh` call per page. */
+const SEARCH_PAGE_QUERY = `query($searchQuery: String!, $endCursor: String) {
   search(query: $searchQuery, type: ISSUE, first: 50, after: $endCursor) {
     pageInfo { hasNextPage endCursor }
     nodes {
@@ -84,32 +95,74 @@ const SEARCH_MERGED_PRS_QUERY = `query($searchQuery: String!, $endCursor: String
   }
 }`
 
+function buildSearchQueryString(input: {owner: string; repo: string; start: string; end: string}): string {
+  return `repo:${input.owner}/${input.repo} is:pr is:merged merged:${input.start}..${input.end}`
+}
+
 /**
- * Builds the real `gh api graphql --paginate --slurp` argv for fetching
- * every merged PR in `[start, end]` (both inclusive, caller-computed). Uses
- * GitHub's cursor-based GraphQL pagination via `--paginate` — which keeps
- * requesting pages until the search is exhausted — rather than a single
- * `--limit N` call that could silently truncate once a repo has more merged
- * PRs than N. The search query string is passed as a bound `-f` field
- * (`searchQuery=...`), never concatenated into the query text itself.
+ * Builds the argv for the cheap count-only query for `[start, end]` (both
+ * inclusive) — no `--paginate`/`--slurp`, no PR bodies/files requested. This
+ * is always the FIRST call made for any window, so a window that would hit
+ * GitHub search's 1000-result cap is detected and split before any rich
+ * data fetch is even attempted (the actual root cause of the real timeout
+ * this replaces: the old bulk `--paginate --slurp` fetch downloaded the
+ * whole 12-month window's bodies/files before ever checking the count).
  */
-export function buildSearchMergedPrsGraphqlArgv(input: {
+export function buildSearchCountArgv(input: {owner: string; repo: string; start: string; end: string}): string[] {
+  return ['api', 'graphql', '-f', `query=${SEARCH_COUNT_QUERY}`, '-f', `searchQuery=${buildSearchQueryString(input)}`]
+}
+
+/**
+ * Parses a single (non-`--slurp`) `gh api graphql` count-query response.
+ * Throws — never silently returns 0 — on malformed JSON, a GraphQL-level
+ * `errors` array (which `gh` can still return with a real command
+ * `exitCode: 0`), or a missing/non-numeric `issueCount`. "Zero PRs" must
+ * only ever mean GitHub actually reported zero, never a swallowed parse
+ * failure.
+ */
+export function parseSearchCountOutput(stdout: string): number {
+  const parsed: unknown = JSON.parse(stdout)
+  if (typeof parsed !== 'object' || parsed === null) {
+    throw new TypeError('expected gh api graphql count-query output to be a JSON object')
+  }
+  const errors = (parsed as {errors?: unknown}).errors
+  if (Array.isArray(errors) && errors.length > 0) {
+    throw new Error(`gh api graphql count query returned GraphQL error(s): ${JSON.stringify(errors)}`)
+  }
+  const issueCount = (parsed as {data?: {search?: {issueCount?: unknown}}}).data?.search?.issueCount
+  if (typeof issueCount !== 'number') {
+    throw new TypeError('gh api graphql count-query output did not include a numeric data.search.issueCount')
+  }
+  return issueCount
+}
+
+/**
+ * Builds the argv for fetching exactly one page of real PR data (never
+ * `--paginate`) for a window already confirmed under the cap. Passing
+ * `afterCursor` as a bound `-f endCursor=` field drives pagination
+ * explicitly, one bounded `gh` call per page — never a single aggregate
+ * process that could itself exceed the 15s/2MB production runner bounds on
+ * a large, rich-data window.
+ */
+export function buildSearchPageArgv(input: {
   owner: string
   repo: string
   start: string
   end: string
+  afterCursor?: string
 }): string[] {
-  const searchQuery = `repo:${input.owner}/${input.repo} is:pr is:merged merged:${input.start}..${input.end}`
-  return [
+  const argv = [
     'api',
     'graphql',
-    '--paginate',
-    '--slurp',
     '-f',
-    `query=${SEARCH_MERGED_PRS_QUERY}`,
+    `query=${SEARCH_PAGE_QUERY}`,
     '-f',
-    `searchQuery=${searchQuery}`,
+    `searchQuery=${buildSearchQueryString(input)}`,
   ]
+  if (input.afterCursor !== undefined) {
+    argv.push('-f', `endCursor=${input.afterCursor}`)
+  }
+  return argv
 }
 
 interface GraphqlPrNode {
@@ -125,37 +178,51 @@ interface GraphqlPrNode {
   }
 }
 
-/**
- * Parses `gh api graphql --paginate --slurp`'s stdout (a JSON array of one
- * object per fetched page) into a flat `RawMergedPr[]`. Throws on malformed
- * JSON rather than returning a silently partial/empty result — a caller
- * needs to know acquisition failed, not treat "zero PRs" as a valid outcome
- * of a parse failure.
- */
-export function parseSearchGraphqlSlurpOutput(stdout: string): RawMergedPr[] {
-  const pages: unknown = JSON.parse(stdout)
-  if (!Array.isArray(pages)) {
-    throw new TypeError('expected gh api --paginate --slurp output to be a JSON array of pages')
+function toRawMergedPr(node: GraphqlPrNode): RawMergedPr {
+  return {
+    number: node.number,
+    title: node.title,
+    body: node.body,
+    mergedAt: node.mergedAt,
+    url: node.url,
+    mergeCommitSha: node.mergeCommit?.oid ?? '',
+    files: (node.files?.nodes ?? []).map(fileNode => fileNode.path ?? ''),
+    filesTruncated: node.files?.pageInfo?.hasNextPage ?? false,
+    filesEndCursor: node.files?.pageInfo?.endCursor ?? undefined,
   }
+}
 
-  const results: RawMergedPr[] = []
-  for (const page of pages) {
-    const nodes = (page as {data?: {search?: {nodes?: GraphqlPrNode[]}}}).data?.search?.nodes ?? []
-    for (const node of nodes) {
-      results.push({
-        number: node.number,
-        title: node.title,
-        body: node.body,
-        mergedAt: node.mergedAt,
-        url: node.url,
-        mergeCommitSha: node.mergeCommit?.oid ?? '',
-        files: (node.files?.nodes ?? []).map(fileNode => fileNode.path ?? ''),
-        filesTruncated: node.files?.pageInfo?.hasNextPage ?? false,
-        filesEndCursor: node.files?.pageInfo?.endCursor ?? undefined,
-      })
-    }
+/**
+ * Parses a single (non-`--slurp`) `gh api graphql` page-query response into
+ * this page's PRs plus the real pagination signal (`hasNextPage`/
+ * `endCursor`) the caller needs to decide whether — and how — to fetch the
+ * next page. Throws on malformed JSON or a GraphQL-level `errors` array
+ * (even with `exitCode: 0`) rather than returning a page that looks
+ * complete but isn't.
+ */
+export function parseSearchPageOutput(stdout: string): {
+  prs: RawMergedPr[]
+  hasNextPage: boolean
+  endCursor?: string
+} {
+  const parsed: unknown = JSON.parse(stdout)
+  if (typeof parsed !== 'object' || parsed === null) {
+    throw new TypeError('expected gh api graphql page-query output to be a JSON object')
   }
-  return results
+  const errors = (parsed as {errors?: unknown}).errors
+  if (Array.isArray(errors) && errors.length > 0) {
+    throw new Error(`gh api graphql page query returned GraphQL error(s): ${JSON.stringify(errors)}`)
+  }
+  const search = (
+    parsed as {data?: {search?: {nodes?: GraphqlPrNode[]; pageInfo?: {hasNextPage?: unknown; endCursor?: unknown}}}}
+  ).data?.search
+  if (search === undefined) {
+    throw new TypeError('gh api graphql page-query output did not include data.search')
+  }
+  const prs = (search.nodes ?? []).map(node => toRawMergedPr(node))
+  const hasNextPage = search.pageInfo?.hasNextPage === true
+  const endCursor = typeof search.pageInfo?.endCursor === 'string' ? search.pageInfo.endCursor : undefined
+  return {prs, hasNextPage, endCursor}
 }
 
 // ---------------------------------------------------------------------------
@@ -415,11 +482,156 @@ function redactedGhFailure(context: string): Error {
 }
 
 /**
+ * Computes the whole-second midpoint of `[start, end]` for a search-window
+ * bisection, matching GitHub search's supported date precision (`YYYY-MM-DD`
+ * or `YYYY-MM-DDTHH:MM:SS(+00:00|Z)` — no fractional seconds; see GitHub's
+ * "Understanding the search syntax" docs). Returns `undefined` when the
+ * window cannot be meaningfully narrowed further — either it's already at
+ * (or below) 1-second precision, or rounding to whole seconds would produce
+ * a midpoint equal to one of the existing bounds. This is the single
+ * unsplittable-window signal `fetchMergedPrsInWindow` uses to stop
+ * recursing and fail clearly instead of looping.
+ */
+function computeWindowMidpoint(start: string, end: string): string | undefined {
+  const startMs = new Date(start).getTime()
+  const endMs = new Date(end).getTime()
+  if (Number.isNaN(startMs) || Number.isNaN(endMs) || endMs - startMs < 2000) {
+    return undefined
+  }
+  const midMs = startMs + Math.floor((endMs - startMs) / 2)
+  const mid = new Date(midMs).toISOString().replace(/\.\d{3}Z$/, 'Z')
+  return mid === start || mid === end ? undefined : mid
+}
+
+/**
+ * Fetches every real PR page for an already-confirmed-under-cap window, one
+ * bounded `gh` call per page (never `--paginate`/`--slurp` aggregating an
+ * entire window's rich data into a single subprocess). Rejects a response
+ * that reports `hasNextPage: true` but no `endCursor` (would loop forever)
+ * and a repeated/non-advancing cursor (a malformed or stuck pagination
+ * signal) — both abort the ENTIRE acquisition rather than silently
+ * returning whatever pages happened to succeed so far.
+ */
+async function fetchAllPagesInWindow(
+  owner: string,
+  repo: string,
+  start: string,
+  end: string,
+  runCommand: CommandRunner,
+): Promise<RawMergedPr[]> {
+  const collected: RawMergedPr[] = []
+  const seenCursors = new Set<string>()
+  let cursor: string | undefined
+  let hasNextPage = true
+
+  while (hasNextPage) {
+    const pageResult = await runCommand(buildSearchPageArgv({owner, repo, start, end, afterCursor: cursor}))
+    if (pageResult.exitCode !== 0) {
+      throw redactedGhFailure('api graphql (merged-PR page fetch)')
+    }
+    const page = parseSearchPageOutput(pageResult.stdout)
+    collected.push(...page.prs)
+
+    if (page.hasNextPage) {
+      if (page.endCursor === undefined) {
+        throw new Error(
+          `merged-PR page fetch for ${owner}/${repo} window ${start}..${end}: response reported hasNextPage=true but returned no endCursor — aborting rather than looping indefinitely with no way to request the next page.`,
+        )
+      }
+      if (page.endCursor === cursor || seenCursors.has(page.endCursor)) {
+        throw new Error(
+          `merged-PR page fetch for ${owner}/${repo} window ${start}..${end}: pagination cursor did not advance (repeated cursor) — aborting rather than looping indefinitely.`,
+        )
+      }
+      seenCursors.add(page.endCursor)
+      cursor = page.endCursor
+    }
+    hasNextPage = page.hasNextPage
+  }
+
+  return collected
+}
+
+/**
+ * Fetches every merged PR in `[start, end]` (both inclusive) using a
+ * count-first strategy: a cheap `issueCount`-only query (no bodies/files,
+ * single request) decides whether the window needs splitting BEFORE any
+ * rich data is ever fetched. This is the actual fix for the real production
+ * timeout the prior version hit — that version fetched the ENTIRE window's
+ * bodies/files via `--paginate --slurp` first and only checked the count
+ * afterward, so a large real window (~1114 PRs, ~5.5MB, ~69s) blew past the
+ * production runner's 15s/2MB bounds before the cap logic ever ran. Here,
+ * the count check is always the first (and only) call for an over-cap
+ * window — rich data is fetched, one bounded page at a time, only once a
+ * leaf window is already confirmed under the cap.
+ *
+ * Recursion is strictly sequential (never `Promise.all`): the first half is
+ * fully resolved (including any of its own further splits) before the
+ * second half is even requested, keeping subprocess fan-out bounded and
+ * predictable. A window that still hits the cap at 1-second precision (the
+ * smallest interval GitHub search dates support) cannot be narrowed further
+ * and fails loudly rather than recursing forever or silently accepting a
+ * truncated leaf. Any `gh` failure at any depth — count query, page fetch,
+ * or a count/page mismatch once a leaf is fully paginated — aborts the
+ * whole fetch immediately; a partially successful sibling window or leaf is
+ * never returned as if it were the complete result.
+ */
+async function fetchMergedPrsInWindow(
+  owner: string,
+  repo: string,
+  start: string,
+  end: string,
+  runCommand: CommandRunner,
+): Promise<RawMergedPr[]> {
+  const countResult = await runCommand(buildSearchCountArgv({owner, repo, start, end}))
+  if (countResult.exitCode !== 0) {
+    throw redactedGhFailure('api graphql (merged-PR count)')
+  }
+  const count = parseSearchCountOutput(countResult.stdout)
+
+  if (count === 0) {
+    return []
+  }
+
+  if (count < GITHUB_SEARCH_RESULT_CAP) {
+    const prs = await fetchAllPagesInWindow(owner, repo, start, end, runCommand)
+    const uniqueCount = new Set(prs.map(pr => pr.number)).size
+    if (uniqueCount !== count) {
+      // A leaf window's own count-query result must reconcile with what its own page-by-page
+      // fetch actually returned. A mismatch here means the PR set changed between the count call
+      // and the page-fetch calls (a real, if rare, live-data race) or a page was silently
+      // incomplete — either way, this is never treated as a complete result.
+      throw new Error(
+        `merged-PR fetch for ${owner}/${repo} window ${start}..${end}: the count query reported ${count} PR(s) but page-by-page fetch returned ${uniqueCount} unique PR(s) — refusing to claim a complete result rather than inventing agreement between the two.`,
+      )
+    }
+    return prs
+  }
+
+  // At or above the cap: GitHub's search API caps total results at 1000 regardless of
+  // pagination, so the true result set for this window may be larger than what was actually
+  // returned. Bisect by timestamp and recurse — BEFORE fetching any rich data — rather than
+  // trust (or even attempt) a possibly-truncated bulk fetch.
+  const mid = computeWindowMidpoint(start, end)
+  if (mid === undefined) {
+    throw new Error(
+      `merged-PR search window ${start}..${end} for ${owner}/${repo} reports ${count} result(s) — at or above GitHub search's ${GITHUB_SEARCH_RESULT_CAP}-result cap — and cannot be split further (already at 1-second precision, the smallest interval GitHub search dates support). Too many PRs were merged within this single window to enumerate completely via search; a truncated result is never accepted.`,
+    )
+  }
+
+  const firstHalf = await fetchMergedPrsInWindow(owner, repo, start, mid, runCommand)
+  const secondHalf = await fetchMergedPrsInWindow(owner, repo, mid, end, runCommand)
+  return [...firstHalf, ...secondHalf]
+}
+
+/**
  * Acquires the merged-PR snapshot for the PR-body pass: the calendar-window
- * search (real `gh api graphql --paginate --slurp`) unioned with any older
- * merged PR explicitly referenced by an in-scope markdown source or PR
- * number, de-duplicated by PR number. Unmerged and after-`capturedAt` PRs
- * are always excluded, for both the window and explicit-reference paths.
+ * search (count-first, then bounded page-by-page real `gh api graphql`
+ * calls — see `fetchMergedPrsInWindow`'s doc comment) unioned with any
+ * older merged PR explicitly referenced by an in-scope markdown source or
+ * PR number, de-duplicated by PR number. Unmerged and after-`capturedAt`
+ * PRs are always excluded, for both the window and explicit-reference
+ * paths.
  */
 export async function acquireMergedPrSnapshot(
   options: AcquireMergedPrSnapshotOptions,
@@ -434,23 +646,17 @@ export async function acquireMergedPrSnapshot(
     }
   }
 
-  const searchResult = await runCommand(
-    buildSearchMergedPrsGraphqlArgv({owner: options.owner, repo: options.repo, start: cutoff, end: options.capturedAt}),
-  )
-  if (searchResult.exitCode !== 0) {
-    throw redactedGhFailure('api graphql (merged-PR search)')
-  }
-  const windowPrs = parseSearchGraphqlSlurpOutput(searchResult.stdout)
+  const windowPrsRaw = await fetchMergedPrsInWindow(options.owner, options.repo, cutoff, options.capturedAt, runCommand)
 
-  // GitHub's search API caps total results at 1000 regardless of pagination — hitting that cap
-  // means the true result set may be larger than what was actually returned. Fail clearly rather
-  // than silently accepting a truncated window; splitting into narrower date sub-windows is a
-  // caller-side follow-up once this is reported, not something guessed at here.
-  if (windowPrs.length >= GITHUB_SEARCH_RESULT_CAP) {
-    throw new Error(
-      `merged-PR calendar-window search for ${options.owner}/${options.repo} returned ${windowPrs.length} results, at or above GitHub search's ${GITHUB_SEARCH_RESULT_CAP}-result cap — the true window may be larger than what was returned. Split the window (${cutoff}..${options.capturedAt}) into narrower sub-windows and retry rather than trust this truncated result.`,
-    )
+  // Adjacent sub-windows use an inclusive..inclusive boundary on both sides (matching GitHub's
+  // range syntax), so a PR merged exactly at a split point can legitimately appear in both
+  // halves' results — deduplicate by PR number before doing any further (costly) per-PR work like
+  // the files-overflow follow-up below.
+  const windowPrsByNumber = new Map<number, RawMergedPr>()
+  for (const pr of windowPrsRaw) {
+    windowPrsByNumber.set(pr.number, pr)
   }
+  const windowPrs = [...windowPrsByNumber.values()]
 
   for (const pr of windowPrs) {
     // Best-effort file-overflow follow-up: never fails the whole snapshot over one PR's file list.
