@@ -19,7 +19,36 @@ export interface CommandResult {
 export type CommandRunner = (argv: readonly string[], cwd: string) => Promise<CommandResult>
 
 const COMMAND_TIMEOUT_MS = 15_000
+// `sync` serializes the FULL staged record set (nodes/edges/themes/tags) into the two JSON
+// exports. Measured against a real ~2146-node/~664-edge stage: ~21.8s — well past the general
+// 15s bound. 60s gives real headroom without raising the bound for every other, much cheaper,
+// deciduous subcommand (add/show/link/doc attach all stay at COMMAND_TIMEOUT_MS).
+const SYNC_COMMAND_TIMEOUT_MS = 60_000
 const COMMAND_MAX_BUFFER_BYTES = 2_000_000
+
+/**
+ * Builds a bounded, actionable failure-cause string for a subprocess error
+ * that is NOT a plain nonzero exit (i.e. `error.code` is not a number) —
+ * distinguishes a timeout/signal kill from a spawn-level failure (missing
+ * binary, permission denied) without ever including the raw
+ * `Error#message`, which for a `child_process` exec failure typically
+ * embeds the full command AND argv (commit summaries, PR titles/bodies,
+ * source text this script does not otherwise control) — a real leak risk
+ * this function exists specifically to avoid.
+ */
+function describeSubprocessFailureCause(error: {
+  readonly killed?: boolean
+  readonly signal?: string | null
+  readonly code?: unknown
+}): string {
+  if (error.killed === true) {
+    return `command timed out and was killed (signal ${error.signal ?? 'unknown'})`
+  }
+  if (typeof error.code === 'string') {
+    return `command failed to start (${error.code})`
+  }
+  return 'command failed for an unspecified reason (no exit code, not a timeout)'
+}
 
 /**
  * Creates the default, production `gh` command runner used for real
@@ -40,7 +69,13 @@ export function createGhRunner(): (argv: readonly string[]) => Promise<CommandRe
         {shell: false, timeout: COMMAND_TIMEOUT_MS, maxBuffer: COMMAND_MAX_BUFFER_BYTES},
         (error, stdout, stderr) => {
           if (error !== null && typeof error.code !== 'number') {
-            resolvePromise({exitCode: -1, stdout: '', stderr: error.message})
+            // Same bounded, actionable, never-raw-error.message posture as createDeciduousRunner —
+            // gh argv can carry PR-derived search query text.
+            resolvePromise({
+              exitCode: -1,
+              stdout,
+              stderr: stderr.length > 0 ? stderr : describeSubprocessFailureCause(error),
+            })
             return
           }
           resolvePromise({exitCode: error === null ? 0 : (error.code as number), stdout, stderr})
@@ -129,15 +164,25 @@ export function createDeciduousRunner(binaryPath = 'deciduous'): CommandRunner {
         {
           cwd,
           shell: false,
-          timeout: COMMAND_TIMEOUT_MS,
+          // `sync` alone gets the wider, measured-and-headroomed timeout — every other deciduous
+          // subcommand keeps the general 15s bound (see SYNC_COMMAND_TIMEOUT_MS's doc comment).
+          timeout: argv[0] === 'sync' ? SYNC_COMMAND_TIMEOUT_MS : COMMAND_TIMEOUT_MS,
           maxBuffer: COMMAND_MAX_BUFFER_BYTES,
           env: buildIsolatedEnv(cwd),
         },
         (error, stdout, stderr) => {
           if (error !== null && typeof error.code !== 'number') {
-            // Spawn-level failure (binary missing, permission denied, etc.) — never thrown, always
-            // surfaced as a bounded result so callers can report a clear, non-crashing error.
-            resolvePromise({exitCode: -1, stdout: '', stderr: error.message})
+            // Spawn-level failure or a timeout/signal kill — never thrown, always surfaced as a
+            // bounded result. Real captured stdout/stderr (whatever execFile had buffered before
+            // the failure) is preserved as-is; only when stderr itself is empty does this fall back
+            // to a synthesized, bounded, actionable cause — never the raw Error#message, which can
+            // embed the full command and argv (commit summaries, PR titles/bodies, other source
+            // text this script does not otherwise control).
+            resolvePromise({
+              exitCode: -1,
+              stdout,
+              stderr: stderr.length > 0 ? stderr : describeSubprocessFailureCause(error),
+            })
             return
           }
           resolvePromise({exitCode: error === null ? 0 : (error.code as number), stdout, stderr})

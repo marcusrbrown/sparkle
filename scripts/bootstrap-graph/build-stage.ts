@@ -25,6 +25,49 @@ function deciduousEdgeTypeFor(relationKind: string | undefined): string {
   return relationKind === 'rejected-option' ? 'rejected' : 'leads_to'
 }
 
+/**
+ * Builds a `deciduous add <nodeType> <title>` argv array that is safe
+ * against clap's leading-dash argument ambiguity. `title` and (when
+ * supplied) `description` are free-text, source-derived strings — a PR
+ * title/body, an extracted markdown node, a commit summary, a triage
+ * disposition — any of which may legitimately start with `-` (e.g. a
+ * Markdown bullet: "- fix the thing"). Confirmed against the pinned
+ * v0.17.1 binary: clap treats an argv token beginning with `-` as a
+ * potential flag/option regardless of `shell: false` argv-array invocation
+ * (that only prevents *shell* reinterpretation, not the CLI parser's own
+ * flag-lookalike detection) unless the value is either bound with `=`
+ * (for a named option) or placed after a `--` separator (for a
+ * positional). All named flags/options MUST precede `--`; clap disables
+ * option parsing entirely for everything after it, so `--flag=value`
+ * placed after `--` would itself become a rejected extra positional.
+ * `nodeType` is always one of this script's own fixed enum values, never
+ * user/source-derived text, so it never needs this treatment.
+ */
+function buildDeciduousAddArgv(
+  nodeType: string,
+  title: string,
+  options: {description?: string; flags?: readonly string[]} = {},
+): string[] {
+  const {description, flags = []} = options
+  const boundFlags = description === undefined ? [...flags] : [`--description=${description}`, ...flags]
+  return ['add', ...boundFlags, '--', nodeType, title]
+}
+
+/**
+ * Builds a `deciduous doc attach <nodeId> <filePath>` argv array with the
+ * same `--description=`-binding treatment as `buildDeciduousAddArgv` (see
+ * its doc comment for the root cause) — `description` here is a
+ * source-derived triage disposition string that may start with `-`.
+ * `nodeId` (a locally-assigned integer, stringified by the caller) and
+ * `filePath` (a resolved filesystem path this script controls) are never
+ * free user/source text, so they don't need the `--` treatment for their
+ * own sake, but are placed after `--` anyway for a single consistent,
+ * always-safe shape rather than a conditional one.
+ */
+function buildDeciduousDocAttachArgv(nodeId: string, filePath: string, description: string): string[] {
+  return ['doc', 'attach', `--description=${description}`, '--', nodeId, filePath]
+}
+
 const TRIAGE_NODE_TYPE_FOR = {default: 'observation', promoted: 'decision'} as const
 
 export interface BuildStageInput {
@@ -100,7 +143,10 @@ export async function runSourceEvidencePass(
   const changeIdByKey: Record<string, string> = {}
   const nodeProvenance: Record<string, SourceEvidenceNodeProvenance> = {}
   for (const node of mapped.nodes) {
-    const added = await runner(['add', node.type, node.title, '-d', node.description], stagingDir)
+    const added = await runner(
+      buildDeciduousAddArgv(node.type, node.title, {description: node.description}),
+      stagingDir,
+    )
     const localId = parseCreatedNodeLocalId(added.stdout)
     if (localId === undefined) {
       throw new Error(
@@ -169,11 +215,20 @@ export async function runBuildStage(input: BuildStageInput): Promise<BuildStageR
   const {runner, stagingDir} = input
   const warnings: string[] = []
 
-  // Pre-add secret scan over every normalized text field this pass is about to write.
+  // Reuse the normalized records for both scanning and emission.
+  const normalizedPrs = input.prs.map(pr => ({pr, normalized: normalizePrBody(pr)}))
+
+  // Pre-add secret scan over every normalized text field this pass is about to write — title and
+  // files are included alongside the retained description summary as a hard gate, not just the
+  // summary text alone.
   const preAddPayload = {
     triage: input.triageArtifacts.map(a => a.disposition),
     commits: input.commits.map(c => c.message),
-    prs: input.prs.map(pr => normalizePrBody(pr).summary),
+    prs: normalizedPrs.map(({normalized}) => ({
+      title: normalized.title,
+      summary: normalized.summary,
+      files: normalized.files,
+    })),
   }
   const preAddSecrets = scanPayloadForSecrets(preAddPayload)
   if (preAddSecrets.length > 0) {
@@ -195,7 +250,10 @@ export async function runBuildStage(input: BuildStageInput): Promise<BuildStageR
     }
 
     const nodeType = artifact.promoted ? TRIAGE_NODE_TYPE_FOR.promoted : TRIAGE_NODE_TYPE_FOR.default
-    const added = await runner(['add', nodeType, artifact.path, '-d', artifact.disposition], stagingDir)
+    const added = await runner(
+      buildDeciduousAddArgv(nodeType, artifact.path, {description: artifact.disposition}),
+      stagingDir,
+    )
     const localId = parseCreatedNodeLocalId(added.stdout)
     if (localId === undefined) {
       throw new Error(
@@ -204,7 +262,7 @@ export async function runBuildStage(input: BuildStageInput): Promise<BuildStageR
     }
 
     const attached = await runner(
-      ['doc', 'attach', String(localId), sourcePath, '-d', artifact.disposition],
+      buildDeciduousDocAttachArgv(String(localId), sourcePath, artifact.disposition),
       stagingDir,
     )
     if (attached.exitCode !== 0) {
@@ -225,7 +283,9 @@ export async function runBuildStage(input: BuildStageInput): Promise<BuildStageR
   const actionNodeChangeIds: Record<string, string> = {}
   for (const commit of nonDepsCommits) {
     const added = await runner(
-      ['add', 'action', commit.summary, '--commit', commit.sha, '-c', String(commit.confidence), '--date', commit.date],
+      buildDeciduousAddArgv('action', commit.summary, {
+        flags: ['--commit', commit.sha, '-c', String(commit.confidence), '--date', commit.date],
+      }),
       stagingDir,
     )
     const localId = parseCreatedNodeLocalId(added.stdout)
@@ -237,7 +297,10 @@ export async function runBuildStage(input: BuildStageInput): Promise<BuildStageR
 
   let depsBatchChangeId: string | undefined
   if (depsBatch !== undefined) {
-    const added = await runner(['add', 'observation', depsBatch.summary, '-c', '60'], stagingDir)
+    const added = await runner(
+      buildDeciduousAddArgv('observation', depsBatch.summary, {flags: ['-c', '60']}),
+      stagingDir,
+    )
     const localId = parseCreatedNodeLocalId(added.stdout)
     if (localId === undefined) {
       throw new Error(`deciduous add did not report a created node id for the deps batch: ${added.stderr}`)
@@ -247,8 +310,7 @@ export async function runBuildStage(input: BuildStageInput): Promise<BuildStageR
 
   // --- PR-body pass ---
   const decisionNodeChangeIds: Record<string, string> = {}
-  for (const pr of input.prs) {
-    const normalized = normalizePrBody(pr)
+  for (const {pr, normalized} of normalizedPrs) {
     const linkedActionChangeId = actionNodeChangeIds[pr.mergeCommitSha]
     const confidence = linkedActionChangeId === undefined ? 70 : 75
     if (linkedActionChangeId === undefined) {
@@ -261,21 +323,22 @@ export async function runBuildStage(input: BuildStageInput): Promise<BuildStageR
         `PR #${pr.number}: file list is incomplete (files-overflow pagination follow-up did not complete) — attached/recorded files may be a partial subset of what actually changed`,
       )
     }
+    if (normalized.redactedSourceSecretRules.length > 0) {
+      // A raw-body secret-pattern match found only in deterministically-omitted (release-notes/
+      // sponsors/boilerplate) or budget-clipped source content — never present in the retained
+      // description itself (that case is a hard fail, above, via preAddSecrets). Warning-only,
+      // never the matched value or the raw body — traceable solely via rule name + PR number +
+      // a sha256 hash of the untouched raw body.
+      warnings.push(
+        `PR #${pr.number}: redacted-source secret pattern(s) [${normalized.redactedSourceSecretRules.join(', ')}] matched only in deterministically-omitted or budget-clipped source content, never in the retained description; raw body sha256=${normalized.rawBodyHash}`,
+      )
+    }
 
     const added = await runner(
-      [
-        'add',
-        'decision',
-        normalized.title,
-        '-d',
-        normalized.summary,
-        '--files',
-        normalized.files.join(','),
-        '--commit',
-        pr.mergeCommitSha,
-        '-c',
-        String(confidence),
-      ],
+      buildDeciduousAddArgv('decision', normalized.title, {
+        description: normalized.summary,
+        flags: [`--files=${normalized.files.join(',')}`, '--commit', pr.mergeCommitSha, '-c', String(confidence)],
+      }),
       stagingDir,
     )
     const localId = parseCreatedNodeLocalId(added.stdout)
@@ -323,12 +386,20 @@ export async function runBuildStage(input: BuildStageInput): Promise<BuildStageR
   // capturedAt is recorded under the existing prListFetchedAt field (reused, not a new field) since
   // it is the same snapshot timestamp that also gates PR eligibility in selectEligiblePrs.
   // requiredArtifactPaths keeps its existing meaning and is never displaced by this.
+  // WARNING-PERSISTENCE FIX: buildWarnings is written HERE, in this same single provenance write,
+  // BEFORE runBuildStage returns — never after a later step (e.g. deciduous sync, which can take
+  // ~20s+ on a full stage and has its own failure modes). This is the single owner of
+  // provenance.json's write; nothing downstream re-writes it, so nothing can silently clobber or
+  // lose these warnings if a later command times out, fails, or is interrupted. Always an explicit
+  // array — even an empty one for a genuinely clean build — never omitted, so validate can
+  // distinguish "zero warnings" from "warnings were never recorded."
   writeSnapshotProvenance(stagingDir, {
     requiredArtifactPaths: input.triageArtifacts.map(artifact => artifact.path),
     promotedArtifactPaths: input.triageArtifacts.filter(artifact => artifact.promoted).map(artifact => artifact.path),
     commitSha: input.commitSha,
     prListFetchedAt: input.capturedAt,
     sourceEvidence,
+    buildWarnings: warnings.map(w => sanitizeCliOutput(w)),
   })
 
   return {triageNodeChangeIds, actionNodeChangeIds, depsBatchChangeId, decisionNodeChangeIds, warnings, sourceEvidence}
