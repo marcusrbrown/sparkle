@@ -169,6 +169,17 @@ export function runValidateStage(stagingDir: string): ValidateStageResult {
         'provenance.json is missing sourceEvidence — validate requires the source-evidence/reviewed-mapping pass to have run and recorded its result; an absent block is treated as a failed gate, not a skipped one',
       )
     }
+    if (provenance.buildWarnings === undefined) {
+      // WARNING-PERSISTENCE FIX: a missing buildWarnings field means the build stage either never
+      // completed its own final provenance write, or (the real regression this closes) that write
+      // previously happened only AFTER a later step (deciduous sync) succeeded — so a stage whose
+      // sync failed or was interrupted could carry a real, non-empty warning set that was silently
+      // never persisted. Absence is never treated as "zero warnings"; it is treated as missing
+      // completion evidence and fails the gate, exactly like a missing sourceEvidence block above.
+      errors.push(
+        "provenance.json is missing buildWarnings — validate requires the build stage's own warning record to have been persisted (even when empty); an absent field is treated as missing completion evidence, not as zero warnings",
+      )
+    }
   }
 
   // S4 fix: fails closed when a real source snapshot (.bootstrap/provenance.json) exists but does
