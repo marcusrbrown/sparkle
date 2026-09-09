@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "2401ed90-fe9f-4f5e-a3e5-f30dbd976faa",
+  "created_at": "2025-09-25T11:13:40-07:00",
+  "metadata": {
+    "commit": "404991643efb87b0250b11830ba00d052c8e72c6",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat: add WASM executable generator and update documentation (#977)",
+  "updated_at": "2025-09-25T11:13:40-07:00"
+}

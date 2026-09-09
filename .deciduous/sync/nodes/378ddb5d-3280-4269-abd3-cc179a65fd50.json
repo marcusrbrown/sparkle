@@ -1,0 +1,22 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "378ddb5d-3280-4269-abd3-cc179a65fd50",
+  "created_at": "2026-09-08T13:22:36.298358-07:00",
+  "description": "fix(docs): remove rootDir constraint in tsconfig.json to resolve TypeScript configuration error\n\nfix(eslint): update ignores in eslint configuration to exclude audit reports",
+  "metadata": {
+    "commit": "236ba68059847a663073843546417ab6b2f84e67",
+    "confidence": 75,
+    "files": [
+      ".ai/audit/audit-final-report.md",
+      ".ai/audit/audit-phase1-baseline.md",
+      ".ai/audit/audit-phase2-analysis.md",
+      ".ai/audit/audit-phase3-identification.md",
+      "docs/tsconfig.json",
+      "eslint.config.ts"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat(audit): complete Phase 1, 2, and 3 reports with issue identification and prioritization",
+  "updated_at": "2026-09-08T13:22:36.298358-07:00"
+}

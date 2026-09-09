@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "21710278-1e8b-4257-9ba2-c278432df8e6",
+  "created_at": "2026-08-28T22:22:13Z",
+  "metadata": {
+    "commit": "8508b7163202f2e547864b5419ab25253e55191c",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency typedoc-plugin-markdown to v4.13.0 (#1966)",
+  "updated_at": "2026-08-28T22:22:13Z"
+}

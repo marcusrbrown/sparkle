@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "aa9a5e5e-bf6d-40f6-9e60-8899f1e1b5ea",
+  "created_at": "2026-09-08T13:22:30.889363-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [ts-morph](https://redirect.github.com/dsherret/ts-morph) | devDependencies | major | [`26.0.0` -> `27.0.2`](https://renovatebot.com/diffs/npm/ts-morph/26.0.0/27.0.2) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/dsherret/ts-morph/badge)](https://securityscorecards.dev/viewer/?uri=github.com/dsherret/ts-morph) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "ceb0a4ad40fb83b61ff812a75b88419d7f1cecc1",
+    "confidence": 75,
+    "files": [
+      "docs/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency ts-morph to v27",
+  "updated_at": "2026-09-08T13:22:30.889363-07:00"
+}

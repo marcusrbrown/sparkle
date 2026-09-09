@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "54d77545-abee-48c6-89a2-5a1445dcd72e",
+  "created_at": "2026-09-08T13:22:37.793480-07:00",
+  "description": "- Add a new workflow to deploy Astro Starlight documentation to GitHub Pages\n- Configure triggers for pushes to the main branch and manual dispatch\n- Include steps for building documentation and uploading artifacts\n- Set up notifications for deployment success and failure\n\nRelates to TASK-041 on #876.",
+  "metadata": {
+    "commit": "d2a97f720fd703061a20828b9536ed29ed9cceb4",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-astro-starlight-docs-1.md",
+      ".github/workflows/deploy-docs.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat: implement GitHub Actions workflow for documentation deployment",
+  "updated_at": "2026-09-08T13:22:37.793480-07:00"
+}

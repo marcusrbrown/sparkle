@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "3aa1feba-d57e-442e-9048-c1c26f203879",
+  "created_at": "2026-09-08T13:22:32.762256-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [@astrojs/mdx](https://docs.astro.build/en/guides/integrations-guide/mdx/) ([source](https://redirect.github.com/withastro/astro/tree/HEAD/packages/integrations/mdx)) | dependencies | patch | [`4.3.8` -> `4.3.9`](https://renovatebot.com/diffs/npm/@astrojs%2fmdx/4.3.8/4.3.9) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/withastro/astro/badge)](https://securityscorecards.dev/viewer/?uri=github.com/withastro/astro) |\n| [@astrojs/react](https://docs.astro.build/en/guides/integrations-guide/react/) ([source](https://redirect.github.com/withastro/astro/tree/HEAD/packages/integrations/react)) | dependencies | patch | [`4.4.0` -> `4.4.1`](https://renovatebot.com/diffs/npm/@astrojs%2freact/4.4.0/4.4.1) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/withastro/astro/badge)](https://securityscorecards.dev/viewer/?uri=github.com/withastro/astro) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "d68ba0e5dc7a2ea3e060a9877b632fc1aeeb666d",
+    "confidence": 75,
+    "files": [
+      "docs/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix(deps): update astro monorepo",
+  "updated_at": "2026-09-08T13:22:32.762256-07:00"
+}

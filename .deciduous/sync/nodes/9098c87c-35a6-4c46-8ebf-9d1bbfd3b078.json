@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "9098c87c-35a6-4c46-8ebf-9d1bbfd3b078",
+  "created_at": "2026-09-08T13:22:29.996012-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [@bfra.me/eslint-config](https://redirect.github.com/bfra-me/works/tree/main/packages/eslint-config#readme) ([source](https://redirect.github.com/bfra-me/works/tree/HEAD/packages/eslint-config)) | devDependencies | minor | [`0.39.1` -> `0.40.0`](https://renovatebot.com/diffs/npm/@bfra.me%2feslint-config/0.39.1/0.40.0) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/bfra-me/works/badge)](https://securityscorecards.dev/viewer/?uri=github.com/bfra-me/works) |\n| [@bfra.me/prettier-config](https://redirect.github.com/bfra-me/works/tree/main/packages/prettier-config#readme) ([source](https://redirect.github.com/bfra-me/works/tree/HEAD/packages/prettier-config)) | devDependencies | patch | [`0.16.2` -> `0.16.3`](https://renovatebot.com/diffs/npm/@bfra.me%2fprettier-config/0.16.2/0.16.3) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/bfra-me/works/badge)](https://securityscorecards.dev/viewer/?uri=github.com/bfra-me/works) |\n| [@bfra.me/tsconfig](https://redirect.github.com/bfra-me/works/tree/main/packages/tsconfig#readme) ([source](https://redirect.github.com/bfra-me/works/tree/HEAD/packages/tsconfig)) | devDependencies | patch | [`0.12.0` -> `0.12.1`](https://renovatebot.com/diffs/npm/@bfra.me%2ftsconfig/0.12.0/0.12.1) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/bfra-me/works/badge)](https://securityscorecards.dev/viewer/?uri=github.com/bfra-me/works) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "86675deca1d51499fb84de6e842628c83b93cb5f",
+    "confidence": 75,
+    "files": [
+      "package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update bfra-me/works monorepo",
+  "updated_at": "2026-09-08T13:22:29.996012-07:00"
+}

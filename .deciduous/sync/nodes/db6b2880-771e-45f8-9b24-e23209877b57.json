@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "db6b2880-771e-45f8-9b24-e23209877b57",
+  "created_at": "2025-09-01T21:55:16-07:00",
+  "metadata": {
+    "commit": "b501c8a816dd5171cc2e6f95446d5fe01df2a59f",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat: implement theme management with context and persistence (#808)",
+  "updated_at": "2025-09-01T21:55:16-07:00"
+}

@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "08ea8302-7b7b-4bcf-a1e2-bd057ffec3e6",
+  "created_at": "2026-09-08T13:22:34.802644-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | Pending | OpenSSF |\n|---|---|---|---|---|---|\n| [react-native-screens](https://redirect.github.com/software-mansion/react-native-screens) | dependencies | minor | [`~4.16.0` -> `~4.17.0`](https://renovatebot.com/diffs/npm/react-native-screens/4.16.0/4.17.0) | `4.17.1` | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/software-mansion/react-native-screens/badge)](https://securityscorecards.dev/viewer/?uri=github.com/software-mansion/react-native-screens) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "23e9cf4295f1405cc03bc6b6ca4cac97d58e9791",
+    "confidence": 75,
+    "files": [
+      "apps/fro-jive/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix(deps): update dependency react-native-screens to ~4.17.0",
+  "updated_at": "2026-09-08T13:22:34.802644-07:00"
+}

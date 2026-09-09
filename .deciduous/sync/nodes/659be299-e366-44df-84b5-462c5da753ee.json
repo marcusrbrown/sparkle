@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "659be299-e366-44df-84b5-462c5da753ee",
+  "created_at": "2025-06-26T03:31:55Z",
+  "metadata": {
+    "commit": "013d1629317c6671bea49cce13ef1fc32125dcf2",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency @vitejs/plugin-react to v4.6.0 (#682)",
+  "updated_at": "2025-06-26T03:31:55Z"
+}

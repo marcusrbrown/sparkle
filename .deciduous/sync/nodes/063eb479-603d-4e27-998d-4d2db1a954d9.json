@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "063eb479-603d-4e27-998d-4d2db1a954d9",
+  "created_at": "2025-10-03T21:49:04-07:00",
+  "metadata": {
+    "commit": "b92c4afed7b81aa3f43298e87452be169f6aa721",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat: implement CodeHighlight component for syntax highlighting (#1043)",
+  "updated_at": "2025-10-03T21:49:04-07:00"
+}

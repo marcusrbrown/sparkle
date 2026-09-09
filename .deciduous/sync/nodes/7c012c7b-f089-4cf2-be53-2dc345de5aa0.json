@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "7c012c7b-f089-4cf2-be53-2dc345de5aa0",
+  "created_at": "2026-09-08T13:22:58.151841-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Change | [Age](https://docs.renovatebot.com/merge-confidence/) | [Confidence](https://docs.renovatebot.com/merge-confidence/) | OpenSSF | Code Search |\n|---|---|---|---|---|---|\n| [axe-core](https://www.deque.com/axe/) ([source](https://redirect.github.com/dequelabs/axe-core)) | [`4.12.0` → `4.12.1`](https://renovatebot.com/diffs/npm/axe-core/4.12.0/4.12.1) | ![age](https://developer.mend.io/api/mc/badges/age/npm/axe-core/4.12.1?slim=true) | ![confidence](https://developer.mend.io/api/mc/badges/confidence/npm/axe-core/4.12.0/4.12.1?slim=true) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/dequelabs/axe-core/badge)](https://securityscorecards.dev/viewer/?uri=github.com/dequelabs/axe-core) | [![GitHub Code Search for \"axe-core\"](https://img.shields.io/badge/code_search-axe--core-2671E5.svg?logo=github)](https://redirect.github.com/search?q=repo:marcusrbrown%2Fsparkle+NOT+path:/package(-lock)%3F%5C.json%7Cyarn%5C.lock%7Cpnpm-lock%5C.yaml%7Cbun%5C.lock(b)/+axe-core) |\n\n---\n\n> [!WARNING]\n> Some dependencies could not be looked up. Check the [Dependency Dashboard](../issues/212) for more information.\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "71b0eb60a9972afd5d7e0b9d7343045aeb0c54e1",
+    "confidence": 75,
+    "files": [
+      "docs/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update all non-major dependencies to v4.12.1",
+  "updated_at": "2026-09-08T13:22:58.151841-07:00"
+}

@@ -1,0 +1,17 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "589d7120-7ad5-4ba0-9f2b-d9622144adff",
+  "created_at": "2026-09-08T13:22:48.882708-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Change | [Age](https://docs.renovatebot.com/merge-confidence/) | [Confidence](https://docs.renovatebot.com/merge-confidence/) | OpenSSF | Code Search |\n|---|---|---|---|---|---|\n| [pnpm](https://pnpm.io) ([source](https://redirect.github.com/pnpm/pnpm/tree/HEAD/pnpm11/pnpm)) | [`11.21.0` → `11.22.0`](https://renovatebot.com/diffs/npm/pnpm/11.21.0/11.22.0) | ![age](https://developer.mend.io/api/mc/badges/age/npm/pnpm/11.22.0?slim=true) | ![confidence](https://developer.mend.io/api/mc/badges/confidence/npm/pnpm/11.21.0/11.22.0?slim=true) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/pnpm/pnpm/badge)](https://securityscorecards.dev/viewer/?uri=github.com/pnpm/pnpm) | [![GitHub Code Search for \"pnpm\"](https://img.shields.io/badge/code_search-pnpm-2671E5.svg?logo=github)](https://redirect.github.com/search?q=repo:marcusrbrown%2Fsparkle+NOT+path:/package(-lock)%3F%5C.json%7Cyarn%5C.lock%7Cpnpm-lock%5C.yaml%7Cbun%5C.lock(b)/+pnpm) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "d085f8afcc86551c0f521dcac67f2fefe96858cf",
+    "confidence": 70,
+    "files": [
+      "package.json"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(deps): update pnpm to v11.22.0",
+  "updated_at": "2026-09-08T13:22:48.882708-07:00"
+}

@@ -93,7 +93,15 @@
         "@sparkle/utils#build:utils"
       ],
       "outputs": ["dist/**"],
-      "inputs": ["src/**/*", "scripts/**/*.ts", "astro.config.mjs", "package.json", "tsconfig.json", "typedoc.json"],
+      "inputs": [
+        "src/**/*",
+        "public/**",
+        "scripts/**/*.ts",
+        "astro.config.mjs",
+        "package.json",
+        "tsconfig.json",
+        "typedoc.json"
+      ],
       "env": ["NODE_ENV"],
       "cache": true
     },

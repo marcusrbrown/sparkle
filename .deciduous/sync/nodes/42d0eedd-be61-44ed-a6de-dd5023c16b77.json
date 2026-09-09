@@ -1,0 +1,19 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "42d0eedd-be61-44ed-a6de-dd5023c16b77",
+  "created_at": "2026-09-08T13:22:44.645601-07:00",
+  "description": "Pins the JSDoc parsing behavior the documentation pipeline depends on, and brings `docs/` into the test graph for the first time.\n\n## Why\n\n`docs/scripts/extract-jsdoc.ts` parses every JSDoc comment that becomes API documentation, using `doctrine` — archived since 2018-12-03 (#2032).\n\nNothing is broken. The concern is how this pipeline fails. Two defects found recently produced silently wrong documentation while CI stayed green (#2017, #2022), and `docs/typedoc.json` sets `skipErrorChecking: true`, which turns resolution failures into bad output rather than errors (#2023).\n\n`extract-jsdoc.ts:201` has the same shape:\n\n```ts\n} catch {\n  // Continue looking for other comments\n}\n```\n\nA parse failure is indistinguishable from \"no JSDoc here.\"\n\n## What it tests\n\nDoctrine's `parse(text, {unwrap: true})` directly, with the exact options the pipeline uses, against fixtures taken from real components. The pipeline reads only two fields, so those are what get pinned:\n\n```ts\ndescription = jsdoc.description || ''\nexamples = jsdoc.tags?.filter(tag => tag.title === 'example')...\n```\n\nSeven tests: plain description, `@example` with an intact `tsx` code fence, multiple examples in source order, `@param`/`@returns`/`@remarks` not polluting the description, non-standard hyphenated tags, `@default`, and the short single-line prop comment form.\n\nFixtures 1-6 come from `Button.tsx` and `Form.tsx` verbatim or lightly condensed, cited in comments. Fixture 7 is synthetic — no verbatim single-line prop comments exist in the codebase today.\n\nAssertions pin **observed** behavior, not ideal behavior. The point is detecting change.\n\n## A finding, not a failure\n\nWriting the test surfaced real silent corruption. Doctrine splits hyphenated tag names at the first hyphen:\n\n```\n@theme-tokens uses color.primary\n  → tag title \"theme\",  description \"-tokens uses color.primary\" [description truncated to fit budget]",
+  "metadata": {
+    "commit": "0a85dc030df15c104e37f3e2d517444ae344cb30",
+    "confidence": 75,
+    "files": [
+      "docs/package.json",
+      "docs/test/jsdoc-parsing.test.ts",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "test(docs): pin doctrine JSDoc parsing behavior",
+  "updated_at": "2026-09-08T13:22:44.645601-07:00"
+}

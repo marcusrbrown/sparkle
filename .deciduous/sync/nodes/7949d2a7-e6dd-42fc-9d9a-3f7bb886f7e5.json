@@ -1,0 +1,25 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "7949d2a7-e6dd-42fc-9d9a-3f7bb886f7e5",
+  "created_at": "2026-09-08T13:22:42.397010-07:00",
+  "description": "- Add skip navigation component for improved site-wide accessibility\n- Implement focus management hooks for better focus control\n- Enhance keyboard navigation support in code editor and copy button\n- Update styles for focus visibility on interactive elements\n- Conduct accessibility audits and ensure WCAG 2.1 AA compliance\n    \nRelates to TASK-036 on #875.",
+  "metadata": {
+    "commit": "11ff1d15c3d483c1d7f3a4c6fa5eeea10899ad84",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-astro-starlight-docs-1.md",
+      "docs/src/components/AccessibleCodeBlock.tsx",
+      "docs/src/components/interactive/CodeEditor.tsx",
+      "docs/src/components/interactive/CopyButton.tsx",
+      "docs/src/components/navigation/KeyboardNavigation.tsx",
+      "docs/src/components/navigation/SkipNavigation.astro",
+      "docs/src/components/navigation/index.ts",
+      "docs/src/hooks/use-focus-management.ts",
+      "docs/src/styles/sparkle-theme.css"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat: enhance keyboard accessibility across components",
+  "updated_at": "2026-09-08T13:22:42.397010-07:00"
+}

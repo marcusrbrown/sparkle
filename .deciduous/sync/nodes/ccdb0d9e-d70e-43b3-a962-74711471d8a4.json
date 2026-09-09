@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "ccdb0d9e-d70e-43b3-a962-74711471d8a4",
+  "created_at": "2026-09-08T13:22:40.666452-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [@astrojs/mdx](https://docs.astro.build/en/guides/integrations-guide/mdx/) ([source](https://redirect.github.com/withastro/astro/tree/HEAD/packages/integrations/mdx)) | dependencies | patch | [`4.3.5` -> `4.3.6`](https://renovatebot.com/diffs/npm/@astrojs%2fmdx/4.3.5/4.3.6) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/withastro/astro/badge)](https://securityscorecards.dev/viewer/?uri=github.com/withastro/astro) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "8b41ce28283d7802b8760c0d6d64578ef8baf164",
+    "confidence": 75,
+    "files": [
+      "docs/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix(deps): update dependency @astrojs/mdx to v4.3.6",
+  "updated_at": "2026-09-08T13:22:40.666452-07:00"
+}

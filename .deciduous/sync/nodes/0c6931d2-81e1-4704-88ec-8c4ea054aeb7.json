@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "0c6931d2-81e1-4704-88ec-8c4ea054aeb7",
+  "created_at": "2026-09-08T13:22:53.713766-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Change | [Age](https://docs.renovatebot.com/merge-confidence/) | [Confidence](https://docs.renovatebot.com/merge-confidence/) | OpenSSF | Code Search |\n|---|---|---|---|---|---|\n| [eslint](https://eslint.org) ([source](https://redirect.github.com/eslint/eslint)) | [`9.39.4` → `9.39.5`](https://renovatebot.com/diffs/npm/eslint/9.39.4/9.39.5) | ![age](https://developer.mend.io/api/mc/badges/age/npm/eslint/9.39.5?slim=true) | ![confidence](https://developer.mend.io/api/mc/badges/confidence/npm/eslint/9.39.4/9.39.5?slim=true) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/eslint/eslint/badge)](https://securityscorecards.dev/viewer/?uri=github.com/eslint/eslint) | [![GitHub Code Search for \"eslint\"](https://img.shields.io/badge/code_search-eslint-2671E5.svg?logo=github)](https://redirect.github.com/search?q=repo:marcusrbrown%2Fsparkle+NOT+path:/package(-lock)%3F%5C.json%7Cyarn%5C.lock%7Cpnpm-lock%5C.yaml%7Cbun%5C.lock(b)/+eslint) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "db63263247687e44fd66e893b3be723664323f45",
+    "confidence": 75,
+    "files": [
+      "package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency eslint to v9.39.5",
+  "updated_at": "2026-09-08T13:22:53.713766-07:00"
+}

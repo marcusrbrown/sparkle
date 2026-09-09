@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "b7de2241-529e-4058-b99c-1102576b42b3",
+  "created_at": "2025-09-26T18:20:20-07:00",
+  "metadata": {
+    "commit": "d8c5611820019f85686edcd4dc602e16c20282c5",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat: implement job control system for background processes (#987)",
+  "updated_at": "2025-09-26T18:20:20-07:00"
+}

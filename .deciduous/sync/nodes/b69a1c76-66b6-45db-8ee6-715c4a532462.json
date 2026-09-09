@@ -1,0 +1,21 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "b69a1c76-66b6-45db-8ee6-715c4a532462",
+  "created_at": "2026-09-08T13:22:41.406395-07:00",
+  "description": "- Prevent duplicate terminal initialization in React StrictMode\n- Memoize terminal options and command configurations for performance\n- Improve rendering logic to only update terminal with new entries\n- Refactor error handling to use structured error creation functions\n- Optimize terminal resizing with ResizeObserver for better accuracy",
+  "metadata": {
+    "commit": "313bd3e227e9e52a84223d8a6d84f7255a5589a8",
+    "confidence": 75,
+    "files": [
+      "apps/moo-dang/src/App.tsx",
+      "apps/moo-dang/src/components/CommandTerminal.tsx",
+      "apps/moo-dang/src/components/Terminal.tsx",
+      "apps/moo-dang/src/hooks/use-terminal-output.ts",
+      "apps/moo-dang/src/main.tsx"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat: enhance terminal and application initialization handling",
+  "updated_at": "2026-09-08T13:22:41.406395-07:00"
+}

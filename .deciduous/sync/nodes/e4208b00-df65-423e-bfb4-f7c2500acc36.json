@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "e4208b00-df65-423e-bfb4-f7c2500acc36",
+  "created_at": "2026-09-06T07:09:19-07:00",
+  "metadata": {
+    "commit": "d034391150cd9181aa6733d4b0a14af0a95f5d2d",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix(deps): override nanoid to ^3.3.17 to remediate GHSA-2v37-7h3g-55p8 (#1904)",
+  "updated_at": "2026-09-06T07:09:19-07:00"
+}

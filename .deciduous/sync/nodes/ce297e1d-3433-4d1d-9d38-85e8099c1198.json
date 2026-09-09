@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "ce297e1d-3433-4d1d-9d38-85e8099c1198",
+  "created_at": "2026-09-08T13:22:17.378012-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Change | [Age](https://docs.renovatebot.com/merge-confidence/) | [Confidence](https://docs.renovatebot.com/merge-confidence/) | OpenSSF | Code Search |\n|---|---|---|---|---|---|\n| [react-native-safe-area-context](https://redirect.github.com/AppAndFlow/react-native-safe-area-context) | [`5.6.2` → `5.7.0`](https://renovatebot.com/diffs/npm/react-native-safe-area-context/5.6.2/5.7.0) | ![age](https://developer.mend.io/api/mc/badges/age/npm/react-native-safe-area-context/5.7.0?slim=true) | ![confidence](https://developer.mend.io/api/mc/badges/confidence/npm/react-native-safe-area-context/5.6.2/5.7.0?slim=true) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/AppAndFlow/react-native-safe-area-context/badge)](https://securityscorecards.dev/viewer/?uri=github.com/AppAndFlow/react-native-safe-area-context) | [![GitHub Code Search for \"react-native-safe-area-context\"](https://img.shields.io/badge/code_search-react--native--safe--area--context-2671E5.svg?logo=github)](https://redirect.github.com/search?q=repo:marcusrbrown%2Fsparkle+NOT+path:/package(-lock)%3F%5C.json%7Cyarn%5C.lock%7Cpnpm-lock%5C.yaml%7Cbun%5C.lock(b)/+react-native-safe-area-context) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "9f9c50e59d5f981012eacc2ff69095fe3b2b8880",
+    "confidence": 75,
+    "files": [
+      "apps/fro-jive/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix(deps): update dependency react-native-safe-area-context to v5.7.0",
+  "updated_at": "2026-09-08T13:22:17.378012-07:00"
+}

@@ -1,0 +1,23 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "c446acda-6556-4182-aa61-f4fef487d3c1",
+  "created_at": "2026-09-08T13:22:41.518592-07:00",
+  "description": "- Introduce useTerminalOutput hook for structured terminal output handling\n- Implement scrollback manager for efficient line storage and retrieval\n- Add output formatting utilities for consistent terminal display\n- Update CommandTerminal to utilize new output management features\n- Refactor App component to demonstrate sample outputs in terminal\n\nRelates to TASK-011 on #942.",
+  "metadata": {
+    "commit": "051c4369ecb6589a9998affb4770f47c3d47364f",
+    "confidence": 75,
+    "files": [
+      "apps/moo-dang/src/App.tsx",
+      "apps/moo-dang/src/components/CommandTerminal.tsx",
+      "apps/moo-dang/src/hooks/index.ts",
+      "apps/moo-dang/src/hooks/use-terminal-output.ts",
+      "apps/moo-dang/src/utils/index.ts",
+      "apps/moo-dang/src/utils/output-formatting.ts",
+      "apps/moo-dang/src/utils/scrollback-manager.ts"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat: enhance terminal output management and formatting",
+  "updated_at": "2026-09-08T13:22:41.518592-07:00"
+}

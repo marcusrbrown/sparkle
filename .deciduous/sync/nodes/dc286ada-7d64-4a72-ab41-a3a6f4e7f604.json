@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "dc286ada-7d64-4a72-ab41-a3a6f4e7f604",
+  "created_at": "2026-09-06T07:29:36-07:00",
+  "metadata": {
+    "commit": "ccd6f404b06906fe07b8165134990b10765f15e2",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(lint): add missing fenced code block languages (#1883)",
+  "updated_at": "2026-09-06T07:29:36-07:00"
+}

@@ -1,0 +1,23 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "d5dc85c3-5153-427b-84c4-1874cdd1b8fa",
+  "created_at": "2026-09-08T13:22:36.857562-07:00",
+  "description": "- Update last_updated date in Astro Starlight documentation plan\n- Add ARIA labels to interactive components for better accessibility\n- Introduce a new guide for ARIA labels and accessibility attributes\n- Improve accessibility features in ButtonDemo, ThemeToggle, and ComponentShowcase\n- Ensure all interactive elements have descriptive labels and roles\n\nRelates to TASK-038 on #875.",
+  "metadata": {
+    "commit": "2cf7deb779ec337e82fda7eb17e074d23f47a21d",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-astro-starlight-docs-1.md",
+      "docs/astro.config.mjs",
+      "docs/src/components/demos/ButtonDemo.tsx",
+      "docs/src/components/interactive/StorybookEmbed.tsx",
+      "docs/src/components/interactive/theme-toggle.tsx",
+      "docs/src/components/showcase/ComponentShowcase.tsx",
+      "docs/src/content/docs/guides/aria-labels.mdx"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat: enhance accessibility across documentation components",
+  "updated_at": "2026-09-08T13:22:36.857562-07:00"
+}

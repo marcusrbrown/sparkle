@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "892b2a02-3252-4ac9-8f42-6ca07d7edf35",
+  "created_at": "2024-05-07T18:08:39Z",
+  "metadata": {
+    "commit": "9cee50427ee6ebcc92f5d9e17d4dbc95d2fb0070",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix(deps): update dependency expo-linking to ~6.3.0 (#259)",
+  "updated_at": "2024-05-07T18:08:39Z"
+}

@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "707f03b0-a608-4a4c-9684-9571145ad793",
+  "created_at": "2024-07-09T19:07:19Z",
+  "metadata": {
+    "commit": "52b92ef9bf36f6a53fd4860c04f19cf17a776c1c",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix(deps): update dependency react-native to v0.73.9 (#305)",
+  "updated_at": "2024-07-09T19:07:19Z"
+}

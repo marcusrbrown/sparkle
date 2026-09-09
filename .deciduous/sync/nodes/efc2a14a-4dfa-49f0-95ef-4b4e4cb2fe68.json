@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "efc2a14a-4dfa-49f0-95ef-4b4e4cb2fe68",
+  "created_at": "2026-09-08T13:23:00.139812-07:00",
+  "description": "## Problem\n\nOn a cold Turborepo cache, `moo-dang` tests fail with:\n\n```\nError: Failed to resolve import \"@sparkle/test-utils/dom\" from \"src/components/Terminal.test.tsx\"\nError: Failed to resolve import \"@sparkle/test-utils/console\" from \"src/shell/wasm-integration.test.ts\"\n```\n\nThe `moo-dang` test suite imports from `@sparkle/test-utils` subpath exports (`/dom`, `/console`, `/terminal`) which require the `dist/` directory to be populated. However, the `test` Turbo task only depended on `build:utils`, `build:theme`, `build:config`, and `build:ui` — not on `@sparkle/test-utils#build`.\n\n`@sparkle/test-utils` uses the generic `build` task (not a named `build:test-utils`), so it was not included in the test dependency chain. On a warm cache this is masked; on a cold cache the 6 affected test files fail.\n\n## Fix\n\nAdd `@sparkle/test-utils#build` as an explicit dependency in the `test`, `test:coverage`, and `test:watch` Turbo tasks.\n\n## Verification\n\n- `pnpm test` passes: 445 tests, 1 skipped ✅\n- `pnpm build` clean: 10/10 tasks ✅\n\n_Autohealed by Fro Bot — Run 26739415545_",
+  "metadata": {
+    "commit": "2b680a9d906156ba7193d65f7984bb1f228ece78",
+    "confidence": 75,
+    "files": [
+      "scripts/validate-turbo.ts",
+      "turbo.json"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix(turbo): add @sparkle/test-utils#build dependency to test tasks",
+  "updated_at": "2026-09-08T13:23:00.139812-07:00"
+}

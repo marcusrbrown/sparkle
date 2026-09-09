@@ -1,0 +1,21 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "bebbba2b-deb5-441a-aa69-ebbc099f6914",
+  "created_at": "2026-09-08T13:23:07.485113-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Change | [Age](https://docs.renovatebot.com/merge-confidence/) | [Confidence](https://docs.renovatebot.com/merge-confidence/) | OpenSSF | Code Search |\n|---|---|---|---|---|---|\n| [happy-dom](https://redirect.github.com/capricorn86/happy-dom) | [`20.8.7` → `20.8.8`](https://renovatebot.com/diffs/npm/happy-dom/20.8.7/20.8.8) | ![age](https://developer.mend.io/api/mc/badges/age/npm/happy-dom/20.8.8?slim=true) | ![confidence](https://developer.mend.io/api/mc/badges/confidence/npm/happy-dom/20.8.7/20.8.8?slim=true) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/capricorn86/happy-dom/badge)](https://securityscorecards.dev/viewer/?uri=github.com/capricorn86/happy-dom) | [![GitHub Code Search for \"happy-dom\"](https://img.shields.io/badge/code_search-happy--dom-2671E5.svg?logo=github)](https://redirect.github.com/search?q=repo:marcusrbrown%2Fsparkle+NOT+path:/package(-lock)%3F%5C.json%7Cyarn%5C.lock%7Cpnpm-lock%5C.yaml%7Cbun%5C.lock(b)/+happy-dom) |\n\n### GitHub Vulnerability Alerts\n\n#### [CVE-2026-33943](https://redirect.github.com/capricorn86/happy-dom/security/advisories/GHSA-6q6h-j7hj-3r64)\n\n### Summary\n\nA code injection vulnerability in `ECMAScriptModuleCompiler` allows an attacker to achieve Remote Code Execution (RCE) by injecting arbitrary JavaScript expressions inside `export { }` declarations in ES module scripts processed by happy-dom. The compiler directly interpolates unsanitized content into generated code as an executable expression, and the quote filter does not strip backticks, allowing template literal-based payloads to bypass sanitization.\n\n### Details\n\n**Vulnerable file**: `packages/happy-dom/src/module/ECMAScriptModuleCompiler.ts`, lines 371-385\n\nThe \"Export object\" handler extracts content from `export { ... }` using the regex `export\\s*{([^}]+)}`, then generates executable code by directly interpolating it: [description truncated to fit budget]",
+  "metadata": {
+    "commit": "46c3bda4f44073319caa860af7c6297a5133e7ce",
+    "confidence": 75,
+    "files": [
+      "apps/fro-jive/package.json",
+      "apps/moo-dang/package.json",
+      "packages/theme/package.json",
+      "packages/ui/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency happy-dom to v20.8.8 [SECURITY]",
+  "updated_at": "2026-09-08T13:23:07.485113-07:00"
+}

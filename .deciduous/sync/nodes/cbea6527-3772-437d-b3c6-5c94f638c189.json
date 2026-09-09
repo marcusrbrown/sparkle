@@ -1,0 +1,17 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "cbea6527-3772-437d-b3c6-5c94f638c189",
+  "created_at": "2026-09-08T13:22:45.817349-07:00",
+  "description": "Unblocks #1956, the `@bfra.me/eslint-config` bump to `0.52.1`.\n\nThat release enables `unicorn/consistent-function-scoping`, which produces exactly one error across the repo:\n\n```\n77:5  error  Move function 'NullContextWrapper' to the outer scope  unicorn/consistent-function-scoping\n✖ 1 problem (1 error, 0 warnings)\n```\n\n`NullContextWrapper` provides `value={null}` to exercise the null-context branch of `useTheme`'s guard. It references only the module-level `ThemeContext` import and its own `children` prop, so nothing tied it to the test that declared it.\n\n## Why the other wrappers stay put\n\n`packages/theme/test/theme-hooks.test.tsx` has four inner wrappers. Only this one is flagged, and that is correct — the other three each capture a context value constructed inside their own test:\n\n| Wrapper | Captures | Action |\n| --- | --- | --- |\n| `NullContextWrapper` | nothing | hoisted |\n| `CustomWrapper` | `contextValueWithMockSetTheme` | unchanged |\n| `LoadingWrapper` | `loadingContextValue` | unchanged |\n| `ErrorWrapper` | `errorContextValue` | unchanged |\n\nHoisting any of the other three would require lifting their context values to module scope too, which would leak per-test state across tests. The rule is right to leave them alone.\n\n## Verification\n\nChecked against the real `0.52.1` config in an isolated worktree, since the rule does not exist in the version currently on `main`:\n\n- **Control** — original file reproduces the CI error exactly: `77:5 ... 1 problem (1 error, 0 warnings)`\n- **After** — `npx eslint .` across the whole repo exits `0`\n- `pnpm --filter @sparkle/theme test` — 8 files, 164 tests passing\n\nThe control run matters here: an earlier attempt to force the rule on without the plugin installed produced a misleading exit `0` because the rule never actually ran.\n\n## Note on #1956 [description truncated to fit budget]",
+  "metadata": {
+    "commit": "a49f40b5502c7d9fa756099d5781e52994ee41e0",
+    "confidence": 75,
+    "files": [
+      "packages/theme/test/theme-hooks.test.tsx"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "test(theme): hoist NullContextWrapper to module scope",
+  "updated_at": "2026-09-08T13:22:45.817349-07:00"
+}

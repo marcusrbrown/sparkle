@@ -1,0 +1,21 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "ed836a15-66b2-42cc-afd7-99d8f9934e8a",
+  "created_at": "2026-09-08T13:22:27.511589-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [vite](https://vite.dev) ([source](https://redirect.github.com/vitejs/vite/tree/HEAD/packages/vite)) | devDependencies | patch | [`7.2.4` -> `7.2.6`](https://renovatebot.com/diffs/npm/vite/7.2.4/7.2.6) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/vitejs/vite/badge)](https://securityscorecards.dev/viewer/?uri=github.com/vitejs/vite) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "ed9b6dfdbd7da805d8d2c96f2411cba291d85378",
+    "confidence": 75,
+    "files": [
+      "apps/fro-jive/package.json",
+      "apps/moo-dang/package.json",
+      "packages/storybook/package.json",
+      "packages/ui/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency vite to v7.2.6",
+  "updated_at": "2026-09-08T13:22:27.511589-07:00"
+}

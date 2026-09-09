@@ -1,0 +1,27 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "5c22ab07-cf33-4b5f-a6d3-184c60541e47",
+  "created_at": "2026-09-08T13:22:42.245462-07:00",
+  "description": "- Add semantic components for article, section, aside, and navigation\n- Implement skip navigation for improved accessibility\n- Create guidelines for heading hierarchy and semantic HTML usage\n- Introduce API documentation layout to enforce proper heading levels\n- Update last updated dates in documentation plans\n\nRelates to TASK-037 on #875.",
+  "metadata": {
+    "commit": "52bbfc4191ab7dc75e42e4713405e23b4512c64b",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-astro-starlight-docs-1.md",
+      "docs/astro.config.mjs",
+      "docs/src/components/layout/ContentArticle.astro",
+      "docs/src/components/layout/ContentAside.astro",
+      "docs/src/components/layout/ContentNavigation.astro",
+      "docs/src/components/layout/ContentSection.astro",
+      "docs/src/components/layout/PageMain.astro",
+      "docs/src/components/layout/SemanticHeading.astro",
+      "docs/src/components/layout/SkipNavigation.astro",
+      "docs/src/content/docs/guides/heading-hierarchy.mdx",
+      "docs/src/layouts/api.astro"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat: enhance documentation structure and accessibility components",
+  "updated_at": "2026-09-08T13:22:42.245462-07:00"
+}

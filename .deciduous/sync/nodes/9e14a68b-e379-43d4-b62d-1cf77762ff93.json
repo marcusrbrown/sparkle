@@ -1,0 +1,19 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "9e14a68b-e379-43d4-b62d-1cf77762ff93",
+  "created_at": "2026-09-08T13:23:00.429980-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | Pending | OpenSSF | [Age](https://docs.renovatebot.com/merge-confidence/) | [Confidence](https://docs.renovatebot.com/merge-confidence/) | Code Search |\n|---|---|---|---|---|---|---|---|---|\n| [fro-bot/agent](https://redirect.github.com/fro-bot/agent) | action | minor | `v0.46.1` → `v0.47.0` |  | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/fro-bot/agent/badge)](https://securityscorecards.dev/viewer/?uri=github.com/fro-bot/agent) | ![age](https://developer.mend.io/api/mc/badges/age/github-tags/fro-bot%2fagent/v0.47.0?slim=true) | ![confidence](https://developer.mend.io/api/mc/badges/confidence/github-tags/fro-bot%2fagent/v0.46.1/v0.47.0?slim=true) | [![GitHub Code Search for \"fro-bot/agent\"](https://img.shields.io/badge/code_search-fro--bot/agent-2671E5.svg?logo=github)](https://redirect.github.com/search?q=repo:marcusrbrown%2Fsparkle+NOT+path:/package(-lock)%3F%5C.json%7Cyarn%5C.lock%7Cpnpm-lock%5C.yaml%7Cbun%5C.lock(b)/+fro-bot%2Fagent) |\n| [pnpm](https://pnpm.io) ([source](https://redirect.github.com/pnpm/pnpm/tree/HEAD/pnpm)) | packageManager | minor | [`10.33.4` → `10.34.0`](https://renovatebot.com/diffs/npm/pnpm/10.33.4/10.34.0) | `10.34.1` | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/pnpm/pnpm/badge)](https://securityscorecards.dev/viewer/?uri=github.com/pnpm/pnpm) | ![age](https://developer.mend.io/api/mc/badges/age/npm/pnpm/10.34.0?slim=true) | ![confidence](https://developer.mend.io/api/mc/badges/confidence/npm/pnpm/10.33.4/10.34.0?slim=true) | [![GitHub Code Search for \"pnpm\"](https://img.shields.io/badge/code_search-pnpm-2671E5.svg?logo=github)](https://redirect.github.com/search?q=repo:marcusrbrown%2Fsparkle+NOT+path:/package(-lock)%3F%5C.json%7Cyarn%5C.lock%7Cpnpm-lock%5C.yaml%7Cbun%5C.lock(b)/+pnpm) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "9cad327436d3b9fdc05b9309e3b57e6286a39d65",
+    "confidence": 70,
+    "files": [
+      ".github/workflows/fro-bot.yaml",
+      "package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(deps): update all non-major dependencies",
+  "updated_at": "2026-09-08T13:23:00.429980-07:00"
+}

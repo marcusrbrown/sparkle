@@ -1,0 +1,17 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "d2bf1078-ec26-4ef3-ac55-1d2d9f80babb",
+  "created_at": "2026-09-08T13:22:53.095556-07:00",
+  "description": "## What\nFixes a bug in `ThemeValidator`'s spacing scale consistency check (`packages/theme/src/validators/theme-validator.ts`) discovered via `pnpm test` failing on `main` during daily autohealing.\n\n## Root cause\nThe geometric-progression check used a truthy guard (`prevValue && currentValue && nextValue`) to decide whether to compute a ratio window. Since `0` is a common/valid spacing baseline, any window anchored on a `0` value was silently skipped — not because of the intended division-by-zero concern, but as a side effect of JS truthiness. Combined with a loose `0.5` tolerance, this meant `theme-validator.test.ts > should treat warnings as errors in strict mode` never received the expected warning for an intentionally inconsistent scale (`0px, 4px, 10px, 20px`).\n\n## Fix\n- Replace the truthy guard with explicit `undefined`/`0` checks, so zero-anchored windows are skipped for the right reason (avoiding `x / 0`) rather than by accident.\n- Tighten the ratio tolerance from `0.5` to `0.3` so a `2.5x` → `2x` jump is correctly flagged as inconsistent, matching the test's intent.\n\n## Verification\n- `pnpm --filter @sparkle/theme test` — 164/164 passing (was 163/164)\n- `pnpm test` — full workspace suite green\n- `pnpm check` — clean (format + types + monorepo consistency)\n- `pnpm build` — clean\n\n---\n🤖 Filed by the [Fro Bot daily autohealing run](https://github.com/marcusrbrown/sparkle/issues/1665) (category 4/5: quality gate fix).",
+  "metadata": {
+    "commit": "a3947ca036102623d30a64ef3474033035c1ad84",
+    "confidence": 75,
+    "files": [
+      "packages/theme/src/validators/theme-validator.ts"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix(theme): correct spacing scale consistency check for zero-anchored scales",
+  "updated_at": "2026-09-08T13:22:53.095556-07:00"
+}

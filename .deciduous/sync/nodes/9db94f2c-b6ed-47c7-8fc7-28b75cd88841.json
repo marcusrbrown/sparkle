@@ -1,0 +1,22 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "9db94f2c-b6ed-47c7-8fc7-28b75cd88841",
+  "created_at": "2026-09-08T13:23:00.962773-07:00",
+  "description": "Restores signal on the repo root before the next round of feature work.\n\n## What\n\n- Drop `docs-legacy/` (60KB, deprecated since Sep 2025; explicitly redirected callers to the live docs site and all content has been migrated)\n- Refresh `readme.md`:\n  - Add missing `apps/moo-dang` (WASM web shell) and `@sparkle/test-utils` packages\n  - Correct prerequisites (pnpm >=10, the repo pins `packageManager: pnpm@10.33.4`)\n  - Fix stale `./docs/project-guide.md` and `./docs/best-practices-for-sparkle-development.md` references (those files were inside `docs-legacy/`)\n  - Update the architecture tree to reflect the actual `apps/` vs `packages/` split and the live package set\n  - Point Resources to <https://sparkle.mrbro.dev> and the existing `.github/copilot-instructions.md`\n\n## Why\n\nThe README and the deprecated `docs-legacy/` directory had drifted ~7 months out of date. The audit, the docs migration, and the moo-dang/test-utils packages all landed without README updates. New contributors and agents land on a README that misses half the surface area.\n\n## Verification\n\n- `pnpm check` clean\n- No live code or workflow files reference `docs-legacy/` (only `.specstory/history/` historic Cursor logs)\n- Live docs site is the canonical surface\n\n## Related\n\n- Closes #57 (Uplift sparkle — all three checklist items effectively complete)\n- Diagnosis posted on #1604 (Astro 6 + Starlight 0.36 incompatibility; needs grouped Starlight >=0.39 upgrade)",
+  "metadata": {
+    "commit": "053c6522164c818f2be042d927e81ad4687e45c8",
+    "confidence": 75,
+    "files": [
+      "docs-legacy/README.md",
+      "docs-legacy/best-practices-for-sparkle-development.md",
+      "docs-legacy/development-workflows.md",
+      "docs-legacy/project-guide.md",
+      "docs-legacy/troubleshooting-guide.md",
+      "readme.md"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore: clean the board",
+  "updated_at": "2026-09-08T13:23:00.962773-07:00"
+}

@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "fb968606-1dfd-4d8c-abac-32cdad12b9ae",
+  "created_at": "2025-11-23T14:16:37Z",
+  "metadata": {
+    "commit": "51c404d9caa799dcc233db9e9491dbf6a4d929c6",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix(deps): update dependency @astrojs/mdx to v4.3.12 (#1193)",
+  "updated_at": "2025-11-23T14:16:37Z"
+}

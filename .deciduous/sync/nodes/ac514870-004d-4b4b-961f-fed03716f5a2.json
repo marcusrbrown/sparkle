@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "ac514870-004d-4b4b-961f-fed03716f5a2",
+  "created_at": "2025-11-15T01:47:35Z",
+  "metadata": {
+    "commit": "05f20d5d50e17bcc2a29e524773f265c6b817f5d",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency @microsoft/api-extractor to v7.55.0 (#1175)",
+  "updated_at": "2025-11-15T01:47:35Z"
+}

@@ -1,0 +1,21 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "72acc787-a03e-4c7f-9e69-407667144dd8",
+  "created_at": "2026-09-08T13:22:44.185026-07:00",
+  "description": "- Update installation instructions to include npm and yarn options.\n- Add detailed steps for setting up the theme provider in applications.\n- Improve quick start guide with example components and usage.\n- Clarify prerequisites and installation options for better user experience.\n\nRelates to TASK-027 on #874.",
+  "metadata": {
+    "commit": "f358029ec11e902f7ee830f6194bc662a98cf8b4",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-astro-starlight-docs-1.md",
+      "docs/src/content/docs/getting-started/installation.md",
+      "docs/src/content/docs/getting-started/introduction.md",
+      "docs/src/content/docs/getting-started/project-structure.md",
+      "docs/src/content/docs/getting-started/quick-start.md"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "docs: enhance installation and quick start guides for Sparkle",
+  "updated_at": "2026-09-08T13:22:44.185026-07:00"
+}

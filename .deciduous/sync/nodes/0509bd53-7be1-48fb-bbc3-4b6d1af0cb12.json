@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "0509bd53-7be1-48fb-bbc3-4b6d1af0cb12",
+  "created_at": "2025-09-30T07:48:46-07:00",
+  "metadata": {
+    "commit": "f449152311ade318dfcfcfed20c76401fe559074",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "docs: update JSDoc comments for Button component parameters (#1021)",
+  "updated_at": "2025-09-30T07:48:46-07:00"
+}

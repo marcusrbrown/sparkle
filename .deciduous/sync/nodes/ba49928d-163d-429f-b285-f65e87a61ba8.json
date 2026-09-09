@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "ba49928d-163d-429f-b285-f65e87a61ba8",
+  "created_at": "2025-09-02T00:54:19-07:00",
+  "metadata": {
+    "commit": "ef8b1868f596b81e73e3cc7a4bbefc09e85be2cb",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat(ui): enhance form components with theme-aware styling (#812)",
+  "updated_at": "2025-09-02T00:54:19-07:00"
+}

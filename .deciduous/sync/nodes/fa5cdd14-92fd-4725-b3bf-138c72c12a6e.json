@@ -1,0 +1,37 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "fa5cdd14-92fd-4725-b3bf-138c72c12a6e",
+  "created_at": "2026-09-08T13:22:38.161332-07:00",
+  "description": "- Add @sparkle/test-utils package with utilities for DOM, React, console, terminal, and lifecycle testing.\n- Implement mocks for localStorage, MediaQueryList, ResizeObserver, and XTerm.js components.\n- Create render utilities for React components with theme support.\n- Establish standardized setup and teardown functions for tests.\n- Enhance documentation with usage examples and API references.\n\nRelates to TASK-021 on #1010.",
+  "metadata": {
+    "commit": "525903c791ea734efe013a94893a5abffd021fe9",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/refactor-audit-improvements-1.md",
+      ".ai/review/task-021-code-review.md",
+      "apps/moo-dang/src/components/Terminal.test.tsx",
+      "packages/test-utils/README.md",
+      "packages/test-utils/package.json",
+      "packages/test-utils/src/console/console-mocks.ts",
+      "packages/test-utils/src/console/index.ts",
+      "packages/test-utils/src/dom/index.ts",
+      "packages/test-utils/src/dom/local-storage.ts",
+      "packages/test-utils/src/dom/media-query.ts",
+      "packages/test-utils/src/dom/resize-observer.ts",
+      "packages/test-utils/src/index.ts",
+      "packages/test-utils/src/lifecycle/index.ts",
+      "packages/test-utils/src/lifecycle/test-lifecycle.ts",
+      "packages/test-utils/src/react/index.ts",
+      "packages/test-utils/src/react/render-utils.tsx",
+      "packages/test-utils/src/terminal/index.ts",
+      "packages/test-utils/src/terminal/xterm-mocks.ts",
+      "packages/test-utils/tsconfig.json",
+      "packages/test-utils/tsdown.config.ts",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat(test-utils): introduce shared test utilities",
+  "updated_at": "2026-09-08T13:22:38.161332-07:00"
+}

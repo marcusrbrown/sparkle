@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "d4bf5d5b-9993-4185-ad77-e17b10b1c788",
+  "created_at": "2026-09-06T14:10:56-07:00",
+  "metadata": {
+    "commit": "7a20340f613fc007180442a08931f5a87ab2b0bc",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "docs: replace absolute class-avoidance rule with justified-exception rule + lint (#2015)",
+  "updated_at": "2026-09-06T14:10:56-07:00"
+}

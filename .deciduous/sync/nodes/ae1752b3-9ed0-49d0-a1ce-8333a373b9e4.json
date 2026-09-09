@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "ae1752b3-9ed0-49d0-a1ce-8333a373b9e4",
+  "created_at": "2025-09-30T10:13:06-07:00",
+  "metadata": {
+    "commit": "67ec12c1c04bb3bb94b5f29e4592254956445cda",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "refactor: complete documentation migration and standardization (#1022)",
+  "updated_at": "2025-09-30T10:13:06-07:00"
+}

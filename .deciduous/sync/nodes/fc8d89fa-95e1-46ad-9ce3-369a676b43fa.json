@@ -1,0 +1,22 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "fc8d89fa-95e1-46ad-9ce3-369a676b43fa",
+  "created_at": "2026-09-08T13:22:40.929795-07:00",
+  "description": "- Implement `env`, `export`, `printenv`, and `unset` commands for managing environment variables.\n- Enhance command parsing to support variable expansion in commands.\n- Add tests for environment variable expansion and command execution.\n- Update shell worker to resolve commands using PATH if not found in built-ins.\n\nRelates to TASK-017 on #943.",
+  "metadata": {
+    "commit": "e70243e46861af36238d886126875691df94318d",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-moo-dang-shell-1.md",
+      "apps/moo-dang/src/shell/commands.test.ts",
+      "apps/moo-dang/src/shell/commands.ts",
+      "apps/moo-dang/src/shell/parser-env.test.ts",
+      "apps/moo-dang/src/shell/parser.ts",
+      "apps/moo-dang/src/workers/shell.worker.ts"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat: add environment variable management commands and tests",
+  "updated_at": "2026-09-08T13:22:40.929795-07:00"
+}

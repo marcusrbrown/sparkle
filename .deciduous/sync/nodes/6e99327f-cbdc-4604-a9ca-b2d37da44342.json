@@ -1,0 +1,21 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "6e99327f-cbdc-4604-a9ca-b2d37da44342",
+  "created_at": "2026-09-08T13:22:40.339769-07:00",
+  "description": "- Add comprehensive error context for WASM operations.\n- Implement enhanced output buffering for large data streams.\n- Improve error messages for network and HTTP failures.\n- Update tests to validate new error handling features.\n\nCloses #944.",
+  "metadata": {
+    "commit": "497531d58929c717b588df7fa9c7768c77eca160",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-moo-dang-shell-1.md",
+      "apps/moo-dang/src/shell/wasm-commands.ts",
+      "apps/moo-dang/src/shell/wasm-loader.ts",
+      "apps/moo-dang/src/shell/wasm-types.ts",
+      "apps/moo-dang/src/shell/wasm.test.ts"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat: enhance WASM error handling and output management",
+  "updated_at": "2026-09-08T13:22:40.339769-07:00"
+}

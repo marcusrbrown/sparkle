@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "200a6ec1-89f2-41f6-8834-3f4a4366c610",
+  "created_at": "2025-09-07T03:05:17-07:00",
+  "metadata": {
+    "commit": "917072ca46938db503fd6fbb0e9c574449e8a308",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "docs: add API documentation for types, UI components, and utility functions (#881)",
+  "updated_at": "2025-09-07T03:05:17-07:00"
+}

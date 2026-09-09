@@ -1,0 +1,17 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "0c109b52-b29b-4520-b2d1-54dec16c785b",
+  "created_at": "2026-09-08T13:22:32.406955-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [actions/setup-node](https://redirect.github.com/actions/setup-node) | action | major | `v5.0.0` -> `v6.0.0` | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/actions/setup-node/badge)](https://securityscorecards.dev/viewer/?uri=github.com/actions/setup-node) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "677b1f9c3b5d64cf0ab60215bfb6e951509583ca",
+    "confidence": 70,
+    "files": [
+      ".github/actions/setup-ci/action.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(deps): update actions/setup-node action to v6",
+  "updated_at": "2026-09-08T13:22:32.406955-07:00"
+}

@@ -1,0 +1,17 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "3bd1fe3b-228e-4c3c-8280-b7dcac00e113",
+  "created_at": "2026-09-08T13:22:56.448117-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Update | Change | OpenSSF |\n|---|---|---|---|\n| [node](https://nodejs.org) ([source](https://redirect.github.com/nodejs/node)) | minor | `24.17.0` → `24.18.0` | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/nodejs/node/badge)](https://securityscorecards.dev/viewer/?uri=github.com/nodejs/node) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "5c18b60f1d4f1577b61ef0a2228987a46fe50b38",
+    "confidence": 70,
+    "files": [
+      ".node-version"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(deps): update all non-major dependencies",
+  "updated_at": "2026-09-08T13:22:56.448117-07:00"
+}

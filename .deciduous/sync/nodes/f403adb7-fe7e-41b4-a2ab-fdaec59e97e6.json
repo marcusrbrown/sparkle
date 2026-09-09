@@ -1,0 +1,17 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "f403adb7-fe7e-41b4-a2ab-fdaec59e97e6",
+  "created_at": "2026-09-08T13:22:35.538434-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [astro](https://astro.build) ([source](https://redirect.github.com/withastro/astro/tree/HEAD/packages/astro)) | dependencies | patch | [`5.14.1` -> `5.14.3`](https://renovatebot.com/diffs/npm/astro/5.14.1/5.14.3) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/withastro/astro/badge)](https://securityscorecards.dev/viewer/?uri=github.com/withastro/astro) |\n\n### GitHub Vulnerability Alerts\n\n#### [CVE-2025-61925](https://redirect.github.com/withastro/astro/security/advisories/GHSA-5ff5-9fcw-vg88)\n\n### Summary\nWhen running Astro in on-demand rendering mode using a adapter such as the node adapter it is possible to maliciously send an `X-Forwarded-Host` header that is reflected when using the recommended `Astro.url` property as there is no validation that the value is safe.\n\n### Details\nAstro reflects the value in `X-Forwarded-Host` in output when using `Astro.url` without any validation. \n\nIt is common for web servers such as nginx to route requests via the `Host` header, and forward on other request headers. As such as malicious request can be sent with both a `Host` header and an `X-Forwarded-Host` header where the values do not match and the `X-Forwarded-Host` header is malicious. Astro will then return the malicious value.\n\nThis could result in any usages of the `Astro.url` value in code being manipulated by a request. For example if a user follows guidance and uses `Astro.url` for a canonical link the canonical link can be manipulated to another site. It is not impossible to imagine that the value could also be used as a login/registration or other form URL as well, resulting in potential redirecting of login credentials to a malicious party. [description truncated to fit budget]",
+  "metadata": {
+    "commit": "0649e135f9718fdbced3ab190a857cddc13e1610",
+    "confidence": 75,
+    "files": [
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(lockfile): update dependency astro to v5.14.3 [SECURITY]",
+  "updated_at": "2026-09-08T13:22:35.538434-07:00"
+}

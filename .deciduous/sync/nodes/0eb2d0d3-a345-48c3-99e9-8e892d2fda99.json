@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "0eb2d0d3-a345-48c3-99e9-8e892d2fda99",
+  "created_at": "2025-09-08T00:26:45-07:00",
+  "metadata": {
+    "commit": "01ecf5b94cf54a35b6818bb2d6cc3c294caad71a",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat(docs): add copy-to-clipboard functionality to CodeEditor (#895)",
+  "updated_at": "2025-09-08T00:26:45-07:00"
+}

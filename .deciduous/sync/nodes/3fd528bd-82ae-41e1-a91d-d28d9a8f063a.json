@@ -1,0 +1,24 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "3fd528bd-82ae-41e1-a91d-d28d9a8f063a",
+  "created_at": "2026-09-08T13:22:37.134002-07:00",
+  "description": "- Add CodeHighlight component using Shiki for syntax highlighting\n- Support multiple languages, themes, and line numbers\n- Include copy-to-clipboard functionality and responsive design\n- Update documentation to demonstrate usage and features\n\nRelates to TASK-021 on #873.",
+  "metadata": {
+    "commit": "b92c4afed7b81aa3f43298e87452be169f6aa721",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-astro-starlight-docs-1.md",
+      "docs/astro.config.mjs",
+      "docs/package.json",
+      "docs/src/components/interactive/CodeHighlight.astro",
+      "docs/src/components/interactive/CodeHighlight.tsx",
+      "docs/src/components/interactive/index.ts",
+      "docs/src/content/docs/playground/syntax-highlighting.mdx",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat: implement CodeHighlight component for syntax highlighting",
+  "updated_at": "2026-09-08T13:22:37.134002-07:00"
+}

@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "62141483-f8ee-4236-bf12-85e816069800",
+  "created_at": "2025-09-01T16:55:21-07:00",
+  "metadata": {
+    "commit": "31b164257d466e0cff4b528ecc4c06eee48701f6",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat(ui): complete implementation of accessible Form component (#795)",
+  "updated_at": "2025-09-01T16:55:21-07:00"
+}

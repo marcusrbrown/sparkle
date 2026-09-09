@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "f5981d13-4c15-49c9-b2dc-e6b0cbd39e7e",
+  "created_at": "2024-03-03T23:41:50-07:00",
+  "metadata": {
+    "commit": "8e639eea9075df5f4a11c18f5b4d9d37ebfb1848",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "ci(renovate): pin  `marcusrbrown/renovate-config` to `v2` (#219)",
+  "updated_at": "2024-03-03T23:41:50-07:00"
+}

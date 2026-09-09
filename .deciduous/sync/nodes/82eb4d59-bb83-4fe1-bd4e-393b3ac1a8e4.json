@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "82eb4d59-bb83-4fe1-bd4e-393b3ac1a8e4",
+  "created_at": "2026-09-08T13:22:43.468108-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [react-native](https://reactnative.dev/) ([source](https://redirect.github.com/facebook/react-native/tree/HEAD/packages/react-native), [changelog](https://redirect.github.com/react-native-community/react-native-releases/blob/master/CHANGELOG.md)) | dependencies | patch | [`0.81.1` -> `0.81.4`](https://renovatebot.com/diffs/npm/react-native/0.81.1/0.81.4) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/facebook/react-native/badge)](https://securityscorecards.dev/viewer/?uri=github.com/facebook/react-native) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "a13dd74bd54b29f6b10a90ef609defe9637d6542",
+    "confidence": 75,
+    "files": [
+      "apps/fro-jive/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix(deps): update dependency react-native to v0.81.4",
+  "updated_at": "2026-09-08T13:22:43.468108-07:00"
+}

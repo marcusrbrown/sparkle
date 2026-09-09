@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "90e7e662-5973-4e7e-b1d2-cd17a3cec424",
+  "created_at": "2026-09-08T13:22:28.837988-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | Pending | OpenSSF |\n|---|---|---|---|---|---|\n| [shiki](https://redirect.github.com/shikijs/shiki) ([source](https://redirect.github.com/shikijs/shiki/tree/HEAD/packages/shiki)) | dependencies | minor | [`3.15.0` -> `3.16.0`](https://renovatebot.com/diffs/npm/shiki/3.15.0/3.16.0) | `3.17.0` | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/shikijs/shiki/badge)](https://securityscorecards.dev/viewer/?uri=github.com/shikijs/shiki) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "0003443157d00d1c5354d8edef9996745d32e8fd",
+    "confidence": 75,
+    "files": [
+      "docs/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix(deps): update dependency shiki to v3.16.0",
+  "updated_at": "2026-09-08T13:22:28.837988-07:00"
+}

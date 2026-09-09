@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "afe90dcb-0446-4978-8795-3ec3c5f5c6f4",
+  "created_at": "2026-09-08T13:22:38.839534-07:00",
+  "description": "- Fix terminal.loadAddon errors in Terminal component tests.\n- Update task status in the comprehensive code audit implementation plan.\n\nRelates to TASK-002 on #1006.",
+  "metadata": {
+    "commit": "e63751d8e0561756f71fd1ca63b20f9854c8cd26",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/refactor-audit-improvements-1.md",
+      "apps/moo-dang/src/components/Terminal.test.tsx"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix: resolve terminal.loadAddon errors in Terminal component tests",
+  "updated_at": "2026-09-08T13:22:38.839534-07:00"
+}

@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "5ae8435d-b67b-4bae-8fa9-9edf64dd750d",
+  "created_at": "2026-09-06T13:30:01-07:00",
+  "metadata": {
+    "commit": "624e3cf688379e3f63c58e3845aedbf4910b0d5c",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(moo-dang): remove dormant performance-optimizations module (#2012)",
+  "updated_at": "2026-09-06T13:30:01-07:00"
+}

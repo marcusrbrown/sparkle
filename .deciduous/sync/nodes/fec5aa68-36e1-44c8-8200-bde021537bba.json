@@ -1,0 +1,21 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "fec5aa68-36e1-44c8-8200-bde021537bba",
+  "created_at": "2026-09-08T13:22:51.220733-07:00",
+  "description": "## What\n\nAdds explicit language identifiers (`text`/`bash`) to 8 fenced code blocks across 5 docs files that were missing them, fixing `markdown/fenced-code-language` ESLint warnings.\n\n- `apps/moo-dang/DEVELOPMENT.md` — commit message format/examples\n- `docs/README.md` — install command, directory tree\n- `docs/src/content/docs/development/troubleshooting.md` — TS error output\n- `docs/src/content/docs/theme/workflow.md` — directory tree\n- `packages/theme/docs/CONTRIBUTING.md` — directory tree, commit message examples\n\n## Why\n\nFlagged as the only remaining `pnpm lint` warnings (0 errors, 8 warnings) during the daily autohealing scan (category 3: code quality & repo hygiene).\n\n## Verification\n\n- `pnpm lint` → clean (0 errors, 0 warnings)\n- `pnpm check` → clean\n\n---\n🤖 Opened by the [Fro Bot daily autohealing run](https://github.com/marcusrbrown/sparkle/issues/1665).",
+  "metadata": {
+    "commit": "ccd6f404b06906fe07b8165134990b10765f15e2",
+    "confidence": 75,
+    "files": [
+      "apps/moo-dang/DEVELOPMENT.md",
+      "docs/README.md",
+      "docs/src/content/docs/development/troubleshooting.md",
+      "docs/src/content/docs/theme/workflow.md",
+      "packages/theme/docs/CONTRIBUTING.md"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(lint): add missing fenced code block languages",
+  "updated_at": "2026-09-08T13:22:51.220733-07:00"
+}

@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "e44f5833-634c-45ed-8fc2-840db0b5e042",
+  "created_at": "2025-10-03T04:23:18-07:00",
+  "metadata": {
+    "commit": "36ede0552982ba1f56f7efa550fcc090b1b0fbfd",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat: add icon components for theme toggle and preview (#1037)",
+  "updated_at": "2025-10-03T04:23:18-07:00"
+}

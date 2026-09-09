@@ -1,0 +1,21 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "2f7d7ef4-b1f7-4f8b-becc-7124587b8f37",
+  "created_at": "2026-09-08T13:22:47.781497-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Change | [Age](https://docs.renovatebot.com/merge-confidence/) | [Confidence](https://docs.renovatebot.com/merge-confidence/) | OpenSSF | Code Search |\n|---|---|---|---|---|---|\n| [@types/react-dom](https://redirect.github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/react-dom) ([source](https://redirect.github.com/DefinitelyTyped/DefinitelyTyped/tree/HEAD/types/react-dom)) | [`19.2.4` → `19.2.5`](https://renovatebot.com/diffs/npm/@types%2freact-dom/19.2.4/19.2.5) | ![age](https://developer.mend.io/api/mc/badges/age/npm/@types%2freact-dom/19.2.5?slim=true) | ![confidence](https://developer.mend.io/api/mc/badges/confidence/npm/@types%2freact-dom/19.2.4/19.2.5?slim=true) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/DefinitelyTyped/DefinitelyTyped/badge)](https://securityscorecards.dev/viewer/?uri=github.com/DefinitelyTyped/DefinitelyTyped) | [![GitHub Code Search for \"@types/react-dom\"](https://img.shields.io/badge/code_search-@types/react--dom-2671E5.svg?logo=github)](https://redirect.github.com/search?q=repo:marcusrbrown%2Fsparkle+NOT+path:/package(-lock)%3F%5C.json%7Cyarn%5C.lock%7Cpnpm-lock%5C.yaml%7Cbun%5C.lock(b)/+%40types%2Freact-dom) |\n\n---",
+  "metadata": {
+    "commit": "476e319c7aa237bda6fe3767ae25bd4c4018d5d1",
+    "confidence": 75,
+    "files": [
+      "apps/moo-dang/package.json",
+      "docs/package.json",
+      "packages/storybook/package.json",
+      "packages/ui/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency @types/react-dom to v19.2.5",
+  "updated_at": "2026-09-08T13:22:47.781497-07:00"
+}

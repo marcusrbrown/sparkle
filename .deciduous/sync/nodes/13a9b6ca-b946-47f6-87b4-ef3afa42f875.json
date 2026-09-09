@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "13a9b6ca-b946-47f6-87b4-ef3afa42f875",
+  "created_at": "2025-09-06T22:46:40-07:00",
+  "metadata": {
+    "commit": "8de02bca7a3b13abb6e184bedb7d1995ce195fb3",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "build: add development health check script for workspace validation (#863)",
+  "updated_at": "2025-09-06T22:46:40-07:00"
+}

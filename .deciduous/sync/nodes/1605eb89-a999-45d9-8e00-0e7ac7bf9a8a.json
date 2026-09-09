@@ -1,0 +1,17 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "1605eb89-a999-45d9-8e00-0e7ac7bf9a8a",
+  "created_at": "2026-09-08T13:22:35.972614-07:00",
+  "description": "- Remove manual chunk splitting logic from Rollup configuration\n- Streamline caching optimizations for chunk file names",
+  "metadata": {
+    "commit": "ea17b84b10fbeafbcf012aea1bbb78d571f7bb77",
+    "confidence": 75,
+    "files": [
+      "docs/astro.config.mjs"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "refactor: remove manual chunk splitting for better caching",
+  "updated_at": "2026-09-08T13:22:35.972614-07:00"
+}

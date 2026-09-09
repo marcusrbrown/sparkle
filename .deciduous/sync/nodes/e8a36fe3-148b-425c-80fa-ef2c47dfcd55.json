@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "e8a36fe3-148b-425c-80fa-ef2c47dfcd55",
+  "created_at": "2025-12-02T07:20:43Z",
+  "metadata": {
+    "commit": "ebf42a42922609891165aef3c7f26910f5661fb8",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update bfra-me/works monorepo (#1226)",
+  "updated_at": "2025-12-02T07:20:43Z"
+}

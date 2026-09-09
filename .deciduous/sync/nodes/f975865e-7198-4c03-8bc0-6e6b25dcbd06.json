@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "f975865e-7198-4c03-8bc0-6e6b25dcbd06",
+  "created_at": "2024-11-27T14:57:21-07:00",
+  "metadata": {
+    "commit": "ac4fa40a46071b73953f4ae4502f3a44746a4733",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "ci(renovate): limit pinning (#409)",
+  "updated_at": "2024-11-27T14:57:21-07:00"
+}

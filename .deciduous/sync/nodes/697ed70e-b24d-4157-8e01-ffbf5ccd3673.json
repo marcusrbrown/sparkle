@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "697ed70e-b24d-4157-8e01-ffbf5ccd3673",
+  "created_at": "2025-12-01T06:43:07Z",
+  "metadata": {
+    "commit": "b6d5718eaaee82ec6714ee35ee0e2a0040f58f59",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency tsdown to v0.16.4 (#1161)",
+  "updated_at": "2025-12-01T06:43:07Z"
+}

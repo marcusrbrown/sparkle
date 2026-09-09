@@ -1,0 +1,23 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "2f48c4a7-09df-473a-b9a1-309e16f4205a",
+  "created_at": "2026-09-08T13:22:43.807845-07:00",
+  "description": "- Add script to generate CSS custom properties for Starlight theme\n- Map Sparkle Design System tokens to Starlight CSS variables\n- Include dark theme overrides and responsive design styles\n- Enhance styling for components and interactive elements\n\nRelates to TASK-033 of #875.",
+  "metadata": {
+    "commit": "d3e91f5b6632a843e32643d704d0a03bf80a2393",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-astro-starlight-docs-1.md",
+      "docs/astro.config.mjs",
+      "docs/package.json",
+      "docs/readme-theme.md",
+      "docs/scripts/generate-theme-css.ts",
+      "docs/src/styles/custom.css",
+      "docs/src/styles/sparkle-theme.css"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat: implement Starlight theme CSS generation from Sparkle tokens",
+  "updated_at": "2026-09-08T13:22:43.807845-07:00"
+}

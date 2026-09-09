@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "97283b8c-899c-497a-ab4f-dbbc0e878050",
+  "created_at": "2025-09-22T23:26:41-07:00",
+  "metadata": {
+    "commit": "944787a5177c020641f276bfcc69f2b00532793f",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat: implement Terminal component for WASM-based web shell (#955)",
+  "updated_at": "2025-09-22T23:26:41-07:00"
+}

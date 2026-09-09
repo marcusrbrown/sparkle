@@ -1,0 +1,17 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "53f2f955-280a-40a1-a8f8-03b8d0ad6acd",
+  "created_at": "2026-09-08T13:22:30.537205-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [astro](https://astro.build) ([source](https://redirect.github.com/withastro/astro/tree/HEAD/packages/astro)) | dependencies | patch | [`5.15.3` -> `5.15.6`](https://renovatebot.com/diffs/npm/astro/5.15.3/5.15.6) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/withastro/astro/badge)](https://securityscorecards.dev/viewer/?uri=github.com/withastro/astro) |\n\n### GitHub Vulnerability Alerts\n\n#### [CVE-2025-64745](https://redirect.github.com/withastro/astro/security/advisories/GHSA-w2vj-39qv-7vh7)\n\n## Summary\n\nA Reflected Cross-Site Scripting (XSS) vulnerability exists in Astro's development server error pages when the `trailingSlash` configuration option is used. An attacker can inject arbitrary JavaScript code that executes in the victim's browser context by crafting a malicious URL. While this vulnerability only affects the development server and not production builds, it could be exploited to compromise developer environments through social engineering or malicious links.\n\n## Details\n\n### Vulnerability Location\n\nhttps://github.com/withastro/astro/blob/5bc37fd5cade62f753aef66efdf40f982379029a/packages/astro/src/template/4xx.ts#L133-L149\n\n### Root Cause\n\nThe vulnerability was introduced in commit `536175528` (PR #&#8203;12994) , as part of a feature to \"redirect trailing slashes on on-demand rendered pages.\" The feature added a helpful 404 error page in development mode to alert developers of trailing slash mismatches. [description truncated to fit budget]",
+  "metadata": {
+    "commit": "f0031d4ce41b00e2bea9cba53b3e9e4efd5d0791",
+    "confidence": 75,
+    "files": [
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(lockfile): update dependency astro to v5.15.6 [SECURITY]",
+  "updated_at": "2026-09-08T13:22:30.537205-07:00"
+}

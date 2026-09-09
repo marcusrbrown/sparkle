@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "67966e53-a7e8-4d2d-9a2c-6112f1cb827b",
+  "created_at": "2025-09-01T22:06:02-07:00",
+  "metadata": {
+    "commit": "a8363248bbd06a1c4277eedbaa55734e07c423b7",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "ci: add cache cleanup workflow (#809)",
+  "updated_at": "2025-09-01T22:06:02-07:00"
+}

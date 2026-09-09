@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "52dda6bc-dacc-4494-9e4e-d265c2e26162",
+  "created_at": "2025-09-27T02:55:42-07:00",
+  "metadata": {
+    "commit": "5877d9237918688e46ebff09f87d5536972a6999",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat: implement shell command completion system (#989)",
+  "updated_at": "2025-09-27T02:55:42-07:00"
+}

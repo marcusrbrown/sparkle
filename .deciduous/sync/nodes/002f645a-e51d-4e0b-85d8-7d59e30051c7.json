@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "002f645a-e51d-4e0b-85d8-7d59e30051c7",
+  "created_at": "2025-09-10T19:25:13-07:00",
+  "metadata": {
+    "commit": "e102133a77c6df4a25045dcbb74ffc0c97c3c778",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "docs: enhance navigation and documentation structure (#908)",
+  "updated_at": "2025-09-10T19:25:13-07:00"
+}

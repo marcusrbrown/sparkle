@@ -1,0 +1,10 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "a29419ef-25b2-4842-b152-6d0b7c7d719e",
+  "created_at": "2026-09-08T13:23:11.106969-07:00",
+  "description": "Fix all code blocks to be ESLint-compatible (rejected: unnecessary effort for documentation)",
+  "node_type": "option",
+  "status": "pending",
+  "title": "Fix all code blocks to be ESLint-compatible",
+  "updated_at": "2026-09-08T13:23:11.106969-07:00"
+}

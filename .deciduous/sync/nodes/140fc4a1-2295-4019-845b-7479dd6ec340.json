@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "140fc4a1-2295-4019-845b-7479dd6ec340",
+  "created_at": "2026-09-08T13:22:23.916245-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [axe-core](https://www.deque.com/axe/) ([source](https://redirect.github.com/dequelabs/axe-core)) | devDependencies | patch | [`4.11.0` → `4.11.1`](https://renovatebot.com/diffs/npm/axe-core/4.11.0/4.11.1) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/dequelabs/axe-core/badge)](https://securityscorecards.dev/viewer/?uri=github.com/dequelabs/axe-core) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "e7918d3e73f696809d74c6f96f3223ccc7998d3c",
+    "confidence": 75,
+    "files": [
+      "docs/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency axe-core to v4.11.1",
+  "updated_at": "2026-09-08T13:22:23.916245-07:00"
+}

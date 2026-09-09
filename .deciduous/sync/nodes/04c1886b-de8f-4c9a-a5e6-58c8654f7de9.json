@@ -1,0 +1,22 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "04c1886b-de8f-4c9a-a5e6-58c8654f7de9",
+  "created_at": "2026-09-08T13:22:38.217563-07:00",
+  "description": "- Refactor theme test mocking to use centralized mock theme fixtures.\n- Update integration tests to utilize new setup functions for consistency.\n- Simplify localStorage mock setup for theme persistence scenarios.\n\nRelates to TASK-018 on #1010.",
+  "metadata": {
+    "commit": "e0f67f6cf0d6f1236aa16f17d5bd0670a861607f",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/refactor-audit-improvements-1.md",
+      ".ai/review/task-018-code-review.md",
+      "packages/theme/test/setup.ts",
+      "packages/theme/test/test-utils.ts",
+      "packages/theme/test/theme-combined.integration.test.tsx",
+      "packages/theme/test/theme-persistence.integration.test.tsx"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "refactor: centralize theme mock configurations and improve tests",
+  "updated_at": "2026-09-08T13:22:38.217563-07:00"
+}

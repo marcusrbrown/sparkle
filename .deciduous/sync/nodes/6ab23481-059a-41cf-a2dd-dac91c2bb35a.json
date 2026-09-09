@@ -1,0 +1,19 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "6ab23481-059a-41cf-a2dd-dac91c2bb35a",
+  "created_at": "2026-09-08T13:22:31.930839-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [@bfra.me/eslint-config](https://redirect.github.com/bfra-me/works/tree/main/packages/eslint-config#readme) ([source](https://redirect.github.com/bfra-me/works/tree/HEAD/packages/eslint-config)) | devDependencies | minor | [`0.35.2` -> `0.36.0`](https://renovatebot.com/diffs/npm/@bfra.me%2feslint-config/0.35.2/0.36.0) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/bfra-me/works/badge)](https://securityscorecards.dev/viewer/?uri=github.com/bfra-me/works) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "71ad81fe4c2463485ba64e519454cc09dd98650d",
+    "confidence": 75,
+    "files": [
+      "apps/moo-dang/src/shell/parser.ts",
+      "package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency @bfra.me/eslint-config to v0.36.0",
+  "updated_at": "2026-09-08T13:22:31.930839-07:00"
+}

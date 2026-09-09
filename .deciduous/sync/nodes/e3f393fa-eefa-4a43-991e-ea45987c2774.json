@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "e3f393fa-eefa-4a43-991e-ea45987c2774",
+  "created_at": "2025-06-18T20:10:41Z",
+  "metadata": {
+    "commit": "dfcf78509593e96dff18fcf5bf05b14c2b099109",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix(deps): update dependency expo-web-browser to ~14.2.0 (#664)",
+  "updated_at": "2025-06-18T20:10:41Z"
+}

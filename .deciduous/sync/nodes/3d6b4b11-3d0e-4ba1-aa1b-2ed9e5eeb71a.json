@@ -1,0 +1,22 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "3d6b4b11-3d0e-4ba1-aa1b-2ed9e5eeb71a",
+  "created_at": "2026-09-08T13:22:36.086306-07:00",
+  "description": "- Implement build optimizations for faster deployment times\n- Add performance monitoring script to analyze build metrics\n- Configure caching strategies and chunk splitting for improved efficiency\n- Create comprehensive build optimization guide for documentation\n- Update Astro configuration for better asset management and prefetching\n\nRelates to TASK-044 on #876.",
+  "metadata": {
+    "commit": "175a046814865cb61a83bf34b9df42a0358d8de6",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-astro-starlight-docs-1.md",
+      ".github/workflows/deploy-docs.yaml",
+      "docs/astro.config.mjs",
+      "docs/package.json",
+      "docs/scripts/build-performance.ts",
+      "docs/src/content/docs/deployment/build-optimization.md"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat: enhance build performance and optimization strategies",
+  "updated_at": "2026-09-08T13:22:36.086306-07:00"
+}

@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "6a96a824-d1f8-43d5-b477-6dc29d5101f2",
+  "created_at": "2024-04-25T00:01:03-07:00",
+  "metadata": {
+    "commit": "78417213ad5c3ea512f88f9d8602c70aa4a57c14",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "ci(renovate): add React Native deps (#236)",
+  "updated_at": "2024-04-25T00:01:03-07:00"
+}

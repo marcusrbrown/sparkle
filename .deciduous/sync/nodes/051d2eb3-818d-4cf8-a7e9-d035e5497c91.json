@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "051d2eb3-818d-4cf8-a7e9-d035e5497c91",
+  "created_at": "2025-03-28T02:46:14-07:00",
+  "metadata": {
+    "commit": "736c9550b01d90423b4f1f0058ee3cd59fdf0651",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "ci(renovate): use @bfra-me reusable workflow; add badges (#570)",
+  "updated_at": "2025-03-28T02:46:14-07:00"
+}

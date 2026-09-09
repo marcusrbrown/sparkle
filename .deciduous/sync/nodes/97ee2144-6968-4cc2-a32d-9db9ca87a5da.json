@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "97ee2144-6968-4cc2-a32d-9db9ca87a5da",
+  "created_at": "2026-09-08T13:23:07.844236-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Change | [Age](https://docs.renovatebot.com/merge-confidence/) | [Confidence](https://docs.renovatebot.com/merge-confidence/) | OpenSSF | Code Search |\n|---|---|---|---|---|---|\n| [typedoc](https://typedoc.org) ([source](https://redirect.github.com/TypeStrong/TypeDoc)) | [`0.28.17` → `0.28.18`](https://renovatebot.com/diffs/npm/typedoc/0.28.17/0.28.18) | ![age](https://developer.mend.io/api/mc/badges/age/npm/typedoc/0.28.18?slim=true) | ![confidence](https://developer.mend.io/api/mc/badges/confidence/npm/typedoc/0.28.17/0.28.18?slim=true) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/TypeStrong/TypeDoc/badge)](https://securityscorecards.dev/viewer/?uri=github.com/TypeStrong/TypeDoc) | [![GitHub Code Search for \"typedoc\"](https://img.shields.io/badge/code_search-typedoc-2671E5.svg?logo=github)](https://redirect.github.com/search?q=repo:marcusrbrown%2Fsparkle+NOT+path:/package(-lock)%3F%5C.json%7Cyarn%5C.lock%7Cpnpm-lock%5C.yaml%7Cbun%5C.lock(b)/+typedoc) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "f8da95a5c0aea55887f86103b259e4be7a77a635",
+    "confidence": 75,
+    "files": [
+      "docs/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency typedoc to v0.28.18",
+  "updated_at": "2026-09-08T13:23:07.844236-07:00"
+}

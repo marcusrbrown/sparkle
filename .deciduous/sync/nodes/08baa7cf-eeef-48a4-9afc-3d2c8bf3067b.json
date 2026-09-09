@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "08baa7cf-eeef-48a4-9afc-3d2c8bf3067b",
+  "created_at": "2026-09-08T13:22:30.720303-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [type-fest](https://redirect.github.com/sindresorhus/type-fest) | dependencies | major | [`^4.10.2` -> `^5.0.0`](https://renovatebot.com/diffs/npm/type-fest/4.41.0/5.2.0) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/sindresorhus/type-fest/badge)](https://securityscorecards.dev/viewer/?uri=github.com/sindresorhus/type-fest) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "bba34148dd91ed5f0a0a8f898c0101198fa5c7ce",
+    "confidence": 75,
+    "files": [
+      "packages/error-testing/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix(deps): update dependency type-fest to v5",
+  "updated_at": "2026-09-08T13:22:30.720303-07:00"
+}

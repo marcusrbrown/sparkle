@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "04990c6b-0625-4855-a378-e8e3de795f73",
+  "created_at": "2025-04-01T08:10:09Z",
+  "metadata": {
+    "commit": "da9b263e4b056efcb6e5459501945405db5b87bb",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency @types/node to v22.13.14 (#573)",
+  "updated_at": "2025-04-01T08:10:09Z"
+}

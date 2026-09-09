@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "982cb4c5-cbb1-4fd2-b734-14e8456447df",
+  "created_at": "2026-09-08T13:22:44.819259-07:00",
+  "description": "Clears 7 of the 31 open Dependabot alerts, including all four development-scope highs.\n\nEvery open alert is transitive through `pnpm-lock.yaml`, so an override is the only lever short of waiting for each intermediate package to bump on its own schedule.\n\n## Changed\n\n| Package | Installed | Override | Alerts |\n| --- | --- | --- | --- |\n| `fast-uri` | 3.1.5 | ^3.1.6 (resolves 3.1.7) | **4 high** |\n| `@xmldom/xmldom` | 0.8.14, 0.9.11 | ^0.8.15, ^0.9.12 | 2 medium |\n| `decode-uri-component` | 0.2.2 | ^0.5.0 | 1 medium |\n\n`fast-uri` reaches the tree through `ajv`, via `@microsoft/api-extractor` and `serve`. Worth noting for anyone re-checking: those advisories carry three separate version ranges each — 2.x, 3.x, and 4.x — and reading only the first suggests 3.1.5 is unaffected. It isn't; it falls inside `>= 3.1.3, < 3.1.6`.\n\n`@xmldom/xmldom` has both its 0.8 and 0.9 lines installed, so both need pinning. A single `^0.8.15` would leave the 0.9 line vulnerable.\n\n## Deliberately not addressed\n\n**20 alerts — dompurify.** All of them trace to `monaco-editor@0.54.0`, pinned exactly in `docs/package.json`. `monaco-editor@0.56.0` ships dompurify 3.4.8, and that bump is already sitting on the dependency dashboard as `renovate/monaco-editor-0.x`. Overriding dompurify here would paper over a real version bump that should happen properly — one checkbox does the same work with correct provenance.\n\n**3 alerts — no patched release exists at any version.**\n\n- `image-size` ≤ 2.0.2, 2 high, via `metro` ← `expo`\n- `extract-zip` ≤ 2.0.1, 1 high, via `puppeteer-core` ← `lighthouse` ← `@lhci/cli`\n\nNothing to override to. The pending Expo v57 bump does not help — the advisory has no fixed version, so a newer `metro` inherits the same problem.\n\n**1 alert — uuid.** Installed 7.0.3 and 8.3.2, both under `< 11.1.1`. Jumping four majors via override is not a change to make blind; it needs its own check of what depends on those lines.\n\n## Verification [description truncated to fit budget]",
+  "metadata": {
+    "commit": "24ce38253e50ebe76f96f2e0a9031a055fd62ef6",
+    "confidence": 75,
+    "files": [
+      "pnpm-lock.yaml",
+      "pnpm-workspace.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix(deps): override three transitive packages with security advisories",
+  "updated_at": "2026-09-08T13:22:44.819259-07:00"
+}

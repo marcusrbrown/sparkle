@@ -1,0 +1,19 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "1642879f-5b56-479b-90eb-02bba7d540ba",
+  "created_at": "2026-09-08T13:22:20.225944-07:00",
+  "description": "This PR contains the following updates: [description truncated to fit budget]",
+  "metadata": {
+    "commit": "1d7414889a02112d94de211b6dfcf1928d722e48",
+    "confidence": 75,
+    "files": [
+      "docs/package.json",
+      "packages/storybook/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update playwright monorepo to v1.58.2",
+  "updated_at": "2026-09-08T13:22:20.225944-07:00"
+}

@@ -1,0 +1,19 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "e99afe60-5c2f-477b-8978-161cf408a49e",
+  "created_at": "2026-09-08T13:22:59.295730-07:00",
+  "description": "This PR contains the following updates: [description truncated to fit budget]",
+  "metadata": {
+    "commit": "b37d6660f763d5682e7cc3f62ff5697c2832925f",
+    "confidence": 70,
+    "files": [
+      ".github/workflows/fro-bot.yaml",
+      "docs/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(deps): update all non-major dependencies",
+  "updated_at": "2026-09-08T13:22:59.295730-07:00"
+}

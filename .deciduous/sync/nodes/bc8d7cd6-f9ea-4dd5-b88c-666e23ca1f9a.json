@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "bc8d7cd6-f9ea-4dd5-b88c-666e23ca1f9a",
+  "created_at": "2025-10-03T09:24:56-07:00",
+  "metadata": {
+    "commit": "48c91f66aed3eb66d6b4956e9ed9c72f33ccbf8a",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat: add responsive preview component for testing across viewports (#1039)",
+  "updated_at": "2025-10-03T09:24:56-07:00"
+}

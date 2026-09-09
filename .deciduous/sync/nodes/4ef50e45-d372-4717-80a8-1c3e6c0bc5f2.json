@@ -1,0 +1,20 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "4ef50e45-d372-4717-80a8-1c3e6c0bc5f2",
+  "created_at": "2026-09-08T13:22:36.032889-07:00",
+  "description": "- Add caching for generated documentation to optimize build times\n- Implement caching for Astro build artifacts to improve deployment speed\n- Create comprehensive guide on caching strategies for documentation site\n- Update workflows to report cache status and improve CI efficiency\n\nRelates to TASK-045 on #876.",
+  "metadata": {
+    "commit": "37ba566a59bb650335719fab464bfc80ba411269",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-astro-starlight-docs-1.md",
+      ".github/workflows/deploy-docs.yaml",
+      ".github/workflows/regenerate-docs.yaml",
+      "docs/src/content/docs/deployment/caching-strategies.md"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat: implement caching strategies for documentation builds",
+  "updated_at": "2026-09-08T13:22:36.032889-07:00"
+}

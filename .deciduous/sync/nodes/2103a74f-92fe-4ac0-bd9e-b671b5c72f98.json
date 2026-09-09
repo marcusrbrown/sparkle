@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "2103a74f-92fe-4ac0-bd9e-b671b5c72f98",
+  "created_at": "2026-02-28T06:24:36Z",
+  "metadata": {
+    "commit": "68db777c2bbca77f0c5ded570bef416cba11b9ba",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix(deps): update dependency shiki to v3.23.0 (#1433)",
+  "updated_at": "2026-02-28T06:24:36Z"
+}

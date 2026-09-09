@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "6c8ee8f8-4d7f-4d83-ae43-0cb61e1a1281",
+  "created_at": "2025-10-24T17:29:56Z",
+  "metadata": {
+    "commit": "9d6b1c27bfbca41279f3a16a1ee7b5d6e9540614",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency @axe-core/playwright to v4.11.0 (#1108)",
+  "updated_at": "2025-10-24T17:29:56Z"
+}

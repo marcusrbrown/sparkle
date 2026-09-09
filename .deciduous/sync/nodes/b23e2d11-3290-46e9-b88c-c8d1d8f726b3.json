@@ -1,0 +1,21 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "b23e2d11-3290-46e9-b88c-c8d1d8f726b3",
+  "created_at": "2026-09-08T13:23:00.845862-07:00",
+  "description": "## Summary\n\nRunning `pnpm --filter @sparkle/docs docs:automation` against the current `main` branch produces a diff in generated API documentation files, indicating the `regenerate-docs` workflow has lagged behind recent package source changes.\n\n## Changed files\n\n- `docs/src/content/docs/api/theme/src.md` — Updated theme package API reference\n- `docs/src/content/docs/api/types/src.md` — Updated types package API reference\n- `docs/src/content/docs/components/form-input.md` — Updated FormInput component docs\n- `docs/src/content/docs/components/form-password.md` — Updated FormPassword component docs\n\n## Context\n\nThis is an automated fix from the daily autohealing run (category 3/4: docs drift). The `regenerate-docs` workflow triggers on package source changes, but appears to not have run against the latest sources. This PR syncs the generated documentation.",
+  "metadata": {
+    "commit": "7f472e0a90cfeba95cf1781dc45eec9cb650b2ce",
+    "confidence": 75,
+    "files": [
+      "docs/src/content/docs/api/theme/src.md",
+      "docs/src/content/docs/api/types/src.md",
+      "docs/src/content/docs/api/ui/src.md",
+      "docs/src/content/docs/components/form-input.md",
+      "docs/src/content/docs/components/form-password.md"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "docs: regenerate API docs from current JSDoc sources",
+  "updated_at": "2026-09-08T13:23:00.845862-07:00"
+}

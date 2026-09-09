@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "595895bf-8137-461b-9e28-ed8269056c95",
+  "created_at": "2026-01-09T19:19:08Z",
+  "metadata": {
+    "commit": "e7918d3e73f696809d74c6f96f3223ccc7998d3c",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency axe-core to v4.11.1 (#1302)",
+  "updated_at": "2026-01-09T19:19:08Z"
+}

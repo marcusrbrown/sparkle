@@ -1,0 +1,21 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "8fa84b05-a7fc-4aa3-8f72-13729031f0fc",
+  "created_at": "2026-09-08T13:22:39.572665-07:00",
+  "description": "- Replace ShellCommandError, InvalidArgumentError, and FileOperationError classes with factory functions.\n- Update error handling in pipeline and virtual file system to use new error creation functions.\n- Refactor completion provider to utilize function-based error creation.\n- Enhance localStorage configuration management with improved error handling functions.",
+  "metadata": {
+    "commit": "ee3746361335c5b918f8e6de0efd04a150bb8b73",
+    "confidence": 75,
+    "files": [
+      "apps/moo-dang/src/shell/commands.ts",
+      "apps/moo-dang/src/shell/completion-providers.ts",
+      "apps/moo-dang/src/shell/config-manager.ts",
+      "apps/moo-dang/src/shell/pipeline.ts",
+      "apps/moo-dang/src/shell/virtual-file-system.ts"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "refactor: replace error classes with factory functions for consistency",
+  "updated_at": "2026-09-08T13:22:39.572665-07:00"
+}

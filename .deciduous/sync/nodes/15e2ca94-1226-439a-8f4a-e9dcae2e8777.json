@@ -1,0 +1,21 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "15e2ca94-1226-439a-8f4a-e9dcae2e8777",
+  "created_at": "2026-09-08T13:22:41.688980-07:00",
+  "description": "- Implement terminal resize handling using ResizeObserver\n- Add debounced resize trigger to optimize performance\n- Update imperative handle to include fitToContainer method\n- Clean up ResizeObserver on component unmount\n\nRelates to TASK-008 on #942.",
+  "metadata": {
+    "commit": "b070dfa2d741f6277aedafab5a0f2ddaab8a065d",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-moo-dang-shell-1.md",
+      "apps/moo-dang/package.json",
+      "apps/moo-dang/src/components/Terminal.tsx",
+      "apps/moo-dang/src/index.css",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat: enhance Terminal component with resize handling",
+  "updated_at": "2026-09-08T13:22:41.688980-07:00"
+}

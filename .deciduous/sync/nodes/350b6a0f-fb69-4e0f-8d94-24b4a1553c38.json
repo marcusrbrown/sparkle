@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "350b6a0f-fb69-4e0f-8d94-24b4a1553c38",
+  "created_at": "2025-09-05T13:53:28-07:00",
+  "metadata": {
+    "commit": "a697a6eae7a0e0ff2905b940092c4149f8395ad4",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix(deps): update dependency react-native to v0.81.1 (#832)",
+  "updated_at": "2025-09-05T13:53:28-07:00"
+}

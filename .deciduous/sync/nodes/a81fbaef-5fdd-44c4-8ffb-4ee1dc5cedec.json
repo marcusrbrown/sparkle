@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "a81fbaef-5fdd-44c4-8ffb-4ee1dc5cedec",
+  "created_at": "2022-03-02T22:23:14-07:00",
+  "metadata": {
+    "commit": "4ae27d748c85bb20f4215dceb50d3e93eb09c8a3",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "Configure Renovate (#24)",
+  "updated_at": "2022-03-02T22:23:14-07:00"
+}

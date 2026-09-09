@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "b5f3ed95-3d9c-4c4d-b78d-13202fb1782c",
+  "created_at": "2025-09-05T15:47:46-07:00",
+  "metadata": {
+    "commit": "f77a33e6d11b29b07d0f2177762b33602b3f497a",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix: add type annotations for event handlers in Form stories (#837)",
+  "updated_at": "2025-09-05T15:47:46-07:00"
+}

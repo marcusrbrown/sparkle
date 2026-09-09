@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "0c0028a6-2cd0-4567-b28f-e10ae68e3527",
+  "created_at": "2026-09-08T13:22:27.812399-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [typedoc](https://typedoc.org) ([source](https://redirect.github.com/TypeStrong/TypeDoc)) | devDependencies | patch | [`0.28.14` -> `0.28.15`](https://renovatebot.com/diffs/npm/typedoc/0.28.14/0.28.15) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/TypeStrong/TypeDoc/badge)](https://securityscorecards.dev/viewer/?uri=github.com/TypeStrong/TypeDoc) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "cf39fb5b2e182de882a9175694f86bbe44575a7d",
+    "confidence": 75,
+    "files": [
+      "docs/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency typedoc to v0.28.15",
+  "updated_at": "2026-09-08T13:22:27.812399-07:00"
+}

@@ -1,0 +1,22 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "ee67ee11-197d-4b51-8b9a-760d2add5fd7",
+  "created_at": "2026-09-08T13:22:36.694133-07:00",
+  "description": "- Add performance optimization guide detailing image optimization, lazy loading, and build enhancements.\n- Implement OptimizedImage component for automatic image optimization.\n- Introduce LazyComponent for efficient lazy loading of heavy components.\n- Update astro.config.mjs with image optimization settings.\n- Optimize performance tracking and monitoring strategies in documentation.\n\nCloses #875.",
+  "metadata": {
+    "commit": "db5f3a90135638a64f5285024fd0c90e52246fc5",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-astro-starlight-docs-1.md",
+      "docs/astro.config.mjs",
+      "docs/src/components/media/LazyComponent.tsx",
+      "docs/src/components/media/OptimizedImage.astro",
+      "docs/src/components/media/index.ts",
+      "docs/src/content/docs/guides/performance.mdx"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat: enhance performance optimization in documentation",
+  "updated_at": "2026-09-08T13:22:36.694133-07:00"
+}

@@ -1,0 +1,10 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "0a6b46c5-daae-4bca-b1fd-bd1d20834626",
+  "created_at": "2026-09-08T13:21:39.351131-07:00",
+  "description": "Completed; shipped app. Update the `apps/moo-dang/README.md` status badge link before archiving (see Live Cross-References).",
+  "node_type": "observation",
+  "status": "pending",
+  "title": ".ai/plan/feature-moo-dang-shell-1.md",
+  "updated_at": "2026-09-08T13:21:39.351131-07:00"
+}

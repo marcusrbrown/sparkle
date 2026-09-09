@@ -1,0 +1,17 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "8c0c8e8d-d33e-4ef6-9a30-2c66c4e86754",
+  "created_at": "2026-09-08T13:22:25.065297-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [storybook](https://storybook.js.org) ([source](https://redirect.github.com/storybookjs/storybook/tree/HEAD/code/core)) | devDependencies | patch | [`10.1.8` -> `10.1.10`](https://renovatebot.com/diffs/npm/storybook/10.1.8/10.1.10) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/storybookjs/storybook/badge)](https://securityscorecards.dev/viewer/?uri=github.com/storybookjs/storybook) |\n\n### GitHub Vulnerability Alerts\n\n#### [CVE-2025-68429](https://redirect.github.com/storybookjs/storybook/security/advisories/GHSA-8452-54wp-rmv6)\n\nOn December 11th, the Storybook team received a responsible disclosure alerting them to a potential vulnerability in certain built and published Storybooks. \n\nThe vulnerability is a bug in how Storybook handles environment variables defined in a `.env` file, which could, in specific circumstances, lead to those variables being unexpectedly bundled into the artifacts created by the `storybook build` command. When a built Storybook is published to the web, the bundle’s source is viewable, thus potentially exposing those variables to anyone with access. If those variables contained secrets, they should be considered compromised.\n\n## Who is impacted?\n\nFor a project to be vulnerable to this issue, it must:\n\n- Build the Storybook (i.e. run `storybook build` directly or indirectly) in a directory that contains a `.env` file (including variants like `.env.local`)\n- The `.env` file contains sensitive secrets\n- Use Storybook version `7.0.0` or above\n- Publish the built Storybook to the web\n\nStorybooks built without a `.env` file at build time are not affected, including common CI-based builds where secrets are provided via platform environment variables rather than `.env` files. [description truncated to fit budget]",
+  "metadata": {
+    "commit": "245d1640c5041ffcd27b4b344cb5f5e680c67705",
+    "confidence": 75,
+    "files": [
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency storybook to v10.1.10 [SECURITY]",
+  "updated_at": "2026-09-08T13:22:25.065297-07:00"
+}

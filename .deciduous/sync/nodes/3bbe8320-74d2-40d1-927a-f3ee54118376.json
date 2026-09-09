@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "3bbe8320-74d2-40d1-927a-f3ee54118376",
+  "created_at": "2026-09-08T13:22:24.944874-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [@vitest/coverage-v8](https://redirect.github.com/vitest-dev/vitest/tree/main/packages/coverage-v8#readme) ([source](https://redirect.github.com/vitest-dev/vitest/tree/HEAD/packages/coverage-v8)) | devDependencies | patch | [`4.0.15` -> `4.0.16`](https://renovatebot.com/diffs/npm/@vitest%2fcoverage-v8/4.0.15/4.0.16) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/vitest-dev/vitest/badge)](https://securityscorecards.dev/viewer/?uri=github.com/vitest-dev/vitest) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "4be3d601517a8017230f7e05138366bce49cae7f",
+    "confidence": 75,
+    "files": [
+      "packages/ui/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency @vitest/coverage-v8 to v4.0.16",
+  "updated_at": "2026-09-08T13:22:24.944874-07:00"
+}

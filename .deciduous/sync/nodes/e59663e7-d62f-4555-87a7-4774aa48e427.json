@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "e59663e7-d62f-4555-87a7-4774aa48e427",
+  "created_at": "2026-06-16T01:41:54Z",
+  "metadata": {
+    "commit": "a2daa731f2e6d7e89028bd208ae3955c7ca659a9",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update all non-major dependencies to v7.58.9 (#1737)",
+  "updated_at": "2026-06-16T01:41:54Z"
+}

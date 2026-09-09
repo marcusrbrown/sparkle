@@ -1,0 +1,20 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "d05bd5ca-10c2-4392-b579-0bb2548c4e03",
+  "created_at": "2026-09-08T13:22:27.597672-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [tsx](https://tsx.is) ([source](https://redirect.github.com/privatenumber/tsx)) | devDependencies | minor | [`4.20.6` -> `4.21.0`](https://renovatebot.com/diffs/npm/tsx/4.20.6/4.21.0) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/privatenumber/tsx/badge)](https://securityscorecards.dev/viewer/?uri=github.com/privatenumber/tsx) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "a46db4873883f4a831bae4677bb5b58ad5a4ffd2",
+    "confidence": 75,
+    "files": [
+      "apps/moo-dang/package.json",
+      "docs/package.json",
+      "package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency tsx to v4.21.0",
+  "updated_at": "2026-09-08T13:22:27.597672-07:00"
+}

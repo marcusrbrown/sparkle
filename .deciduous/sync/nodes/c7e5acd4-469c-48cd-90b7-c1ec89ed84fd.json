@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "c7e5acd4-469c-48cd-90b7-c1ec89ed84fd",
+  "created_at": "2024-04-04T23:59:05-07:00",
+  "metadata": {
+    "commit": "6f49c1c050b6e19469925856f0dee89d225d7252",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat: add `fro-jive` package from Expo template (#224)",
+  "updated_at": "2024-04-04T23:59:05-07:00"
+}

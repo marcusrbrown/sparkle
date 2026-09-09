@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "a1715b16-bb0a-486d-9a60-47d53f347f93",
+  "created_at": "2025-09-06T07:56:13-07:00",
+  "metadata": {
+    "commit": "25ac5ab057162abad33d59fd31476ea96a627327",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "build: add validation scripts for build consistency and exports (#859)",
+  "updated_at": "2025-09-06T07:56:13-07:00"
+}

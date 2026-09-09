@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "51b24272-f7ab-4d28-8ebd-d6063cd16e00",
+  "created_at": "2026-02-14T23:21:56Z",
+  "metadata": {
+    "commit": "17f2375b71248ecfa1b1b34d0b2ba3755a9eb0c4",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency turbo to v2.8.7 (#1389)",
+  "updated_at": "2026-02-14T23:21:56Z"
+}

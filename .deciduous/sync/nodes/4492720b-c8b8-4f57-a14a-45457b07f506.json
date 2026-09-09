@@ -1,0 +1,10 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "4492720b-c8b8-4f57-a14a-45457b07f506",
+  "created_at": "2026-09-08T13:23:11.070751-07:00",
+  "description": "Add `audit-phase*.md` pattern to ESLint ignore configuration.",
+  "node_type": "decision",
+  "status": "pending",
+  "title": "ADR-002: Audit Documentation Exclusion from Linting",
+  "updated_at": "2026-09-08T13:23:11.070751-07:00"
+}

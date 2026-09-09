@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "18648d33-6d8f-41a0-a559-b1e84e896ca2",
+  "created_at": "2026-09-08T13:22:46.026445-07:00",
+  "description": "Closes three high-severity advisories that each had their own bot-authored PR.\n\n## Why one PR instead of three rebases\n\n`#1838`, `#1866`, and `#1862` all edit the same `overrides` block in `pnpm-workspace.yaml`. Once the nanoid override landed in `#1904`, the remaining three conflicted against `main` and against each other — same two files, same conflict class every time. Rebasing them sequentially means three rounds of the same merge resolution. One entry point is cheaper and easier to review.\n\n## Overrides added\n\n| Package | Floor | Advisory | Resolves to | Replaces |\n| --- | --- | --- | --- | --- |\n| `adm-zip` | `^0.6.0` | GHSA-xcpc-8h2w-3j85 | 0.6.0 | #1838 |\n| `brace-expansion` | `^5.0.8` | GHSA-mh99-v99m-4gvg | 5.0.9 | #1866 |\n| `postcss` | `^8.5.23` | GHSA-r28c-9q8g-f849 | 8.5.26 | #1862 |\n\n## Note on the postcss floor\n\n`#1862`'s title says `^8.5.12`, but its actual diff already targeted `^8.5.18` — the title was stale. `^8.5.18` clears the high advisory (GHSA-r28c-9q8g-f849) but leaves medium GHSA-fxqj-rqcc-2cmp open. This raises the floor to `^8.5.23` so both are closed by constraint rather than by whatever resolution happens to land.\n\n## Verification\n\n- `pnpm install` resolves cleanly; lockfile shrinks 819723 → 818697 bytes\n- Resolved versions confirmed against the lockfile: `adm-zip 0.6.0`, `brace-expansion 5.0.9`, `postcss 8.5.26`, `nanoid 3.3.18`\n- `pnpm check` — exit 0\n- `pnpm build` — 10/10 tasks, docs site builds 71 pages\n\n## Follow-up\n\nSupersedes #1838, #1866, #1862 — those should close once this merges.\n\nAdvisories the autohealing report flagged as unremediable are unaffected and remain open: `fast-uri` (transitive via `ajv`, dev-only), `extract-zip` (no patched version upstream), `image-size` (no patched version, Expo/Metro toolchain).",
+  "metadata": {
+    "commit": "23c8d8eaa934688801de03311493b4f9014f363b",
+    "confidence": 75,
+    "files": [
+      "pnpm-lock.yaml",
+      "pnpm-workspace.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix(deps): consolidate outstanding security overrides",
+  "updated_at": "2026-09-08T13:22:46.026445-07:00"
+}

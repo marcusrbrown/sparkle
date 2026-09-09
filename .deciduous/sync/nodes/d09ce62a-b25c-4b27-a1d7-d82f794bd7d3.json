@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "d09ce62a-b25c-4b27-a1d7-d82f794bd7d3",
+  "created_at": "2024-04-26T19:06:50Z",
+  "metadata": {
+    "commit": "af2c24c02c1ec853ca37a99e28b1c10d9ddfdfd3",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix(deps): update dependency react-dom to v18.3.1 (#245)",
+  "updated_at": "2024-04-26T19:06:50Z"
+}

@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "ca534fd3-ac28-4e90-99c2-363b4446a6a7",
+  "created_at": "2026-07-21T06:13:55Z",
+  "metadata": {
+    "commit": "fd9302c54dd769ed03690d1033374167ab41c139",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix(deps): update dependency astro to v7 [SECURITY] (#1847)",
+  "updated_at": "2026-07-21T06:13:55Z"
+}

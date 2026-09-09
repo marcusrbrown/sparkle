@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "06326838-e86e-4aba-bc61-5d18d3127dd8",
+  "created_at": "2026-05-22T13:19:53Z",
+  "metadata": {
+    "commit": "e757fa66aa223f4ccb8af16838d937562b97f713",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency tsx to v4.22.3 (#1658)",
+  "updated_at": "2026-05-22T13:19:53Z"
+}

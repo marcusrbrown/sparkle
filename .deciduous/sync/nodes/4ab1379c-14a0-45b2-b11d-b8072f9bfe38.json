@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "4ab1379c-14a0-45b2-b11d-b8072f9bfe38",
+  "created_at": "2025-10-01T07:21:42-07:00",
+  "metadata": {
+    "commit": "c95d9b55310978c64866826d3cdc49eed483fa51",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "docs(ai): add unique implementation plan prompts for coding agents (#1029)",
+  "updated_at": "2025-10-01T07:21:42-07:00"
+}

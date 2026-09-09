@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "032b3241-8d43-4e73-b24c-90190920e67c",
+  "created_at": "2026-09-08T13:22:44.698534-07:00",
+  "description": "Clears the last four fixable Dependabot alerts.\n\n#2029 took `dompurify` from 3.1.7 to 3.4.8 by bumping `monaco-editor` to 0.56.0, which resolved 16 of the 20 open dompurify alerts. Four remain, each needing a later patch than monaco pins:\n\n| Advisory | Severity | Vulnerable | Patched |\n| --- | --- | --- | --- |\n| [GHSA-vxr8-fq34-vvx9](https://github.com/advisories/GHSA-vxr8-fq34-vvx9) | low | `< 3.4.9` | 3.4.9 |\n| [GHSA-cmwh-pvxp-8882](https://github.com/advisories/GHSA-cmwh-pvxp-8882) | medium | `<= 3.4.10` | 3.4.11 |\n| [GHSA-c2j3-45gr-mqc4](https://github.com/advisories/GHSA-c2j3-45gr-mqc4) | low | `<= 3.4.11` | 3.4.12 |\n| [GHSA-55q2-fjhq-7xh7](https://github.com/advisories/GHSA-55q2-fjhq-7xh7) | medium | `<= 3.4.12` | 3.4.13 |\n\n`dompurify` is transitive through `monaco-editor`, which pins it exactly at 3.4.8, so an override is the only lever until monaco ships a release pinning `>= 3.4.13`. Same shape as the three overrides in #2030.\n\nResolves to 3.4.14 after install. Reversible the moment monaco catches up.\n\n## Remaining after this\n\nTwo alerts, both `image-size <= 2.0.2` ([GHSA-5p2g-fcmc-qvqq](https://github.com/advisories/GHSA-5p2g-fcmc-qvqq), [GHSA-w3rx-r6r6-pgpr](https://github.com/advisories/GHSA-w3rx-r6r6-pgpr)), reached through `metro` ← `expo`. Neither has a patched release at any version, so there is nothing to override to. The pending Expo v57 bump does not help — a newer `metro` inherits the same unfixed dependency.\n\nThat takes the board from 31 open alerts to 2, both genuinely unfixable and both understood.\n\n## Verification\n\n- `pnpm check` exit 0\n- `pnpm test` 16/16 tasks\n- `pnpm build` 10/10 tasks\n- Post-install resolution: `dompurify@3.4.14`",
+  "metadata": {
+    "commit": "a17e83295510dc21f4803da647371d8f96b6722c",
+    "confidence": 75,
+    "files": [
+      "pnpm-lock.yaml",
+      "pnpm-workspace.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix(deps): override dompurify to clear the last four advisories",
+  "updated_at": "2026-09-08T13:22:44.698534-07:00"
+}

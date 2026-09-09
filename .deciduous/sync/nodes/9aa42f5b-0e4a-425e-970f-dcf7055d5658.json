@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "9aa42f5b-0e4a-425e-970f-dcf7055d5658",
+  "created_at": "2026-09-05T12:39:14Z",
+  "metadata": {
+    "commit": "c11f75430fe30f52a17e65140c645e4bb1e529f1",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency happy-dom to v20.13.1 (#1991)",
+  "updated_at": "2026-09-05T12:39:14Z"
+}

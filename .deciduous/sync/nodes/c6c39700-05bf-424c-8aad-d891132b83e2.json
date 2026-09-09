@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "c6c39700-05bf-424c-8aad-d891132b83e2",
+  "created_at": "2026-09-08T13:22:49.720458-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Change | [Age](https://docs.renovatebot.com/merge-confidence/) | [Confidence](https://docs.renovatebot.com/merge-confidence/) | OpenSSF | Code Search |\n|---|---|---|---|---|---|\n| [react-native-screens](https://redirect.github.com/software-mansion/react-native-screens) | [`~4.26.0` → `~4.27.0`](https://renovatebot.com/diffs/npm/react-native-screens/4.26.2/4.27.0) | ![age](https://developer.mend.io/api/mc/badges/age/npm/react-native-screens/4.27.0?slim=true) | ![confidence](https://developer.mend.io/api/mc/badges/confidence/npm/react-native-screens/4.26.2/4.27.0?slim=true) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/software-mansion/react-native-screens/badge)](https://securityscorecards.dev/viewer/?uri=github.com/software-mansion/react-native-screens) | [![GitHub Code Search for \"react-native-screens\"](https://img.shields.io/badge/code_search-react--native--screens-2671E5.svg?logo=github)](https://redirect.github.com/search?q=repo:marcusrbrown%2Fsparkle+NOT+path:/package(-lock)%3F%5C.json%7Cyarn%5C.lock%7Cpnpm-lock%5C.yaml%7Cbun%5C.lock(b)/+react-native-screens) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "5efb724230a6f9a5ddd8cc0c811dc6fbf6de1f58",
+    "confidence": 75,
+    "files": [
+      "apps/fro-jive/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix(deps): update dependency react-native-screens to ~4.27.0",
+  "updated_at": "2026-09-08T13:22:49.720458-07:00"
+}

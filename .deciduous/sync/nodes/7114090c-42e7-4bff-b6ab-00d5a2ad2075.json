@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "7114090c-42e7-4bff-b6ab-00d5a2ad2075",
+  "created_at": "2026-01-23T00:40:17Z",
+  "metadata": {
+    "commit": "59f23382d8237afd41ced5e776f3084e90dbc07d",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency happy-dom to v20.3.4 (#1330)",
+  "updated_at": "2026-01-23T00:40:17Z"
+}

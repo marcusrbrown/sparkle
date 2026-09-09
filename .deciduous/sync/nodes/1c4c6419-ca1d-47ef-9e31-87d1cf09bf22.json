@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "1c4c6419-ca1d-47ef-9e31-87d1cf09bf22",
+  "created_at": "2025-12-01T11:29:25Z",
+  "metadata": {
+    "commit": "08085cdaf627b01d55351b03f20a44746c320bfe",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix(deps): update expo monorepo (#1169)",
+  "updated_at": "2025-12-01T11:29:25Z"
+}

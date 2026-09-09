@@ -1,0 +1,17 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "45e98ede-2773-439e-a8f1-95a04127df03",
+  "created_at": "2026-09-08T13:23:00.015461-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [actions/checkout](https://redirect.github.com/actions/checkout) | action | patch | `v6.0.2` → `v6.0.3` | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/actions/checkout/badge)](https://securityscorecards.dev/viewer/?uri=github.com/actions/checkout) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "32da8c097dd5231e2b8c9a638da0e34c4dfa632f",
+    "confidence": 70,
+    "files": [
+      ".github/workflows/fro-bot.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(deps): update actions/checkout action to v6.0.3",
+  "updated_at": "2026-09-08T13:23:00.015461-07:00"
+}

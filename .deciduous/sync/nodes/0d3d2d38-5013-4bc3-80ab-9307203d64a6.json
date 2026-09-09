@@ -1,0 +1,19 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "0d3d2d38-5013-4bc3-80ab-9307203d64a6",
+  "created_at": "2026-09-08T13:22:41.798447-07:00",
+  "description": "- Add assetsInclude configuration for WASM files in vite.config\n- Allow serving WASM files from the project and workspace in vite.config\n- Ensure noEmit is set to true in tsconfig\n\nCloses #941.",
+  "metadata": {
+    "commit": "5813fe8d2faf698b5aed74fdd285b7f3ae8da3cf",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-moo-dang-shell-1.md",
+      "apps/moo-dang/tsconfig.json",
+      "apps/moo-dang/vite.config.ts"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore: update tsconfig and vite.config for WASM support",
+  "updated_at": "2026-09-08T13:22:41.798447-07:00"
+}

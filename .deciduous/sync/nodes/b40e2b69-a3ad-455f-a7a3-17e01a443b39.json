@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "b40e2b69-a3ad-455f-a7a3-17e01a443b39",
+  "created_at": "2026-09-08T13:22:31.069180-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [@astrojs/starlight](https://starlight.astro.build) ([source](https://redirect.github.com/withastro/starlight/tree/HEAD/packages/starlight)) | dependencies | minor | [`^0.35.2` -> `^0.36.0`](https://renovatebot.com/diffs/npm/@astrojs%2fstarlight/0.35.3/0.36.2) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/withastro/starlight/badge)](https://securityscorecards.dev/viewer/?uri=github.com/withastro/starlight) |\n\n---\n\n### Release Notes\n\n<details>\n<summary>withastro/starlight (@&#8203;astrojs/starlight)</summary>\n\n### [`v0.36.2`](https://redirect.github.com/withastro/starlight/blob/HEAD/packages/starlight/CHANGELOG.md#0362)\n\n[Compare Source](https://redirect.github.com/withastro/starlight/compare/@astrojs/starlight@0.36.1...@astrojs/starlight@0.36.2)\n\n##### Patch Changes\n\n- [#&#8203;3500](https://redirect.github.com/withastro/starlight/pull/3500) [`7700456`](https://redirect.github.com/withastro/starlight/commit/770045663c8ca3cc44983dd0d444955eba441243) Thanks [@&#8203;delucis](https://redirect.github.com/delucis)! - This is the first release published with OIDC trusted publishing.\n\n- [#&#8203;3484](https://redirect.github.com/withastro/starlight/pull/3484) [`620fb38`](https://redirect.github.com/withastro/starlight/commit/620fb3857e40a37a2f8bdf2d0430b106e8f80cdb) Thanks [@&#8203;gboubeta-uvigo](https://redirect.github.com/gboubeta-uvigo)! - Improves Spanish UI translations\n\n### [`v0.36.1`](https://redirect.github.com/withastro/starlight/blob/HEAD/packages/starlight/CHANGELOG.md#0361)\n\n[Compare Source](https://redirect.github.com/withastro/starlight/compare/@astrojs/starlight@0.36.0...@astrojs/starlight@0.36.1)\n\n##### Patch Changes [description truncated to fit budget]",
+  "metadata": {
+    "commit": "4d56900c0a3f95847d9957cb58bcbbf13c6ad867",
+    "confidence": 75,
+    "files": [
+      "docs/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix(deps): update dependency @astrojs/starlight to ^0.36.0",
+  "updated_at": "2026-09-08T13:22:31.069180-07:00"
+}

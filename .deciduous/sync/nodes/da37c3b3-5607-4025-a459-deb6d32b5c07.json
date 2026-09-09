@@ -1,0 +1,17 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "da37c3b3-5607-4025-a459-deb6d32b5c07",
+  "created_at": "2026-09-08T13:22:42.191289-07:00",
+  "description": "- Create initial implementation plan for the \"moo-dang\" web shell\n- Outline requirements and constraints for the application\n- Define implementation steps across multiple phases\n- Specify dependencies and testing strategies for the project",
+  "metadata": {
+    "commit": "f240f33e7e704bacf3e76f6afe86b3d521e2d086",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-moo-dang-shell-1.md"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "docs: add implementation plan for WASM-based web shell application",
+  "updated_at": "2026-09-08T13:22:42.191289-07:00"
+}

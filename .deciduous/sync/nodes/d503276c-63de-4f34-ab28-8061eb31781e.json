@@ -1,0 +1,23 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "d503276c-63de-4f34-ab28-8061eb31781e",
+  "created_at": "2026-09-08T13:22:39.101668-07:00",
+  "description": "- Create CommandTerminal stories showcasing various configurations\n- Implement Terminal stories demonstrating basic functionality and themes\n- Update tsconfig.json to include path mappings for moo-dang components\n- Modify vite.config.ts to set up alias for moo-dang source\n- Add new dependencies for terminal components in package.json\n\nRelates to TASK-035 on #946.",
+  "metadata": {
+    "commit": "5d95021a7dc0a36387d7bdd3ac71f469b245b500",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-moo-dang-shell-1.md",
+      "packages/storybook/package.json",
+      "packages/storybook/src/stories/CommandTerminal.stories.tsx",
+      "packages/storybook/src/stories/Terminal.stories.tsx",
+      "packages/storybook/tsconfig.json",
+      "packages/storybook/vite.config.ts",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "doc(moo-dang): add stories for CommandTerminal and Terminal components",
+  "updated_at": "2026-09-08T13:22:39.101668-07:00"
+}

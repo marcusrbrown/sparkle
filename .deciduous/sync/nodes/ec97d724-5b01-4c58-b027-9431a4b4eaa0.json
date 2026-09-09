@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "ec97d724-5b01-4c58-b027-9431a4b4eaa0",
+  "created_at": "2026-09-08T13:23:04.250992-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Change | [Age](https://docs.renovatebot.com/merge-confidence/) | [Confidence](https://docs.renovatebot.com/merge-confidence/) | OpenSSF | Code Search |\n|---|---|---|---|---|---|\n| [@axe-core/playwright](https://redirect.github.com/dequelabs/axe-core-npm) | [`4.11.1` → `4.11.2`](https://renovatebot.com/diffs/npm/@axe-core%2fplaywright/4.11.1/4.11.2) | ![age](https://developer.mend.io/api/mc/badges/age/npm/@axe-core%2fplaywright/4.11.2?slim=true) | ![confidence](https://developer.mend.io/api/mc/badges/confidence/npm/@axe-core%2fplaywright/4.11.1/4.11.2?slim=true) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/dequelabs/axe-core-npm/badge)](https://securityscorecards.dev/viewer/?uri=github.com/dequelabs/axe-core-npm) | [![GitHub Code Search for \"@axe-core/playwright\"](https://img.shields.io/badge/code_search-@axe--core/playwright-2671E5.svg?logo=github)](https://redirect.github.com/search?q=repo:marcusrbrown%2Fsparkle+NOT+path:/package(-lock)%3F%5C.json%7Cyarn%5C.lock%7Cpnpm-lock%5C.yaml%7Cbun%5C.lock(b)/+%40axe-core%2Fplaywright) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "e5c0bdaa288449daf84260aa1e6223bb246618ab",
+    "confidence": 75,
+    "files": [
+      "docs/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency @axe-core/playwright to v4.11.2",
+  "updated_at": "2026-09-08T13:23:04.250992-07:00"
+}

@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "94aa2636-04f4-4c3f-85ef-fef5c06833c8",
+  "created_at": "2025-11-26T22:17:42Z",
+  "metadata": {
+    "commit": "5a8f1288e28450ff99d897063a8708cedf813c6b",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency typedoc-plugin-frontmatter to v1.3.1 (#1200)",
+  "updated_at": "2025-11-26T22:17:42Z"
+}

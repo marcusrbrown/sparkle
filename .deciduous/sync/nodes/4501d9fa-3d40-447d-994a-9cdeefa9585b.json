@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "4501d9fa-3d40-447d-994a-9cdeefa9585b",
+  "created_at": "2025-09-05T16:27:37-07:00",
+  "metadata": {
+    "commit": "298a18ce0a0a4714f9f111f3f9e18194b97802d7",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore: add TypeScript project references audit report (#842)",
+  "updated_at": "2025-09-05T16:27:37-07:00"
+}

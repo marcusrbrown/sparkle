@@ -1,0 +1,20 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "ce1b8775-3c65-424e-ac3b-4df004d3b9c2",
+  "created_at": "2026-09-08T13:22:30.263142-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [@types/node](https://redirect.github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/node) ([source](https://redirect.github.com/DefinitelyTyped/DefinitelyTyped/tree/HEAD/types/node)) | devDependencies | minor | [`24.9.2` -> `24.10.1`](https://renovatebot.com/diffs/npm/@types%2fnode/24.9.2/24.10.1) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/DefinitelyTyped/DefinitelyTyped/badge)](https://securityscorecards.dev/viewer/?uri=github.com/DefinitelyTyped/DefinitelyTyped) |\n\n---",
+  "metadata": {
+    "commit": "a2786d3166dea4f4e241c4c8554b42282a3a5d93",
+    "confidence": 75,
+    "files": [
+      "docs/package.json",
+      "package.json",
+      "packages/error-testing/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency @types/node to v24.10.1",
+  "updated_at": "2026-09-08T13:22:30.263142-07:00"
+}

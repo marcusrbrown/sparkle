@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "705f7519-e7a4-4154-ae98-617be7549685",
+  "created_at": "2025-09-05T13:46:09-07:00",
+  "metadata": {
+    "commit": "979041124d99a89a1d2bcd7c02e4550d0c215d71",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "docs: add implementation plan for Astro Starlight documentation site (#834)",
+  "updated_at": "2025-09-05T13:46:09-07:00"
+}

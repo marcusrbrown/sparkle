@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "a443e7c2-9505-46de-8b8e-471ad012ec89",
+  "created_at": "2025-11-30T07:17:31Z",
+  "metadata": {
+    "commit": "8f579d1aded621cdb92c5d2ebebed7daabc26e7e",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix(deps): update dependency shiki to v3.17.0 (#1206)",
+  "updated_at": "2025-11-30T07:17:31Z"
+}

@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "18b25c51-4f29-4b75-93ac-6ac8d5699098",
+  "created_at": "2021-06-07T09:56:45-07:00",
+  "metadata": {
+    "commit": "3fa44f37703a50c44d9c67fc97c0aa655f0161c8",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat: configure Renovate (#6)",
+  "updated_at": "2021-06-07T09:56:45-07:00"
+}

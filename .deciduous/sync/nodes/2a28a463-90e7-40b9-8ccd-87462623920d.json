@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "2a28a463-90e7-40b9-8ccd-87462623920d",
+  "created_at": "2025-12-02T06:16:23Z",
+  "metadata": {
+    "commit": "cf39fb5b2e182de882a9175694f86bbe44575a7d",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency typedoc to v0.28.15 (#1225)",
+  "updated_at": "2025-12-02T06:16:23Z"
+}

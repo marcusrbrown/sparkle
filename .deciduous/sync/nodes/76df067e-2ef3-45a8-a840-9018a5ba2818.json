@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "76df067e-2ef3-45a8-a840-9018a5ba2818",
+  "created_at": "2025-09-24T15:15:54-07:00",
+  "metadata": {
+    "commit": "51c7abda71dee85453dc7834538064bbc33eda12",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat: implement command pipeline execution with I/O redirection (#972)",
+  "updated_at": "2025-09-24T15:15:54-07:00"
+}

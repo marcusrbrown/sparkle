@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "d041e6b5-3494-4eac-81ab-96a887db762b",
+  "created_at": "2026-04-06T20:30:18Z",
+  "metadata": {
+    "commit": "d31cb82c42be0034d63d92e6a1d53d51184dee88",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency vite to v7.3.2 [SECURITY] (#1565)",
+  "updated_at": "2026-04-06T20:30:18Z"
+}

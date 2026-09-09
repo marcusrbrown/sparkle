@@ -1,0 +1,25 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "8b17672e-a243-443b-a361-3cc77c29bc6b",
+  "created_at": "2026-09-08T13:22:55.397471-07:00",
+  "description": "## What\n\nAdds the missing `build:<package>` script alias to 8 workspace packages (`types`, `utils`, `error-testing`, `config`, `ui`, `storybook`, `docs`, `moo-dang`), matching the convention already used by `@sparkle/theme` (`\"build:theme\": \"npm run build\"`).\n\n## Why\n\n`turbo.json` defines package-qualified task dependencies such as `@sparkle/ui#build:ui` and `@sparkle/config#build:config` for the `test`, `dev`, `docs:automation`, and `build:docs` tasks. Turborepo silently no-ops a dependency edge when the target package has no script matching the task name — it does not error. Only `@sparkle/theme` had defined its `build:theme` alias; every other package listed above only had a generic `build` script, so those dependency edges never actually built anything.\n\n**Concrete symptom**: on a clean checkout (no prior `pnpm build`), `pnpm test`'s `^build:ui` dependency never ran `packages/ui`'s `build:css` step, so `packages/ui/dist/styles.css` was missing. `moo-dang`'s component tests then failed with:\n\n```\nError: Failed to resolve import \"./styles.css\" from \"../../packages/ui/dist/index.js\"\n```\n\nThis wasn't caught by CI because `.github/workflows/main.yaml` only runs `pnpm check` and `pnpm build` — it doesn't run `pnpm test`.\n\n## Fix\n\nAdd a `build:<package>` alias (`\"npm run build\"` / `\"pnpm build\"`) to each affected package, so the turbo task graph resolves as intended without depending on residual build output from an earlier full `pnpm build`.\n\n## Verification\n\n- Removed all `dist/` and `.turbo/` output across the workspace\n- `pnpm test` → 445 passed, 1 skipped (17/17 files), `packages/ui/dist/styles.css` correctly generated via the dependency chain\n- `pnpm check` → clean (manypkg, types, turbo config, dependency validation, lint all pass)\n- `pnpm build` → all 10 tasks successful\n- `pnpm check:monorepo` → workspaces valid\n\n---\n🤖 Opened by the [Fro Bot daily autohealing run](https://github.com/marcusrbrown/sparkle/issues/1665).",
+  "metadata": {
+    "commit": "f40e995d98448458a137bbf34d547ab6525599ad",
+    "confidence": 75,
+    "files": [
+      "apps/moo-dang/package.json",
+      "docs/package.json",
+      "packages/config/package.json",
+      "packages/error-testing/package.json",
+      "packages/storybook/package.json",
+      "packages/types/package.json",
+      "packages/ui/package.json",
+      "packages/utils/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(lint): apply auto-fixes from autohealing run",
+  "updated_at": "2026-09-08T13:22:55.397471-07:00"
+}

@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "8ffb0964-ff82-4ae7-a6d9-b74d9f217fc6",
+  "created_at": "2025-09-04T18:57:15-07:00",
+  "metadata": {
+    "commit": "8d83e94d19955ed3c4b2f439affb7f6b3a5a06c5",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat: enhance theme package with React Native and Tailwind support (#824)",
+  "updated_at": "2025-09-04T18:57:15-07:00"
+}

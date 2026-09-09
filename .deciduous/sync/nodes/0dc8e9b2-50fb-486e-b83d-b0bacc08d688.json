@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "0dc8e9b2-50fb-486e-b83d-b0bacc08d688",
+  "created_at": "2026-09-08T13:22:28.894031-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [@astrojs/check](https://redirect.github.com/withastro/astro/tree/main/packages/language-tools/astro-check) ([source](https://redirect.github.com/withastro/astro/tree/HEAD/packages/language-tools/astro-check)) | dependencies | patch | [`0.9.5` -> `0.9.6`](https://renovatebot.com/diffs/npm/@astrojs%2fcheck/0.9.5/0.9.6) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/withastro/astro/badge)](https://securityscorecards.dev/viewer/?uri=github.com/withastro/astro) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "f5936c5e9f8f1954312e8b27defe90b7408b616b",
+    "confidence": 75,
+    "files": [
+      "docs/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix(deps): update dependency @astrojs/check to v0.9.6",
+  "updated_at": "2026-09-08T13:22:28.894031-07:00"
+}

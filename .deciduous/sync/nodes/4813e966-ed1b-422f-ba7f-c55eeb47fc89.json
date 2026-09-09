@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "4813e966-ed1b-422f-ba7f-c55eeb47fc89",
+  "created_at": "2025-09-06T06:02:44-07:00",
+  "metadata": {
+    "commit": "3cc125fc8e9bce433b37c3a6ba9c3e67425256e1",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "build: enhance tsdown configurations across multiple packages (#855)",
+  "updated_at": "2025-09-06T06:02:44-07:00"
+}

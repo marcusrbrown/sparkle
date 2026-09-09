@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "2eb3ec98-1bfd-49a9-b557-9eb0be1498cf",
+  "created_at": "2025-09-29T19:38:03-07:00",
+  "metadata": {
+    "commit": "e63751d8e0561756f71fd1ca63b20f9854c8cd26",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix: resolve terminal.loadAddon errors in Terminal component tests (#1013)",
+  "updated_at": "2025-09-29T19:38:03-07:00"
+}

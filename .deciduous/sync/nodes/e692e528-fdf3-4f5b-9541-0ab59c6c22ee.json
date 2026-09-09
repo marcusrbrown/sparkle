@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "e692e528-fdf3-4f5b-9541-0ab59c6c22ee",
+  "created_at": "2026-09-06T07:57:37-07:00",
+  "metadata": {
+    "commit": "e8ff16c6738dfa1ee55350aba56d2d1ea4d3a2ba",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "docs: regenerate docs for theme (#2000)",
+  "updated_at": "2026-09-06T07:57:37-07:00"
+}

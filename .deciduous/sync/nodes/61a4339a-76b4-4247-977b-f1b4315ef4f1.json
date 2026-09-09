@@ -1,0 +1,23 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "61a4339a-76b4-4247-977b-f1b4315ef4f1",
+  "created_at": "2026-09-08T13:22:45.546744-07:00",
+  "description": "`VirtualFileSystemImpl` forwarded every call to `createVirtualFileSystem()` and nothing else:\n\n```ts\n/**\n * @deprecated Use createVirtualFileSystem() factory function instead.\n */\nexport class VirtualFileSystemImpl implements VirtualFileSystem {\n  private readonly vfs: VirtualFileSystem\n\n  constructor(enableDebugLogging = false) {\n    this.vfs = createVirtualFileSystem(enableDebugLogging)\n  }\n\n  getCurrentDirectory(): string {\n    return this.vfs.getCurrentDirectory()\n  }\n  // ... 11 more, all identical\n}\n```\n\nAll 12 methods were one-line passthroughs — verified individually, no added logic anywhere. It was marked deprecated when the factory was introduced, but nothing ever migrated: the worker and every test still constructed the wrapper.\n\n`moo-dang` is a private app with no external consumers, so the compatibility shim had nobody to be compatible with.\n\n## Change\n\nReplaces `new VirtualFileSystemImpl(x)` with `createVirtualFileSystem(x)` at all six call sites — `workers/shell.worker.ts` plus five test files — and deletes the class.\n\nOne wrinkle worth noting: the `VirtualFileSystem` interface is declared in `shell/types.ts`, not re-exported from `virtual-file-system.ts`. Typing the call sites against the interface therefore required importing it from `./types`, not from the module the factory lives in.\n\n`virtual-file-system.test.ts`'s `describe` block is renamed from `VirtualFileSystemImpl` to `createVirtualFileSystem`. Every assertion is unchanged — only construction and the block name differ.\n\n`job-controller.test.ts` reaches the module through a dynamic `await import('./virtual-file-system')`, so its destructured binding was updated rather than an import statement.\n\nNo `instanceof VirtualFileSystemImpl` existed anywhere, and the class was not re-exported from any barrel, so nothing depended on class identity.\n\n## Verification [description truncated to fit budget]",
+  "metadata": {
+    "commit": "8b530deccbff1e18e119bf26cf927aea79df24aa",
+    "confidence": 75,
+    "files": [
+      "apps/moo-dang/src/shell/commands.test.ts",
+      "apps/moo-dang/src/shell/completion.test.ts",
+      "apps/moo-dang/src/shell/job-controller.test.ts",
+      "apps/moo-dang/src/shell/pipeline.test.ts",
+      "apps/moo-dang/src/shell/virtual-file-system.test.ts",
+      "apps/moo-dang/src/shell/virtual-file-system.ts",
+      "apps/moo-dang/src/workers/shell.worker.ts"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "refactor(moo-dang): remove deprecated VirtualFileSystemImpl class adapter",
+  "updated_at": "2026-09-08T13:22:45.546744-07:00"
+}

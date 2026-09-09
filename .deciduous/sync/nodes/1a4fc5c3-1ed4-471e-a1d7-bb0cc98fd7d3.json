@@ -1,0 +1,19 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "1a4fc5c3-1ed4-471e-a1d7-bb0cc98fd7d3",
+  "created_at": "2026-09-08T13:22:37.479642-07:00",
+  "description": "- Create SunIcon, MoonIcon, and MonitorIcon components for theme representation\n- Refactor ThemePreview and ThemeToggle components to use new icon components\n- Improve maintainability by reducing duplication of SVG code",
+  "metadata": {
+    "commit": "36ede0552982ba1f56f7efa550fcc090b1b0fbfd",
+    "confidence": 75,
+    "files": [
+      "docs/src/components/interactive/icons.tsx",
+      "docs/src/components/interactive/theme-preview.tsx",
+      "docs/src/components/interactive/theme-toggle.tsx"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat: add icon components for theme toggle and preview",
+  "updated_at": "2026-09-08T13:22:37.479642-07:00"
+}

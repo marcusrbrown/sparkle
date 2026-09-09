@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "da798c30-3612-4a48-80aa-686efb43ef08",
+  "created_at": "2024-12-21T16:19:25-07:00",
+  "metadata": {
+    "commit": "fa418e3a94d18490a963d4dc5bd2ca01c7686786",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore: fix issues caught by TypeScript 5.7.2 (#460)",
+  "updated_at": "2024-12-21T16:19:25-07:00"
+}

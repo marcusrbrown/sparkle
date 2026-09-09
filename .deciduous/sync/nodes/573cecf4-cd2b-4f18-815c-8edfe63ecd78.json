@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "573cecf4-cd2b-4f18-815c-8edfe63ecd78",
+  "created_at": "2026-05-23T19:54:17-07:00",
+  "metadata": {
+    "commit": "cc5717a24fd9082426b26e63517dafa0463a9792",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat(ci): add Fro Bot workflow + llms.txt project map (#1662)",
+  "updated_at": "2026-05-23T19:54:17-07:00"
+}

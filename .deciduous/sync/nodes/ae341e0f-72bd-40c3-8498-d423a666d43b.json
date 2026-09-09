@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "ae341e0f-72bd-40c3-8498-d423a666d43b",
+  "created_at": "2025-09-01T11:02:38-07:00",
+  "metadata": {
+    "commit": "7ddf1d0a9a35aac45edcfeaeab2b08cbd33c2fcd",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore: add `.git-blame-ignore-revs` (#791)",
+  "updated_at": "2025-09-01T11:02:38-07:00"
+}

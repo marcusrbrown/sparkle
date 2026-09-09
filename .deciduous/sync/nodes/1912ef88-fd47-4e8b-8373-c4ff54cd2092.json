@@ -1,0 +1,37 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "1912ef88-fd47-4e8b-8373-c4ff54cd2092",
+  "created_at": "2026-09-08T13:22:38.550539-07:00",
+  "description": "PR #1018: chore: remove Cursor rules and `llms.txt`",
+  "metadata": {
+    "commit": "024e3789fdf76e5ac3bb115cd5ec5701fc7d2318",
+    "confidence": 75,
+    "files": [
+      ".cursor/rules/000-rule-generating-agent.mdc",
+      ".cursor/rules/001-claude@3.7-cursor-agent.mdc",
+      ".cursor/rules/002-lessons-learned-agent.mdc",
+      ".cursor/rules/003-personal-preferences-always.mdc",
+      ".cursor/rules/004-cursor-rules-migration-agent.mdc",
+      ".cursor/rules/005-emoji-communication-always.mdc",
+      ".cursor/rules/1001-typescript-configuration-agent.mdc",
+      ".cursor/rules/1002-coding-standards-agent.mdc",
+      ".cursor/rules/101-pnpm-workspace-agent.mdc",
+      ".cursor/rules/200-monorepo-structure-agent.mdc",
+      ".cursor/rules/2001-expo-configuration-agent.mdc",
+      ".cursor/rules/2002-storybook-integration-agent.mdc",
+      ".cursor/rules/2003-tailwind-integration-agent.mdc",
+      ".cursor/rules/201-package-interoperability-agent.mdc",
+      ".cursor/rules/202-error-handling-agent.mdc",
+      ".cursor/rules/203-turborepo-optimization-agent.mdc",
+      ".cursor/rules/300-testing-strategy-agent.mdc",
+      ".cursor/rules/400-documentation-strategy-agent.mdc",
+      ".cursor/rules/401-md-docs-auto.mdc",
+      ".cursor/rules/801-changesets-workflow-agent.mdc",
+      "llms.txt"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore: remove Cursor rules and `llms.txt`",
+  "updated_at": "2026-09-08T13:22:38.550539-07:00"
+}

@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "6b279cd0-127f-4042-af3a-490b54dcb62e",
+  "created_at": "2026-03-26T05:42:27Z",
+  "metadata": {
+    "commit": "f8da95a5c0aea55887f86103b259e4be7a77a635",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency typedoc to v0.28.18 (#1526)",
+  "updated_at": "2026-03-26T05:42:27Z"
+}

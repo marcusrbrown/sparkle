@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "b2a3c71f-fe7b-4226-b8e2-e9b0d2f7d973",
+  "created_at": "2025-11-29T15:12:03Z",
+  "metadata": {
+    "commit": "f5936c5e9f8f1954312e8b27defe90b7408b616b",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix(deps): update dependency @astrojs/check to v0.9.6 (#1204)",
+  "updated_at": "2025-11-29T15:12:03Z"
+}

@@ -1,0 +1,21 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "e228a5b3-4254-4067-92a8-f03117e881ba",
+  "created_at": "2026-09-08T13:22:32.504810-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [node](https://nodejs.org) ([source](https://redirect.github.com/nodejs/node)) |  | major | `22.21.1` -> `24.11.0` | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/nodejs/node/badge)](https://securityscorecards.dev/viewer/?uri=github.com/nodejs/node) |\n| [@types/node](https://redirect.github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/node) ([source](https://redirect.github.com/DefinitelyTyped/DefinitelyTyped/tree/HEAD/types/node)) | devDependencies | major | [`22.18.10` -> `24.9.2`](https://renovatebot.com/diffs/npm/@types%2fnode/22.18.10/24.9.2) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/DefinitelyTyped/DefinitelyTyped/badge)](https://securityscorecards.dev/viewer/?uri=github.com/DefinitelyTyped/DefinitelyTyped) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "a0ab4970957513fe3db1d7dc44713def5f2af64c",
+    "confidence": 70,
+    "files": [
+      ".node-version",
+      "docs/package.json",
+      "package.json",
+      "packages/error-testing/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(deps): update Node.js to v24",
+  "updated_at": "2026-09-08T13:22:32.504810-07:00"
+}

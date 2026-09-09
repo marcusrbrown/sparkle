@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "9738b522-18be-431e-81e9-b9d1c534cae8",
+  "created_at": "2025-06-14T01:37:37Z",
+  "metadata": {
+    "commit": "4d4d21e04616ce209a391bded7cfb8afee70dd08",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix(deps): update dependency expo-router to ~5.1.0 (#660)",
+  "updated_at": "2025-06-14T01:37:37Z"
+}

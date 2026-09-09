@@ -1,0 +1,19 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "54a1c3fb-f1db-485a-aacb-612c091c2fc2",
+  "created_at": "2026-09-08T13:22:39.357700-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [tsx](https://tsx.is) ([source](https://redirect.github.com/privatenumber/tsx)) | devDependencies | patch | [`4.20.5` -> `4.20.6`](https://renovatebot.com/diffs/npm/tsx/4.20.5/4.20.6) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/privatenumber/tsx/badge)](https://securityscorecards.dev/viewer/?uri=github.com/privatenumber/tsx) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "2f706b079db084de8dfe0b695bec75ab58a9b1e4",
+    "confidence": 75,
+    "files": [
+      "docs/package.json",
+      "package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency tsx to v4.20.6",
+  "updated_at": "2026-09-08T13:22:39.357700-07:00"
+}

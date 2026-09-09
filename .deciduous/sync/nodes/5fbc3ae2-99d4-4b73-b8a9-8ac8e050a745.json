@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "5fbc3ae2-99d4-4b73-b8a9-8ac8e050a745",
+  "created_at": "2026-09-06T08:56:40-07:00",
+  "metadata": {
+    "commit": "23c8d8eaa934688801de03311493b4f9014f363b",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix(deps): consolidate outstanding security overrides (#2002)",
+  "updated_at": "2026-09-06T08:56:40-07:00"
+}

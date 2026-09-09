@@ -1,0 +1,17 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "90f731bc-9263-4224-9c57-a8e0a65e82df",
+  "created_at": "2026-09-08T13:22:45.336765-07:00",
+  "description": "The docs-regeneration cache key never tracked package source.\n\n```yaml\nkey: docs-regen-${{ runner.os }}-${{ hashFiles('packages/*/src/**/*.{ts,tsx}', 'docs/scripts/**/*.ts', 'docs/typedoc.json') }}\n```\n\n`hashFiles` uses `@actions/glob`, which does not support brace expansion. Running the real package against this repo:\n\n| Pattern | Files matched |\n| --- | --- |\n| `packages/*/src/**/*.{ts,tsx}` | **0** |\n| explicit per-extension patterns | **45** |\n\nSo the key only ever reflected `docs/scripts/**` and `docs/typedoc.json`.\n\nThis is the same hazard #1798 fixed in this file's `on.push.paths` block. The comment that fix left behind is still there:\n\n```yaml\n# Note: GitHub Actions path filters do not support brace expansion\n# (e.g. `*.{ts,tsx}`), so each extension is listed as its own pattern.\n```\n\nThe path filters were corrected; the cache key three sections down was not.\n\n## Observable effect\n\nThree separate commits that each modified `packages/*/src/**/*.ts` produced an identical cache key:\n\n| Run | Commit | Files under `packages/*/src/` | Key |\n| --- | --- | --- | --- |\n| 34038835477 | `a3947ca0` | 1 | `docs-regen-Linux-75fd6cd1…` |\n| 34039565992 | `0d2c7912` | 2 | `docs-regen-Linux-75fd6cd1…` |\n| 34052091514 | `5d7d15fb` | 2 | `docs-regen-Linux-75fd6cd1…` |\n| 34060270681 | `7a20340f` | 3 | `docs-regen-Linux-0f58363f…` |\n\nThe last differs only because that commit also touched `docs/scripts/*.ts`, which is matched by a brace-free pattern.\n\n## Scope — what this does and does not explain\n\nThis fixes a real defect: the cache key is now correct, and package source changes will invalidate it.\n\nIt is **not** established that this alone unfreezes generated documentation. The evidence is incomplete in a way worth stating rather than papering over. [description truncated to fit budget]",
+  "metadata": {
+    "commit": "8f416d084a8ef3f0c02600392042145129649531",
+    "confidence": 75,
+    "files": [
+      ".github/workflows/regenerate-docs.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix(ci): correct docs-regen cache key that never tracked package source",
+  "updated_at": "2026-09-08T13:22:45.336765-07:00"
+}

@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "12e2cdca-b54e-42c6-9938-7893dff21b77",
+  "created_at": "2025-03-28T23:31:10-07:00",
+  "metadata": {
+    "commit": "3b7eaeadd7ae33a470d6af286246289a43be9f67",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency vitest to v3 (#567)",
+  "updated_at": "2025-03-28T23:31:10-07:00"
+}

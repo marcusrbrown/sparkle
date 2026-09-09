@@ -1,0 +1,28 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "4d1730f0-bcbf-40cf-b966-4425c13dee0d",
+  "created_at": "2026-09-08T13:22:39.009343-07:00",
+  "description": "- Introduce `wasm-benchmarks.ts` for comprehensive benchmarking of WASM module loading, instantiation, and memory management.\r\n- Implement `benchmark.ts` for performance measurement utilities, including statistical analysis and memory tracking.\r\n- Create `performance-optimizations.ts` for caching, memory pooling, lazy loading, and debouncing strategies to enhance application performance.\r\n- Add optimized caching mechanisms and memory management techniques to reduce garbage collection pressure.\r\n- Establish global optimization instances for shared use across the application.\r\n\r\nCloses #946.",
+  "metadata": {
+    "commit": "e1ccee5eebd4af0bc8aa9bceaee32f18fc51f6ae",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-moo-dang-shell-1.md",
+      "apps/moo-dang/package.json",
+      "apps/moo-dang/src/hooks/use-command-input.ts",
+      "apps/moo-dang/src/hooks/use-terminal-output.ts",
+      "apps/moo-dang/src/test/command-benchmarks.ts",
+      "apps/moo-dang/src/test/performance-runner.ts",
+      "apps/moo-dang/src/test/terminal-benchmarks.ts",
+      "apps/moo-dang/src/test/wasm-benchmarks.ts",
+      "apps/moo-dang/src/utils/benchmark.ts",
+      "apps/moo-dang/src/utils/output-formatting.ts",
+      "apps/moo-dang/src/utils/performance-optimizations.ts",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat: add WASM performance benchmarking suite and utilities",
+  "updated_at": "2026-09-08T13:22:39.009343-07:00"
+}

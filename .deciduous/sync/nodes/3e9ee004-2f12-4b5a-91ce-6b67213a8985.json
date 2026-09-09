@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "3e9ee004-2f12-4b5a-91ce-6b67213a8985",
+  "created_at": "2025-09-04T08:20:45-07:00",
+  "metadata": {
+    "commit": "0d93b8952931489d627476fa7c23a42eb4a4e502",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "test: add integration tests for theme persistence and system detection (#822)",
+  "updated_at": "2025-09-04T08:20:45-07:00"
+}

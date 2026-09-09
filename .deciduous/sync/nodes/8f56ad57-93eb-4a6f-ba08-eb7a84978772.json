@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "8f56ad57-93eb-4a6f-ba08-eb7a84978772",
+  "created_at": "2025-09-04T19:31:52-07:00",
+  "metadata": {
+    "commit": "00fdf860d50e7110c1becb41353083897465a980",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "docs(theme): add comprehensive examples and migration guide (#825)",
+  "updated_at": "2025-09-04T19:31:52-07:00"
+}

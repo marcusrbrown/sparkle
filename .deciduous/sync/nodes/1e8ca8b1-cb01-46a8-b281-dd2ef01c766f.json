@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "1e8ca8b1-cb01-46a8-b281-dd2ef01c766f",
+  "created_at": "2026-09-08T13:22:17.273694-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Change | [Age](https://docs.renovatebot.com/merge-confidence/) | [Confidence](https://docs.renovatebot.com/merge-confidence/) | OpenSSF | Code Search |\n|---|---|---|---|---|---|\n| [shiki](https://redirect.github.com/shikijs/shiki) ([source](https://redirect.github.com/shikijs/shiki/tree/HEAD/packages/shiki)) | [`3.22.0` → `3.23.0`](https://renovatebot.com/diffs/npm/shiki/3.22.0/3.23.0) | ![age](https://developer.mend.io/api/mc/badges/age/npm/shiki/3.23.0?slim=true) | ![confidence](https://developer.mend.io/api/mc/badges/confidence/npm/shiki/3.22.0/3.23.0?slim=true) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/shikijs/shiki/badge)](https://securityscorecards.dev/viewer/?uri=github.com/shikijs/shiki) | [![GitHub Code Search for \"shiki\"](https://img.shields.io/badge/code_search-shiki-2671E5.svg?logo=github)](https://redirect.github.com/search?q=repo:marcusrbrown%2Fsparkle+NOT+path:/package(-lock)%3F%5C.json%7Cyarn%5C.lock%7Cpnpm-lock%5C.yaml%7Cbun%5C.lock(b)/+shiki) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "68db777c2bbca77f0c5ded570bef416cba11b9ba",
+    "confidence": 75,
+    "files": [
+      "docs/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix(deps): update dependency shiki to v3.23.0",
+  "updated_at": "2026-09-08T13:22:17.273694-07:00"
+}

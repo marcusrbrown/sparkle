@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "4b3241f0-3a55-4c89-b527-d02b2b7391f6",
+  "created_at": "2026-09-08T13:22:19.152321-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Change | [Age](https://docs.renovatebot.com/merge-confidence/) | [Confidence](https://docs.renovatebot.com/merge-confidence/) | OpenSSF | Code Search |\n|---|---|---|---|---|---|\n| [turbo](https://turborepo.dev) ([source](https://redirect.github.com/vercel/turborepo)) | [`2.8.7` → `2.8.8`](https://renovatebot.com/diffs/npm/turbo/2.8.7/2.8.8) | ![age](https://developer.mend.io/api/mc/badges/age/npm/turbo/2.8.8?slim=true) | ![confidence](https://developer.mend.io/api/mc/badges/confidence/npm/turbo/2.8.7/2.8.8?slim=true) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/vercel/turborepo/badge)](https://securityscorecards.dev/viewer/?uri=github.com/vercel/turborepo) | [![GitHub Code Search for \"turbo\"](https://img.shields.io/badge/code_search-turbo-2671E5.svg?logo=github)](https://redirect.github.com/search?q=repo:marcusrbrown%2Fsparkle+NOT+path:/package(-lock)%3F%5C.json%7Cyarn%5C.lock%7Cpnpm-lock%5C.yaml%7Cbun%5C.lock(b)/+turbo) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "5c08445422089a11233a8bac154ec40a758f2162",
+    "confidence": 75,
+    "files": [
+      "package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency turbo to v2.8.8",
+  "updated_at": "2026-09-08T13:22:19.152321-07:00"
+}

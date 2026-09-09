@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "65e713f6-665c-43cb-96f4-c54033c75ccf",
+  "created_at": "2026-09-08T13:22:31.241083-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [@storybook/test-runner](https://redirect.github.com/storybookjs/test-runner) | devDependencies | minor | [`0.23.0` -> `0.24.1`](https://renovatebot.com/diffs/npm/@storybook%2ftest-runner/0.23.0/0.24.1) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/storybookjs/test-runner/badge)](https://securityscorecards.dev/viewer/?uri=github.com/storybookjs/test-runner) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "de70359e377b3f6fa49967471017610509b89efe",
+    "confidence": 75,
+    "files": [
+      "packages/storybook/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency @storybook/test-runner to v0.24.1",
+  "updated_at": "2026-09-08T13:22:31.241083-07:00"
+}

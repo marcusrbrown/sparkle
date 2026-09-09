@@ -1,0 +1,20 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "adeeb57b-a95a-4436-8481-ddfec813a057",
+  "created_at": "2026-09-08T13:22:37.991513-07:00",
+  "description": "- Add automated bundle size monitoring to detect performance regressions\n- Implement validation for package sizes and compare with baseline\n- Update build process to report build time and size warnings\n- Refactor validation summary to include bundle size warnings\n\nCloses #1010.",
+  "metadata": {
+    "commit": "8b4552a5925256a403765079c2ebb32e02fe5de1",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/refactor-audit-improvements-1.md",
+      "package.json",
+      "packages/test-utils/package.json",
+      "scripts/validate-build.ts"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat: enhance build validation with bundle size monitoring",
+  "updated_at": "2026-09-08T13:22:37.991513-07:00"
+}

@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "dbdf080f-8ded-40dd-b04f-683130e94023",
+  "created_at": "2026-07-13T09:55:04Z",
+  "metadata": {
+    "commit": "da66cfda3f4267423c08b6afd2d005cf8632c66c",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix(deps): update dependency react-native-screens to ~4.26.0 (#1826)",
+  "updated_at": "2026-07-13T09:55:04Z"
+}

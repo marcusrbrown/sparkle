@@ -1,0 +1,21 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "69ed039e-8f61-44d3-ab22-0040fd507f4b",
+  "created_at": "2026-09-08T13:22:45.658393-07:00",
+  "description": "Tab completion split the command line on whitespace, so a quoted argument containing a space was torn into separate tokens. Completing `cat \"my doc<TAB>` saw `['cat', '\"my', 'doc']` and matched candidates against `doc` instead of `my doc`.\n\n```ts\n// Parse command parts using simple whitespace splitting for now\n// TODO: Enhance with proper shell parsing that handles quotes, escaping, etc.\nconst commandParts = inputToCursor.trim().split(/\\s+/).filter(part => part.length > 0)\n```\n\n## The second instance\n\nFixing the tokenizer alone would not have been enough. `applySuggestion` independently re-derived the word boundary when a provider does not set an explicit `suggestion.range` — which is every provider today:\n\n```ts\nconst words = beforeCursor.split(/\\s+/)\nconst currentWord = words.at(-1) ?? ''\nconst wordStart = beforeCursor.lastIndexOf(currentWord)\n```\n\nTwo problems. It repeats the same whitespace assumption, and `lastIndexOf` searches the entire prefix rather than locating the current token — so a repeated word matches the wrong occurrence. Accepting a completion on `cat \"my doc` produced `cat \"my my doc.txt`: quote stranded, wrong span replaced.\n\nThis is the path that actually corrupts the user's input, and it needed the span data, which is why the offset has to travel through `CompletionContext` rather than staying local to `createCompletionContext`.\n\n## Approach\n\n`parser.ts` already had a quote-aware state machine that tolerates unterminated quotes — `parseCommand('echo \"unclosed')` returns `['echo', 'unclosed']` rather than throwing, which matters because mid-typing input almost always has an open quote. What it lacked was raw position: `parseCommand` returns stripped strings, and a stripped token cannot tell you where its opening quote was. [description truncated to fit budget]",
+  "metadata": {
+    "commit": "a6ff64435bfdd21c279bc53d22103ea9ff257190",
+    "confidence": 75,
+    "files": [
+      "apps/moo-dang/src/shell/completion-engine.ts",
+      "apps/moo-dang/src/shell/completion-types.ts",
+      "apps/moo-dang/src/shell/completion.test.ts",
+      "apps/moo-dang/src/shell/parser.test.ts",
+      "apps/moo-dang/src/shell/parser.ts"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix(moo-dang): use real shell tokenizer for tab completion",
+  "updated_at": "2026-09-08T13:22:45.658393-07:00"
+}

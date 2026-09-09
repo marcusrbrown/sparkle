@@ -1,0 +1,17 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "dee7e64b-7236-4a58-bf4d-0170db4f64ce",
+  "created_at": "2026-09-08T13:22:24.514619-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [pnpm](https://pnpm.io) ([source](https://redirect.github.com/pnpm/pnpm/tree/HEAD/pnpm)) | packageManager | patch | [`10.26.1` → `10.26.2`](https://renovatebot.com/diffs/npm/pnpm/10.26.1/10.26.2) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/pnpm/pnpm/badge)](https://securityscorecards.dev/viewer/?uri=github.com/pnpm/pnpm) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "d0ab3323e546b50a713c48a39acb5f3cab6cdcbe",
+    "confidence": 70,
+    "files": [
+      "package.json"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(deps): update pnpm to v10.26.2",
+  "updated_at": "2026-09-08T13:22:24.514619-07:00"
+}

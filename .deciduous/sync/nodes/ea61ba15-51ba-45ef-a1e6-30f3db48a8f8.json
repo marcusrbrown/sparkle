@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "ea61ba15-51ba-45ef-a1e6-30f3db48a8f8",
+  "created_at": "2025-09-01T21:07:55-07:00",
+  "metadata": {
+    "commit": "4622ccf4e54d53dc7b607270e509cca325b2d1ec",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat: add comprehensive theme configuration and validation (#807)",
+  "updated_at": "2025-09-01T21:07:55-07:00"
+}

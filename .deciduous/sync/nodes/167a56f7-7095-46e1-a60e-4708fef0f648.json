@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "167a56f7-7095-46e1-a60e-4708fef0f648",
+  "created_at": "2025-05-02T13:56:26-07:00",
+  "metadata": {
+    "commit": "881d569a4d4ec5506b8001c6338d59cbbc9526d6",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat: add shared packages (#532)",
+  "updated_at": "2025-05-02T13:56:26-07:00"
+}

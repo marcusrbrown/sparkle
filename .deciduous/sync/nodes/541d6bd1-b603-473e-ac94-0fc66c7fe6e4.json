@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "541d6bd1-b603-473e-ac94-0fc66c7fe6e4",
+  "created_at": "2026-09-08T13:22:31.015406-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [monaco-editor](https://redirect.github.com/microsoft/monaco-editor) | dependencies | minor | [`0.52.2` -> `0.54.0`](https://renovatebot.com/diffs/npm/monaco-editor/0.52.2/0.54.0) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/microsoft/monaco-editor/badge)](https://securityscorecards.dev/viewer/?uri=github.com/microsoft/monaco-editor) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "c8729dc67bf36d9e325fe4bb95ca8aa14884b060",
+    "confidence": 75,
+    "files": [
+      "docs/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix(deps): update dependency monaco-editor to v0.54.0",
+  "updated_at": "2026-09-08T13:22:31.015406-07:00"
+}

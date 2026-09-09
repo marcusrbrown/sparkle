@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "76ca0973-a662-49df-a290-796c2afc44fe",
+  "created_at": "2024-04-26T20:06:46Z",
+  "metadata": {
+    "commit": "2345514291f2edfbec546659a443ec289f06e713",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix(deps): update dependency react to v18.3.1 (#244)",
+  "updated_at": "2024-04-26T20:06:46Z"
+}

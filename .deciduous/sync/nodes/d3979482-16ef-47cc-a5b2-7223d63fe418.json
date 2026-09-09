@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "d3979482-16ef-47cc-a5b2-7223d63fe418",
+  "created_at": "2026-09-08T13:22:36.141664-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [eslint](https://eslint.org) ([source](https://redirect.github.com/eslint/eslint)) | devDependencies | minor | [`9.36.0` -> `9.37.0`](https://renovatebot.com/diffs/npm/eslint/9.36.0/9.37.0) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/eslint/eslint/badge)](https://securityscorecards.dev/viewer/?uri=github.com/eslint/eslint) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "924c4028e945eacc4adc4fbd11856b75ffe30678",
+    "confidence": 75,
+    "files": [
+      "package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency eslint to v9.37.0",
+  "updated_at": "2026-09-08T13:22:36.141664-07:00"
+}

@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "79c8254c-7ef5-4b2e-8bf2-74d22f76c11a",
+  "created_at": "2025-09-28T21:31:25-07:00",
+  "metadata": {
+    "commit": "14b6b0584a04f9bb54e9dd68b8d451e21962e2ff",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "docs(moo-dang): write comprehensive documentation and usage examples (#1000)",
+  "updated_at": "2025-09-28T21:31:25-07:00"
+}

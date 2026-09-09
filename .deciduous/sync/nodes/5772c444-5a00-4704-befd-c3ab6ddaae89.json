@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "5772c444-5a00-4704-befd-c3ab6ddaae89",
+  "created_at": "2026-09-08T13:22:52.413785-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Change | [Age](https://docs.renovatebot.com/merge-confidence/) | [Confidence](https://docs.renovatebot.com/merge-confidence/) | OpenSSF | Code Search |\n|---|---|---|---|---|---|\n| [sharp](https://sharp.pixelplumbing.com) ([source](https://redirect.github.com/lovell/sharp), [changelog](https://redirect.github.com/lovell/sharp/blob/main/docs/src/content/docs/changelog.md)) | [`^0.34.2` → `^0.35.0`](https://renovatebot.com/diffs/npm/sharp/0.34.5/0.35.0) | ![age](https://developer.mend.io/api/mc/badges/age/npm/sharp/0.35.0?slim=true) | ![confidence](https://developer.mend.io/api/mc/badges/confidence/npm/sharp/0.34.5/0.35.0?slim=true) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/lovell/sharp/badge)](https://securityscorecards.dev/viewer/?uri=github.com/lovell/sharp) | [![GitHub Code Search for \"sharp\"](https://img.shields.io/badge/code_search-sharp-2671E5.svg?logo=github)](https://redirect.github.com/search?q=repo:marcusrbrown%2Fsparkle+NOT+path:/package(-lock)%3F%5C.json%7Cyarn%5C.lock%7Cpnpm-lock%5C.yaml%7Cbun%5C.lock(b)/+sharp) |\n\n---\n\n### sharp inherited vulnerabilities in libvips: CVE-2026-33327, CVE-2026-33328, CVE-2026-35590, CVE-2026-35591\n[GHSA-f88m-g3jw-g9cj](https://redirect.github.com/advisories/GHSA-f88m-g3jw-g9cj)\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "f47a258cdc4604f637cb23fbc1d290b9a09c3975",
+    "confidence": 75,
+    "files": [
+      "docs/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix(deps): update dependency sharp to ^0.35.0 [SECURITY]",
+  "updated_at": "2026-09-08T13:22:52.413785-07:00"
+}

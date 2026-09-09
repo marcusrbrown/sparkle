@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "73ae10b4-7c17-4561-9c99-eec1c2b3c9c0",
+  "created_at": "2025-10-24T17:16:23Z",
+  "metadata": {
+    "commit": "969dffc59c66d271c8dd01efd32ab75b2d4918e2",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency @axe-core/cli to v4.11.0 (#1107)",
+  "updated_at": "2025-10-24T17:16:23Z"
+}

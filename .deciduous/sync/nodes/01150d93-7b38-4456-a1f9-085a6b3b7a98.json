@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "01150d93-7b38-4456-a1f9-085a6b3b7a98",
+  "created_at": "2026-09-08T13:22:44.246847-07:00",
+  "description": "- Update last_updated date to 2025-09-09\n- Mark TASK-026 as completed with the date 2025-09-09\n- Add hierarchical navigation for Getting Started and Core System documentation\n- Organize UI Components and Form Components for better clarity\n- Introduce new sections for Utilities & Tools, Interactive Features, and API Reference\n\nRelates to TASK-026 on #874.",
+  "metadata": {
+    "commit": "c847b8c0de39c7b0bd6fe7dcdacb8c06ab4dc121",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-astro-starlight-docs-1.md",
+      "docs/astro.config.mjs"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat(docs): update Astro Starlight documentation structure",
+  "updated_at": "2026-09-08T13:22:44.246847-07:00"
+}

@@ -1,0 +1,22 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "438f40a0-d812-4540-8538-3e1efc00b540",
+  "created_at": "2026-09-08T13:22:38.103916-07:00",
+  "description": "- Introduce mockConsola and restoreConsola functions for managing consola logging in tests.\n- Implement suppressConsola to silence specific consola methods during test execution.\n- Update index to export new consola mocking utilities.\n\nRelates to TASK-019 on #1010.",
+  "metadata": {
+    "commit": "5fbfb7fbc6d8da43d701f37022ff6a44d124f066",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/refactor-audit-improvements-1.md",
+      ".ai/review/task-019-code-review.md",
+      "apps/moo-dang/src/shell/wasm-integration.test.ts",
+      "apps/moo-dang/src/shell/wasm.test.ts",
+      "packages/test-utils/src/console/consola-mocks.ts",
+      "packages/test-utils/src/console/index.ts"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat(test-utils): add consola mocking utilities for tests",
+  "updated_at": "2026-09-08T13:22:38.103916-07:00"
+}

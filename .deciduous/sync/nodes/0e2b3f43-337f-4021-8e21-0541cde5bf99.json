@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "0e2b3f43-337f-4021-8e21-0541cde5bf99",
+  "created_at": "2023-03-23T03:23:00-07:00",
+  "metadata": {
+    "commit": "042829fbace042b7d049e7b9406f1b59a211d0d1",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat: use pnpm v8 default config (#51)",
+  "updated_at": "2023-03-23T03:23:00-07:00"
+}

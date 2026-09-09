@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "a11f38f0-49b5-4db2-b201-479c15560b22",
+  "created_at": "2025-09-27T03:28:35-07:00",
+  "metadata": {
+    "commit": "722542c20acc7735ca528f91d24d8a2770162672",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat: implement comprehensive history management for shell commands (#990)",
+  "updated_at": "2025-09-27T03:28:35-07:00"
+}

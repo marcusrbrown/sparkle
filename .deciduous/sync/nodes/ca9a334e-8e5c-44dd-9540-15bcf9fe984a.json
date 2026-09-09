@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "ca9a334e-8e5c-44dd-9540-15bcf9fe984a",
+  "created_at": "2025-09-07T12:37:20-07:00",
+  "metadata": {
+    "commit": "a0486068e1c446a023ea92721eed173bd654444f",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat: add Markdown documentation generation script and initial component docs (#884)",
+  "updated_at": "2025-09-07T12:37:20-07:00"
+}

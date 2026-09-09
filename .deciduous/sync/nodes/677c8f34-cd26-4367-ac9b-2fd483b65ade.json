@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "677c8f34-cd26-4367-ac9b-2fd483b65ade",
+  "created_at": "2026-09-08T13:22:31.187448-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [markdownlint](https://redirect.github.com/DavidAnson/markdownlint) | devDependencies | minor | [`0.38.0` -> `0.39.0`](https://renovatebot.com/diffs/npm/markdownlint/0.38.0/0.39.0) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/DavidAnson/markdownlint/badge)](https://securityscorecards.dev/viewer/?uri=github.com/DavidAnson/markdownlint) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "83c659061eab05db716ed613f9918b46e1b3eb38",
+    "confidence": 75,
+    "files": [
+      "package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency markdownlint to v0.39.0",
+  "updated_at": "2026-09-08T13:22:31.187448-07:00"
+}

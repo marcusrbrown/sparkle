@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "aa593056-63f6-46c1-883a-e4e0d42c71e7",
+  "created_at": "2025-09-03T20:05:50-07:00",
+  "metadata": {
+    "commit": "3f91a189652be783d2be9aacab7bbab38f6d56e3",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat: add comprehensive theme stories (#816)",
+  "updated_at": "2025-09-03T20:05:50-07:00"
+}

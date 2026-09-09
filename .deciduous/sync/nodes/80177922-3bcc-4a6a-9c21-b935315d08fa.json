@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "80177922-3bcc-4a6a-9c21-b935315d08fa",
+  "created_at": "2026-06-16T18:02:04Z",
+  "metadata": {
+    "commit": "d1f769def6a42b23a2b46716afe453985c542475",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(lockfile): update dependency astro to v6.4.6 [SECURITY] (#1739)",
+  "updated_at": "2026-06-16T18:02:04Z"
+}

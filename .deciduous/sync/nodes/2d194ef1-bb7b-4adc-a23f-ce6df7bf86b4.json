@@ -1,0 +1,17 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "2d194ef1-bb7b-4adc-a23f-ce6df7bf86b4",
+  "created_at": "2026-09-08T13:22:29.942749-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [astro](https://astro.build) ([source](https://redirect.github.com/withastro/astro/tree/HEAD/packages/astro)) | dependencies | patch | [`5.15.6` -> `5.15.9`](https://renovatebot.com/diffs/npm/astro/5.15.6/5.15.9) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/withastro/astro/badge)](https://securityscorecards.dev/viewer/?uri=github.com/withastro/astro) |\n\n### GitHub Vulnerability Alerts\n\n#### [CVE-2025-64764](https://redirect.github.com/withastro/astro/security/advisories/GHSA-wrwg-2hg8-v723)\n\n## Summary\nAfter some research it appears that it is possible to obtain a reflected XSS when the server islands feature is used in the targeted application, **regardless of what was intended by the component template(s)**.\n\n## Details\nServer islands run in their own isolated context outside of the page request and use the following pattern path to hydrate the page: `/_server-islands/[name]`. These paths can be called via GET or POST and use three parameters:\n\n- `e`: component to export\n- `p`: the transmitted properties, encrypted\n- `s`: for the slots\n\nSlots are placeholders for external HTML content, and therefore allow, by default, the injection of code if the component template supports it, nothing exceptional in principle, just a feature.\n\nThis is where it becomes problematic: it is possible, independently of the component template used, even if it is completely empty, to inject a slot containing an XSS payload, whose parent is a tag whose name is is the absolute path of the island file. Enabling reflected XSS on any application, regardless of the component templates used, provided that the server islands is used at least once.\n\n**How ?** [description truncated to fit budget]",
+  "metadata": {
+    "commit": "478b116596058fcc02d44504d580a510e06af6e4",
+    "confidence": 75,
+    "files": [
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(lockfile): update dependency astro to v5.15.9 [SECURITY]",
+  "updated_at": "2026-09-08T13:22:29.942749-07:00"
+}

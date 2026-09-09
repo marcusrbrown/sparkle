@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "97e075b8-6ae2-47b4-bd9f-5c86ff59c6f5",
+  "created_at": "2026-09-06T10:32:45-07:00",
+  "metadata": {
+    "commit": "2160937f7aa2089c6c0d076d283053722c86fc4e",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "docs(llms): stop duplicating the pinned pnpm version (#2005)",
+  "updated_at": "2026-09-06T10:32:45-07:00"
+}

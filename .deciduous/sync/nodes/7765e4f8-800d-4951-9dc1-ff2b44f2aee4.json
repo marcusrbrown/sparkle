@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "7765e4f8-800d-4951-9dc1-ff2b44f2aee4",
+  "created_at": "2025-04-15T08:11:12Z",
+  "metadata": {
+    "commit": "b871fd35c61b3a783ecf7cde433fa1d738a5c166",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency @types/node to v22.14.1 (#589)",
+  "updated_at": "2025-04-15T08:11:12Z"
+}

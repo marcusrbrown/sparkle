@@ -1,0 +1,20 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "8314417d-1ff7-4615-a314-1db36acf524a",
+  "created_at": "2026-09-08T13:22:44.318254-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [vite](https://vite.dev) ([source](https://redirect.github.com/vitejs/vite/tree/HEAD/packages/vite)) | devDependencies | patch | [`7.1.4` -> `7.1.5`](https://renovatebot.com/diffs/npm/vite/7.1.4/7.1.5) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/vitejs/vite/badge)](https://securityscorecards.dev/viewer/?uri=github.com/vitejs/vite) |\n\n### GitHub Vulnerability Alerts\n\n#### [CVE-2025-58752](https://redirect.github.com/vitejs/vite/security/advisories/GHSA-jqfw-vq24-v9c3)\n\n### Summary\nAny HTML files on the machine were served regardless of the `server.fs` settings.\n\n### Impact\n\nOnly apps that match the following conditions are affected:\n\n- explicitly exposes the Vite dev server to the network (using --host or [server.host config option](https://vitejs.dev/config/server-options.html#server-host))\n- `appType: 'spa'` (default) or `appType: 'mpa'` is used\n\nThis vulnerability also affects the preview server. The preview server allowed HTML files not under the output directory to be served. [description truncated to fit budget]",
+  "metadata": {
+    "commit": "04d3e5857ed3c31699b1f364846d35df37a8c3c5",
+    "confidence": 75,
+    "files": [
+      "apps/fro-jive/package.json",
+      "packages/storybook/package.json",
+      "packages/ui/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency vite to v7.1.5 [SECURITY]",
+  "updated_at": "2026-09-08T13:22:44.318254-07:00"
+}

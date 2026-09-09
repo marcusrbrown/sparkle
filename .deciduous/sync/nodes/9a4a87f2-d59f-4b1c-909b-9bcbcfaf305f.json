@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "9a4a87f2-d59f-4b1c-909b-9bcbcfaf305f",
+  "created_at": "2026-09-08T13:22:32.649800-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [react-native-safe-area-context](https://redirect.github.com/AppAndFlow/react-native-safe-area-context) | dependencies | patch | [`5.6.1` -> `5.6.2`](https://renovatebot.com/diffs/npm/react-native-safe-area-context/5.6.1/5.6.2) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/AppAndFlow/react-native-safe-area-context/badge)](https://securityscorecards.dev/viewer/?uri=github.com/AppAndFlow/react-native-safe-area-context) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "24333d3482753764526e1b1fca7d3bbe35a21011",
+    "confidence": 75,
+    "files": [
+      "apps/fro-jive/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix(deps): update dependency react-native-safe-area-context to v5.6.2",
+  "updated_at": "2026-09-08T13:22:32.649800-07:00"
+}

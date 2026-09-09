@@ -1,0 +1,17 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "6ba02cdb-cb21-42b0-9036-cb0ef90962a8",
+  "created_at": "2026-09-08T13:22:51.582300-07:00",
+  "description": "## What\nAdds `@sparkle/test-utils` as a `workspace:*` devDependency of `apps/moo-dang`.\n\n## Why\n`pnpm test` on `main` was failing: 6 of 17 moo-dang test files (`App.test.tsx`, `shell-e2e.test.tsx`, `help-command-fix.test.tsx`, `components/Terminal.test.tsx`, `shell/wasm.test.ts`, `shell/wasm-integration.test.ts`) import from `@sparkle/test-utils` subpaths (`/console`, `/dom`, `/react`, `/terminal`), but the package was never declared as a dependency in `apps/moo-dang/package.json`. Under pnpm's strict, non-hoisted linking this left the package unresolved in `node_modules`, breaking Vite's module resolution for every test file that imports it.\n\n## Fix\n- Added `\"@sparkle/test-utils\": \"workspace:*\"` to `devDependencies` (matches internal-dependency convention).\n- Regenerated `pnpm-lock.yaml`.\n\n## Verification\n- `pnpm check` — clean (manypkg, types, turbo config, dependency validation, lint)\n- `pnpm build` — 10/10 Turborepo tasks green\n- `pnpm test` — 17/17 test files, 445 passed / 1 skipped (previously 11/17 files, 358 passed)\n- `pnpm fix` — no additional diff\n\n---\n🤖 Filed by the [Fro Bot daily autohealing run](https://github.com/marcusrbrown/sparkle/issues/1665).",
+  "metadata": {
+    "commit": "fe75582c03fb6afbbb021c977fa75aa77486ad41",
+    "confidence": 75,
+    "files": [
+      ""
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix(moo-dang): add missing @sparkle/test-utils workspace dependency",
+  "updated_at": "2026-09-08T13:22:51.582300-07:00"
+}

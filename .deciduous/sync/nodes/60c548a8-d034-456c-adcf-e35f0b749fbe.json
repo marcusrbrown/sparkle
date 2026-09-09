@@ -1,0 +1,26 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "60c548a8-d034-456c-adcf-e35f0b749fbe",
+  "created_at": "2026-09-08T13:22:25.694509-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | Pending | OpenSSF |\n|---|---|---|---|---|---|\n| [react](https://react.dev/) ([source](https://redirect.github.com/facebook/react/tree/HEAD/packages/react)) | dependencies | patch | [`19.2.1` -> `19.2.2`](https://renovatebot.com/diffs/npm/react/19.2.1/19.2.2) | `19.2.3` | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/facebook/react/badge)](https://securityscorecards.dev/viewer/?uri=github.com/facebook/react) |\n| [react](https://react.dev/) ([source](https://redirect.github.com/facebook/react/tree/HEAD/packages/react)) | devDependencies | patch | [`19.2.1` -> `19.2.2`](https://renovatebot.com/diffs/npm/react/19.2.1/19.2.2) | `19.2.3` | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/facebook/react/badge)](https://securityscorecards.dev/viewer/?uri=github.com/facebook/react) |\n| [react-dom](https://react.dev/) ([source](https://redirect.github.com/facebook/react/tree/HEAD/packages/react-dom)) | devDependencies | patch | [`19.2.1` -> `19.2.2`](https://renovatebot.com/diffs/npm/react-dom/19.2.1/19.2.2) | `19.2.3` | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/facebook/react/badge)](https://securityscorecards.dev/viewer/?uri=github.com/facebook/react) |\n| [react-dom](https://react.dev/) ([source](https://redirect.github.com/facebook/react/tree/HEAD/packages/react-dom)) | dependencies | patch | [`19.2.1` -> `19.2.2`](https://renovatebot.com/diffs/npm/react-dom/19.2.1/19.2.2) | `19.2.3` | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/facebook/react/badge)](https://securityscorecards.dev/viewer/?uri=github.com/facebook/react) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "cdb2960b358bba119faac5d3f198a083efd09d65",
+    "confidence": 70,
+    "files": [
+      "apps/fro-jive/package.json",
+      "apps/moo-dang/package.json",
+      "docs/package.json",
+      "packages/error-testing/package.json",
+      "packages/storybook/package.json",
+      "packages/test-utils/package.json",
+      "packages/theme/package.json",
+      "packages/ui/package.json",
+      "packages/utils/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(deps): update react monorepo to v19.2.2",
+  "updated_at": "2026-09-08T13:22:25.694509-07:00"
+}

@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "a8b049c7-39b5-4428-82b6-cf381328d946",
+  "created_at": "2025-09-01T20:16:47-07:00",
+  "metadata": {
+    "commit": "647ca45f0bfdd652cef70ed9414a9be3cceef5f7",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat(theme): implement initial theme management package structure (#806)",
+  "updated_at": "2025-09-01T20:16:47-07:00"
+}

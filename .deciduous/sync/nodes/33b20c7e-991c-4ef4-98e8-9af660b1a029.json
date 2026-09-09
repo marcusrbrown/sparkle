@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "33b20c7e-991c-4ef4-98e8-9af660b1a029",
+  "created_at": "2025-09-25T19:19:24-07:00",
+  "metadata": {
+    "commit": "497531d58929c717b588df7fa9c7768c77eca160",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat: enhance WASM error handling and output management (#981)",
+  "updated_at": "2025-09-25T19:19:24-07:00"
+}

@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "416d3700-fefd-4ffa-80f2-326f5850c4ca",
+  "created_at": "2026-05-31T12:53:51Z",
+  "metadata": {
+    "commit": "87261212b82cd574377d9fabe4cdae5bf07dc713",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency eslint-plugin-prettier to v5.5.6 (#1678)",
+  "updated_at": "2026-05-31T12:53:51Z"
+}

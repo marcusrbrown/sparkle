@@ -1,0 +1,17 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "7b4cbab6-cad8-453a-87ef-4c9e7e16f3ba",
+  "created_at": "2026-09-08T13:22:27.110818-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [actions/create-github-app-token](https://redirect.github.com/actions/create-github-app-token) | action | patch | `v2.2.0` -> `v2.2.1` | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/actions/create-github-app-token/badge)](https://securityscorecards.dev/viewer/?uri=github.com/actions/create-github-app-token) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "95e51cfbdc2b7e7590a349fbaf2027599b6bd371",
+    "confidence": 70,
+    "files": [
+      ".github/workflows/regenerate-docs.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(deps): update actions/create-github-app-token action to v2.2.1",
+  "updated_at": "2026-09-08T13:22:27.110818-07:00"
+}

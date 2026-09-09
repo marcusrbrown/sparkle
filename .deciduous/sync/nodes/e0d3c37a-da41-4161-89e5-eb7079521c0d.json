@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "e0d3c37a-da41-4161-89e5-eb7079521c0d",
+  "created_at": "2026-05-23T16:34:53-07:00",
+  "metadata": {
+    "commit": "f60cd997fd839b4850c03df5571fb2c25d8d0ea2",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(opencode): add instructions config (#1660)",
+  "updated_at": "2026-05-23T16:34:53-07:00"
+}

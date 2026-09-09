@@ -1,0 +1,21 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "8e5bf67b-2fc7-409e-8a4d-2ae05556094e",
+  "created_at": "2026-09-08T13:22:28.406465-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [happy-dom](https://redirect.github.com/capricorn86/happy-dom) | devDependencies | patch | [`20.0.10` -> `20.0.11`](https://renovatebot.com/diffs/npm/happy-dom/20.0.10/20.0.11) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/capricorn86/happy-dom/badge)](https://securityscorecards.dev/viewer/?uri=github.com/capricorn86/happy-dom) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "8cfb6b90e5d1cb3c8b63702b53b643727eb69b0e",
+    "confidence": 75,
+    "files": [
+      "apps/fro-jive/package.json",
+      "apps/moo-dang/package.json",
+      "packages/theme/package.json",
+      "packages/ui/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency happy-dom to v20.0.11",
+  "updated_at": "2026-09-08T13:22:28.406465-07:00"
+}

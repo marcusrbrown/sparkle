@@ -1,0 +1,17 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "2b5c9ef1-64ca-4d90-80ff-49b042040ddd",
+  "created_at": "2026-09-08T13:22:54.928889-07:00",
+  "description": "## What\n\nA `workflow_dispatch` that passes only a custom `prompt` (no `mode`) had its prompt silently discarded. The `Run Fro Bot` step only consumed `inputs.prompt` when `inputs.mode == 'review'`, and `mode` defaults to `autoheal` — so a bare-prompt dispatch fell through to the autoheal prompt and ran the wrong task.\n\nThis surfaced when a cross-repo goal dispatch (which sends only the universal `prompt` input, since not every repo declares a `mode`) triggered an autoheal run here instead of the requested task.\n\n## Fix\n\nLet a non-empty `inputs.prompt` win first for any `workflow_dispatch`, before the mode-based selection:\n\n```diff\n-  (github.event_name == 'workflow_dispatch' && inputs.mode == 'review' && inputs.prompt)\n+  (github.event_name == 'workflow_dispatch' && inputs.prompt)\n```\n\nThis matches how the sibling repos wire prompt selection (`inputs.prompt` first, mode/schedule prompts as fallbacks). Behavior when no prompt is supplied is unchanged: maintenance/autoheal still fire by mode, and the separate review-mode input validation step is untouched.\n\n## Verification\n\n- `actionlint` clean on the changed workflow.\n- The change is a single clause reorder; the maintenance, autoheal, schedule, and pull_request fallbacks all still apply when `inputs.prompt` is empty.",
+  "metadata": {
+    "commit": "55b2e2025d25da16ccc9e19fb3177fb4724e484f",
+    "confidence": 75,
+    "files": [
+      ".github/workflows/fro-bot.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix(fro-bot): honor a bare workflow_dispatch prompt regardless of mode",
+  "updated_at": "2026-09-08T13:22:54.928889-07:00"
+}

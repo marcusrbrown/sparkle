@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "46d06dd9-601c-4ce0-b616-229592645e85",
+  "created_at": "2025-10-06T21:29:28Z",
+  "metadata": {
+    "commit": "924c4028e945eacc4adc4fbd11856b75ffe30678",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency eslint to v9.37.0 (#1062)",
+  "updated_at": "2025-10-06T21:29:28Z"
+}
