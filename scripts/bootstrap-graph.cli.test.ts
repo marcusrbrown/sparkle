@@ -639,6 +639,141 @@ describe('real-CLI regression (PR #1221 class): a leading-dash PR title/descript
       expect(metadata.files).toEqual(['a.ts', 'b.ts'])
     },
   )
+
+  it(
+    'runBuildStage succeeds against the real pinned binary when the joined --files value itself ' +
+      'starts with a dash (a valid Git path, e.g. a file literally named `-weird.ts`), and the ' +
+      'created node round-trips the exact file list via `show --json`',
+    async ({skip}) => {
+      if (!deciduousAvailable) skip()
+      const runner = createDeciduousRunner()
+      const mergeCommitSha = 'b'.repeat(40)
+      const prs = [
+        {
+          number: 1222,
+          title: 'a dash-leading files list regression',
+          body: 'ordinary body text',
+          mergedAt: '2026-01-01T00:00:00Z',
+          files: ['-weird.ts', 'b.ts'],
+          mergeCommitSha,
+        },
+      ]
+
+      const result = await runBuildStage({
+        runner,
+        stagingDir,
+        triageArtifacts: [],
+        triageArtifactSourcePaths: {},
+        commits: [],
+        runWindowId: 'dash-files-regression',
+        prs,
+      })
+
+      const changeId = result.decisionNodeChangeIds['1222']
+      expect(changeId).toBeDefined()
+      if (changeId === undefined) return
+
+      const shown = await runner(['show', changeId, '--json'], stagingDir)
+      expect(shown.exitCode).toBe(0)
+      const parsed: {title: string; description: string; metadata_json: string} = JSON.parse(shown.stdout)
+      const metadata: {commit?: string; confidence?: number; files?: string[]} = JSON.parse(parsed.metadata_json)
+      expect(metadata.files).toEqual(['-weird.ts', 'b.ts'])
+    },
+  )
+})
+
+describe('real-CLI: buildDeciduousDocAttachArgv dash-leading description + real attachment roundtrip', () => {
+  let stagingDir: string
+
+  beforeEach(() => {
+    if (!deciduousAvailable) {
+      return
+    }
+    stagingDir = mkdtempSync(join(tmpdir(), 'bootstrap-graph-doc-attach-argv-'))
+    ensureIsolatedStagingDeciduous(stagingDir)
+  })
+
+  afterEach(() => {
+    if (stagingDir !== undefined && existsSync(stagingDir)) {
+      rmSync(stagingDir, {recursive: true, force: true})
+    }
+  })
+
+  it(
+    'runBuildStage (triage pass) attaches a real file via the production `doc attach` call path ' +
+      'for a dash-leading, multiline, quote-containing disposition, and the stored description AND ' +
+      'attachment identity/content/path round-trip exactly through `deciduous doc list --json`',
+    async ({skip}) => {
+      if (!deciduousAvailable) skip()
+      const runner = createDeciduousRunner()
+      const sourcePath = join(stagingDir, 'fixture-note.md')
+      const fileContent = 'attachment content with "quotes" and\nmultiple lines\n'
+      writeFileSync(sourcePath, fileContent)
+      const disposition = '- dash-leading disposition with "quotes"\nand a second line'
+
+      const result = await runBuildStage({
+        runner,
+        stagingDir,
+        triageArtifacts: [{path: '.ai/notes/fixture-note.md', disposition, promoted: false, requiresSourceRoot: false}],
+        triageArtifactSourcePaths: {'.ai/notes/fixture-note.md': sourcePath},
+        commits: [],
+        runWindowId: 'doc-attach-argv-regression',
+        prs: [],
+      })
+
+      const nodeChangeId = result.triageNodeChangeIds['.ai/notes/fixture-note.md']
+      expect(nodeChangeId).toBeDefined()
+      if (nodeChangeId === undefined) return
+
+      const shown = await runner(['show', nodeChangeId, '--json'], stagingDir)
+      expect(shown.exitCode).toBe(0)
+      const parsedNode: {description: string} = JSON.parse(shown.stdout)
+      expect(parsedNode.description).toBe(disposition)
+
+      const docListed = await runner(['doc', 'list', nodeChangeId, '--json'], stagingDir)
+      expect(docListed.exitCode).toBe(0)
+      const docs: {description: string; original_filename: string; file_size: number; content_hash: string}[] =
+        JSON.parse(docListed.stdout)
+      expect(docs).toHaveLength(1)
+      const [doc] = docs
+      expect(doc?.description).toBe(disposition)
+      expect(doc?.original_filename).toBe('fixture-note.md')
+      expect(doc?.file_size).toBe(Buffer.byteLength(fileContent))
+      const expectedHash = createHash('sha256').update(fileContent).digest('hex')
+      expect(doc?.content_hash).toBe(expectedHash)
+    },
+  )
+
+  it(
+    'sensitivity check: reverting to the pre-fix unbound `--description <value>` shape (rather than ' +
+      '`--description=<value>`) genuinely fails against the real pinned binary for the same ' +
+      'dash-leading disposition, proving the roundtrip test above would catch a regression',
+    async ({skip}) => {
+      if (!deciduousAvailable) skip()
+      const runner = createDeciduousRunner()
+      const sourcePath = join(stagingDir, 'fixture-note.md')
+      writeFileSync(sourcePath, 'x\n')
+      const disposition = '- dash-leading disposition'
+
+      const added = await runner(
+        ['add', `--description=${disposition}`, '--', 'observation', 'sensitivity-node'],
+        stagingDir,
+      )
+      const localId = parseCreatedNodeLocalId(added.stdout)
+      expect(localId).toBeDefined()
+      if (localId === undefined) return
+
+      // The reverted, pre-fix argv shape: `--description` and its value as two separate argv
+      // entries (no `=` binding), still placed before `--`. This is the exact shape the fix in
+      // buildDeciduousDocAttachArgv replaced.
+      const brokenAttach = await runner(
+        ['doc', 'attach', '--description', disposition, '--', String(localId), sourcePath],
+        stagingDir,
+      )
+      expect(brokenAttach.exitCode).not.toBe(0)
+      expect(brokenAttach.stderr).toContain('unexpected argument')
+    },
+  )
 })
 
 describe('real-fixture: collectCommitsFromGitLog', () => {

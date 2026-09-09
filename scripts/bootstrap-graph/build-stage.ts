@@ -215,16 +215,20 @@ export async function runBuildStage(input: BuildStageInput): Promise<BuildStageR
   const {runner, stagingDir} = input
   const warnings: string[] = []
 
+  // Reuse the normalized records for both scanning and emission.
+  const normalizedPrs = input.prs.map(pr => ({pr, normalized: normalizePrBody(pr)}))
+
   // Pre-add secret scan over every normalized text field this pass is about to write — title and
   // files are included alongside the retained description summary as a hard gate, not just the
   // summary text alone.
   const preAddPayload = {
     triage: input.triageArtifacts.map(a => a.disposition),
     commits: input.commits.map(c => c.message),
-    prs: input.prs.map(pr => {
-      const normalized = normalizePrBody(pr)
-      return {title: normalized.title, summary: normalized.summary, files: normalized.files}
-    }),
+    prs: normalizedPrs.map(({normalized}) => ({
+      title: normalized.title,
+      summary: normalized.summary,
+      files: normalized.files,
+    })),
   }
   const preAddSecrets = scanPayloadForSecrets(preAddPayload)
   if (preAddSecrets.length > 0) {
@@ -306,8 +310,7 @@ export async function runBuildStage(input: BuildStageInput): Promise<BuildStageR
 
   // --- PR-body pass ---
   const decisionNodeChangeIds: Record<string, string> = {}
-  for (const pr of input.prs) {
-    const normalized = normalizePrBody(pr)
+  for (const {pr, normalized} of normalizedPrs) {
     const linkedActionChangeId = actionNodeChangeIds[pr.mergeCommitSha]
     const confidence = linkedActionChangeId === undefined ? 70 : 75
     if (linkedActionChangeId === undefined) {
@@ -334,7 +337,7 @@ export async function runBuildStage(input: BuildStageInput): Promise<BuildStageR
     const added = await runner(
       buildDeciduousAddArgv('decision', normalized.title, {
         description: normalized.summary,
-        flags: ['--files', normalized.files.join(','), '--commit', pr.mergeCommitSha, '-c', String(confidence)],
+        flags: [`--files=${normalized.files.join(',')}`, '--commit', pr.mergeCommitSha, '-c', String(confidence)],
       }),
       stagingDir,
     )
