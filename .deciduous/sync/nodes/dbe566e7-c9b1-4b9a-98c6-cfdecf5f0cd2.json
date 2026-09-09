@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "dbe566e7-c9b1-4b9a-98c6-cfdecf5f0cd2",
+  "created_at": "2025-08-31T19:21:14Z",
+  "metadata": {
+    "commit": "f66f54a554d8c812a5f16cab4b7954ef82e9a80c",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix(deps): update dependency @expo/vector-icons to v15 (#772)",
+  "updated_at": "2025-08-31T19:21:14Z"
+}

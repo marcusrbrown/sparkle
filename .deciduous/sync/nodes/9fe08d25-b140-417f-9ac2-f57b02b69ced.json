@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "9fe08d25-b140-417f-9ac2-f57b02b69ced",
+  "created_at": "2025-09-05T14:26:39-07:00",
+  "metadata": {
+    "commit": "7bf8238c4d0b55e7aaaa35b59d28eba5708c8b62",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "docs: add Go Live Checklist and Testing Framework implementation plan (#836)",
+  "updated_at": "2025-09-05T14:26:39-07:00"
+}

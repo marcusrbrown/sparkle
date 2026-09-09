@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "2ba4ffe4-a81e-4ec6-b34a-15d04f36d942",
+  "created_at": "2026-09-08T13:23:03.915131-07:00",
+  "description": "> ℹ️ **Note**\n> \n> This PR body was truncated due to platform limits.\n\nThis PR contains the following updates:\n\n| Package | Change | [Age](https://docs.renovatebot.com/merge-confidence/) | [Confidence](https://docs.renovatebot.com/merge-confidence/) | OpenSSF | Code Search |\n|---|---|---|---|---|---|\n| [astro](https://astro.build) ([source](https://redirect.github.com/withastro/astro/tree/HEAD/packages/astro)) | [`^5.6.1` → `^6.0.0`](https://renovatebot.com/diffs/npm/astro/5.18.1/6.1.10) | ![age](https://developer.mend.io/api/mc/badges/age/npm/astro/6.1.10?slim=true) | ![confidence](https://developer.mend.io/api/mc/badges/confidence/npm/astro/5.18.1/6.1.10?slim=true) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/withastro/astro/badge)](https://securityscorecards.dev/viewer/?uri=github.com/withastro/astro) | [![GitHub Code Search for \"astro\"](https://img.shields.io/badge/code_search-astro-2671E5.svg?logo=github)](https://redirect.github.com/search?q=repo:marcusrbrown%2Fsparkle+NOT+path:/package(-lock)%3F%5C.json%7Cyarn%5C.lock%7Cpnpm-lock%5C.yaml%7Cbun%5C.lock(b)/+astro) |\n\n---\n\n### Astro: XSS in define:vars via incomplete </script> tag sanitization\n[CVE-2026-41067](https://nvd.nist.gov/vuln/detail/CVE-2026-41067) / [GHSA-j687-52p2-xcff](https://redirect.github.com/advisories/GHSA-j687-52p2-xcff)\n\n---\n\n### Astro: Server island encrypted parameters vulnerable to cross-component replay\n[CVE-2026-45028](https://nvd.nist.gov/vuln/detail/CVE-2026-45028) / [GHSA-xr5h-phrj-8vxv](https://redirect.github.com/advisories/GHSA-xr5h-phrj-8vxv)\n\n---\n\n### Astro: XSS in define:vars via incomplete </script> tag sanitization\n[CVE-2026-41067](https://nvd.nist.gov/vuln/detail/CVE-2026-41067) / [GHSA-j687-52p2-xcff](https://redirect.github.com/advisories/GHSA-j687-52p2-xcff)\n\n--- [description truncated to fit budget]",
+  "metadata": {
+    "commit": "7eb6a830f8b5c2a699e47ea5b5ae1015b03de3f0",
+    "confidence": 75,
+    "files": [
+      "docs/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix(deps): update dependency astro to v6 [SECURITY]",
+  "updated_at": "2026-09-08T13:23:03.915131-07:00"
+}

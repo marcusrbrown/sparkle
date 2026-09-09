@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "ce6513a4-aa29-4055-a9a4-fdb6db1eee2d",
+  "created_at": "2026-07-06T18:42:03-07:00",
+  "metadata": {
+    "commit": "a449a7e453a0c61dcdd2fd23b105f8a49812b1e6",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix(ci): use explicit path patterns in regenerate-docs path filter (#1798)",
+  "updated_at": "2026-07-06T18:42:03-07:00"
+}

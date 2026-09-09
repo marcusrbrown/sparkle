@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "eafce14e-8fa8-4a99-938c-51a43f11bdf0",
+  "created_at": "2026-09-08T13:22:33.707734-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | Pending | OpenSSF |\n|---|---|---|---|---|---|\n| [@microsoft/api-extractor](https://api-extractor.com) ([source](https://redirect.github.com/microsoft/rushstack/tree/HEAD/apps/api-extractor)) | devDependencies | patch | [`7.53.1` -> `7.53.2`](https://renovatebot.com/diffs/npm/@microsoft%2fapi-extractor/7.53.1/7.53.2) | `7.53.3` | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/microsoft/rushstack/badge)](https://securityscorecards.dev/viewer/?uri=github.com/microsoft/rushstack) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "e1365ffc8dd2f2445b5e425a74dbc79e16acebfa",
+    "confidence": 75,
+    "files": [
+      "docs/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency @microsoft/api-extractor to v7.53.2",
+  "updated_at": "2026-09-08T13:22:33.707734-07:00"
+}

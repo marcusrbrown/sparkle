@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "0616b6ab-b5b8-4e2f-b56e-9b9dffa9831e",
+  "created_at": "2025-10-02T13:15:55-07:00",
+  "metadata": {
+    "commit": "d2a97f720fd703061a20828b9536ed29ed9cceb4",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat: implement GitHub Actions workflow for documentation deployment (#1032)",
+  "updated_at": "2025-10-02T13:15:55-07:00"
+}

@@ -1,0 +1,17 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "21d06503-d0e2-40dc-9d39-58c8c98322c6",
+  "created_at": "2026-09-08T13:22:54.209704-07:00",
+  "description": "## What\n\n- Replace `console.error`/`console.warn` with `consola` in `docs/src/components/AccessibleCodeBlock.tsx` and `docs/src/hooks/use-focus-management.ts` — `consola` is already a `docs` dependency and used elsewhere in the site (`CodeHighlight.tsx`, `ComponentShowcase.astro`).\n- Fix `llms.txt` pnpm version drift: `packageManager` is `pnpm@11.10.0`, `llms.txt` still referenced `pnpm@10.33.4`.\n\n## Why\n\nBoth are explicit project conventions (`.github/copilot-instructions.md`: \"Use `consola` for logging, not `console`\") flagged during the daily autohealing scan of `docs/src` and `llms.txt`.\n\nFixes #1800.\n\n## Verification\n\n- `pnpm lint` → clean (0 errors, pre-existing markdown warnings unrelated)\n- `pnpm check` → clean\n- `pnpm --filter @sparkle/docs build` → succeeds, 71 pages built\n\n---\n🤖 Opened by the [Fro Bot daily autohealing run](https://github.com/marcusrbrown/sparkle/issues/1665).",
+  "metadata": {
+    "commit": "c19df057f8c0ca7bb05187b13f908a2acc849489",
+    "confidence": 75,
+    "files": [
+      "llms.txt"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(lint): apply auto-fixes from autohealing run",
+  "updated_at": "2026-09-08T13:22:54.209704-07:00"
+}

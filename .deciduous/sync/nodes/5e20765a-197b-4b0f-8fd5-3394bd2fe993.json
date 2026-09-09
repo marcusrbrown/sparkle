@@ -1,0 +1,20 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "5e20765a-197b-4b0f-8fd5-3394bd2fe993",
+  "created_at": "2026-09-08T13:22:44.481585-07:00",
+  "description": "The real bootstrap could not acquire its 12-month PR window: bulk pagination hit the subprocess timeout before the result-cap check could split the query.\n\nCount results first, split oversized windows, then fetch one page per bounded request. This preserves the full window and older referenced PRs without increasing the 15-second timeout or 2 MB response limit.\n\n## Changes\n- Partition windows before fetching PR bodies and file metadata.\n- Follow cursors explicitly and deduplicate overlapping boundaries.\n- Reject stuck cursors, failed requests, count mismatches, and unsplittable over-cap windows instead of returning partial results.\n- Update acquisition and fake-GitHub integration tests for the count/page response shapes.\n\n## Verification\n- `pnpm check`: passed.\n- Scripts tests: 309 passed, none skipped.\n- Live read-only acquisition: 1,114 unique PRs, matching an independent count for the same captured window; no duplicates or out-of-window results.\n- 27 sequential requests completed in 60.3 seconds. The slowest request took 4.45 seconds; the largest response was 439,838 bytes. Limits were unchanged.\n\nNo graph build, acceptance, or promotion was performed.",
+  "metadata": {
+    "commit": "eb72bb748865aba1a1480e17abdf932702d03520",
+    "confidence": 75,
+    "files": [
+      "scripts/bootstrap-graph.cli.test.ts",
+      "scripts/bootstrap-graph.full-cli.test.ts",
+      "scripts/bootstrap-graph/pr-source.test.ts",
+      "scripts/bootstrap-graph/pr-source.ts"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix(graph): partition PR searches before fetching results",
+  "updated_at": "2026-09-08T13:22:44.481585-07:00"
+}

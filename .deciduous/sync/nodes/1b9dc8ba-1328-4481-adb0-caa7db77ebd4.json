@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "1b9dc8ba-1328-4481-adb0-caa7db77ebd4",
+  "created_at": "2025-09-01T15:20:11-07:00",
+  "metadata": {
+    "commit": "a3336e31a6b7701b4cbc8bb621407fdca6f2d44d",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(pnpm): add simple-git-hooks to onlyBuiltDependencies (#794)",
+  "updated_at": "2025-09-01T15:20:11-07:00"
+}

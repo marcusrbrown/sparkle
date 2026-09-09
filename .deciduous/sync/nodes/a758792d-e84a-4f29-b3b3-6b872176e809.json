@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "a758792d-e84a-4f29-b3b3-6b872176e809",
+  "created_at": "2026-09-06T15:17:11-07:00",
+  "metadata": {
+    "commit": "0005c9296f83e5b5ef3ff12cea9f9375ee9a48ea",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "refactor(theme): convert ThemeValidator to module-scope functions (#2016)",
+  "updated_at": "2026-09-06T15:17:11-07:00"
+}

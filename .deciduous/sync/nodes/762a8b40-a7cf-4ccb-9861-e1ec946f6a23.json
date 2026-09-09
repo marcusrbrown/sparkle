@@ -1,0 +1,25 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "762a8b40-a7cf-4ccb-9861-e1ec946f6a23",
+  "created_at": "2026-09-08T13:22:37.351441-07:00",
+  "description": "- Implement ResponsivePreview component for displaying content at various screen sizes\n- Create MultiViewportPreview for simultaneous viewport testing\n- Add viewport configurations and controls for interactive testing\n- Update documentation for ResponsivePreview usage and features\n\nRelates to TASK-023 on #873.",
+  "metadata": {
+    "commit": "48c91f66aed3eb66d6b4956e9ed9c72f33ccbf8a",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-astro-starlight-docs-1.md",
+      "docs/astro.config.mjs",
+      "docs/src/components/interactive/MultiViewportPreview.astro",
+      "docs/src/components/interactive/ResponsivePreview.astro",
+      "docs/src/components/interactive/index.ts",
+      "docs/src/components/interactive/responsive-preview.tsx",
+      "docs/src/content/docs/playground/responsive-preview.mdx",
+      "packages/storybook/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat: add responsive preview component for testing across viewports",
+  "updated_at": "2026-09-08T13:22:37.351441-07:00"
+}

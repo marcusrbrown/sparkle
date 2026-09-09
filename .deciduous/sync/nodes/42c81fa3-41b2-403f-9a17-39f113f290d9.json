@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "42c81fa3-41b2-403f-9a17-39f113f290d9",
+  "created_at": "2025-03-07T00:28:08Z",
+  "metadata": {
+    "commit": "7adb7ec645b922ef4b6e8a15ef978a203efe5cdd",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix(deps): update dependency react-native-safe-area-context to v5.3.0 (#540)",
+  "updated_at": "2025-03-07T00:28:08Z"
+}

@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "d7ace24d-55fd-4457-b328-b7a2b047bdec",
+  "created_at": "2026-09-08T13:23:04.881216-07:00",
+  "description": "This PR contains the following updates: [description truncated to fit budget]",
+  "metadata": {
+    "commit": "a3539ad008539a4a531f8d6c5d2608b230671635",
+    "confidence": 75,
+    "files": [
+      "package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update bfra-me/works monorepo",
+  "updated_at": "2026-09-08T13:23:04.881216-07:00"
+}

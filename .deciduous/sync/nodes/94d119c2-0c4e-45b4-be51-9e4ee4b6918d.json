@@ -1,0 +1,19 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "94d119c2-0c4e-45b4-be51-9e4ee4b6918d",
+  "created_at": "2026-09-08T13:22:48.303476-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Change | [Age](https://docs.renovatebot.com/merge-confidence/) | [Confidence](https://docs.renovatebot.com/merge-confidence/) | OpenSSF | Code Search |\n|---|---|---|---|---|---|\n| [@bfra.me/eslint-config](https://redirect.github.com/bfra-me/works/tree/main/packages/eslint-config#readme) ([source](https://redirect.github.com/bfra-me/works/tree/HEAD/packages/eslint-config)) | [`0.51.1` → `0.51.2`](https://renovatebot.com/diffs/npm/@bfra.me%2feslint-config/0.51.1/0.51.2) | ![age](https://developer.mend.io/api/mc/badges/age/npm/@bfra.me%2feslint-config/0.51.2?slim=true) | ![confidence](https://developer.mend.io/api/mc/badges/confidence/npm/@bfra.me%2feslint-config/0.51.1/0.51.2?slim=true) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/bfra-me/works/badge)](https://securityscorecards.dev/viewer/?uri=github.com/bfra-me/works) | [![GitHub Code Search for \"@bfra.me/eslint-config\"](https://img.shields.io/badge/code_search-@bfra.me/eslint--config-2671E5.svg?logo=github)](https://redirect.github.com/search?q=repo:marcusrbrown%2Fsparkle+NOT+path:/package(-lock)%3F%5C.json%7Cyarn%5C.lock%7Cpnpm-lock%5C.yaml%7Cbun%5C.lock(b)/+%40bfra.me%2Feslint-config) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "603009b5877a890167652dce8fd942f3baf8541b",
+    "confidence": 75,
+    "files": [
+      "package.json",
+      "pnpm-lock.yaml",
+      "pnpm-workspace.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency @bfra.me/eslint-config to v0.51.2",
+  "updated_at": "2026-09-08T13:22:48.303476-07:00"
+}

@@ -1,0 +1,10 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "993ad448-172a-4967-bafe-bc7d817956fb",
+  "created_at": "2026-09-08T13:23:10.949583-07:00",
+  "description": "Remove `rootDir` constraint from `docs/tsconfig.json` to follow standard Astro patterns.",
+  "node_type": "decision",
+  "status": "pending",
+  "title": "ADR-001: TypeScript Root Directory Configuration",
+  "updated_at": "2026-09-08T13:23:10.949583-07:00"
+}

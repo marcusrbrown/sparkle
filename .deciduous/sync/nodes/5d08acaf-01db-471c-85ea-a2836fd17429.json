@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "5d08acaf-01db-471c-85ea-a2836fd17429",
+  "created_at": "2026-09-08T13:22:23.266512-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Change | [Age](https://docs.renovatebot.com/merge-confidence/) | [Confidence](https://docs.renovatebot.com/merge-confidence/) | OpenSSF | Code Search |\n|---|---|---|---|---|---|\n| [@vitest/coverage-v8](https://redirect.github.com/vitest-dev/vitest/tree/main/packages/coverage-v8#readme) ([source](https://redirect.github.com/vitest-dev/vitest/tree/HEAD/packages/coverage-v8)) | [`4.0.16` → `4.0.17`](https://renovatebot.com/diffs/npm/@vitest%2fcoverage-v8/4.0.16/4.0.17) | ![age](https://developer.mend.io/api/mc/badges/age/npm/@vitest%2fcoverage-v8/4.0.17?slim=true) | ![confidence](https://developer.mend.io/api/mc/badges/confidence/npm/@vitest%2fcoverage-v8/4.0.16/4.0.17?slim=true) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/vitest-dev/vitest/badge)](https://securityscorecards.dev/viewer/?uri=github.com/vitest-dev/vitest) | [![GitHub Code Search for \"@vitest/coverage-v8\"](https://img.shields.io/badge/code_search-@vitest/coverage--v8-2671E5.svg?logo=github)](https://redirect.github.com/search?q=repo:marcusrbrown%2Fsparkle+NOT+path:/package(-lock)%3F%5C.json%7Cyarn%5C.lock%7Cpnpm-lock%5C.yaml%7Cbun%5C.lock(b)/+%40vitest%2Fcoverage-v8) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "405d51131816ef23ea07f74f2c87556e61483ca6",
+    "confidence": 75,
+    "files": [
+      "packages/ui/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency @vitest/coverage-v8 to v4.0.17",
+  "updated_at": "2026-09-08T13:22:23.266512-07:00"
+}

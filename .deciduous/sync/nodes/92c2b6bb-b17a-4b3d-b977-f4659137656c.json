@@ -1,0 +1,10 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "92c2b6bb-b17a-4b3d-b977-f4659137656c",
+  "created_at": "2026-09-08T13:23:10.987238-07:00",
+  "description": "Separate `tsconfig.node.json` for config files (rejected: unnecessary complexity)",
+  "node_type": "option",
+  "status": "pending",
+  "title": "Separate `tsconfig.node.json` for config files",
+  "updated_at": "2026-09-08T13:23:10.987238-07:00"
+}

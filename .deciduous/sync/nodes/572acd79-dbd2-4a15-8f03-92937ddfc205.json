@@ -1,0 +1,19 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "572acd79-dbd2-4a15-8f03-92937ddfc205",
+  "created_at": "2026-09-08T13:22:38.730601-07:00",
+  "description": "- Update App tests to wait for async component initialization.\n- Ensure terminal interface is defined before assertions.\n- Improve error handling in end-to-end workflows.\n\nRelates to TASK-004 on #1006.",
+  "metadata": {
+    "commit": "5298c0934ea9b667e9d4607d9d6a26960d3322cc",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/refactor-audit-improvements-1.md",
+      "apps/moo-dang/src/App.test.tsx",
+      "apps/moo-dang/src/shell-e2e.test.tsx"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "test: enhance App component tests for async initialization",
+  "updated_at": "2026-09-08T13:22:38.730601-07:00"
+}

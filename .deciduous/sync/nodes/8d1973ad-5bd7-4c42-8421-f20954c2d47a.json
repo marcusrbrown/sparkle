@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "8d1973ad-5bd7-4c42-8421-f20954c2d47a",
+  "created_at": "2024-12-21T15:55:29-07:00",
+  "metadata": {
+    "commit": "a37a843f0c701a9d4da0d516755ede6e172184b4",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix(deps): update dependency expo-splash-screen to ~0.29.0 (#401)",
+  "updated_at": "2024-12-21T15:55:29-07:00"
+}

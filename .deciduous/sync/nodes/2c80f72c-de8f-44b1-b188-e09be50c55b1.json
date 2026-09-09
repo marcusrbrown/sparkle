@@ -1,0 +1,17 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "2c80f72c-de8f-44b1-b188-e09be50c55b1",
+  "created_at": "2026-09-08T13:23:08.897997-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change |\n|---|---|---|---|\n| pnpm/action-setup | action | digest | `fc06bc1` → `2e223e0` |\n\n---",
+  "metadata": {
+    "commit": "2ff05fd2d91c4ef4725af637b61332c3cc8fd016",
+    "confidence": 70,
+    "files": [
+      ".github/actions/setup-ci/action.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(deps): update pnpm/action-setup digest to 2e223e0",
+  "updated_at": "2026-09-08T13:23:08.897997-07:00"
+}

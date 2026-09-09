@@ -1,0 +1,38 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "2a339e9a-250b-4409-9106-bd357d123694",
+  "created_at": "2026-09-08T13:22:36.642614-07:00",
+  "description": "- Updated descriptions for FormField, FormInput, FormLabel, FormMessage, FormPassword, FormSelect, FormSubmit, and FormTextarea components to remove redundant theming information.\n- Enhanced Form component documentation with detailed examples for validation, error handling, and multi-step forms.\n- Added comprehensive accessibility notes and best practices across form components.\n- Improved Button component documentation with detailed usage examples and accessibility features.\n- Included theme integration details and design tokens used for consistent styling across components.\n\nRelates to TASK-028 on #874.",
+  "metadata": {
+    "commit": "98b71b392c784f06bd8b66935bbadc2c0b1ebad0",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-astro-starlight-docs-1.md",
+      "docs/scripts/automation.ts",
+      "docs/scripts/cross-reference.ts",
+      "docs/scripts/generate-markdown.ts",
+      "docs/src/content.config.ts",
+      "docs/src/content/docs/api/ui/src.md",
+      "docs/src/content/docs/components/button.md",
+      "docs/src/content/docs/components/form-control.md",
+      "docs/src/content/docs/components/form-description.md",
+      "docs/src/content/docs/components/form-field.md",
+      "docs/src/content/docs/components/form-input.md",
+      "docs/src/content/docs/components/form-label.md",
+      "docs/src/content/docs/components/form-message.md",
+      "docs/src/content/docs/components/form-password.md",
+      "docs/src/content/docs/components/form-select-item.md",
+      "docs/src/content/docs/components/form-select.md",
+      "docs/src/content/docs/components/form-submit.md",
+      "docs/src/content/docs/components/form-textarea.md",
+      "docs/src/content/docs/components/form.md",
+      "docs/src/content/docs/components/index.md",
+      "packages/ui/src/components/Button/Button.tsx",
+      "packages/ui/src/components/Form/Form.tsx"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "docs: expand component API pages with examples and references",
+  "updated_at": "2026-09-08T13:22:36.642614-07:00"
+}

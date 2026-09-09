@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "2834e526-a7e6-4c29-a224-5fc66b56448d",
+  "created_at": "2026-09-08T13:22:52.378653-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [bfra-me/.github](https://redirect.github.com/bfra-me/.github) | action | patch | `v4.16.38` → `v4.16.39` | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/bfra-me/.github/badge)](https://securityscorecards.dev/viewer/?uri=github.com/bfra-me/.github) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "c8c1bb3ad817eca6e8629eb93b7c4aff890883f7",
+    "confidence": 70,
+    "files": [
+      ".github/workflows/renovate.yaml",
+      ".github/workflows/update-repo-settings.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(deps): update bfra-me/.github to v4.16.39",
+  "updated_at": "2026-09-08T13:22:52.378653-07:00"
+}

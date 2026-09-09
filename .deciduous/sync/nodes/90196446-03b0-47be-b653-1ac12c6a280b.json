@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "90196446-03b0-47be-b653-1ac12c6a280b",
+  "created_at": "2026-09-08T13:22:44.127055-07:00",
+  "description": "- Update descriptions for clarity and completeness\n- Add detailed features and usage guidelines for Button component\n- Improve examples and add validation handling in Form component\n- Enhance accessibility information and best practices for both components\n\nRelates to TASK-028 on #874.",
+  "metadata": {
+    "commit": "6fe25db22b2f02bcbe7902c119ff0c4ed448d872",
+    "confidence": 75,
+    "files": [
+      "docs/src/content/docs/components/button.mdx",
+      "docs/src/content/docs/components/form.mdx"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "docs: enhance Button and Form component documentation",
+  "updated_at": "2026-09-08T13:22:44.127055-07:00"
+}

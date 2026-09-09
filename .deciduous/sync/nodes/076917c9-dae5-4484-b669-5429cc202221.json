@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "076917c9-dae5-4484-b669-5429cc202221",
+  "created_at": "2025-09-06T07:24:43-07:00",
+  "metadata": {
+    "commit": "c5927e681e2cfe880f8cdc12d6c65c4aed275be4",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "build: enable source maps for improved debugging across packages (#858)",
+  "updated_at": "2025-09-06T07:24:43-07:00"
+}

@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "e0878039-f652-48ea-a3e7-15544a3cf46f",
+  "created_at": "2025-06-07T14:09:31Z",
+  "metadata": {
+    "commit": "4fa53e20752b74b276a4bbd3cb47ecf9d145d061",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency @types/react-dom to v19.1.6 (#655)",
+  "updated_at": "2025-06-07T14:09:31Z"
+}

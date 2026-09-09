@@ -1,0 +1,23 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "924608ea-8126-4a77-8a1c-f4bbb64bf3da",
+  "created_at": "2026-09-08T13:22:53.556533-07:00",
+  "description": "This PR contains the following updates: [description truncated to fit budget]",
+  "metadata": {
+    "commit": "6bcd32bdad4251d96087639ff4ef58c9f04b3dfd",
+    "confidence": 70,
+    "files": [
+      ".github/renovate.json5",
+      ".github/workflows/renovate.yaml",
+      ".github/workflows/update-repo-settings.yaml",
+      "apps/moo-dang/package.json",
+      "docs/package.json",
+      "package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(deps): update all non-major dependencies",
+  "updated_at": "2026-09-08T13:22:53.556533-07:00"
+}

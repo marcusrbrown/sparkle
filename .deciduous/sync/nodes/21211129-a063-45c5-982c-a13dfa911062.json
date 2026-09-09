@@ -1,0 +1,17 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "21211129-a063-45c5-982c-a13dfa911062",
+  "created_at": "2026-09-08T13:22:23.772400-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [mlugg/setup-zig](https://redirect.github.com/mlugg/setup-zig) | action | minor | `v2.1.0` → `v2.2.0` | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/mlugg/setup-zig/badge)](https://securityscorecards.dev/viewer/?uri=github.com/mlugg/setup-zig) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "d80dd4623f55828513dfcf29bd8632e1aa6ce757",
+    "confidence": 70,
+    "files": [
+      ".github/actions/setup-ci/action.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(deps): update mlugg/setup-zig action to v2.2.0",
+  "updated_at": "2026-09-08T13:22:23.772400-07:00"
+}

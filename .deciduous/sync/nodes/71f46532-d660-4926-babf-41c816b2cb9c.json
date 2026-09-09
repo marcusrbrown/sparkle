@@ -1,0 +1,20 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "71f46532-d660-4926-babf-41c816b2cb9c",
+  "created_at": "2026-09-08T13:22:43.032475-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | Pending | OpenSSF |\n|---|---|---|---|---|---|\n| [@types/node](https://redirect.github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/node) ([source](https://redirect.github.com/DefinitelyTyped/DefinitelyTyped/tree/HEAD/types/node)) | devDependencies | patch | [`22.18.0` -> `22.18.1`](https://renovatebot.com/diffs/npm/@types%2fnode/22.18.0/22.18.1) | `22.18.3` (+1) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/DefinitelyTyped/DefinitelyTyped/badge)](https://securityscorecards.dev/viewer/?uri=github.com/DefinitelyTyped/DefinitelyTyped) |\n\n---",
+  "metadata": {
+    "commit": "0befff92dfdb7b078208141f6311bce0a04c2436",
+    "confidence": 75,
+    "files": [
+      "docs/package.json",
+      "package.json",
+      "packages/error-testing/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency @types/node to v22.18.1",
+  "updated_at": "2026-09-08T13:22:43.032475-07:00"
+}

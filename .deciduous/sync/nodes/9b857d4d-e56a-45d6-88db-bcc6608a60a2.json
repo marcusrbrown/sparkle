@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "9b857d4d-e56a-45d6-88db-bcc6608a60a2",
+  "created_at": "2025-11-24T17:34:01Z",
+  "metadata": {
+    "commit": "76ab2fbacfe3a6a4805e1f2406e4c000b838bf84",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency @vitest/coverage-v8 to v4.0.13 (#1198)",
+  "updated_at": "2025-11-24T17:34:01Z"
+}

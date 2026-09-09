@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "4a5dac17-e4dc-44c5-8ed3-9104e72486e8",
+  "created_at": "2026-09-08T13:22:37.660309-07:00",
+  "description": "- Create a new workflow to regenerate documentation on package updates\n- Detect changes in specified source packages and trigger regeneration\n- Automatically create a pull request with updated documentation\n- Configure concurrency and permissions for the workflow\n\nRelates to TASK-043 on #876.",
+  "metadata": {
+    "commit": "7a750eac253f9acc89f816a171c8eaec8c290314",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-astro-starlight-docs-1.md",
+      ".github/workflows/regenerate-docs.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "ci: add workflow for automated documentation regeneration",
+  "updated_at": "2026-09-08T13:22:37.660309-07:00"
+}

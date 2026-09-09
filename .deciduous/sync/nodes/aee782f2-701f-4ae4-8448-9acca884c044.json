@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "aee782f2-701f-4ae4-8448-9acca884c044",
+  "created_at": "2025-10-17T14:16:45Z",
+  "metadata": {
+    "commit": "d2aa416425a9c94c5e275c85cb270e25d99abb52",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency vite to v7.1.10 (#1088)",
+  "updated_at": "2025-10-17T14:16:45Z"
+}

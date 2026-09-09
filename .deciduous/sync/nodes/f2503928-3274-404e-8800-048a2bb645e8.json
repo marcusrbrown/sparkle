@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "f2503928-3274-404e-8800-048a2bb645e8",
+  "created_at": "2024-04-30T12:08:04Z",
+  "metadata": {
+    "commit": "89c228db5a4c734d5673c4455011781dd84e91f6",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix(deps): update dependency react-native to v0.73.8 (#255)",
+  "updated_at": "2024-04-30T12:08:04Z"
+}

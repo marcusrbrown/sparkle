@@ -1,0 +1,29 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "12b0cd03-3ada-4c82-9072-9d0f023520be",
+  "created_at": "2026-09-08T13:22:44.373852-07:00",
+  "description": "- Introduced a new section on Type Patterns covering component props, polymorphic components, discriminated unions, form types, theme tokens, and utility types.\n- Added a detailed guide on custom React Hooks including useDebounce, useClickOutside, and useAsync with examples and use cases.\n- Created a collection of string utility functions such as toKebabCase, truncate, slugify, and toTitleCase, along with usage examples and performance considerations.\n\nRelates to TASK-025 on #874.",
+  "metadata": {
+    "commit": "7c98450b26c8d799c949e4b7f6aab3a900063f85",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-astro-starlight-docs-1.md",
+      "docs/astro.config.mjs",
+      "docs/src/content/docs/components/architecture.md",
+      "docs/src/content/docs/components/reference.md",
+      "docs/src/content/docs/error-testing/test-builder.md",
+      "docs/src/content/docs/error-testing/testing-strategies.md",
+      "docs/src/content/docs/theme/cross-platform.md",
+      "docs/src/content/docs/theme/customization.md",
+      "docs/src/content/docs/theme/design-tokens.md",
+      "docs/src/content/docs/types/interfaces.md",
+      "docs/src/content/docs/types/patterns.md",
+      "docs/src/content/docs/utils/react-hooks.md",
+      "docs/src/content/docs/utils/string-utilities.md"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat(docs): add documentation for Type Patterns, React Hooks, and String Utilities",
+  "updated_at": "2026-09-08T13:22:44.373852-07:00"
+}

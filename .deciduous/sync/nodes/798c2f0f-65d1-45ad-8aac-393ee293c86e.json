@@ -1,0 +1,26 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "798c2f0f-65d1-45ad-8aac-393ee293c86e",
+  "created_at": "2026-09-08T13:23:02.713267-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Change | [Age](https://docs.renovatebot.com/merge-confidence/) | [Confidence](https://docs.renovatebot.com/merge-confidence/) | OpenSSF | Code Search |\n|---|---|---|---|---|---|\n| [react](https://react.dev/) ([source](https://redirect.github.com/facebook/react/tree/HEAD/packages/react)) | [`19.2.5` → `19.2.6`](https://renovatebot.com/diffs/npm/react/19.2.5/19.2.6) | ![age](https://developer.mend.io/api/mc/badges/age/npm/react/19.2.6?slim=true) | ![confidence](https://developer.mend.io/api/mc/badges/confidence/npm/react/19.2.5/19.2.6?slim=true) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/facebook/react/badge)](https://securityscorecards.dev/viewer/?uri=github.com/facebook/react) | [![GitHub Code Search for \"react\"](https://img.shields.io/badge/code_search-react-2671E5.svg?logo=github)](https://redirect.github.com/search?q=repo:marcusrbrown%2Fsparkle+NOT+path:/package(-lock)%3F%5C.json%7Cyarn%5C.lock%7Cpnpm-lock%5C.yaml%7Cbun%5C.lock(b)/+react) |\n| [react-dom](https://react.dev/) ([source](https://redirect.github.com/facebook/react/tree/HEAD/packages/react-dom)) | [`19.2.5` → `19.2.6`](https://renovatebot.com/diffs/npm/react-dom/19.2.5/19.2.6) | ![age](https://developer.mend.io/api/mc/badges/age/npm/react-dom/19.2.6?slim=true) | ![confidence](https://developer.mend.io/api/mc/badges/confidence/npm/react-dom/19.2.5/19.2.6?slim=true) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/facebook/react/badge)](https://securityscorecards.dev/viewer/?uri=github.com/facebook/react) | [![GitHub Code Search for \"react-dom\"](https://img.shields.io/badge/code_search-react--dom-2671E5.svg?logo=github)](https://redirect.github.com/search?q=repo:marcusrbrown%2Fsparkle+NOT+path:/package(-lock)%3F%5C.json%7Cyarn%5C.lock%7Cpnpm-lock%5C.yaml%7Cbun%5C.lock(b)/+react-dom) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "da417e1507044a889ed57f5adf5e2b069640cc35",
+    "confidence": 70,
+    "files": [
+      "apps/fro-jive/package.json",
+      "apps/moo-dang/package.json",
+      "docs/package.json",
+      "packages/error-testing/package.json",
+      "packages/storybook/package.json",
+      "packages/test-utils/package.json",
+      "packages/theme/package.json",
+      "packages/ui/package.json",
+      "packages/utils/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(deps): update react monorepo to v19.2.6",
+  "updated_at": "2026-09-08T13:23:02.713267-07:00"
+}

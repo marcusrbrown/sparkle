@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "bf66a9c5-7690-46e9-a7a3-06b3022c1f13",
+  "created_at": "2026-09-08T13:23:09.363554-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [bfra-me/.github](https://redirect.github.com/bfra-me/.github) | action | patch | `v4.8.0` → `v4.8.1` | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/bfra-me/.github/badge)](https://securityscorecards.dev/viewer/?uri=github.com/bfra-me/.github) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "1f9c9dd045f584f41be2ff370de5b46c91d73a27",
+    "confidence": 70,
+    "files": [
+      ".github/workflows/renovate.yaml",
+      ".github/workflows/update-repo-settings.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(deps): update bfra-me/.github to v4.8.1",
+  "updated_at": "2026-09-08T13:23:09.363554-07:00"
+}

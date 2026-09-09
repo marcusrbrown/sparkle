@@ -1,0 +1,23 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "d29856a0-f354-46e0-9ea9-71134eb2f394",
+  "created_at": "2026-09-08T13:22:40.273566-07:00",
+  "description": "- Improved help command to provide comprehensive command and topic documentation.\n- Added structured help system with command registration and search capabilities.\n- Updated tests to cover new help command features and edge cases.\n- Introduced detailed help formatting options for better user experience.\n- Created a new help system module with command and topic management.\n\nRelates to TASK-025 on #945.",
+  "metadata": {
+    "commit": "51850025ccd33dc98f8c4bcd912d26c213e955ff",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-moo-dang-shell-1.md",
+      "apps/moo-dang/src/shell/command-help.ts",
+      "apps/moo-dang/src/shell/commands.test.ts",
+      "apps/moo-dang/src/shell/commands.ts",
+      "apps/moo-dang/src/shell/help-system.test.ts",
+      "apps/moo-dang/src/shell/help-system.ts",
+      "apps/moo-dang/src/shell/help-types.ts"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat(moo-dang): update help command and documentation",
+  "updated_at": "2026-09-08T13:22:40.273566-07:00"
+}

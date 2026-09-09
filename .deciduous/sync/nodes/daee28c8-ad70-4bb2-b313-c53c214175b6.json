@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "daee28c8-ad70-4bb2-b313-c53c214175b6",
+  "created_at": "2025-03-28T05:30:58-07:00",
+  "metadata": {
+    "commit": "425ed5f8815ba40e8d6254a97748645b6724bc4d",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency rimraf to v6 (#565)",
+  "updated_at": "2025-03-28T05:30:58-07:00"
+}

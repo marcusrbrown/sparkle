@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "60e33edf-d1a5-4ef0-8f64-e27d0b46849e",
+  "created_at": "2025-09-07T20:57:07-07:00",
+  "metadata": {
+    "commit": "e884d7379245e0402aa6349c1acb03c5fa1c4162",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat(docs): add documentation watcher for automatic regeneration (#889)",
+  "updated_at": "2025-09-07T20:57:07-07:00"
+}

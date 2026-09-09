@@ -1,0 +1,21 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "4944ab3f-4450-474c-b3c7-4a3b36ae743e",
+  "created_at": "2026-09-08T13:22:35.653019-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [happy-dom](https://redirect.github.com/capricorn86/happy-dom) | devDependencies | major | [`18.0.1` -> `20.0.0`](https://renovatebot.com/diffs/npm/happy-dom/18.0.1/20.0.0) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/capricorn86/happy-dom/badge)](https://securityscorecards.dev/viewer/?uri=github.com/capricorn86/happy-dom) |\n\n### GitHub Vulnerability Alerts\n\n#### [CVE-2025-61927](https://redirect.github.com/capricorn86/happy-dom/security/advisories/GHSA-37j7-fg3j-429f)\n\n# Escape of VM Context gives access to process level functionality\n\n## Summary\nHappy DOM v19 and lower contains a security vulnerability that puts the owner system at the risk of RCE (Remote Code Execution) attacks.\n\nA Node.js VM Context is not an isolated environment, and if the user runs untrusted JavaScript code within the Happy DOM VM Context, it may escape the VM and get access to process level functionality.\n\nWhat the attacker can get control over depends on if the process is using ESM or CommonJS. With CommonJS the attacker can get hold of the `require()` function to import modules.\n\nHappy DOM has JavaScript evaluation enabled by default. This may not be obvious to the consumer of Happy DOM and can potentially put the user at risk if untrusted code is executed within the environment.\n\n## Reproduce\n\n### CommonJS (Possible to get hold of require)\n\n```javascript\nconst { Window } = require('happy-dom');\nconst window = new Window({ console });\n\nwindow.document.write(`\n  <script>\n     const process = this.constructor.constructor('return process')();\n     const require = process.mainModule.require;\n  \n     console.log('Files:', require('fs').readdirSync('.').slice(0,3));\n  </script>\n`);\n```\n\n### ESM (Not possible to get hold of import or require) [description truncated to fit budget]",
+  "metadata": {
+    "commit": "e417e591978346333f91a2ecf6718887de01c839",
+    "confidence": 75,
+    "files": [
+      "apps/fro-jive/package.json",
+      "apps/moo-dang/package.json",
+      "packages/theme/package.json",
+      "packages/ui/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency happy-dom to v20 [SECURITY]",
+  "updated_at": "2026-09-08T13:22:35.653019-07:00"
+}

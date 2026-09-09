@@ -1,0 +1,19 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "31d33aad-3af4-4d3b-804a-5abcb7232920",
+  "created_at": "2026-09-08T13:22:44.950417-07:00",
+  "description": "First commit of three planning documents that have existed only in a working tree since May, plus a correction pass on the plan against the current version of its dependency.\n\n## Why they were never committed\n\nThe plan doc carried a duplicate H1 — frontmatter `title:` plus a `# ` heading — which failed `markdown/no-multiple-h1`. That made `pnpm check` fail locally for anyone with these files present, so they stayed untracked. Fixed here; all three lint clean.\n\nThey were one `git clean -fd` from gone: an ideation record, a reviewed requirements doc, and a 730-line plan.\n\n## Why the plan needed revising\n\nIt was written 2026-05-24 against Deciduous v0.15.0. Deciduous is now v0.17.1, and v0.17.0 replaced its persistence model entirely.\n\nThis plan's storage section has now been wrong twice, both times from reading source. So this pass ran the actual binary and revised against observed behavior.\n\n### Storage model replaced\n\nThe committed surface is a Git-native record store — `.deciduous/sync/{nodes,edges,themes,tags}/*.json` — not the JSONL event logs and `checkpoint.json` the plan described. Generated `.gitignore`:\n\n```gitignore\n.deciduous/*\n!.deciduous/config.toml\n!.deciduous/sync/\n```\n\n`init` also writes a `.gitattributes` registering a custom merge driver (`.deciduous/sync/** merge=deciduous`), which the plan didn't know about and which changes the merge-conflict risk. SQLite is now a per-machine cache. `deciduous events rebuild` survives but is deprecated — a one-time legacy importer; `deciduous sync` is the rebuild path.\n\n### The bootstrap cannot be re-run\n\nThis is the substantive change. Record files embed random UUIDs and wall-clock timestamps:\n\n```json\n{\n  \"change_id\": \"8e2fd008-d3e7-4c4a-b0b5-a93b3320fea8\",\n  \"created_at\": \"2026-09-06T18:13:49.247436-07:00\",\n  \"author\": \"Marcus R. Brown\"\n}\n```\n\nTwo runs seeding identical content produced entirely disjoint record sets. Edge IDs derive from those UUIDs, so they churn too. [description truncated to fit budget]",
+  "metadata": {
+    "commit": "ad92128db06e55052c15e48b9dd41daebe3f0d46",
+    "confidence": 75,
+    "files": [
+      "docs/brainstorms/2026-05-24-sparkle-decision-graph-requirements.md",
+      "docs/ideation/2026-05-24-sparkle-2026-direction-ideation.md",
+      "docs/plans/2026-05-24-001-feat-sparkle-decision-graph-plan.md"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "docs: commit decision graph planning docs, revised for Deciduous v0.17.1",
+  "updated_at": "2026-09-08T13:22:44.950417-07:00"
+}

@@ -1,0 +1,20 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "d72758d4-ccb4-4726-9bde-7e75198c4ae5",
+  "created_at": "2026-09-08T13:22:57.698982-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Change | [Age](https://docs.renovatebot.com/merge-confidence/) | [Confidence](https://docs.renovatebot.com/merge-confidence/) | OpenSSF | Code Search |\n|---|---|---|---|---|---|\n| [@types/node](https://redirect.github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/node) ([source](https://redirect.github.com/DefinitelyTyped/DefinitelyTyped/tree/HEAD/types/node)) | [`24.12.4` → `24.13.2`](https://renovatebot.com/diffs/npm/@types%2fnode/24.12.4/24.13.2) | ![age](https://developer.mend.io/api/mc/badges/age/npm/@types%2fnode/24.13.2?slim=true) | ![confidence](https://developer.mend.io/api/mc/badges/confidence/npm/@types%2fnode/24.12.4/24.13.2?slim=true) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/DefinitelyTyped/DefinitelyTyped/badge)](https://securityscorecards.dev/viewer/?uri=github.com/DefinitelyTyped/DefinitelyTyped) | [![GitHub Code Search for \"@types/node\"](https://img.shields.io/badge/code_search-@types/node-2671E5.svg?logo=github)](https://redirect.github.com/search?q=repo:marcusrbrown%2Fsparkle+NOT+path:/package(-lock)%3F%5C.json%7Cyarn%5C.lock%7Cpnpm-lock%5C.yaml%7Cbun%5C.lock(b)/+%40types%2Fnode) |\n\n---\n\n> [!WARNING]\n> Some dependencies could not be looked up. Check the [Dependency Dashboard](../issues/212) for more information.\n\n---",
+  "metadata": {
+    "commit": "afb4cb98ab4d69581eab4949400a1663ca8cf936",
+    "confidence": 75,
+    "files": [
+      "docs/package.json",
+      "package.json",
+      "packages/error-testing/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update @types devDependencies to v24.13.2",
+  "updated_at": "2026-09-08T13:22:57.698982-07:00"
+}

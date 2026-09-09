@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "2a467b46-2e82-4e91-a72c-167941c0596a",
+  "created_at": "2025-09-29T12:16:25-07:00",
+  "metadata": {
+    "commit": "e1ccee5eebd4af0bc8aa9bceaee32f18fc51f6ae",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat: add WASM performance benchmarking suite and utilities (#1004)",
+  "updated_at": "2025-09-29T12:16:25-07:00"
+}

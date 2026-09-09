@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "b4396c6a-ce2f-40dc-a6fa-e85e9cdec862",
+  "created_at": "2024-03-03T22:41:14-07:00",
+  "metadata": {
+    "commit": "ac729fc71d5778c2b87bf9b5f7b7271bc5964c3d",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "ci(renovate): use reusable workflow from `marcusrbrown/.github` (#218)",
+  "updated_at": "2024-03-03T22:41:14-07:00"
+}

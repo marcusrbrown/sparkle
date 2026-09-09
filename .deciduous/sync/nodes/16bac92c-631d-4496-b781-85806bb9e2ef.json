@@ -1,0 +1,17 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "16bac92c-631d-4496-b781-85806bb9e2ef",
+  "created_at": "2026-09-08T13:22:52.914452-07:00",
+  "description": "## What\n\nRemoves a site-wide `<link rel=\"preload\">` for `/fonts/system-ui.woff2` from `docs/astro.config.mjs`.\n\n## Why\n\n`system-ui` is the native OS font-family keyword (already used in `docs/src/styles/sparkle-theme.css` — `--sparkle-font-family-sans: -apple-system, BlinkMacSystemFont, \"Segoe UI\", ...`), not a downloadable web font. No file was ever added under `docs/public/fonts/`, so this preload has 404'd on every single page load since it was introduced in #911 (2025-09-11).\n\nFound during the daily autohealing live docs-site-health check (`https://sparkle.mrbro.dev`) via `agent-browser network requests`:\n\n```\nGET https://sparkle.mrbro.dev/fonts/system-ui.woff2 (Font) 404\n```\n\nReported as a minor finding in the last two daily autohealing updates without a fix; since the root cause and fix are unambiguous and minimal (delete an 11-line dead config block), fixing directly here.\n\n## Verification\n\n- `pnpm --filter @sparkle/docs build` — succeeds, 71 pages built, `dist/` no longer references `system-ui.woff2`\n- `pnpm check` — clean\n- `pnpm fix` — no additional changes needed\n\n---\n🤖 Opened by the [Fro Bot daily autohealing run](https://github.com/marcusrbrown/sparkle/issues/1665).",
+  "metadata": {
+    "commit": "a6a9762ba7fd8b64ad496151727d624953e97aa6",
+    "confidence": 75,
+    "files": [
+      "docs/astro.config.mjs"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix(docs): remove broken system-ui.woff2 font preload",
+  "updated_at": "2026-09-08T13:22:52.914452-07:00"
+}

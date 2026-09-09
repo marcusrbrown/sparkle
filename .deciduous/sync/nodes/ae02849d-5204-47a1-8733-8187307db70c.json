@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "ae02849d-5204-47a1-8733-8187307db70c",
+  "created_at": "2025-05-29T00:22:39-07:00",
+  "metadata": {
+    "commit": "8d7936b47e8d3e5eccb3f3ac0b2051bc6e010192",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "ci(reonvate): optimize triggers (#625)",
+  "updated_at": "2025-05-29T00:22:39-07:00"
+}

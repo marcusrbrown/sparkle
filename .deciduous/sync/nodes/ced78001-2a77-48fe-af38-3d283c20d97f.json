@@ -1,0 +1,35 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "ced78001-2a77-48fe-af38-3d283c20d97f",
+  "created_at": "2026-09-08T13:22:45.445280-07:00",
+  "description": "The class convention was an absolute ban that the codebase violated constantly:\n\n> Avoid ES6 classes except for Error extensions\n\nIt appeared in four places with the same wording, and #1937 has been re-reporting violations against it on every nightly pass.\n\n## Why the rule changed rather than the code\n\nThe rule is unambiguous but false. Enforcing it as written would mean converting a fluent builder whose entire API is method chaining, a transformer that owns cache lifecycle, and the shell subsystems that own process and job state — spending regression budget to make syntax uniform while leaving behavior identical.\n\nIts actual intent is narrower: no classes as namespaces, no static utility bags, no passive data holders, no application inheritance hierarchies. Stateful objects with real lifecycle were never the target.\n\nSeven classes flagged by the audit have already been deleted as genuinely unjustified — a dormant module in #2012 and a deprecated forwarding adapter in #2013. What remains earns its keep.\n\n## New rule\n\n> Prefer functions and closure factories. Classes are allowed only for `Error` or required platform subclasses, fluent builders, or cohesive stateful resources with meaningful instance lifecycle or identity. Do not use classes as namespaces, static utility bags, passive data holders, or application inheritance hierarchies. Every permitted standalone class must carry a local lint suppression explaining why a factory would be less clear.\n\nUpdated in `.github/copilot-instructions.md` (both the checklist entry and the detailed convention), `llms.txt`, and the `fro-bot.yaml` autoheal prompt. The quick-reference locations get a condensed form; `llms.txt` already points at `copilot-instructions.md` for the full set.\n\n## Enforcement\n\nDocumentation-only has already failed once, so the rule is now mechanical: [description truncated to fit budget]",
+  "metadata": {
+    "commit": "7a20340f613fc007180442a08931f5a87ab2b0bc",
+    "confidence": 75,
+    "files": [
+      ".github/copilot-instructions.md",
+      ".github/workflows/fro-bot.yaml",
+      "apps/moo-dang/src/shell/environment.ts",
+      "apps/moo-dang/src/shell/job-controller.ts",
+      "apps/moo-dang/src/utils/benchmark.ts",
+      "apps/moo-dang/test/setup.ts",
+      "docs/scripts/accessibility-audit.ts",
+      "docs/scripts/automation.ts",
+      "docs/scripts/build-performance.ts",
+      "docs/scripts/cross-reference.ts",
+      "docs/scripts/extract-jsdoc.ts",
+      "docs/scripts/generate-markdown.ts",
+      "docs/scripts/watch-docs.ts",
+      "eslint.config.ts",
+      "llms.txt",
+      "packages/error-testing/src/builder.ts",
+      "packages/theme/src/utils/token-transformer.ts",
+      "packages/theme/src/validators/theme-validator.ts",
+      "scripts/validate-turbo.ts"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "docs: replace absolute class-avoidance rule with justified-exception rule + lint",
+  "updated_at": "2026-09-08T13:22:45.445280-07:00"
+}

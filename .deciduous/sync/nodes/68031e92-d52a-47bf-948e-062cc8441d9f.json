@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "68031e92-d52a-47bf-948e-062cc8441d9f",
+  "created_at": "2025-09-23T21:27:02-07:00",
+  "metadata": {
+    "commit": "313bd3e227e9e52a84223d8a6d84f7255a5589a8",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat: enhance terminal and application initialization handling (#961)",
+  "updated_at": "2025-09-23T21:27:02-07:00"
+}

@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "ffe34231-f1ce-4c89-90bd-23cc70cd8988",
+  "created_at": "2024-04-11T20:52:41-07:00",
+  "metadata": {
+    "commit": "4272506a1b88cb2a8f8e43abed7d02c89660d08b",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "ci(renovate): unpin dependencies (#231)",
+  "updated_at": "2024-04-11T20:52:41-07:00"
+}

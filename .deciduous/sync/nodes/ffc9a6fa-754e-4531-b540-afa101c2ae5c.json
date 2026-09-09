@@ -1,0 +1,19 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "ffc9a6fa-754e-4531-b540-afa101c2ae5c",
+  "created_at": "2026-09-08T13:22:49.328501-07:00",
+  "description": "This PR contains the following updates: [description truncated to fit budget]",
+  "metadata": {
+    "commit": "c145ce93864e5226f6ecbbb2d72714fb5e4f311f",
+    "confidence": 75,
+    "files": [
+      "docs/package.json",
+      "package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update all non-major dependencies to v4.13.0",
+  "updated_at": "2026-09-08T13:22:49.328501-07:00"
+}

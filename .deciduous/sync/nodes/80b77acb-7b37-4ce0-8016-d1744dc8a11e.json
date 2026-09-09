@@ -1,0 +1,21 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "80b77acb-7b37-4ce0-8016-d1744dc8a11e",
+  "created_at": "2026-09-08T13:22:34.220331-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [vite](https://vite.dev) ([source](https://redirect.github.com/vitejs/vite/tree/HEAD/packages/vite)) | devDependencies | patch | [`7.1.10` -> `7.1.11`](https://renovatebot.com/diffs/npm/vite/7.1.10/7.1.11) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/vitejs/vite/badge)](https://securityscorecards.dev/viewer/?uri=github.com/vitejs/vite) |\n\n### GitHub Vulnerability Alerts\n\n#### [CVE-2025-62522](https://redirect.github.com/vitejs/vite/security/advisories/GHSA-93m4-6634-74q7)\n\n### Summary\nFiles denied by [`server.fs.deny`](https://vitejs.dev/config/server-options.html#server-fs-deny) were sent if the URL ended with `\\` when the dev server is running on Windows.\n\n### Impact\nOnly apps that match the following conditions are affected:\n\n- explicitly exposes the Vite dev server to the network (using --host or [`server.host` config option](https://vitejs.dev/config/server-options.html#server-host))\n- running the dev server on Windows\n\n### Details\n`server.fs.deny` can contain patterns matching against files (by default it includes `.env`, `.env.*`, `*.{crt,pem}` as such patterns). These patterns were able to bypass by using a back slash(`\\`). The root cause is that `fs.readFile('/foo.png/')` loads `/foo.png`.\n\n### PoC\n```shell\nnpm create vite@latest\ncd vite-project/\ncat \"secret\" > .env\nnpm install\nnpm run dev\ncurl --request-target /.env\\ http://localhost:5173\n```\n<img width=\"1593\" height=\"616\" alt=\"image\" src=\"https://github.com/user-attachments/assets/36212f4e-1d3c-4686-b16f-16b35ca9e175\" />\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "04b30cc7cdbec45c9f031e5d67ac2bf153538a35",
+    "confidence": 75,
+    "files": [
+      "apps/fro-jive/package.json",
+      "apps/moo-dang/package.json",
+      "packages/storybook/package.json",
+      "packages/ui/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency vite to v7.1.11 [SECURITY]",
+  "updated_at": "2026-09-08T13:22:34.220331-07:00"
+}

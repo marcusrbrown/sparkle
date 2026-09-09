@@ -1,0 +1,19 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "e1346663-8f06-47c8-947d-8107009d99d8",
+  "created_at": "2026-09-08T13:22:31.131302-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [tsdown](http://tsdown.dev/) ([source](https://redirect.github.com/rolldown/tsdown)) | devDependencies | minor | [`0.14.2` -> `0.16.8`](https://renovatebot.com/diffs/npm/tsdown/0.14.2/0.16.8) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/rolldown/tsdown/badge)](https://securityscorecards.dev/viewer/?uri=github.com/rolldown/tsdown) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "b6d5718eaaee82ec6714ee35ee0e2a0040f58f59",
+    "confidence": 75,
+    "files": [
+      "package.json",
+      "packages/test-utils/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency tsdown to v0.16.8",
+  "updated_at": "2026-09-08T13:22:31.131302-07:00"
+}

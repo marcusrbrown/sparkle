@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "6905ba8d-d6b1-40ce-8749-75883ead45ab",
+  "created_at": "2025-05-25T23:16:45Z",
+  "metadata": {
+    "commit": "eefff8d8661a35f391e96675e15c520b124c3322",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix(deps): update dependency react-native-safe-area-context to v5.4.1 (#621)",
+  "updated_at": "2025-05-25T23:16:45Z"
+}

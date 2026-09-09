@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "62e49f46-c0e5-403f-b7ec-12205f3b5e95",
+  "created_at": "2024-11-27T03:38:15Z",
+  "metadata": {
+    "commit": "f152322a929a8cb2513a1d7653cdd47a40c07a71",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(config): migrate renovate config (#408)",
+  "updated_at": "2024-11-27T03:38:15Z"
+}

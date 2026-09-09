@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "0875cc9b-daf9-4f6d-a038-7f0b6bf3093a",
+  "created_at": "2025-09-29T20:29:39-07:00",
+  "metadata": {
+    "commit": "c7c79a37846968f2a9fbf1171c793bef64fbdf14",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix: resolve hasPointerCapture errors in Radix UI integration tests (#1014)",
+  "updated_at": "2025-09-29T20:29:39-07:00"
+}

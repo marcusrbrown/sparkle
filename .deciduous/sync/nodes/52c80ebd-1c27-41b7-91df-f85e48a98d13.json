@@ -1,0 +1,21 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "52c80ebd-1c27-41b7-91df-f85e48a98d13",
+  "created_at": "2026-09-08T13:22:44.015151-07:00",
+  "description": "- Update overview documentation for utility functions and React hooks\n- Add detailed API reference for utility functions in the Sparkle Design System\n- Include installation and quick start sections for better user guidance\n- Document advanced usage patterns and testing strategies for utilities\n\nRelates to TASK-030 on #874.",
+  "metadata": {
+    "commit": "d09c08ae79513ddf3082b1b4119409694ada0588",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-astro-starlight-docs-1.md",
+      "docs/astro.config.mjs",
+      "docs/src/content/docs/utils/advanced-patterns.md",
+      "docs/src/content/docs/utils/overview.md",
+      "docs/src/content/docs/utils/reference.md"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "docs: enhance utility functions documentation and add reference guide",
+  "updated_at": "2026-09-08T13:22:44.015151-07:00"
+}

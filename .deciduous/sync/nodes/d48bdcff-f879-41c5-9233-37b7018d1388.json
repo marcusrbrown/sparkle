@@ -1,0 +1,17 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "d48bdcff-f879-41c5-9233-37b7018d1388",
+  "created_at": "2026-09-08T13:22:45.600162-07:00",
+  "description": "`apps/moo-dang/src/utils/performance-optimizations.ts` has no consumers. 571 lines exporting `OptimizedCache`, `ArrayBufferPool`, `StringProcessor`, `LazyLoader`, `Debouncer`, `PerformanceMonitor`, two cache-value interfaces, a `globalOptimizations` singleton, and `initializeOptimizations` / `cleanupOptimizations` helpers — none of it reachable.\n\n## Verification that it is dormant\n\n- Every exported symbol searched by name repo-wide: only self-references inside the file. The one near-miss, `BuildPerformanceMonitor` in `docs/scripts/build-performance.ts`, is a different symbol in an unrelated file.\n- Dynamic `import(` / `require(` searched across `apps/moo-dang`: 28 hits, none referencing this module.\n- `apps/moo-dang/src/utils/index.ts` re-exports `accessibility-keyboard`, `output-formatting`, `scrollback-manager`, and `terminal-keys` only. The app's sole `export *` is in `src/components/index.ts`, a different directory.\n- No config, build, or workflow references.\n- No test file existed for it.\n\nThe only mention anywhere is `.ai/audit/audit-phase2-analysis.md`, an archived planning document.\n\n## Why delete rather than keep\n\nBeyond being unreachable, an architectural review flagged a likely defect in `OptimizedCache`'s eviction scoring around lines 97-102: increasing age raises an entry's score, but the ascending sort evicts the lowest score — so it appears to evict newer entries rather than older ones. Nobody can hit it, because nothing calls it.\n\nThat matters for the decision. This is not working code waiting for a consumer; it is unexercised code with at least one suspected bug in its core policy. Reviving it later should mean rewriting it against real requirements, not trusting six-hundred lines that have never run.\n\nKeeping it also has a recurring cost. Six of the twelve classes flagged by the convention audit in #1937 live in this file, so every nightly pass re-reports them.\n\nGit history retains it if it is ever wanted. [description truncated to fit budget]",
+  "metadata": {
+    "commit": "624e3cf688379e3f63c58e3845aedbf4910b0d5c",
+    "confidence": 75,
+    "files": [
+      "apps/moo-dang/src/utils/performance-optimizations.ts"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(moo-dang): remove dormant performance-optimizations module",
+  "updated_at": "2026-09-08T13:22:45.600162-07:00"
+}

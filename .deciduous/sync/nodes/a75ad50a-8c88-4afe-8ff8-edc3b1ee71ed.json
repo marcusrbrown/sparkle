@@ -1,0 +1,17 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "a75ad50a-8c88-4afe-8ff8-edc3b1ee71ed",
+  "created_at": "2026-09-08T13:22:45.710807-07:00",
+  "description": "`runPerformanceRegression` could not detect a performance regression. It reported success unconditionally.\n\n```ts\nconst hasRegression = false          // never reassigned\n\nawait runFullPerformanceSuite(ciOptions)\n\n// TODO: Load baseline and compare results\nif (baselineFile) {\n  consola.info(`Would compare against baseline: ${baselineFile}`)\n  // Implement baseline comparison logic here\n}\n\nif (hasRegression) {\n  consola.error('Performance regression detected!')\n  process.exit(1)\n} else {\n  consola.success('No performance regression detected')\n}\n```\n\nThe baseline comparison was never written. `hasRegression` is a `const false`, so the `process.exit(1)` branch is unreachable. Passing a baseline file logs `Would compare against ...` and changes nothing — the run still ends in `No performance regression detected`.\n\nIt was reachable through `runBenchmarkCLI`'s `case 'regression'`, so wiring `tsx src/test/performance-runner.ts regression <baseline>` into CI would have produced a permanently green gate that had never checked anything. That is worse than having no check, because it looks like coverage.\n\n## Why delete rather than fix\n\nNothing depends on it. No `package.json` script exposes the `regression` mode, no workflow invokes it, and no documentation promises it — every \"regression\" reference in the repo turned out to be the Playwright/Storybook visual regression suite, which is unrelated.\n\nA real performance gate needs decisions this stub never made: where baselines are stored, how they are recorded and refreshed, what threshold counts as a regression, and how noisy CI runners are handled. None of that is recoverable from `// Implement baseline comparison logic here`. If the capability is wanted, it should be designed against those questions rather than grown from a stub that has been reporting success since it was written. [description truncated to fit budget]",
+  "metadata": {
+    "commit": "6f748cad5e2adc75fa1254fc185351bb283ea7f8",
+    "confidence": 75,
+    "files": [
+      "apps/moo-dang/src/test/performance-runner.ts"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix(moo-dang): remove non-functional performance regression check",
+  "updated_at": "2026-09-08T13:22:45.710807-07:00"
+}

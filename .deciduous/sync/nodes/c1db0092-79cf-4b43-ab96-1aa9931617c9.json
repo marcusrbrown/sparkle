@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "c1db0092-79cf-4b43-ab96-1aa9931617c9",
+  "created_at": "2024-10-19T05:09:58Z",
+  "metadata": {
+    "commit": "1f0baa9a6d05daed0f537564cb78db339edb005b",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix(deps): update dependency react-native to v0.73.10 (#362)",
+  "updated_at": "2024-10-19T05:09:58Z"
+}

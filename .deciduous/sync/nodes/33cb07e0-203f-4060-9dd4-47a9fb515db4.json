@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "33cb07e0-203f-4060-9dd4-47a9fb515db4",
+  "created_at": "2025-09-25T12:43:11-07:00",
+  "metadata": {
+    "commit": "f1ed1b0d04e08dc421620a892102fd31617336b6",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat: implement WASM module loading and execution in shell (#978)",
+  "updated_at": "2025-09-25T12:43:11-07:00"
+}

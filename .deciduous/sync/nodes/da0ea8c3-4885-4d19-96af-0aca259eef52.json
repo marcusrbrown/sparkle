@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "da0ea8c3-4885-4d19-96af-0aca259eef52",
+  "created_at": "2025-09-05T17:58:27-07:00",
+  "metadata": {
+    "commit": "b6f48257f0239046663ca0b7f6d91e3443074f42",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore: enhance build task dependencies in turbo.json (#847)",
+  "updated_at": "2025-09-05T17:58:27-07:00"
+}

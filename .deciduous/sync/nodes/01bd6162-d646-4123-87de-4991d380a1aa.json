@@ -1,0 +1,20 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "01bd6162-d646-4123-87de-4991d380a1aa",
+  "created_at": "2026-09-08T13:22:41.043937-07:00",
+  "description": "- Add DirectoryEntry interface for detailed file information.\n- Implement getDetailedListing method to return detailed directory contents.\n- Introduce createDirectory, isDirectory, isFile, and getSize methods for file system operations.\n- Add calculateDirectorySize method for recursive size calculation.\n- Create comprehensive tests for virtual file system functionality.\n\nRelates to TASK-015 on #943.",
+  "metadata": {
+    "commit": "64ffccc2453eb18c0b87b9002bc6924b441490fb",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-moo-dang-shell-1.md",
+      "apps/moo-dang/src/shell/types.ts",
+      "apps/moo-dang/src/shell/virtual-file-system.test.ts",
+      "apps/moo-dang/src/shell/virtual-file-system.ts"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat: enhance virtual file system with detailed directory operations",
+  "updated_at": "2026-09-08T13:22:41.043937-07:00"
+}

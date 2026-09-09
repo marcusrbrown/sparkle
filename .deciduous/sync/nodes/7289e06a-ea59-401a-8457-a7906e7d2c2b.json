@@ -1,0 +1,21 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "7289e06a-ea59-401a-8457-a7906e7d2c2b",
+  "created_at": "2026-09-08T13:22:56.699498-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Change | [Age](https://docs.renovatebot.com/merge-confidence/) | [Confidence](https://docs.renovatebot.com/merge-confidence/) | OpenSSF | Code Search |\n|---|---|---|---|---|---|\n| [happy-dom](https://redirect.github.com/capricorn86/happy-dom) | [`20.10.5` → `20.10.6`](https://renovatebot.com/diffs/npm/happy-dom/20.10.5/20.10.6) | ![age](https://developer.mend.io/api/mc/badges/age/npm/happy-dom/20.10.6?slim=true) | ![confidence](https://developer.mend.io/api/mc/badges/confidence/npm/happy-dom/20.10.5/20.10.6?slim=true) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/capricorn86/happy-dom/badge)](https://securityscorecards.dev/viewer/?uri=github.com/capricorn86/happy-dom) | [![GitHub Code Search for \"happy-dom\"](https://img.shields.io/badge/code_search-happy--dom-2671E5.svg?logo=github)](https://redirect.github.com/search?q=repo:marcusrbrown%2Fsparkle+NOT+path:/package(-lock)%3F%5C.json%7Cyarn%5C.lock%7Cpnpm-lock%5C.yaml%7Cbun%5C.lock(b)/+happy-dom) |\n\n---\n\n> [!WARNING]\n> Some dependencies could not be looked up. Check the [Dependency Dashboard](../issues/212) for more information.\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "ceb329340f655fe7196b23990a68be09c2904f12",
+    "confidence": 75,
+    "files": [
+      "apps/fro-jive/package.json",
+      "apps/moo-dang/package.json",
+      "packages/theme/package.json",
+      "packages/ui/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update happy-dom monorepo to v20.10.6",
+  "updated_at": "2026-09-08T13:22:56.699498-07:00"
+}

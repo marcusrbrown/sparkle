@@ -1,0 +1,19 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "53261e9c-8fbd-4e86-bb99-f6410d8c7a52",
+  "created_at": "2026-09-08T13:22:30.835502-07:00",
+  "description": "> **Note:** This PR body was truncated due to platform limits.\n\nThis PR contains the following updates: [description truncated to fit budget]",
+  "metadata": {
+    "commit": "26da32d3dd25d0f94e7573eab8a5c6cb23f2b4aa",
+    "confidence": 75,
+    "files": [
+      "packages/storybook/.storybook/main.ts",
+      "packages/storybook/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update storybook monorepo to v10 (major)",
+  "updated_at": "2026-09-08T13:22:30.835502-07:00"
+}

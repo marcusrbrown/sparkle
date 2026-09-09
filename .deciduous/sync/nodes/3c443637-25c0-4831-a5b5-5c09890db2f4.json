@@ -1,0 +1,25 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "3c443637-25c0-4831-a5b5-5c09890db2f4",
+  "created_at": "2026-09-08T13:22:37.543948-07:00",
+  "description": "- Add ThemeToggle component for switching between light, dark, and auto themes\n- Create ThemePreview component for previewing content in different themes\n- Update documentation to include usage examples for theme toggle and preview\n- Integrate theme toggle and preview into the Sparkle documentation site\n\nRelates to TASK-024 on #873.",
+  "metadata": {
+    "commit": "48d421fcff4c4e477af73f1cbe406feb1dd5ffd3",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-astro-starlight-docs-1.md",
+      "docs/astro.config.mjs",
+      "docs/src/components/interactive/ThemePreview.astro",
+      "docs/src/components/interactive/ThemeToggle.astro",
+      "docs/src/components/interactive/index.ts",
+      "docs/src/components/interactive/theme-preview.tsx",
+      "docs/src/components/interactive/theme-toggle.tsx",
+      "docs/src/components/showcase/ComponentShowcase.astro",
+      "docs/src/content/docs/playground/theme-toggle.mdx"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat: implement theme toggle and preview components",
+  "updated_at": "2026-09-08T13:22:37.543948-07:00"
+}

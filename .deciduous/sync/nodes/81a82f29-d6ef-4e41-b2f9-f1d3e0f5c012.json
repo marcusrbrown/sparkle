@@ -1,0 +1,17 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "81a82f29-d6ef-4e41-b2f9-f1d3e0f5c012",
+  "created_at": "2026-09-08T13:22:29.690420-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [peter-evans/create-pull-request](https://redirect.github.com/peter-evans/create-pull-request) | action | patch | `v7.0.8` -> `v7.0.9` | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/peter-evans/create-pull-request/badge)](https://securityscorecards.dev/viewer/?uri=github.com/peter-evans/create-pull-request) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "b3a0dc5ed20f1b77440cab7130ccb0d9892a7b19",
+    "confidence": 70,
+    "files": [
+      ".github/workflows/regenerate-docs.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(deps): update peter-evans/create-pull-request action to v7.0.9",
+  "updated_at": "2026-09-08T13:22:29.690420-07:00"
+}

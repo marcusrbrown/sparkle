@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "9529e4b2-0bee-495f-92c9-d5938c286ce3",
+  "created_at": "2026-09-08T13:22:53.672990-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [actions/setup-node](https://redirect.github.com/actions/setup-node) | action | minor | `v6.4.0` → `v6.5.0` | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/actions/setup-node/badge)](https://securityscorecards.dev/viewer/?uri=github.com/actions/setup-node) |\n| [marcusrbrown/renovate-config](https://redirect.github.com/marcusrbrown/renovate-config) |  | patch | `5.2.4` → `5.2.6` | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/marcusrbrown/renovate-config/badge)](https://securityscorecards.dev/viewer/?uri=github.com/marcusrbrown/renovate-config) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "60c5a3fab485eea57da9895da8001adc3ad4b9c0",
+    "confidence": 70,
+    "files": [
+      ".github/actions/setup-ci/action.yaml",
+      ".github/renovate.json5"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(deps): update all non-major dependencies",
+  "updated_at": "2026-09-08T13:22:53.672990-07:00"
+}

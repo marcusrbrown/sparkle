@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "d53ba1dc-b997-4e24-973b-bd021f9bf0f7",
+  "created_at": "2026-09-08T13:22:26.650640-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | Pending | OpenSSF |\n|---|---|---|---|---|---|\n| [turbo](https://turborepo.com) ([source](https://redirect.github.com/vercel/turborepo)) | devDependencies | patch | [`2.6.1` -> `2.6.2`](https://renovatebot.com/diffs/npm/turbo/2.6.1/2.6.2) | `2.6.3` | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/vercel/turborepo/badge)](https://securityscorecards.dev/viewer/?uri=github.com/vercel/turborepo) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "284c5650819def52f9bf6ce0aba97a25eb874af9",
+    "confidence": 75,
+    "files": [
+      "package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency turbo to v2.6.2",
+  "updated_at": "2026-09-08T13:22:26.650640-07:00"
+}

@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "4d267ba1-e964-4394-ba63-1298d4dff039",
+  "created_at": "2025-11-30T15:18:11Z",
+  "metadata": {
+    "commit": "42ad4494f66f964983be5bdeb0fe58f06bfcbe07",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency @changesets/cli to v2.29.8 (#1209)",
+  "updated_at": "2025-11-30T15:18:11Z"
+}

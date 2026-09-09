@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "2bc833ac-9764-4895-84f3-728db1841a58",
+  "created_at": "2025-09-07T19:53:35-07:00",
+  "metadata": {
+    "commit": "28e33f22631c3c2f74c2b28c98543e8201b198c7",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat(docs): enhance documentation automation and build processes (#887)",
+  "updated_at": "2025-09-07T19:53:35-07:00"
+}

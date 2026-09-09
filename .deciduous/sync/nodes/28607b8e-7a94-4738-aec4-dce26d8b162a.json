@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "28607b8e-7a94-4738-aec4-dce26d8b162a",
+  "created_at": "2025-03-12T14:08:58Z",
+  "metadata": {
+    "commit": "9dd06edfb7b2f9360e271cffe80a44697fc08fdd",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency happy-dom to v17.4.3 (#552)",
+  "updated_at": "2025-03-12T14:08:58Z"
+}

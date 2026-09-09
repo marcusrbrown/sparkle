@@ -1,0 +1,19 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "4c60aec5-b785-433a-a0a5-48e4c7e23470",
+  "created_at": "2026-09-08T13:22:39.163985-07:00",
+  "description": "- Add config property to WasmModule interface for better module management\n- Update createWasmModuleLoaderImpl to utilize executionTimeout from config\n- Enhance tests to include various configurations for WASM modules",
+  "metadata": {
+    "commit": "e837b0f0c88feb34abb12fc34ffc64793097b6f3",
+    "confidence": 75,
+    "files": [
+      "apps/moo-dang/src/shell/wasm-loader.ts",
+      "apps/moo-dang/src/shell/wasm-types.ts",
+      "apps/moo-dang/src/shell/wasm.test.ts"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat: enhance WASM module loader with configuration options",
+  "updated_at": "2026-09-08T13:22:39.163985-07:00"
+}

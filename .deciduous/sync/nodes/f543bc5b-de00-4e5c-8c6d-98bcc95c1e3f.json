@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "f543bc5b-de00-4e5c-8c6d-98bcc95c1e3f",
+  "created_at": "2026-01-04T19:17:02Z",
+  "metadata": {
+    "commit": "0f74407fac9c289256cbeb1e4fde007050f7feaa",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency @bfra.me/eslint-config to v0.47.7 (#1298)",
+  "updated_at": "2026-01-04T19:17:02Z"
+}

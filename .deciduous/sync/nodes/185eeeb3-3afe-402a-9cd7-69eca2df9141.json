@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "185eeeb3-3afe-402a-9cd7-69eca2df9141",
+  "created_at": "2026-09-08T13:22:26.873299-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [@storybook/addon-a11y](https://redirect.github.com/storybookjs/storybook/tree/next/code/addons/a11y) ([source](https://redirect.github.com/storybookjs/storybook/tree/HEAD/code/addons/a11y)) | devDependencies | patch | [`10.1.3` -> `10.1.4`](https://renovatebot.com/diffs/npm/@storybook%2faddon-a11y/10.1.3/10.1.4) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/storybookjs/storybook/badge)](https://securityscorecards.dev/viewer/?uri=github.com/storybookjs/storybook) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "14a8dc8465a6df5df520782832f0d3339583e205",
+    "confidence": 75,
+    "files": [
+      "packages/storybook/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency @storybook/addon-a11y to v10.1.4",
+  "updated_at": "2026-09-08T13:22:26.873299-07:00"
+}

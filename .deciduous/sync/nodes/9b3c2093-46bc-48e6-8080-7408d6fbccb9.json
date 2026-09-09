@@ -1,0 +1,17 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "9b3c2093-46bc-48e6-8080-7408d6fbccb9",
+  "created_at": "2026-09-08T13:22:45.282389-07:00",
+  "description": "Makes `Fro Bot` a required status check on `main`.\n\n```diff\n-        contexts: [Build, Check, Renovate / Renovate, Setup]\n+        contexts: [Build, Check, Fro Bot, Renovate / Renovate, Setup]\n```\n\n## Why now\n\nIt has been advisory since it landed. Over this session it caught eight substantive defects across consecutive PRs, including several I introduced and would otherwise have shipped:\n\n- a `mode: maintenance` dispatch that would have resolved to `branch-pr`, contradicting the prompt's own instruction not to open PRs\n- a code-point vs UTF-16 offset divergence in tab completion that corrupted any command line containing an emoji\n- three missing regression tests covering behavior changes documented in a PR body but never asserted\n- a missing changeset on a published package whose runtime behavior changed\n\nEach was found by independently reproducing the work rather than reading the diff — running the affected suites, checking out the pre-PR file to confirm a failure was pre-existing, introspecting the resolved ESLint config. That is the level of review worth blocking on.\n\n## Why a skipped run does not deadlock\n\nThis is the non-obvious part, and it is the reason the check was left advisory until now.\n\n`Fro Bot` is conditional — it skips fork PRs, `[bot]`-authored PRs, and its own PRs via a job-level `if:` at `fro-bot.yaml:628`. GitHub documents that a job skipped by a job-level condition reports its status as **Success** and does not block a required check.\n\nThe case that *does* deadlock is workflow-level skipping — `paths`, `paths-ignore`, or `branches` filters, or `[skip ci]` — where no check run is ever posted and the requirement sits at `Expected` indefinitely.\n\n`fro-bot.yaml`'s `on.pull_request` carries only `types:`, with no path or branch filters, so it always posts a check. Verified before making the change, along with the job `name:` matching the context string exactly. [description truncated to fit budget]",
+  "metadata": {
+    "commit": "5f75b1f8c23aa46184d9b8f8b6f424d78482a615",
+    "confidence": 75,
+    "files": [
+      ".github/settings.yml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(ci): require the Fro Bot check on main",
+  "updated_at": "2026-09-08T13:22:45.282389-07:00"
+}

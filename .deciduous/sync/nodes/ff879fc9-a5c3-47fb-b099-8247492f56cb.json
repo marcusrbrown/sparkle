@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "ff879fc9-a5c3-47fb-b099-8247492f56cb",
+  "created_at": "2025-09-07T22:40:51-07:00",
+  "metadata": {
+    "commit": "7be86a96184ae367170d68f8a9a28234eb7f729e",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat(docs): enhance React integration and add interactive demos (#891)",
+  "updated_at": "2025-09-07T22:40:51-07:00"
+}

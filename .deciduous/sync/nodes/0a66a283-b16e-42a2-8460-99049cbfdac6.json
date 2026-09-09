@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "0a66a283-b16e-42a2-8460-99049cbfdac6",
+  "created_at": "2024-03-05T08:34:05-07:00",
+  "metadata": {
+    "commit": "4ddb58580f1fa492e735eb37d43a6679c329ff5d",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat: use bfra-me/tsconfig (#221)",
+  "updated_at": "2024-03-05T08:34:05-07:00"
+}

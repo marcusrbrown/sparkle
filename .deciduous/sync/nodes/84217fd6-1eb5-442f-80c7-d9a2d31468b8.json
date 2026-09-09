@@ -1,0 +1,20 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "84217fd6-1eb5-442f-80c7-d9a2d31468b8",
+  "created_at": "2026-09-08T13:22:52.975555-07:00",
+  "description": "This PR contains the following updates: [description truncated to fit budget]",
+  "metadata": {
+    "commit": "c9aabf6dc0e966d9fcd855df6d3f2dd2747d1740",
+    "confidence": 75,
+    "files": [
+      ".github/workflows/renovate.yaml",
+      ".github/workflows/update-repo-settings.yaml",
+      "docs/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update all non-major dependencies",
+  "updated_at": "2026-09-08T13:22:52.975555-07:00"
+}

@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "cadd98cc-42ea-4f5a-b3b8-d8e6220b1d80",
+  "created_at": "2025-09-21T21:39:40-07:00",
+  "metadata": {
+    "commit": "cc6bdfb908cf2b33f893fc6d1898f0a9e9b05d92",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat: implement initial structure for WASM-based web shell application (#947)",
+  "updated_at": "2025-09-21T21:39:40-07:00"
+}

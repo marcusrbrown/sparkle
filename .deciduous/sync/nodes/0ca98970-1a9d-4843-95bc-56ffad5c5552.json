@@ -1,0 +1,23 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "0ca98970-1a9d-4843-95bc-56ffad5c5552",
+  "created_at": "2026-09-08T13:22:41.464020-07:00",
+  "description": "- Introduced AccessibilityProvider and related hooks for managing accessibility state.\n- Implemented screen reader announcements with ARIA live regions and focus management.\n- Enhanced keyboard navigation with new shortcuts and accessibility-focused key parsing.\n- Added ScreenReaderHelper and KeyboardShortcutsHelp components for better user guidance.\n- Created utility functions for generating keyboard shortcuts help and announcing actions to screen readers.\n- Updated CommandTerminal to utilize new accessibility features and keyboard shortcuts.\n- Refactored utility functions to support extended terminal key handling.\n\nCloses #942.",
+  "metadata": {
+    "commit": "488dbb17b30b0265e9cc4ec63f2fa178028cf769",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-moo-dang-shell-1.md",
+      "apps/moo-dang/src/App.tsx",
+      "apps/moo-dang/src/components/AccessibilityProvider.tsx",
+      "apps/moo-dang/src/components/CommandTerminal.tsx",
+      "apps/moo-dang/src/components/index.ts",
+      "apps/moo-dang/src/utils/accessibility-keyboard.ts",
+      "apps/moo-dang/src/utils/index.ts"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat: add comprehensive accessibility features for terminal components",
+  "updated_at": "2026-09-08T13:22:41.464020-07:00"
+}

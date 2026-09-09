@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "e8fb24a7-94ae-403a-9c0b-b231100f2adf",
+  "created_at": "2025-09-21T20:16:57-07:00",
+  "metadata": {
+    "commit": "f240f33e7e704bacf3e76f6afe86b3d521e2d086",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "docs: add implementation plan for WASM-based web shell application (#940)",
+  "updated_at": "2025-09-21T20:16:57-07:00"
+}

@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "53ae17f1-08c4-4acf-a562-be7e3e22c81e",
+  "created_at": "2025-09-10T13:06:19-07:00",
+  "metadata": {
+    "commit": "d09c08ae79513ddf3082b1b4119409694ada0588",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "docs: enhance utility functions documentation and add reference guide (#905)",
+  "updated_at": "2025-09-10T13:06:19-07:00"
+}

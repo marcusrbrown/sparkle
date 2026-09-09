@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "91661308-621a-418e-ae79-60cd30d801b2",
+  "created_at": "2026-09-08T13:23:03.406658-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Change | [Age](https://docs.renovatebot.com/merge-confidence/) | [Confidence](https://docs.renovatebot.com/merge-confidence/) | OpenSSF | Code Search |\n|---|---|---|---|---|---|\n| [@astrojs/check](https://redirect.github.com/withastro/astro/tree/main/packages/language-tools/astro-check) ([source](https://redirect.github.com/withastro/astro/tree/HEAD/packages/language-tools/astro-check)) | [`0.9.8` → `0.9.9`](https://renovatebot.com/diffs/npm/@astrojs%2fcheck/0.9.8/0.9.9) | ![age](https://developer.mend.io/api/mc/badges/age/npm/@astrojs%2fcheck/0.9.9?slim=true) | ![confidence](https://developer.mend.io/api/mc/badges/confidence/npm/@astrojs%2fcheck/0.9.8/0.9.9?slim=true) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/withastro/astro/badge)](https://securityscorecards.dev/viewer/?uri=github.com/withastro/astro) | [![GitHub Code Search for \"@astrojs/check\"](https://img.shields.io/badge/code_search-@astrojs/check-2671E5.svg?logo=github)](https://redirect.github.com/search?q=repo:marcusrbrown%2Fsparkle+NOT+path:/package(-lock)%3F%5C.json%7Cyarn%5C.lock%7Cpnpm-lock%5C.yaml%7Cbun%5C.lock(b)/+%40astrojs%2Fcheck) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "7129838fa2d8e12b1c9cb71f740dcf74e5f4165a",
+    "confidence": 75,
+    "files": [
+      "docs/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix(deps): update dependency @astrojs/check to v0.9.9",
+  "updated_at": "2026-09-08T13:23:03.406658-07:00"
+}

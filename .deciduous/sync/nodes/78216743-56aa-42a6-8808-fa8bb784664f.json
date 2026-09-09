@@ -1,0 +1,17 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "78216743-56aa-42a6-8808-fa8bb784664f",
+  "created_at": "2026-09-08T13:22:32.352096-07:00",
+  "description": "PR #1136: ci(deploy-docs): build UI packages before building docs",
+  "metadata": {
+    "commit": "757f6082583740595adb1acbea9e9b88f45ed1e4",
+    "confidence": 75,
+    "files": [
+      ".github/workflows/deploy-docs.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "ci(deploy-docs): build UI packages before building docs",
+  "updated_at": "2026-09-08T13:22:32.352096-07:00"
+}

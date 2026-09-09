@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "94a1e8b9-fea5-48e6-b361-dae444a274c6",
+  "created_at": "2026-09-06T20:53:03-07:00",
+  "metadata": {
+    "commit": "0a85dc030df15c104e37f3e2d517444ae344cb30",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "test(docs): pin doctrine JSDoc parsing behavior (#2034)",
+  "updated_at": "2026-09-06T20:53:03-07:00"
+}

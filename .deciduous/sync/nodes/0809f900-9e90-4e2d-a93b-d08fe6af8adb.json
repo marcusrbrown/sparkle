@@ -1,0 +1,20 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "0809f900-9e90-4e2d-a93b-d08fe6af8adb",
+  "created_at": "2026-09-08T13:23:01.587571-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Change | [Age](https://docs.renovatebot.com/merge-confidence/) | [Confidence](https://docs.renovatebot.com/merge-confidence/) | OpenSSF | Code Search |\n|---|---|---|---|---|---|\n| [tsx](https://tsx.hirok.io) ([source](https://redirect.github.com/privatenumber/tsx)) | [`4.21.1` → `4.22.0`](https://renovatebot.com/diffs/npm/tsx/4.21.1/4.22.0) | ![age](https://developer.mend.io/api/mc/badges/age/npm/tsx/4.22.0?slim=true) | ![confidence](https://developer.mend.io/api/mc/badges/confidence/npm/tsx/4.21.1/4.22.0?slim=true) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/privatenumber/tsx/badge)](https://securityscorecards.dev/viewer/?uri=github.com/privatenumber/tsx) | [![GitHub Code Search for \"tsx\"](https://img.shields.io/badge/code_search-tsx-2671E5.svg?logo=github)](https://redirect.github.com/search?q=repo:marcusrbrown%2Fsparkle+NOT+path:/package(-lock)%3F%5C.json%7Cyarn%5C.lock%7Cpnpm-lock%5C.yaml%7Cbun%5C.lock(b)/+tsx) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "17931134990f0fa779eabe7597f362dff1c7038c",
+    "confidence": 75,
+    "files": [
+      "apps/moo-dang/package.json",
+      "docs/package.json",
+      "package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency tsx to v4.22.0",
+  "updated_at": "2026-09-08T13:23:01.587571-07:00"
+}

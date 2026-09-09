@@ -1,0 +1,24 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "76bf49e3-0410-40ac-8712-19f95d4af2f3",
+  "created_at": "2026-09-08T13:22:44.070227-07:00",
+  "description": "- Introduced `token-transformation.md` detailing the `TokenTransformer` class, its usage, and caching mechanisms for transforming design tokens between web and React Native formats.\n- Added `workflow.md` providing a complete guide to the theme system workflow, covering token definition, theme configuration, provider setup, token transformation, component integration, and runtime management.\n\nRelates to TASK-029 on #874.",
+  "metadata": {
+    "commit": "16d23774922ddb0020ba038ce2663b9556193d90",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-astro-starlight-docs-1.md",
+      "docs/astro.config.mjs",
+      "docs/src/content/docs/theme/advanced.md",
+      "docs/src/content/docs/theme/overview.md",
+      "docs/src/content/docs/theme/providers.md",
+      "docs/src/content/docs/theme/token-transformation.md",
+      "docs/src/content/docs/theme/troubleshooting.md",
+      "docs/src/content/docs/theme/workflow.md"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "docs: add documentation for Token Transformation and Theme System Workflow",
+  "updated_at": "2026-09-08T13:22:44.070227-07:00"
+}

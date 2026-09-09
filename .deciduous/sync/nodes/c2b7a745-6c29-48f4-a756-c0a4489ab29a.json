@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "c2b7a745-6c29-48f4-a756-c0a4489ab29a",
+  "created_at": "2025-11-01T00:01:22-07:00",
+  "metadata": {
+    "commit": "f4ae576e2451628e3e067e423ffb510c995c8615",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "ci(deploy-docs): comment out `shell` on analysis step (#1137)",
+  "updated_at": "2025-11-01T00:01:22-07:00"
+}

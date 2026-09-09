@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "f071b685-7aca-4af3-ba83-cbc4dd3011ee",
+  "created_at": "2026-09-08T13:22:50.262028-07:00",
+  "description": "## Summary\n\nRemediates a **high severity** Dependabot alert (#227, [GHSA-2v37-7h3g-55p8](https://github.com/marcusrbrown/sparkle/security/dependabot/227)): `nanoid` versions `<3.3.17` allow custom generators to loop indefinitely when `size` is zero.\n\n`nanoid` is a transitive dependency pulled in via `@react-navigation/core` (through `expo-router` in `apps/fro-jive`). No direct usage in Sparkle source.\n\n## Changes\n\n- Added a pnpm override in `pnpm-workspace.yaml`: `nanoid@<3.3.17: ^3.3.17`\n- Regenerated `pnpm-lock.yaml`; `nanoid` now resolves to `3.3.17` (patched) everywhere in the tree\n\n## Verification\n\n- `pnpm check` — clean (0 errors, pre-existing markdown warnings only)\n- `pnpm check:monorepo` (manypkg) — valid\n- `pnpm build` — all 10 Turborepo tasks succeed\n\n---\n🤖 Filed by the Fro Bot daily autohealing run (category 2: security).",
+  "metadata": {
+    "commit": "d034391150cd9181aa6733d4b0a14af0a95f5d2d",
+    "confidence": 75,
+    "files": [
+      "pnpm-lock.yaml",
+      "pnpm-workspace.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix(deps): override nanoid to ^3.3.17 to remediate GHSA-2v37-7h3g-55p8",
+  "updated_at": "2026-09-08T13:22:50.262028-07:00"
+}

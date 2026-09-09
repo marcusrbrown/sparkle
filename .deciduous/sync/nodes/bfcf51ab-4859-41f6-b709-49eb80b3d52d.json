@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "bfcf51ab-4859-41f6-b709-49eb80b3d52d",
+  "created_at": "2025-09-05T21:29:45-07:00",
+  "metadata": {
+    "commit": "55794510865bd07f677cd2a6bd1ff2b6385e039d",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore: enhance turbo.json validation and update scripts (#854)",
+  "updated_at": "2025-09-05T21:29:45-07:00"
+}

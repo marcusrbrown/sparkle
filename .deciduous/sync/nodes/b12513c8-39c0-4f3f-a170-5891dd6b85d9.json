@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "b12513c8-39c0-4f3f-a170-5891dd6b85d9",
+  "created_at": "2025-07-19T19:20:12Z",
+  "metadata": {
+    "commit": "77a275da7fce10218393b4ee9d8e8a1a06c79653",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency turbo to v2.5.5 (#713)",
+  "updated_at": "2025-07-19T19:20:12Z"
+}

@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "4cca18e9-c2a1-442e-be8e-9e6883c94d63",
+  "created_at": "2026-09-08T13:22:28.612805-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [@changesets/cli](https://redirect.github.com/changesets/changesets/tree/main#readme) ([source](https://redirect.github.com/changesets/changesets)) | devDependencies | patch | [`2.29.7` -> `2.29.8`](https://renovatebot.com/diffs/npm/@changesets%2fcli/2.29.7/2.29.8) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/changesets/changesets/badge)](https://securityscorecards.dev/viewer/?uri=github.com/changesets/changesets) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "42ad4494f66f964983be5bdeb0fe58f06bfcbe07",
+    "confidence": 75,
+    "files": [
+      "package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency @changesets/cli to v2.29.8",
+  "updated_at": "2026-09-08T13:22:28.612805-07:00"
+}

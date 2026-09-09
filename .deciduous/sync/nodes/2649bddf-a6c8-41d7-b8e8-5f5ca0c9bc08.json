@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "2649bddf-a6c8-41d7-b8e8-5f5ca0c9bc08",
+  "created_at": "2025-10-29T22:35:57-07:00",
+  "metadata": {
+    "commit": "41d336d1df6f2679b444c6d678ebfc1421b0b728",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "ci(renovate): automerge unstable versions of some packages (#1124)",
+  "updated_at": "2025-10-29T22:35:57-07:00"
+}

@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "074a74d2-0be2-44d0-bc5c-ebb14b30210c",
+  "created_at": "2025-08-30T23:06:03-07:00",
+  "metadata": {
+    "commit": "6deac9359e1c5c206495dcaa2fdd829c03a8138e",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "docs: add implementation plan prompts for AI coding agents (#768)",
+  "updated_at": "2025-08-30T23:06:03-07:00"
+}

@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "e4f886e2-3dff-4acd-950f-2a03e4df0088",
+  "created_at": "2026-06-07T01:41:04Z",
+  "metadata": {
+    "commit": "b85ff716253fbe07530707f9cc6d58fffecf0e21",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update happy-dom monorepo to v20.10.1 (#1703)",
+  "updated_at": "2026-06-07T01:41:04Z"
+}

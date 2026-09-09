@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "31e1b877-59e8-4080-ab30-5f57c4cc63f9",
+  "created_at": "2026-07-03T06:41:33Z",
+  "metadata": {
+    "commit": "1d3c7b48dfa4d47215c25fdb0ee9f72f17c9539a",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix(deps): update pnpm to v11.8.0 [SECURITY] (#1792)",
+  "updated_at": "2026-07-03T06:41:33Z"
+}

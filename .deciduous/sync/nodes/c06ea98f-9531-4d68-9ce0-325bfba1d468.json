@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "c06ea98f-9531-4d68-9ce0-325bfba1d468",
+  "created_at": "2026-09-08T13:22:37.937440-07:00",
+  "description": "- Introduce three tailored implementation plan prompts for AI agents.\n- Create an interactive theme playground component for real-time design token modifications.\n- Develop a WASM command auto-generation tool for TypeScript bindings.\n- Build an automated accessibility audit dashboard integrated with Storybook.",
+  "metadata": {
+    "commit": "c95d9b55310978c64866826d3cdc49eed483fa51",
+    "confidence": 75,
+    "files": [
+      ".ai/notes/implementaton-plan-prompts.md",
+      ".github/copilot-instructions.md"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "docs(ai): add unique implementation plan prompts for coding agents",
+  "updated_at": "2026-09-08T13:22:37.937440-07:00"
+}

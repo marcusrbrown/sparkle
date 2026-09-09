@@ -1,0 +1,17 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "9bda2f4e-a568-4de3-8043-ec08ea1b8de2",
+  "created_at": "2026-09-08T13:22:45.134807-07:00",
+  "description": "## 📚 Automated Documentation Regeneration\n\nThis PR contains automatically regenerated documentation for the following packages:\n\n**Affected Packages**:\n```\ntheme\n```\n\n### Changes Summary\n\n- **Files**: 1\n- **Lines Added**: 8\n- **Lines Deleted**: 53\n\n### Changed Source Files\n\n```\npackages/theme/src/validators/theme-validator.ts\n```\n\n### Regeneration Details\n\n- **Trigger**: push\n- **Commit**: 0005c9296f83e5b5ef3ff12cea9f9375ee9a48ea\n- **Branch**: main\n- **Actor**: @marcusrbrown\n- **Force Rebuild**: false\n\n### Review Checklist\n\n- [ ] Documentation reflects source code changes\n- [ ] API references complete and formatted\n- [ ] Component examples render correctly\n- [ ] Cross-references and links valid\n- [ ] No sensitive information exposed\n\n---\n🤖 This PR was automatically created by the [Regenerate Documentation workflow](/.github/workflows/regenerate-docs.yaml)",
+  "metadata": {
+    "commit": "c40517ca8ebb8f9181e5255bd5bf1730e0bbd466",
+    "confidence": 75,
+    "files": [
+      "docs/src/content/docs/api/theme/src.md"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "docs: regenerate documentation for theme",
+  "updated_at": "2026-09-08T13:22:45.134807-07:00"
+}

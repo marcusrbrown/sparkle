@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "e3dfc0aa-c966-4dd7-907a-761c448408ee",
+  "created_at": "2025-06-28T07:09:49Z",
+  "metadata": {
+    "commit": "095dafdb593a57eddd12f9062c2ba53335e8c16f",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency prettier to v3.6.1 (#685)",
+  "updated_at": "2025-06-28T07:09:49Z"
+}

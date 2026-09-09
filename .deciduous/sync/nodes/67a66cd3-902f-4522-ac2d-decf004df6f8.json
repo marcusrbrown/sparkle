@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "67a66cd3-902f-4522-ac2d-decf004df6f8",
+  "created_at": "2025-09-01T23:59:34-07:00",
+  "metadata": {
+    "commit": "517049d179274aad4ae838f7ca716e51b3776917",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat: integrate theme management with Tailwind CSS support (#810)",
+  "updated_at": "2025-09-01T23:59:34-07:00"
+}

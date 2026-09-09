@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "f0828ee4-a533-4221-b5dd-a537e2683948",
+  "created_at": "2025-09-30T07:30:51-07:00",
+  "metadata": {
+    "commit": "02038e83e655b97230ec4596eb458f071aec6941",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore: update localStorage security audit report and tasks (#1020)",
+  "updated_at": "2025-09-30T07:30:51-07:00"
+}

@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "6daa35e4-8222-45be-b74e-80aae6111f15",
+  "created_at": "2025-09-28T14:14:46Z",
+  "metadata": {
+    "commit": "448623f466b561ba128906c29528ed7834ae9282",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix(deps): update dependency @astrojs/react to v4.4.0 (#995)",
+  "updated_at": "2025-09-28T14:14:46Z"
+}

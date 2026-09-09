@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "8528962e-618a-4d7d-be5f-80954285c8d3",
+  "created_at": "2025-10-02T20:29:38-07:00",
+  "metadata": {
+    "commit": "e0ef28f547ff344c988fec43e6fcc88bcef87f8a",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat: enhance Starlight theme CSS for better light/dark mode support (#1035)",
+  "updated_at": "2025-10-02T20:29:38-07:00"
+}

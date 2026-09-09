@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "c0b5f51c-eb18-4338-b69f-4e5076af1225",
+  "created_at": "2026-08-23T08:41:37Z",
+  "metadata": {
+    "commit": "a039d92a4f8926ab3386740d961f11e709daf7f9",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency @bfra.me/prettier-config to v0.16.10 (#1951)",
+  "updated_at": "2026-08-23T08:41:37Z"
+}

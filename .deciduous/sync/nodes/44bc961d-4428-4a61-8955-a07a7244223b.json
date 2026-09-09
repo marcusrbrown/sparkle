@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "44bc961d-4428-4a61-8955-a07a7244223b",
+  "created_at": "2026-09-08T13:22:37.597308-07:00",
+  "description": "- Add detailed documentation for Starlight theme system architecture\n- Improve color variable semantics for better readability\n- Map tokens for proper contrast in light and dark modes\n- Implement special handling for code block backgrounds\n- Update UI background and text colors for consistency across themes",
+  "metadata": {
+    "commit": "e0ef28f547ff344c988fec43e6fcc88bcef87f8a",
+    "confidence": 75,
+    "files": [
+      "docs/scripts/generate-theme-css.ts",
+      "docs/src/styles/sparkle-theme.css"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat: enhance Starlight theme CSS for better light/dark mode support",
+  "updated_at": "2026-09-08T13:22:37.597308-07:00"
+}

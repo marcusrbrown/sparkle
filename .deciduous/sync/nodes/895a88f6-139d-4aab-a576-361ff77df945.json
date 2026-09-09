@@ -1,0 +1,19 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "895a88f6-139d-4aab-a576-361ff77df945",
+  "created_at": "2026-09-08T13:22:33.592784-07:00",
+  "description": "- Add input option to install Zig in CI setup\n- Configure pnpm caching for improved performance\n- Update workflow to include CI setup in check, build, and test jobs",
+  "metadata": {
+    "commit": "d7b6b9e84057cfd20d7eba216a63bd8a639cf9ab",
+    "confidence": 75,
+    "files": [
+      ".github/actions/setup-ci/action.yaml",
+      ".github/settings.yml",
+      ".github/workflows/main.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "ci: simplify caching and parallelize `main` builds",
+  "updated_at": "2026-09-08T13:22:33.592784-07:00"
+}

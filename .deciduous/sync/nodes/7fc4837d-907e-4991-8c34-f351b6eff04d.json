@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "7fc4837d-907e-4991-8c34-f351b6eff04d",
+  "created_at": "2026-09-06T19:21:58-07:00",
+  "metadata": {
+    "commit": "ad92128db06e55052c15e48b9dd41daebe3f0d46",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "docs: commit decision graph planning docs, revised for Deciduous v0.17.1 (#2028)",
+  "updated_at": "2026-09-06T19:21:58-07:00"
+}

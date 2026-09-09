@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "3bfd8fde-4fac-4b6d-9f7f-6d27e7edcb79",
+  "created_at": "2025-09-09T04:16:18Z",
+  "metadata": {
+    "commit": "ec47bc029bb34eb67b111af15796d08ea9ac0180",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency @storybook/addon-a11y to v9.1.5 (#898)",
+  "updated_at": "2025-09-09T04:16:18Z"
+}

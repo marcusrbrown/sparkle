@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "53d8d0a4-e509-4d76-aec6-0c1945a1cc55",
+  "created_at": "2026-09-08T13:22:48.405688-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Change | [Age](https://docs.renovatebot.com/merge-confidence/) | [Confidence](https://docs.renovatebot.com/merge-confidence/) | OpenSSF | Code Search |\n|---|---|---|---|---|---|\n| [@microsoft/api-extractor](https://api-extractor.com) ([source](https://redirect.github.com/microsoft/rushstack/tree/HEAD/apps/api-extractor)) | [`7.58.12` → `7.58.13`](https://renovatebot.com/diffs/npm/@microsoft%2fapi-extractor/7.58.12/7.58.13) | ![age](https://developer.mend.io/api/mc/badges/age/npm/@microsoft%2fapi-extractor/7.58.13?slim=true) | ![confidence](https://developer.mend.io/api/mc/badges/confidence/npm/@microsoft%2fapi-extractor/7.58.12/7.58.13?slim=true) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/microsoft/rushstack/badge)](https://securityscorecards.dev/viewer/?uri=github.com/microsoft/rushstack) | [![GitHub Code Search for \"@microsoft/api-extractor\"](https://img.shields.io/badge/code_search-@microsoft/api--extractor-2671E5.svg?logo=github)](https://redirect.github.com/search?q=repo:marcusrbrown%2Fsparkle+NOT+path:/package(-lock)%3F%5C.json%7Cyarn%5C.lock%7Cpnpm-lock%5C.yaml%7Cbun%5C.lock(b)/+%40microsoft%2Fapi-extractor) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "e0c629aa1f9f45432d1d99163a0056f578aede43",
+    "confidence": 75,
+    "files": [
+      "docs/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency @microsoft/api-extractor to v7.58.13",
+  "updated_at": "2026-09-08T13:22:48.405688-07:00"
+}

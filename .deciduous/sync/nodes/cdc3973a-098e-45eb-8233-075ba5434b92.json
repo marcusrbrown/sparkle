@@ -1,0 +1,22 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "cdc3973a-098e-45eb-8233-075ba5434b92",
+  "created_at": "2026-09-08T13:22:38.674966-07:00",
+  "description": "- Simplify localStorage mocking strategy to enhance test reliability.\n- Introduce createMediaQueryListMock for consistent media query testing.\n- Update integration tests to utilize new mock implementations.\n- Reset mocks before each test to ensure clean state.\n\nCloses #1006.",
+  "metadata": {
+    "commit": "258a946e279690fde4c74a68c104b53d88e88a6f",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/refactor-audit-improvements-1.md",
+      "packages/theme/test/setup.ts",
+      "packages/theme/test/test-utils.ts",
+      "packages/theme/test/theme-combined.integration.test.tsx",
+      "packages/theme/test/theme-persistence.integration.test.tsx",
+      "packages/theme/test/theme-system-detection.integration.test.tsx"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "refactor: improve localStorage and matchMedia mocks for tests",
+  "updated_at": "2026-09-08T13:22:38.674966-07:00"
+}

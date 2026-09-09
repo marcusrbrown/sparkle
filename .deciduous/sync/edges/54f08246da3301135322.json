@@ -1,0 +1,10 @@
+{
+  "author": "Marcus R. Brown",
+  "created_at": "2026-09-08T13:23:09.894368-07:00",
+  "edge_id": "54f08246da3301135322",
+  "edge_type": "leads_to",
+  "from_change_id": "dfaf048a-3680-40ac-bc93-d68dac90bd5e",
+  "rationale": "PR merges the linked commit",
+  "to_change_id": "cf603e36-4ced-45dd-9d70-e32de9b34d58",
+  "weight": 1.0
+}

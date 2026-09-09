@@ -1,0 +1,21 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "dff8a18d-61ad-40ce-b032-b5befdd8742e",
+  "created_at": "2026-09-08T13:22:45.392874-07:00",
+  "description": "`ThemeValidator` was a stateless namespace — one public `validate` method over roughly fifteen private helpers, plus a field holding constant defaults. The instance existed only to group functions.\n\nThe conversion is an inversion rather than a rewrite, because the function form already existed and was already the public API:\n\n```ts\nexport function validateTheme(theme: ThemeConfig, options?: ValidationOptions): ValidationResult {\n  const validator = new ThemeValidator()\n  // ...\n}\n```\n\nBoth real consumers — `ThemeProvider.tsx:211` and `NativeThemeProvider.tsx:190` — call `validateTheme`. Nothing in production ever constructed the class. So the helpers move to module scope, `validateTheme` becomes the implementation, and the wrapper goes away.\n\n## Removing the export\n\n`ThemeValidator` was exported from the package barrel, which would normally be breaking. `@sparkle/theme` is at `0.0.0` and has never been published — `npm view @sparkle/theme` returns 404 — so there are no consumers to break.\n\nDeleted outright rather than left as a deprecated adapter. #2013 removed one of those from `moo-dang` for being pure indirection, and adding a new one here would repeat the pattern this codebase just cleaned up.\n\n`validateTheme` and `isValidTheme` are unchanged and still exported.\n\n## Behavior\n\nIdentical. Options thread through to the helpers explicitly instead of via instance state; no validation rule, error message, or `ValidationResult` shape changed.\n\nThe test file is the safety net for that claim. It went from 49 assertions to 48 — the single removal being `expect(validator).toBeInstanceOf(ThemeValidator)`, which tested implementation rather than behavior. Every remaining assertion is unchanged; the only edits are mechanical `validator.validate(...)` → `validateTheme(...)` swaps.\n\n## Also\n\nRemoves the `no-restricted-syntax` suppression added in #2015, which read: [description truncated to fit budget]",
+  "metadata": {
+    "commit": "0005c9296f83e5b5ef3ff12cea9f9375ee9a48ea",
+    "confidence": 75,
+    "files": [
+      ".changeset/theme-validator-remove-class-export.md",
+      "packages/theme/docs/API.md",
+      "packages/theme/src/index.ts",
+      "packages/theme/src/validators/theme-validator.ts",
+      "packages/theme/test/theme-validator.test.ts"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "refactor(theme): convert ThemeValidator to module-scope functions",
+  "updated_at": "2026-09-08T13:22:45.392874-07:00"
+}

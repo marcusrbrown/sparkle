@@ -1,0 +1,17 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "1f51970a-08dd-43ca-aefd-e8a53b272eae",
+  "created_at": "2026-09-08T13:22:45.075097-07:00",
+  "description": "CI has been generating API documentation without ever building the packages it documents, so every cross-package type reference silently resolved wrong.\n\n`docs/src/content/docs/api/theme/src.md` documents:\n\n```\n> **mergeThemes**(`baseTheme`, `overrideTheme`): `ThemeConfig`\n```\n\nThe source says otherwise — `packages/theme/src/utils/token-transformer.ts:276`:\n\n```ts\nmergeThemes(baseTheme: ThemeConfig, overrideTheme: Partial<ThemeConfig>): ThemeConfig\n```\n\n`Partial<ThemeConfig>`, not `ThemeConfig`. There is one `mergeThemes` in the package, so this is not a mis-documented overload.\n\n## The mechanism\n\nThree things line up:\n\n1. `.github/actions/setup-ci` ends at `pnpm install`. It never builds.\n2. Every `@sparkle/*` package resolves only through `dist` — `@sparkle/types` exports `{\".\": {\"types\": \"./dist/index.d.ts\", \"import\": \"./dist/index.js\"}}` — and `dist` is gitignored, so it does not exist on a fresh checkout.\n3. `docs/typedoc.json` sets `skipErrorChecking: true`.\n\nTypeDoc runs with `entryPointStrategy: resolve` against package **sources**, so `packages/theme/src` parses fine. But resolving `ThemeConfig`, which `@sparkle/theme` imports from `@sparkle/types`, goes through that `exports` map into a `dist` that is not there.\n\n`skipErrorChecking` means that failure is not raised. TypeDoc mis-resolves the reference and keeps going, and `Partial<ThemeConfig>` renders as bare `ThemeConfig`. The docs are wrong and nothing is red.\n\nLocally the same command is correct, because a local tree almost always has `dist` present from a previous build. That is why this survived: it only reproduces on a clean checkout, which is exactly what CI does every time and a developer almost never does.\n\n## Isolated to one variable\n\nBoth runs invoke `typedoc --options typedoc.json` directly, not through the automation wrapper, so the pipeline is not part of the result: [description truncated to fit budget]",
+  "metadata": {
+    "commit": "43a579bc92f64a1f4689d939aa516fa96bcc47b8",
+    "confidence": 75,
+    "files": [
+      ".github/workflows/regenerate-docs.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix(ci): build packages before TypeDoc so cross-package types resolve",
+  "updated_at": "2026-09-08T13:22:45.075097-07:00"
+}

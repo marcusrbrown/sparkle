@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "9ca7ee0a-bdf1-4de5-a5c7-6d98632a8ee6",
+  "created_at": "2025-09-05T13:15:27-07:00",
+  "metadata": {
+    "commit": "b7111c6d894335e05a395a77254b7c902391cd71",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "refactor: move fro-jive mobile app to apps directory (#830)",
+  "updated_at": "2025-09-05T13:15:27-07:00"
+}

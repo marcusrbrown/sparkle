@@ -1,0 +1,20 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "73e6b41e-3688-4383-a98b-ae216c1e2d07",
+  "created_at": "2026-09-08T13:22:52.840905-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [actions/checkout](https://redirect.github.com/actions/checkout) | action | minor | `v5.0.1` → `v5.1.0` | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/actions/checkout/badge)](https://securityscorecards.dev/viewer/?uri=github.com/actions/checkout) |\n| [actions/checkout](https://redirect.github.com/actions/checkout) | action | minor | `v6.0.3` → `v6.1.0` | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/actions/checkout/badge)](https://securityscorecards.dev/viewer/?uri=github.com/actions/checkout) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "656c5a559957e21175cb6cb617bcb5bff7cf637e",
+    "confidence": 70,
+    "files": [
+      ".github/workflows/deploy-docs.yaml",
+      ".github/workflows/fro-bot.yaml",
+      ".github/workflows/main.yaml",
+      ".github/workflows/regenerate-docs.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(deps): update all non-major dependencies",
+  "updated_at": "2026-09-08T13:22:52.840905-07:00"
+}

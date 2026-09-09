@@ -1,0 +1,10 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "eae41c5b-0979-40d7-84d7-36b68117b440",
+  "created_at": "2026-09-08T13:23:11.147891-07:00",
+  "description": "Disable specific rules (rejected: more complex than ignoring files)",
+  "node_type": "option",
+  "status": "pending",
+  "title": "Disable specific rules",
+  "updated_at": "2026-09-08T13:23:11.147891-07:00"
+}

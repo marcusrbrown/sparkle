@@ -1,0 +1,22 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "e2be9f8e-59e1-4ea2-bd57-e285e6955536",
+  "created_at": "2026-09-08T13:22:39.757991-07:00",
+  "description": "- Add ShellConfigManager for managing shell configurations with localStorage persistence.\n- Introduce configuration types and interfaces for better type safety.\n- Create a test suite for ShellConfigManager covering initialization, value retrieval, updates, validation, and persistence.\n- Implement default configuration values and validation logic for user preferences.\n- Support for exporting and importing configurations with metadata.\n- Add change listeners for configuration updates and ensure graceful error handling.\n\nCloses #945.",
+  "metadata": {
+    "commit": "086c8933ca9736878ad4e33470d3c3243419587e",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-moo-dang-shell-1.md",
+      "apps/moo-dang/src/shell/command-help.ts",
+      "apps/moo-dang/src/shell/commands.ts",
+      "apps/moo-dang/src/shell/config-manager.test.ts",
+      "apps/moo-dang/src/shell/config-manager.ts",
+      "apps/moo-dang/src/shell/config-types.ts"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat(moo-dang): Implement configuration management",
+  "updated_at": "2026-09-08T13:22:39.757991-07:00"
+}

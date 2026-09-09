@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "29d5e0ed-07c0-4c42-bf40-e2bbc5977e10",
+  "created_at": "2026-06-14T08:29:46-07:00",
+  "metadata": {
+    "commit": "7f472e0a90cfeba95cf1781dc45eec9cb650b2ce",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "docs: regenerate API docs from current JSDoc sources (#1663)",
+  "updated_at": "2026-06-14T08:29:46-07:00"
+}

@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "be6c9e89-d868-4238-bacd-fb576eb3e075",
+  "created_at": "2025-09-27T21:55:57-07:00",
+  "metadata": {
+    "commit": "ee3746361335c5b918f8e6de0efd04a150bb8b73",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "refactor: replace error classes with factory functions for consistency (#994)",
+  "updated_at": "2025-09-27T21:55:57-07:00"
+}

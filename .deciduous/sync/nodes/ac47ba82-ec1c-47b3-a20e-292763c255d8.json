@@ -1,0 +1,22 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "ac47ba82-ec1c-47b3-a20e-292763c255d8",
+  "created_at": "2026-09-08T13:22:28.049848-07:00",
+  "description": "- Remove unused eslint-disable comments from documentation files\n- Update ESLint configuration to enhance markdown linting rules\n- Modify theme API documentation for clarity on ThemeConfig usage\n- Clean up theme overview documentation by removing unnecessary comments\n- Improve token transformation documentation with clearer examples",
+  "metadata": {
+    "commit": "be738e6e4a6be392b91a87a57da1c96e13711e9c",
+    "confidence": 75,
+    "files": [
+      "apps/moo-dang/API.md",
+      "docs-legacy/best-practices-for-sparkle-development.md",
+      "docs/src/content/docs/api/theme/src.md",
+      "docs/src/content/docs/theme/overview.md",
+      "docs/src/content/docs/theme/token-transformation.md",
+      "eslint.config.ts"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(docs): update documentation and ESLint configuration",
+  "updated_at": "2026-09-08T13:22:28.049848-07:00"
+}

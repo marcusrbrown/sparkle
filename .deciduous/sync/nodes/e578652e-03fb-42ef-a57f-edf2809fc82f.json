@@ -1,0 +1,20 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "e578652e-03fb-42ef-a57f-edf2809fc82f",
+  "created_at": "2026-09-08T13:22:49.775394-07:00",
+  "description": "## Summary\nDaily autohealing convention-compliance scan found three docs source files still using `console.*` instead of `consola`, not covered by any existing open PR (#1886 and #1891 covered other files in this same cleanup effort).\n\n- `docs/src/components/showcase/PropsTable.astro` — `console.warn` in Astro frontmatter (build-time)\n- `docs/src/components/showcase/ComponentShowcase.astro` — `console.error` in client `<script>` block\n- `docs/src/components/interactive/SimpleCodeEditor.astro` — `console.error` in client `<script type=\\\"module\\\">` block\n\n`consola` is already a `@sparkle/docs` dependency and is already used client-side in `CodeHighlight.tsx`, confirming this is a safe, established pattern for both server (Astro frontmatter) and browser (`<script>`) contexts.\n\n## Verification\n- `pnpm --filter @sparkle/docs build` — passes, 71 pages built\n- `pnpm check` — clean (0 errors, pre-existing unrelated markdown warnings only)\n- Added changeset (`@sparkle/docs` patch), matching the pattern from #1886/#1891\n\n---\n🤖 Opened by the [Fro Bot daily autohealing run](https://github.com/marcusrbrown/sparkle/issues/1665) (category 4: Developer Experience).",
+  "metadata": {
+    "commit": "2ee81a43fbcaddbeb3afeb7f079bef7de5676615",
+    "confidence": 75,
+    "files": [
+      ".changeset/console-to-consola-astro-showcase.md",
+      "docs/src/components/interactive/SimpleCodeEditor.astro",
+      "docs/src/components/showcase/ComponentShowcase.astro",
+      "docs/src/components/showcase/PropsTable.astro"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(lint): apply auto-fixes from autohealing run",
+  "updated_at": "2026-09-08T13:22:49.775394-07:00"
+}

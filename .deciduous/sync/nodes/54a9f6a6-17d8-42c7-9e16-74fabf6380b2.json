@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "54a9f6a6-17d8-42c7-9e16-74fabf6380b2",
+  "created_at": "2026-02-12T13:48:13Z",
+  "metadata": {
+    "commit": "5fd7343cb3dabe06fdc6dcdd2184f57f89b76dd9",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency @storybook/addon-a11y to v10.2.8 (#1382)",
+  "updated_at": "2026-02-12T13:48:13Z"
+}

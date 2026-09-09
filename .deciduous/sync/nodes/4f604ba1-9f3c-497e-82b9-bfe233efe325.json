@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "4f604ba1-9f3c-497e-82b9-bfe233efe325",
+  "created_at": "2025-09-07T00:04:38-07:00",
+  "metadata": {
+    "commit": "17603af0bb8c1ae41c1ae3ff4af42ffa8dbc7851",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat(tests): add test suites for development workflow, incremental builds, and workspace consistency (#865)",
+  "updated_at": "2025-09-07T00:04:38-07:00"
+}

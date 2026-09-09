@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "1d0a2b1e-70ab-4e82-baf7-c6b6b1cd6124",
+  "created_at": "2025-08-31T02:12:23-07:00",
+  "metadata": {
+    "commit": "58e88ba55e430c387dc3a73b74b85bf3723dceef",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency @manypkg/cli to v0.25.0 (#769)",
+  "updated_at": "2025-08-31T02:12:23-07:00"
+}

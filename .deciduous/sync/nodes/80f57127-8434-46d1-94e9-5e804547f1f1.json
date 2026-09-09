@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "80f57127-8434-46d1-94e9-5e804547f1f1",
+  "created_at": "2024-12-21T15:47:51-07:00",
+  "metadata": {
+    "commit": "3e9700fd6da583a94b2a8056049dbc826e4e5b78",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix(deps): update dependency react-native-screens to v4 (#405)",
+  "updated_at": "2024-12-21T15:47:51-07:00"
+}

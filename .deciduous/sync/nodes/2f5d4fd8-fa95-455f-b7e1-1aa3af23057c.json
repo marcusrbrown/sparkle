@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "2f5d4fd8-fa95-455f-b7e1-1aa3af23057c",
+  "created_at": "2026-07-22T00:58:57Z",
+  "metadata": {
+    "commit": "f47a258cdc4604f637cb23fbc1d290b9a09c3975",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix(deps): update dependency sharp to ^0.35.0 [SECURITY] (#1855)",
+  "updated_at": "2026-07-22T00:58:57Z"
+}

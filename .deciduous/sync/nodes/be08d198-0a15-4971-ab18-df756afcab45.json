@@ -1,0 +1,20 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "be08d198-0a15-4971-ab18-df756afcab45",
+  "created_at": "2026-09-08T13:22:40.983481-07:00",
+  "description": "- Add implementation for basic shell commands including cd.\n- Update command creation to integrate ShellEnvironment.\n- Enhance command execution context with environment management.\n- Modify tests to validate new cd command functionality.\n\nRelates to TASK-016 on #943.",
+  "metadata": {
+    "commit": "4aa840f48f61d7e778fbb413ddbbce7b34d9e8b2",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-moo-dang-shell-1.md",
+      "apps/moo-dang/src/shell/commands.test.ts",
+      "apps/moo-dang/src/shell/commands.ts",
+      "apps/moo-dang/src/workers/shell.worker.ts"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat: implement basic shell commands and integrate environment",
+  "updated_at": "2026-09-08T13:22:40.983481-07:00"
+}

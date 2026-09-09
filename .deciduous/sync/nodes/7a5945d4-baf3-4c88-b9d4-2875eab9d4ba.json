@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "7a5945d4-baf3-4c88-b9d4-2875eab9d4ba",
+  "created_at": "2026-09-08T13:22:54.837818-07:00",
+  "description": "## What\n\n`regenerate-docs.yaml`'s `push.paths` filter used brace-expanded\nextension groups (e.g. `packages/ui/src/**/*.{ts,tsx,js,jsx}`).\nGitHub Actions path filters only support `*`/`**` glob wildcards —\nbrace expansion is not part of the supported filter syntax. This\nworkflow has **0 recorded runs** in its entire history, despite\nnumerous qualifying commits to `packages/{ui,types,utils,theme,error-testing}/src/**`.\n\n## Fix\n\nExpand each brace group into its own explicit path entry so the\ntrigger condition actually matches source file changes.\n\nAlso regenerated the one drifted API doc this silent failure caused:\n`packages/theme/src/utils/token-transformer.ts`'s `mergeThemes`\nalready takes `Partial<ThemeConfig>` for its second parameter, but the\nlast-generated docs still showed the pre-change `ThemeConfig` type\n(from #824).\n\n## Verification\n\n- `python3 -c \"import yaml; yaml.safe_load(...)\"` — YAML parses cleanly\n- `pnpm --filter @sparkle/docs docs:automation` — regenerates\n  `docs/src/content/docs/api/theme/src.md` with no further diff\n- `pnpm check` / `pnpm build` / `pnpm test` — clean on this branch\n\n## Scope\n\nConfig-only change to a workflow trigger condition + one regenerated\ndoc file. No behavior changes to the documentation generation logic\nitself.\n\n---\n🤖 Opened by the [Fro Bot daily autohealing run](https://github.com/marcusrbrown/sparkle/issues/1665).",
+  "metadata": {
+    "commit": "a449a7e453a0c61dcdd2fd23b105f8a49812b1e6",
+    "confidence": 75,
+    "files": [
+      ".github/workflows/regenerate-docs.yaml",
+      "docs/src/content/docs/api/theme/src.md"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix(ci): use explicit path patterns in regenerate-docs path filter",
+  "updated_at": "2026-09-08T13:22:54.837818-07:00"
+}

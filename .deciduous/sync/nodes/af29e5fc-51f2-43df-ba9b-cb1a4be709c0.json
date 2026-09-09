@@ -1,0 +1,10 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "af29e5fc-51f2-43df-ba9b-cb1a4be709c0",
+  "created_at": "2026-09-08T13:21:39.440679-07:00",
+  "description": "ARCHIVE. The original triage classified this ARCHIVE because the linked TASK brief called it complete, even though the plan document itself carries status \"Planned.\" Caveat: the brief's own rationale (\">1yr old, no MSW/Playwright/Lighthouse CI\") is an unverified historical claim, not re-checked here.",
+  "node_type": "observation",
+  "status": "pending",
+  "title": ".ai/plan/infrastructure-testing-framework-1.md",
+  "updated_at": "2026-09-08T13:21:39.440679-07:00"
+}

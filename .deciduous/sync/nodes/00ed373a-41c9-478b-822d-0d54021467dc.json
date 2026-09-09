@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "00ed373a-41c9-478b-822d-0d54021467dc",
+  "created_at": "2025-09-29T23:59:24-07:00",
+  "metadata": {
+    "commit": "024e3789fdf76e5ac3bb115cd5ec5701fc7d2318",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore: remove Cursor rules and `llms.txt` (#1018)",
+  "updated_at": "2025-09-29T23:59:24-07:00"
+}

@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "7fda79e2-813f-432c-a717-66dad3cff155",
+  "created_at": "2026-09-08T13:22:47.835873-07:00",
+  "description": "> ℹ️ **Note**\n> \n> This PR body was truncated due to platform limits.\n\nThis PR contains the following updates:\n\n| Package | Type | Update | Change | Pending | OpenSSF | [Age](https://docs.renovatebot.com/merge-confidence/) | [Confidence](https://docs.renovatebot.com/merge-confidence/) | Code Search |\n|---|---|---|---|---|---|---|---|---|\n| [node](https://nodejs.org) ([source](https://redirect.github.com/nodejs/node)) |  | minor | `24.19.0` → `24.20.0` |  | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/nodejs/node/badge)](https://securityscorecards.dev/viewer/?uri=github.com/nodejs/node) | ![age](https://developer.mend.io/api/mc/badges/age/node-version/node/v24.20.0?slim=true) | ![confidence](https://developer.mend.io/api/mc/badges/confidence/node-version/node/v24.19.0/v24.20.0?slim=true) | [![GitHub Code Search for \"node\"](https://img.shields.io/badge/code_search-node-2671E5.svg?logo=github)](https://redirect.github.com/search?q=repo:marcusrbrown%2Fsparkle+NOT+path:/package(-lock)%3F%5C.json%7Cyarn%5C.lock%7Cpnpm-lock%5C.yaml%7Cbun%5C.lock(b)/+node) |\n| [pnpm](https://pnpm.io) ([source](https://redirect.github.com/pnpm/pnpm/tree/HEAD/pnpm11/pnpm)) | packageManager | minor | [`11.22.0` → `11.23.0`](https://renovatebot.com/diffs/npm/pnpm/11.22.0/11.23.0) | `11.24.0` | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/pnpm/pnpm/badge)](https://securityscorecards.dev/viewer/?uri=github.com/pnpm/pnpm) | ![age](https://developer.mend.io/api/mc/badges/age/npm/pnpm/11.23.0?slim=true) | ![confidence](https://developer.mend.io/api/mc/badges/confidence/npm/pnpm/11.22.0/11.23.0?slim=true) | [![GitHub Code Search for \"pnpm\"](https://img.shields.io/badge/code_search-pnpm-2671E5.svg?logo=github)](https://redirect.github.com/search?q=repo:marcusrbrown%2Fsparkle+NOT+path:/package(-lock)%3F%5C.json%7Cyarn%5C.lock%7Cpnpm-lock%5C.yaml%7Cbun%5C.lock(b)/+pnpm) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "9ae3b33504e31541dabecd44f0c065d52b44c013",
+    "confidence": 70,
+    "files": [
+      ".node-version",
+      "package.json"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(deps): update all non-major dependencies",
+  "updated_at": "2026-09-08T13:22:47.835873-07:00"
+}

@@ -1,0 +1,17 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "47468f2e-0d3b-475b-a0f7-78dc339b1a49",
+  "created_at": "2026-09-08T13:22:34.916583-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [pnpm](https://pnpm.io) ([source](https://redirect.github.com/pnpm/pnpm/tree/HEAD/pnpm)) | packageManager | patch | [`10.18.2` -> `10.18.3`](https://renovatebot.com/diffs/npm/pnpm/10.18.2/10.18.3) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/pnpm/pnpm/badge)](https://securityscorecards.dev/viewer/?uri=github.com/pnpm/pnpm) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "34dfa34092404228a4da62295daec53f5a174e55",
+    "confidence": 70,
+    "files": [
+      "package.json"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(deps): update pnpm to v10.18.3",
+  "updated_at": "2026-09-08T13:22:34.916583-07:00"
+}

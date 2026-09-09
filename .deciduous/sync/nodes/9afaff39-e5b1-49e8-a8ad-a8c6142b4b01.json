@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "9afaff39-e5b1-49e8-a8ad-a8c6142b4b01",
+  "created_at": "2025-04-13T23:15:06Z",
+  "metadata": {
+    "commit": "f5aa4b7a1fde5858ab802683f31a487d213f91ea",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency vite to v5.4.18 [SECURITY] (#586)",
+  "updated_at": "2025-04-13T23:15:06Z"
+}

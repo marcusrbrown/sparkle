@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "67c00e44-1865-4a6f-8be9-e9422bcbaa36",
+  "created_at": "2025-09-21T19:22:23-07:00",
+  "metadata": {
+    "commit": "52bbfc4191ab7dc75e42e4713405e23b4512c64b",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat: enhance documentation structure and accessibility components (#939)",
+  "updated_at": "2025-09-21T19:22:23-07:00"
+}

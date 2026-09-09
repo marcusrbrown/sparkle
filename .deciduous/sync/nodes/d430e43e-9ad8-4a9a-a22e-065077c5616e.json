@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "d430e43e-9ad8-4a9a-a22e-065077c5616e",
+  "created_at": "2026-09-08T13:23:00.905213-07:00",
+  "description": "Brings sparkle to agent-native parity with marcusrbrown/marcusrbrown and mrbro.dev. After 6 months of pure Renovate-only automation, this wires the unified Fro Bot template into sparkle.\n\n## What\n\n### `.github/workflows/fro-bot.yaml` (new, 740 lines)\n\nUnified workflow — one file handles three modes:\n\n| Mode | Triggers | Cadence |\n|---|---|---|\n| **Review** | PR open/sync/reopen/ready_for_review/review_requested, `@fro-bot` mention in comments | On-event |\n| **Maintenance** | `schedule`, `workflow_dispatch` | 17:00 UTC daily |\n| **Autoheal** | `schedule`, `workflow_dispatch` | 05:00 UTC daily |\n\nSchedule slots staggered off siblings: marcusrbrown (04:30/16:30), mrbro.dev (03:30/15:30).\n\n**Guards copied from upstream template:**\n- Bot author + fork PR skip at the job-level `if:`\n- `OWNER/MEMBER/COLLABORATOR` author-association required for comment triggers\n- Fork-PR-head refusal on `issue_comment`-triggered checkouts (the comment payload lacks the fork flag the job-level guard relies on)\n- Concurrency keyed on issue/PR/discussion number with `cancel-in-progress: false`\n- Sunday UTC detection feeds `IS_SUNDAY_UTC` for category 8 cadence\n\n### Sparkle-tailored prompts [description truncated to fit budget]",
+  "metadata": {
+    "commit": "cc5717a24fd9082426b26e63517dafa0463a9792",
+    "confidence": 75,
+    "files": [
+      ".github/workflows/fro-bot.yaml",
+      "llms.txt"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat(ci): add Fro Bot workflow + llms.txt project map",
+  "updated_at": "2026-09-08T13:23:00.905213-07:00"
+}

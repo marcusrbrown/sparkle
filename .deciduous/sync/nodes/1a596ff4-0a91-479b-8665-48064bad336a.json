@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "1a596ff4-0a91-479b-8665-48064bad336a",
+  "created_at": "2025-09-27T21:52:42-07:00",
+  "metadata": {
+    "commit": "11d9ef01683ae59c9376fdc14269df87bb01fcd3",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat: update WASM command execution and add integration tests (#993)",
+  "updated_at": "2025-09-27T21:52:42-07:00"
+}

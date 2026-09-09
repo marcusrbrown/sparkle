@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "a3fa7572-28bf-406e-bf14-9d926e81652d",
+  "created_at": "2025-09-29T12:09:13-07:00",
+  "metadata": {
+    "commit": "5d95021a7dc0a36387d7bdd3ac71f469b245b500",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "doc(moo-dang): add stories for CommandTerminal and Terminal components (#1002)",
+  "updated_at": "2025-09-29T12:09:13-07:00"
+}

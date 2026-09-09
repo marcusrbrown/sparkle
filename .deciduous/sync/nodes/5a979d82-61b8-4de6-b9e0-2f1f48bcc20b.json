@@ -1,0 +1,20 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "5a979d82-61b8-4de6-b9e0-2f1f48bcc20b",
+  "created_at": "2026-09-08T13:22:41.627811-07:00",
+  "description": "- Add theme integration for the Terminal component using Sparkle theme.\n- Introduce utility functions to map Sparkle theme to xterm.js theme.\n- Update terminal options to utilize theme-based font family and size.\n- Modify implementation plan to reflect recent task completions.\n\nRelates to TASK-009 on #942.",
+  "metadata": {
+    "commit": "efd55a37d74301cdbf90415c6fc15999dce23c9c",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-moo-dang-shell-1.md",
+      "apps/moo-dang/src/App.tsx",
+      "apps/moo-dang/src/components/Terminal.tsx",
+      "apps/moo-dang/src/components/theme-utils.ts"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat: update terminal component with theme integration and utilities",
+  "updated_at": "2026-09-08T13:22:41.627811-07:00"
+}

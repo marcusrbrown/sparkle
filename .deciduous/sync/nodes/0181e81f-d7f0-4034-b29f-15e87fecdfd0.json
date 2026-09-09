@@ -1,0 +1,21 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "0181e81f-d7f0-4034-b29f-15e87fecdfd0",
+  "created_at": "2026-09-08T13:22:39.694231-07:00",
+  "description": "- Implement unit tests for the Terminal component.\n- Add unit tests for theme-utils, covering theme conversion and validation.\n- Enhance shell command parser tests with variable expansion and command pipeline scenarios.\n\nRelates to TASK-031 on #946.",
+  "metadata": {
+    "commit": "6908152774d1cb8fd44ca3c2c88a07f05b9a8308",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-moo-dang-shell-1.md",
+      "apps/moo-dang/src/components/Terminal.test.tsx",
+      "apps/moo-dang/src/components/theme-utils.test.ts",
+      "apps/moo-dang/src/shell/parser.test.ts",
+      "apps/moo-dang/src/shell/parser.ts"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "test: add unit tests for terminal and theme utilities",
+  "updated_at": "2026-09-08T13:22:39.694231-07:00"
+}

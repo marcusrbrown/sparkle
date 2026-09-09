@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "d9288c14-5e87-4a88-b835-ecafaba269a1",
+  "created_at": "2026-09-08T13:22:38.387075-07:00",
+  "description": "- Clarify parameter descriptions in the Button component's JSDoc.\n- Change parameter names to use props object for better clarity.\n\nCloses #1008.",
+  "metadata": {
+    "commit": "f449152311ade318dfcfcfed20c76401fe559074",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/refactor-audit-improvements-1.md",
+      "docs-legacy/best-practices-for-sparkle-development.md"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "docs: update JSDoc comments for Button component parameters",
+  "updated_at": "2026-09-08T13:22:38.387075-07:00"
+}

@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "03002216-cd13-44ce-a1b2-5a1700b52637",
+  "created_at": "2026-09-08T13:22:28.732789-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | Pending | OpenSSF |\n|---|---|---|---|---|---|\n| [prettier](https://prettier.io) ([source](https://redirect.github.com/prettier/prettier)) | devDependencies | minor | [`3.6.2` -> `3.7.0`](https://renovatebot.com/diffs/npm/prettier/3.6.2/3.7.0) | `3.7.3` (+2) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/prettier/prettier/badge)](https://securityscorecards.dev/viewer/?uri=github.com/prettier/prettier) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "2e5503e38adfddf4a84f3c91e400e599fc4d66eb",
+    "confidence": 75,
+    "files": [
+      "package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency prettier to v3.7.0",
+  "updated_at": "2026-09-08T13:22:28.732789-07:00"
+}

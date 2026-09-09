@@ -1,0 +1,17 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "869a47bb-63e1-4577-8c4a-bc82f4d4a076",
+  "created_at": "2026-09-08T13:22:45.970826-07:00",
+  "description": "Follow-up to #2001. That PR restored a pushable git remote, but autoheal fixes still had nowhere to land — the credential was never the binding constraint.\n\n## The actual rule\n\n`fro-bot/agent` resolves delivery mode from one action input:\n\n```ts\nresolveOutputMode(eventType, configuredMode)\n```\n\nFor `schedule` and `workflow_dispatch`:\n\n| configured | resolved |\n| --- | --- |\n| `working-dir` | `working-dir` |\n| `branch-pr` | `branch-pr` |\n| `auto` (default) | **`working-dir`** |\n\nEvery other event type returns `null` and ignores the input entirely.\n\nThe resolver takes no credential, actor, or filesystem input. An on-disk `extraheader` has no bearing on the result. `action.yaml` states it directly:\n\n> Manual auto requests always resolve to working-dir; use branch-pr explicitly when branch/PR delivery is required.\n\nSource: [`packages/runtime/src/agent/output-mode.ts`](https://github.com/fro-bot/agent/blob/main/packages/runtime/src/agent/output-mode.ts)\n\n## Why this was missed\n\nThis workflow never set `output-mode`, so it fell through to the `auto` compatibility default and resolved to `working-dir` on every run — schedule and dispatch alike.\n\nThe daily autohealing report (#1665) attributed the failure to a missing credential step, citing `marcusrbrown/mrbro.dev` as having the fix. That difference was real, and #2001 ported it. But `mrbro.dev` does not set `output-mode` either, so it resolves to `working-dir` too. The comparison found a genuine difference between the repos and attributed causation to it without establishing that it was the operative one.\n\n#2001 remains a prerequisite — once `branch-pr` is active the agent needs a credential to actually push — but it was not sufficient on its own.\n\n## Change\n\nRequests `branch-pr` explicitly for the paths that need to deliver fixes: [description truncated to fit budget]",
+  "metadata": {
+    "commit": "46a68753aafe10111059500912b2a932efcecc3b",
+    "confidence": 75,
+    "files": [
+      ".github/workflows/fro-bot.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix(ci): request branch-pr delivery for Fro Bot autoheal runs",
+  "updated_at": "2026-09-08T13:22:45.970826-07:00"
+}

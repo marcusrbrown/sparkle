@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "8443f14d-ac76-464a-b731-a30c1cfe0569",
+  "created_at": "2026-09-08T13:22:38.497228-07:00",
+  "description": "- Clarify package strategy for consuming applications in the Sparkle monorepo\n- Expand on the moo-dang application architecture and features\n- Add key development commands for moo-dang\n- Include Zig WASM development pattern and example executable\n- Document security and isolation measures for the moo-dang shell",
+  "metadata": {
+    "commit": "d0d0d7baa3823ed8ac8b8e5ca263d823b9b73a1d",
+    "confidence": 75,
+    "files": [
+      ".ai/notes/implementaton-plan-prompts.md",
+      ".github/copilot-instructions.md"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "docs(ai): update copilot instructions and enhance moo-dang details",
+  "updated_at": "2026-09-08T13:22:38.497228-07:00"
+}

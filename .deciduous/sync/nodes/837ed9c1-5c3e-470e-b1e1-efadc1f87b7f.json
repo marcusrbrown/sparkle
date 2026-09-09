@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "837ed9c1-5c3e-470e-b1e1-efadc1f87b7f",
+  "created_at": "2025-12-18T19:19:31Z",
+  "metadata": {
+    "commit": "245d1640c5041ffcd27b4b344cb5f5e680c67705",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency storybook to v10.1.10 [SECURITY] (#1279)",
+  "updated_at": "2025-12-18T19:19:31Z"
+}

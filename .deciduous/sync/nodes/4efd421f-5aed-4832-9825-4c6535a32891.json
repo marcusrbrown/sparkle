@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "4efd421f-5aed-4832-9825-4c6535a32891",
+  "created_at": "2023-02-21T00:10:26-07:00",
+  "metadata": {
+    "commit": "83da72e923d6083a061d46a1fccba2ae2585d2b5",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix: remove `prepare` script (#49)",
+  "updated_at": "2023-02-21T00:10:26-07:00"
+}

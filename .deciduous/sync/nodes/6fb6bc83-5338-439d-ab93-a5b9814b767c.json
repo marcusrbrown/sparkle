@@ -1,0 +1,23 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "6fb6bc83-5338-439d-ab93-a5b9814b767c",
+  "created_at": "2026-09-08T13:22:40.401785-07:00",
+  "description": "- Update ExecutionContext to include optional args field\n- Modify createExecutionContext to accept command-line arguments\n- Adjust WASM command execution to utilize args instead of stdin\n- Implement tests for argument passing and environment integration\n\nRelates to TASK-023 on #944.",
+  "metadata": {
+    "commit": "904733792721073c5abddd7b37e13d0549932205",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-moo-dang-shell-1.md",
+      "apps/moo-dang/src/shell/environment.ts",
+      "apps/moo-dang/src/shell/types.ts",
+      "apps/moo-dang/src/shell/wasm-commands.ts",
+      "apps/moo-dang/src/shell/wasm-loader.ts",
+      "apps/moo-dang/src/shell/wasm.test.ts",
+      "apps/moo-dang/src/workers/shell.worker.ts"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat: enhance WASM argument passing and environment handling",
+  "updated_at": "2026-09-08T13:22:40.401785-07:00"
+}

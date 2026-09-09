@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "cccb69c1-9feb-4718-9b9a-9527247b340e",
+  "created_at": "2026-09-08T01:07:39Z",
+  "metadata": {
+    "commit": "49fedc55a10ce29c3b5c59470636a4688ef0f7b8",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update playwright monorepo to v1.63.0 (#2037)",
+  "updated_at": "2026-09-08T01:07:39Z"
+}

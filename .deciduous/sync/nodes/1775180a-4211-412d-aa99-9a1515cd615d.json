@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "1775180a-4211-412d-aa99-9a1515cd615d",
+  "created_at": "2025-10-11T00:48:46Z",
+  "metadata": {
+    "commit": "0649e135f9718fdbced3ab190a857cddc13e1610",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(lockfile): update dependency astro to v5.14.3 [SECURITY] (#1074)",
+  "updated_at": "2025-10-11T00:48:46Z"
+}

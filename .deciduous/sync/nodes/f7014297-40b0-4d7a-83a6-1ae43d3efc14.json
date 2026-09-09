@@ -1,0 +1,22 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "f7014297-40b0-4d7a-83a6-1ae43d3efc14",
+  "created_at": "2026-09-08T13:22:51.092561-07:00",
+  "description": "## Summary\nDaily autohealing found real `console.*` usage in `@sparkle/theme` runtime source (not JSDoc examples), violating the project convention \"use `consola`, never `console`\" documented in `llms.txt` / `.github/copilot-instructions.md`.\n\n- `packages/theme/src/persistence/index.ts` — 7 call sites\n- `packages/theme/src/providers/ThemeProvider.tsx` — 5 call sites\n- `packages/theme/src/providers/NativeThemeProvider.tsx` — 7 call sites\n\n## Changes\n- Replaced all `console.warn`/`console.error` calls in the three files above with `consola.warn`/`consola.error`.\n- Added `consola` (`3.4.2`, matching the version pinned elsewhere in the workspace) as a direct dependency of `@sparkle/theme` since it previously had no logging dependency.\n- Added a patch changeset for `@sparkle/theme`.\n\n## Verification\n- `pnpm check` — clean (manypkg, types, turbo config, dependency validation, lint)\n- `pnpm --filter @sparkle/theme test` — 164/164 passing\n- `pnpm test` — full workspace suite passing (moo-dang 445/446 + 1 pre-existing skip, ui 73/73, theme 164/164)\n- `pnpm build` — all 10 Turborepo tasks succeed, including `@sparkle/docs#build`\n\n## Not included (out of scope / already covered)\n- Markdown \"missing fenced code block language\" warnings — already fixed by open PR #1883, not duplicated here.\n- Other `console.*` occurrences found were inside JSDoc `@example` comment blocks, not real runtime code — left untouched.\n- Broader `any`/class-declaration/`@ts-expect-error` convention findings are pre-existing and span many files; flagged in the daily autohealing issue rather than auto-fixed here per scope cap.\n\n---\n🤖 Filed by the Fro Bot daily autohealing run (category 4: Developer Experience).",
+  "metadata": {
+    "commit": "0d2c7912060763d59027db8e9f35fe37844ef5e7",
+    "confidence": 75,
+    "files": [
+      ".changeset/console-to-consola-theme.md",
+      "packages/theme/package.json",
+      "packages/theme/src/persistence/index.ts",
+      "packages/theme/src/providers/NativeThemeProvider.tsx",
+      "packages/theme/src/providers/ThemeProvider.tsx",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(lint): apply auto-fixes from autohealing run",
+  "updated_at": "2026-09-08T13:22:51.092561-07:00"
+}

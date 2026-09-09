@@ -1,0 +1,21 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "a125a016-70a1-4eed-b5f3-db7eff15e40b",
+  "created_at": "2026-09-08T13:22:41.293911-07:00",
+  "description": "- Update `extract-jsdoc.ts` to use `consola` for logging instead of `console`.\n- Refactor `enhanced-error-reporter.ts` to implement functional programming patterns and replaced `console` with `consola`.\n- Modify `health-check.ts` to utilize `consola` for all output messages.\n- Change `validate-dependencies.ts` to use `consola` for error and validation messages.\n- Update `validate-turbo.ts` to replace `console` logging with `consola`.",
+  "metadata": {
+    "commit": "1fa4b4162b2ddf35e73ee7b12470a07febaa8de5",
+    "confidence": 75,
+    "files": [
+      "docs/scripts/extract-jsdoc.ts",
+      "scripts/enhanced-error-reporter.ts",
+      "scripts/health-check.ts",
+      "scripts/validate-dependencies.ts",
+      "scripts/validate-turbo.ts"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "refactor: replace console logging with consola",
+  "updated_at": "2026-09-08T13:22:41.293911-07:00"
+}

@@ -1,0 +1,22 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "c89b7e2f-2d16-474d-8107-a091f015cffd",
+  "created_at": "2026-09-08T13:22:40.578580-07:00",
+  "description": "- Introduce a new script to generate WASM executables from a template\n- Update package.json to include a command for the generator\n- Enhance README with instructions for creating new WASM executables\n- Add comprehensive template demonstrating shell API patterns\n- Update build configuration to include the new template executable\n\nRelates to TASK-020 on #944.",
+  "metadata": {
+    "commit": "404991643efb87b0250b11830ba00d052c8e72c6",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-moo-dang-shell-1.md",
+      "apps/moo-dang/package.json",
+      "apps/moo-dang/scripts/generate-wasm-executable.sh",
+      "apps/moo-dang/src/wasm/README.md",
+      "apps/moo-dang/src/wasm/build.zig",
+      "apps/moo-dang/src/wasm/examples/template.zig"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat: add WASM executable generator and update documentation",
+  "updated_at": "2026-09-08T13:22:40.578580-07:00"
+}

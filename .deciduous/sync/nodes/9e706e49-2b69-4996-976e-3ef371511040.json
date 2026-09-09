@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "9e706e49-2b69-4996-976e-3ef371511040",
+  "created_at": "2025-12-18T09:21:17Z",
+  "metadata": {
+    "commit": "61e6a6db58cab6da3b9e7340c5dfe8ad667358cb",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency vite to v7.3.0 (#1276)",
+  "updated_at": "2025-12-18T09:21:17Z"
+}

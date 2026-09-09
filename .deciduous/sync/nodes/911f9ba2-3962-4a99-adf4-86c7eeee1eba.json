@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "911f9ba2-3962-4a99-adf4-86c7eeee1eba",
+  "created_at": "2026-06-19T13:32:28Z",
+  "metadata": {
+    "commit": "c6282d78aaa8fbd50d3e4ce5eb5f4ef54df689ec",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update storybook monorepo to v10.4.6 (#1753)",
+  "updated_at": "2026-06-19T13:32:28Z"
+}

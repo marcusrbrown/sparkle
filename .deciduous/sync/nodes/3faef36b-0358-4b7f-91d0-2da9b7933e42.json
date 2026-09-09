@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "3faef36b-0358-4b7f-91d0-2da9b7933e42",
+  "created_at": "2025-09-23T13:22:09-07:00",
+  "metadata": {
+    "commit": "488dbb17b30b0265e9cc4ec63f2fa178028cf769",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat: add comprehensive accessibility features for terminal components (#960)",
+  "updated_at": "2025-09-23T13:22:09-07:00"
+}

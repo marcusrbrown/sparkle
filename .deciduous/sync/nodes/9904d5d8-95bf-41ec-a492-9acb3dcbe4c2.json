@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "9904d5d8-95bf-41ec-a492-9acb3dcbe4c2",
+  "created_at": "2025-06-24T06:13:37Z",
+  "metadata": {
+    "commit": "72f3c4076fe502e50af2105c9cb7b0b68b03964a",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency @bfra.me/tsconfig to v0.10.0 (#675)",
+  "updated_at": "2025-06-24T06:13:37Z"
+}

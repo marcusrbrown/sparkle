@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "c9a62f7e-061f-45b8-b9c9-8a28e3c323c7",
+  "created_at": "2026-06-04T13:35:36Z",
+  "metadata": {
+    "commit": "2362a563e975ea5e436fd737718973ee38efbf36",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update Vite packages to v7.3.5 (#1692)",
+  "updated_at": "2026-06-04T13:35:36Z"
+}

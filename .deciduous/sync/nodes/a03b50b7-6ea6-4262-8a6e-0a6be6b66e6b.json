@@ -1,0 +1,21 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "a03b50b7-6ea6-4262-8a6e-0a6be6b66e6b",
+  "created_at": "2026-09-08T13:22:36.805662-07:00",
+  "description": "- Introduce a new guide for screen reader testing in the documentation to ensure accessibility compliance.\n- Add comprehensive testing procedures, supported screen readers, and common issues with solutions.\n- Implement a new script for generating screen reader testing documentation and results templates.\n- Update package.json to include a new command for running screen reader testing scripts.\n- Enhance the astro.config.mjs to include a link to the new guide in the navigation.\n\nRelates to TASK-039 on #875.",
+  "metadata": {
+    "commit": "af6f0695f5143d08c85244d2d76393376c8480d4",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-astro-starlight-docs-1.md",
+      "docs/astro.config.mjs",
+      "docs/package.json",
+      "docs/scripts/screen-reader-testing.ts",
+      "docs/src/content/docs/guides/screen-reader-testing.mdx"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "docs: add Screen Reader Testing Guide and related scripts",
+  "updated_at": "2026-09-08T13:22:36.805662-07:00"
+}

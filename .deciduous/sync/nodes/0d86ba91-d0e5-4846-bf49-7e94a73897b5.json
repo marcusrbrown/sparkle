@@ -1,0 +1,17 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "0d86ba91-d0e5-4846-bf49-7e94a73897b5",
+  "created_at": "2026-09-08T13:22:58.837937-07:00",
+  "description": "This PR contains the following updates:\n\n| Update | Change |\n|---|---|\n| lockFileMaintenance | All lock files updated (every Monday before 3 AM) |\n\n---\n\n> [!WARNING]\n> Some dependencies could not be looked up. Check the [Dependency Dashboard](../issues/212) for more information.\n\n🔧 This Pull Request updates lock files to use the latest dependency versions.\n\n---",
+  "metadata": {
+    "commit": "c6e4f7539411530c001be427f230d58337923988",
+    "confidence": 70,
+    "files": [
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(deps): maintain lockfiles",
+  "updated_at": "2026-09-08T13:22:58.837937-07:00"
+}

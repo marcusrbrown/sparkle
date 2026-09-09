@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "62571567-0a77-46dd-8216-77fe904e440e",
+  "created_at": "2025-09-30T00:15:53-07:00",
+  "metadata": {
+    "commit": "d0d0d7baa3823ed8ac8b8e5ca263d823b9b73a1d",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "docs(ai): update copilot instructions and enhance moo-dang details (#1019)",
+  "updated_at": "2025-09-30T00:15:53-07:00"
+}

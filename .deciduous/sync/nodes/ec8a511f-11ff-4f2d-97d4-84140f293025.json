@@ -1,0 +1,17 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "ec8a511f-11ff-4f2d-97d4-84140f293025",
+  "created_at": "2026-09-08T13:23:08.225059-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Update | Change | OpenSSF |\n|---|---|---|---|\n| [marcusrbrown/renovate-config](https://redirect.github.com/marcusrbrown/renovate-config) | patch | `4.5.2` → `4.5.3` | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/marcusrbrown/renovate-config/badge)](https://securityscorecards.dev/viewer/?uri=github.com/marcusrbrown/renovate-config) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "19f44f3e9c803457120087b47ecc851dee28a59c",
+    "confidence": 70,
+    "files": [
+      ".github/renovate.json5"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(deps): update marcusrbrown/renovate-config preset to v4.5.3",
+  "updated_at": "2026-09-08T13:23:08.225059-07:00"
+}

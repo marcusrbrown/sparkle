@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "d2754c30-0fb4-48a5-8197-8f05e1770a84",
+  "created_at": "2025-11-15T05:17:50Z",
+  "metadata": {
+    "commit": "5ad4759473b39a8d6c77261f12326c26ed781b40",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency @types/react-dom to v19.2.3 (#1176)",
+  "updated_at": "2025-11-15T05:17:50Z"
+}

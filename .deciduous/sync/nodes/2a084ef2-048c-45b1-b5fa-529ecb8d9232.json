@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "2a084ef2-048c-45b1-b5fa-529ecb8d9232",
+  "created_at": "2026-09-08T13:22:58.057640-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Change | [Age](https://docs.renovatebot.com/merge-confidence/) | [Confidence](https://docs.renovatebot.com/merge-confidence/) | OpenSSF | Code Search |\n|---|---|---|---|---|---|\n| [turbo](https://turborepo.dev) ([source](https://redirect.github.com/vercel/turborepo)) | [`2.9.17` → `2.9.18`](https://renovatebot.com/diffs/npm/turbo/2.9.17/2.9.18) | ![age](https://developer.mend.io/api/mc/badges/age/npm/turbo/2.9.18?slim=true) | ![confidence](https://developer.mend.io/api/mc/badges/confidence/npm/turbo/2.9.17/2.9.18?slim=true) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/vercel/turborepo/badge)](https://securityscorecards.dev/viewer/?uri=github.com/vercel/turborepo) | [![GitHub Code Search for \"turbo\"](https://img.shields.io/badge/code_search-turbo-2671E5.svg?logo=github)](https://redirect.github.com/search?q=repo:marcusrbrown%2Fsparkle+NOT+path:/package(-lock)%3F%5C.json%7Cyarn%5C.lock%7Cpnpm-lock%5C.yaml%7Cbun%5C.lock(b)/+turbo) |\n\n---\n\n> [!WARNING]\n> Some dependencies could not be looked up. Check the [Dependency Dashboard](../issues/212) for more information.\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "7c8ca96a68df86d0e669bedb8e3357f56edb38a9",
+    "confidence": 75,
+    "files": [
+      "package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update turbo monorepo to v2.9.18",
+  "updated_at": "2026-09-08T13:22:58.057640-07:00"
+}

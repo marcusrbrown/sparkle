@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "7392d77d-38a3-48ff-b7e3-5b8734a43e6f",
+  "created_at": "2026-09-08T13:22:16.454416-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Change | [Age](https://docs.renovatebot.com/merge-confidence/) | [Confidence](https://docs.renovatebot.com/merge-confidence/) | OpenSSF | Code Search |\n|---|---|---|---|---|---|\n| [@changesets/cli](https://redirect.github.com/changesets/changesets/tree/main#readme) ([source](https://redirect.github.com/changesets/changesets)) | [`2.29.8` → `2.30.0`](https://renovatebot.com/diffs/npm/@changesets%2fcli/2.29.8/2.30.0) | ![age](https://developer.mend.io/api/mc/badges/age/npm/@changesets%2fcli/2.30.0?slim=true) | ![confidence](https://developer.mend.io/api/mc/badges/confidence/npm/@changesets%2fcli/2.29.8/2.30.0?slim=true) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/changesets/changesets/badge)](https://securityscorecards.dev/viewer/?uri=github.com/changesets/changesets) | [![GitHub Code Search for \"@changesets/cli\"](https://img.shields.io/badge/code_search-@changesets/cli-2671E5.svg?logo=github)](https://redirect.github.com/search?q=repo:marcusrbrown%2Fsparkle+NOT+path:/package(-lock)%3F%5C.json%7Cyarn%5C.lock%7Cpnpm-lock%5C.yaml%7Cbun%5C.lock(b)/+%40changesets%2Fcli) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "7a69249c2320c5ca8d2871ce0c5db8ae136be4a6",
+    "confidence": 75,
+    "files": [
+      "package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency @changesets/cli to v2.30.0",
+  "updated_at": "2026-09-08T13:22:16.454416-07:00"
+}

@@ -1,0 +1,17 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "1cebbe0c-1a55-46f0-be2d-d969a5e479cb",
+  "created_at": "2026-09-08T13:22:45.916323-07:00",
+  "description": "`llms.txt` restates the pinned pnpm version, which means it goes stale on every Renovate bump.\n\nThis is the third time it has drifted:\n\n- Original value: `pnpm@10.33.4`\n- #1816 corrected it to `pnpm@11.17.0`\n- Repo is already on `pnpm@11.25.0`\n\nEach fix restores accuracy and resets the clock. Issue #1800 has been reopened by the same drift twice now.\n\n## Change\n\n```diff\n-- Package manager: **pnpm** (root `packageManager: pnpm@11.17.0`)\n+- Package manager: **pnpm** — exact version pinned by `packageManager` in the root `package.json`\n```\n\nPoint at the source of truth instead of copying the value out of it. Nothing left to drift.\n\n## Why not just bump it\n\nBumping restores the value but guarantees a fourth occurrence. The autoheal report has flagged this line repeatedly; the recurring cost is the report noise and the review cycle, not the wrong digit.\n\n## Why the Node line is untouched\n\n```\n- Node: pinned via `.node-version` (24.x) — repo `engines` floor is `>=22.13.1`\n```\n\nDifferent risk profile. It references `.node-version` loosely as `24.x` rather than pinning an exact patch, and quotes the `engines` floor verbatim — both currently accurate (`.node-version` is `24.20.0`, `engines.node` is `>=22.13.1`). It degrades gracefully across patch bumps instead of going stale on each one, so there is nothing to fix.\n\n## Verification\n\n- Only remaining version-like string in `llms.txt` is the Node line above, confirmed accurate against `.node-version` and `package.json`\n- No other file references the removed value\n\nCloses #1800",
+  "metadata": {
+    "commit": "2160937f7aa2089c6c0d076d283053722c86fc4e",
+    "confidence": 75,
+    "files": [
+      "llms.txt"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "docs(llms): stop duplicating the pinned pnpm version",
+  "updated_at": "2026-09-08T13:22:45.916323-07:00"
+}

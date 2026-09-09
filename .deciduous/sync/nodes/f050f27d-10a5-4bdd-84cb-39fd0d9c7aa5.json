@@ -1,0 +1,21 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "f050f27d-10a5-4bdd-84cb-39fd0d9c7aa5",
+  "created_at": "2026-09-08T13:22:41.909890-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [typedoc-plugin-markdown](https://typedoc-plugin-markdown.org) ([source](https://redirect.github.com/typedoc2md/typedoc-plugin-markdown/tree/HEAD/packages/typedoc-plugin-markdown)) | devDependencies | minor | [`4.8.1` -> `4.9.0`](https://renovatebot.com/diffs/npm/typedoc-plugin-markdown/4.8.1/4.9.0) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/typedoc2md/typedoc-plugin-markdown/badge)](https://securityscorecards.dev/viewer/?uri=github.com/typedoc2md/typedoc-plugin-markdown) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "94c4176763856fe550434694ebb52a3655fed970",
+    "confidence": 75,
+    "files": [
+      "docs/package.json",
+      "docs/src/content/docs/api/error-testing/src.md",
+      "docs/src/content/docs/api/types/src.md",
+      "docs/src/content/docs/api/ui/src.md",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency typedoc-plugin-markdown to v4.9.0",
+  "updated_at": "2026-09-08T13:22:41.909890-07:00"
+}

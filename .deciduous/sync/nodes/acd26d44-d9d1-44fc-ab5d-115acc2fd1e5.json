@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "acd26d44-d9d1-44fc-ab5d-115acc2fd1e5",
+  "created_at": "2025-05-27T02:45:26Z",
+  "metadata": {
+    "commit": "7969502dd6946599a73754cab40b05d6715f861e",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency @vitejs/plugin-react to v4.5.0 (#623)",
+  "updated_at": "2025-05-27T02:45:26Z"
+}

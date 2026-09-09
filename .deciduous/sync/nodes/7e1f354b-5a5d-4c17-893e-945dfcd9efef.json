@@ -1,0 +1,17 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "7e1f354b-5a5d-4c17-893e-945dfcd9efef",
+  "created_at": "2026-09-08T13:22:46.073861-07:00",
+  "description": "Scheduled autoheal runs have had no pushable git remote, so every fix the agent produced degraded to `working-dir` mode and had nowhere to land. The daily autohealing report (#1665) has flagged this \"fixes never persist\" pattern for weeks.\n\n## Root cause\n\nThe checkout step uses `persist-credentials: false` to keep the PAT out of `.git/config` on the fork-PR-head comment path. Nothing restores a credential afterward for the paths that legitimately need to push, so `fro-bot/agent` runs with an unauthenticated remote.\n\n`marcusrbrown/mrbro.dev` already solves this; sparkle never got the equivalent step.\n\n## Change\n\nWrites the PAT to `http.https://github.com/.extraheader` after checkout, masked via `::add-mask::`.\n\nGated to the 05:00 autoheal cron and dispatched autoheal runs only:\n\n```yaml\nif: >-\n  (github.event_name == 'schedule' && github.event.schedule == '0 5 * * *')\n  || (github.event_name == 'workflow_dispatch' && inputs.mode == 'autoheal')\n```\n\nThis is tighter than the mrbro.dev original, which gates on `github.event_name == 'schedule'` generally. Sparkle runs autoheal and maintenance on separate crons, and `MAINTENANCE_PROMPT` forbids opening PRs — it only updates one perpetual issue, which the API token already covers. So the 17:00 maintenance cron is excluded. Review-mode dispatch is excluded for the same reason.\n\nMention and `issue_comment` runs are deliberately excluded: the agent classifies those as credential-withheld and fails closed if it finds an on-disk `http.*.extraheader`, so writing one there would break the agent rather than enable push.\n\nThe credential goes to disk rather than env or the gh credential helper because the agent scrubs its child environment.\n\n## Verification\n\n- `actionlint .github/workflows/fro-bot.yaml` — exit 0\n- YAML parses; the step lands between `Setup project` and `Run Fro Bot`\n- 32 additive lines, one file, no existing lines modified\n\n## Known edge [description truncated to fit budget]",
+  "metadata": {
+    "commit": "2642eae5a5fab6448ed5f3111959730964263a99",
+    "confidence": 75,
+    "files": [
+      ".github/workflows/fro-bot.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix(ci): enable authenticated git push for Fro Bot autoheal runs",
+  "updated_at": "2026-09-08T13:22:46.073861-07:00"
+}

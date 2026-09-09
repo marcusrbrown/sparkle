@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "6cb04839-9212-4de4-8fbe-13605ec0ed3c",
+  "created_at": "2025-09-07T23:52:00-07:00",
+  "metadata": {
+    "commit": "06b8bd6dfbfc36393ecc2232e6d00dc2a7782968",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat(docs): add interactive code editor components and documentation (#893)",
+  "updated_at": "2025-09-07T23:52:00-07:00"
+}

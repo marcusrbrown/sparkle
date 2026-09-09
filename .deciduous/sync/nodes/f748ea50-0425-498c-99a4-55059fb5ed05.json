@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "f748ea50-0425-498c-99a4-55059fb5ed05",
+  "created_at": "2024-12-21T17:09:04-07:00",
+  "metadata": {
+    "commit": "bcf271352842eccd5ca5f3980b32c24971a85baf",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore: simplify `bootstrap` npm script; adjust peer dep handling (#461)",
+  "updated_at": "2024-12-21T17:09:04-07:00"
+}

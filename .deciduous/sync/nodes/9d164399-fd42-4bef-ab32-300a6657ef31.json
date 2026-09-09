@@ -1,0 +1,22 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "9d164399-fd42-4bef-ab32-300a6657ef31",
+  "created_at": "2026-09-08T13:22:30.780447-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | Pending | OpenSSF |\n|---|---|---|---|---|---|\n| [@vitest/coverage-v8](https://redirect.github.com/vitest-dev/vitest/tree/main/packages/coverage-v8#readme) ([source](https://redirect.github.com/vitest-dev/vitest/tree/HEAD/packages/coverage-v8)) | devDependencies | major | [`3.2.4` -> `4.0.8`](https://renovatebot.com/diffs/npm/@vitest%2fcoverage-v8/3.2.4/4.0.8) | `4.0.9` | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/vitest-dev/vitest/badge)](https://securityscorecards.dev/viewer/?uri=github.com/vitest-dev/vitest) |\n| [vitest](https://vitest.dev) ([source](https://redirect.github.com/vitest-dev/vitest/tree/HEAD/packages/vitest)) | devDependencies | major | [`^3.0.0` -> `^4.0.0`](https://renovatebot.com/diffs/npm/vitest/3.2.4/4.0.8) | `4.0.9` | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/vitest-dev/vitest/badge)](https://securityscorecards.dev/viewer/?uri=github.com/vitest-dev/vitest) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "5b3eb3b71920949a7deb25b2870f3597b41d8f5a",
+    "confidence": 75,
+    "files": [
+      "apps/fro-jive/package.json",
+      "apps/moo-dang/package.json",
+      "packages/error-testing/package.json",
+      "packages/test-utils/package.json",
+      "packages/ui/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update vitest monorepo to v4 (major)",
+  "updated_at": "2026-09-08T13:22:30.780447-07:00"
+}

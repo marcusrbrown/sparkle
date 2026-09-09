@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "05b9d6cd-3262-41f3-9949-06e864f05d73",
+  "created_at": "2026-06-18T10:04:38Z",
+  "metadata": {
+    "commit": "113ef5d8f4aaa84a2b787c5a93df041cbcaaf1ff",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update vitest monorepo to v4.1.9 (#1747)",
+  "updated_at": "2026-06-18T10:04:38Z"
+}

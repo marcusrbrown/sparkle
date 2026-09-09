@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "5deb35bb-6eb7-4a46-a0ab-1d1b11a3eca6",
+  "created_at": "2024-06-17T06:08:43Z",
+  "metadata": {
+    "commit": "3f87e23d535698947b69e34dcea6453c79ab0939",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix(deps): update dependency react-native-safe-area-context to v4.10.5 (#287)",
+  "updated_at": "2024-06-17T06:08:43Z"
+}

@@ -1,0 +1,17 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "f5679f67-84df-4242-8828-663265995a6b",
+  "created_at": "2026-09-08T13:22:46.128314-07:00",
+  "description": "## 📚 Automated Documentation Regeneration\n\nThis PR contains automatically regenerated documentation for the following packages:\n\n**Affected Packages**:\n```\ntheme\n```\n\n### Changes Summary\n\n- **Files**: 1\n- **Lines Added**: 1\n- **Lines Deleted**: 1\n\n### Changed Source Files\n\n```\npackages/theme/src/persistence/index.ts\n```\n\n### Regeneration Details\n\n- **Trigger**: push\n- **Commit**: 0d2c7912060763d59027db8e9f35fe37844ef5e7\n- **Branch**: main\n- **Actor**: @marcusrbrown\n- **Force Rebuild**: false\n\n### Review Checklist\n\n- [ ] Documentation reflects source code changes\n- [ ] API references complete and formatted\n- [ ] Component examples render correctly\n- [ ] Cross-references and links valid\n- [ ] No sensitive information exposed\n\n---\n🤖 This PR was automatically created by the [Regenerate Documentation workflow](/.github/workflows/regenerate-docs.yaml)",
+  "metadata": {
+    "commit": "e8ff16c6738dfa1ee55350aba56d2d1ea4d3a2ba",
+    "confidence": 75,
+    "files": [
+      "docs/src/content/docs/api/theme/src.md"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "docs: regenerate documentation for theme",
+  "updated_at": "2026-09-08T13:22:46.128314-07:00"
+}

@@ -1,0 +1,17 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "9174c814-2595-4d2c-9ac0-9fb2aa1d326d",
+  "created_at": "2026-09-08T13:22:47.325128-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [fro-bot/agent](https://redirect.github.com/fro-bot/agent) | action | patch | `v0.106.1` → `v0.106.2` | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/fro-bot/agent/badge)](https://securityscorecards.dev/viewer/?uri=github.com/fro-bot/agent) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "37739b94a26a2728849e0e31ceb1798e181ca9c6",
+    "confidence": 70,
+    "files": [
+      ".github/workflows/fro-bot.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(deps): update fro-bot/agent to v0.106.2",
+  "updated_at": "2026-09-08T13:22:47.325128-07:00"
+}

@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "e843322b-c97d-4b46-b04e-68b0251681ce",
+  "created_at": "2026-09-06T16:55:04-07:00",
+  "metadata": {
+    "commit": "bf6c2b935777d8897ed699770b7a4de4dd92b43e",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix(docs): declare typedoc at the workspace root to unblock 0.28.20 (#2027)",
+  "updated_at": "2026-09-06T16:55:04-07:00"
+}

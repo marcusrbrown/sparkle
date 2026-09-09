@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "a5bb1c33-b03f-428c-b69e-e1d3ec82cf1e",
+  "created_at": "2026-09-08T13:22:39.516069-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [@astrojs/react](https://docs.astro.build/en/guides/integrations-guide/react/) ([source](https://redirect.github.com/withastro/astro/tree/HEAD/packages/integrations/react)) | dependencies | minor | [`4.3.1` -> `4.4.0`](https://renovatebot.com/diffs/npm/@astrojs%2freact/4.3.1/4.4.0) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/withastro/astro/badge)](https://securityscorecards.dev/viewer/?uri=github.com/withastro/astro) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "448623f466b561ba128906c29528ed7834ae9282",
+    "confidence": 75,
+    "files": [
+      "docs/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix(deps): update dependency @astrojs/react to v4.4.0",
+  "updated_at": "2026-09-08T13:22:39.516069-07:00"
+}

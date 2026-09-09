@@ -1,0 +1,22 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "283e3505-2809-4318-b9cf-e11a6a055534",
+  "created_at": "2026-09-08T13:22:41.741458-07:00",
+  "description": "- Add Terminal component integrating xterm.js for terminal interface\n- Update App component to include Terminal and handle terminal events\n- Modify App tests to check for terminal interface presence\n- Update feature plan with new last updated date and task completion\n- Create index file for component exports\n\nRelates to TASK-007 on #942.",
+  "metadata": {
+    "commit": "944787a5177c020641f276bfcc69f2b00532793f",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-moo-dang-shell-1.md",
+      "apps/moo-dang/src/App.test.tsx",
+      "apps/moo-dang/src/App.tsx",
+      "apps/moo-dang/src/components/Terminal.tsx",
+      "apps/moo-dang/src/components/index.ts",
+      "apps/moo-dang/vite.config.ts"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat: implement Terminal component for WASM-based web shell",
+  "updated_at": "2026-09-08T13:22:41.741458-07:00"
+}

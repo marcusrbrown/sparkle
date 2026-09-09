@@ -1,0 +1,19 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "074607e3-e048-4c3c-9678-507418f879d7",
+  "created_at": "2026-09-08T13:22:40.219698-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [@playwright/test](https://playwright.dev) ([source](https://redirect.github.com/microsoft/playwright)) | devDependencies | patch | [`1.55.0` -> `1.55.1`](https://renovatebot.com/diffs/npm/@playwright%2ftest/1.55.0/1.55.1) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/microsoft/playwright/badge)](https://securityscorecards.dev/viewer/?uri=github.com/microsoft/playwright) |\n| [playwright](https://playwright.dev) ([source](https://redirect.github.com/microsoft/playwright)) | devDependencies | patch | [`1.55.0` -> `1.55.1`](https://renovatebot.com/diffs/npm/playwright/1.55.0/1.55.1) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/microsoft/playwright/badge)](https://securityscorecards.dev/viewer/?uri=github.com/microsoft/playwright) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "f927e85719b2867b66b33b94f3d58e6cf156786b",
+    "confidence": 75,
+    "files": [
+      "docs/package.json",
+      "packages/storybook/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update playwright monorepo to v1.55.1",
+  "updated_at": "2026-09-08T13:22:40.219698-07:00"
+}

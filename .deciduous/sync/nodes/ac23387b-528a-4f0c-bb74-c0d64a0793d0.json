@@ -1,0 +1,24 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "ac23387b-528a-4f0c-bb74-c0d64a0793d0",
+  "created_at": "2026-09-08T13:22:41.574191-07:00",
+  "description": "- Add CommandTerminal component with command input and history management\n- Integrate command execution and keyboard shortcuts for terminal interaction\n- Update App component to utilize CommandTerminal for enhanced functionality\n- Create utility functions for terminal key event handling and command formatting\n- Establish hooks for managing command input state and history\n\nRelates to TASK-010 on #942.",
+  "metadata": {
+    "commit": "88f3e4dc4a89f14f10a42fb6c09a2073b1dbb6a4",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-moo-dang-shell-1.md",
+      "apps/moo-dang/src/App.tsx",
+      "apps/moo-dang/src/components/CommandTerminal.tsx",
+      "apps/moo-dang/src/components/index.ts",
+      "apps/moo-dang/src/hooks/index.ts",
+      "apps/moo-dang/src/hooks/use-command-input.ts",
+      "apps/moo-dang/src/utils/index.ts",
+      "apps/moo-dang/src/utils/terminal-keys.ts"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat: implement command input handling in CommandTerminal component",
+  "updated_at": "2026-09-08T13:22:41.574191-07:00"
+}

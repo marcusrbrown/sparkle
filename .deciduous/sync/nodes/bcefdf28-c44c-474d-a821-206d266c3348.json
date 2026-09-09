@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "bcefdf28-c44c-474d-a821-206d266c3348",
+  "created_at": "2025-09-15T07:18:42Z",
+  "metadata": {
+    "commit": "0befff92dfdb7b078208141f6311bce0a04c2436",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency @types/node to v22.18.1 (#923)",
+  "updated_at": "2025-09-15T07:18:42Z"
+}

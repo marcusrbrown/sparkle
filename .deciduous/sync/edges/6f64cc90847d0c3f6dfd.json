@@ -1,0 +1,10 @@
+{
+  "author": "Marcus R. Brown",
+  "created_at": "2026-09-08T13:23:11.197630-07:00",
+  "edge_id": "6f64cc90847d0c3f6dfd",
+  "edge_type": "rejected",
+  "from_change_id": "92c2b6bb-b17a-4b3d-b977-f4659137656c",
+  "rationale": "rejected: unnecessary complexity",
+  "to_change_id": "993ad448-172a-4967-bafe-bc7d817956fb",
+  "weight": 1.0
+}

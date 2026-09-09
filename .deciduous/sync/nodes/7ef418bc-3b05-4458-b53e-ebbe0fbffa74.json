@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "7ef418bc-3b05-4458-b53e-ebbe0fbffa74",
+  "created_at": "2025-06-03T09:10:16Z",
+  "metadata": {
+    "commit": "05dceec4f1f3662ee25b48870b834e30dc73d255",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update react monorepo (#636)",
+  "updated_at": "2025-06-03T09:10:16Z"
+}

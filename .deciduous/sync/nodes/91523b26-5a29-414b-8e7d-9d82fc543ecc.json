@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "91523b26-5a29-414b-8e7d-9d82fc543ecc",
+  "created_at": "2025-02-22T06:00:18Z",
+  "metadata": {
+    "commit": "15cb7de75316de980ac7ac2c063760b621535d05",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency turbo to v2.4.2 (#516)",
+  "updated_at": "2025-02-22T06:00:18Z"
+}

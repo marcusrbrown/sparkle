@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "02ffd452-b4f2-443b-8f5b-481b6cfefb49",
+  "created_at": "2026-09-08T13:22:59.257060-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [fro-bot/agent](https://redirect.github.com/fro-bot/agent) | action | patch | `v0.55.0` → `v0.55.1` | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/fro-bot/agent/badge)](https://securityscorecards.dev/viewer/?uri=github.com/fro-bot/agent) |\n| [marcusrbrown/renovate-config](https://redirect.github.com/marcusrbrown/renovate-config) |  | patch | `5.2.0` → `5.2.1` | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/marcusrbrown/renovate-config/badge)](https://securityscorecards.dev/viewer/?uri=github.com/marcusrbrown/renovate-config) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "3235ab1e3d041e665bcf55e5604eb63ac2ba38ce",
+    "confidence": 70,
+    "files": [
+      ".github/renovate.json5",
+      ".github/workflows/fro-bot.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(deps): update all non-major dependencies",
+  "updated_at": "2026-09-08T13:22:59.257060-07:00"
+}

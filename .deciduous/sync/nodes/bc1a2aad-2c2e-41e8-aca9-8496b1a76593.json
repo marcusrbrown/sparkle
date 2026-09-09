@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "bc1a2aad-2c2e-41e8-aca9-8496b1a76593",
+  "created_at": "2025-10-05T19:21:16-07:00",
+  "metadata": {
+    "commit": "67b67aaf8935d9ab935255f248f1c89d22c8b656",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "docs: expand copilot instructions with essential commands and principles (#1057)",
+  "updated_at": "2025-10-05T19:21:16-07:00"
+}

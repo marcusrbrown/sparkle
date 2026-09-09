@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "b8994a98-7ddc-4246-a978-226e3f6b3459",
+  "created_at": "2025-09-05T16:42:33-07:00",
+  "metadata": {
+    "commit": "f01ef161dc1ded76187fe7f9767ff39f101d1223",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore: update TypeScript project references in configuration files (#843)",
+  "updated_at": "2025-09-05T16:42:33-07:00"
+}

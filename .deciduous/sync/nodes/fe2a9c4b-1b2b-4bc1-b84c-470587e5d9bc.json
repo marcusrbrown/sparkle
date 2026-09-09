@@ -1,0 +1,21 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "fe2a9c4b-1b2b-4bc1-b84c-470587e5d9bc",
+  "created_at": "2026-09-08T13:22:35.056507-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [happy-dom](https://redirect.github.com/capricorn86/happy-dom) | devDependencies | patch | [`20.0.0` -> `20.0.2`](https://renovatebot.com/diffs/npm/happy-dom/20.0.0/20.0.2) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/capricorn86/happy-dom/badge)](https://securityscorecards.dev/viewer/?uri=github.com/capricorn86/happy-dom) |\n\n### GitHub Vulnerability Alerts\n\n#### [CVE-2025-62410](https://redirect.github.com/capricorn86/happy-dom/security/advisories/GHSA-qpm2-6cq5-7pq5)\n\n### Summary\nThe mitigation proposed in GHSA-37j7-fg3j-429f for disabling eval/Function when executing untrusted code in happy-dom does not suffice, since it still allows prototype pollution payloads.\n\n### Details\nThe untrusted script and the rest of the application still run in the same Isolate/process, so attackers can deploy prototype pollution payloads to hijack important references like \"process\" in the example below, or to hijack control flow via flipping checks of undefined property. There might be other payloads that allow the manipulation of require, e.g., via (univeral) gadgets (https://www.usenix.org/system/files/usenixsecurity23-shcherbakov.pdf).\n\n### PoC\nAttackers can pollute builtins like Object.prototype.hasOwnProperty() to obtain important references at runtime, e.g., \"process\". In this way, attackers might be able to execute arbitrary commands like in the example below via spawn().\n\n```js\nimport { Browser } from \"happy-dom\";\n\nconst browser = new Browser({settings: {enableJavaScriptEvaluation: true}});\nconst page = browser.newPage({console: true}); [description truncated to fit budget]",
+  "metadata": {
+    "commit": "7067a69b1f9dd15dbebbc3069b675883b0d99ba6",
+    "confidence": 75,
+    "files": [
+      "apps/fro-jive/package.json",
+      "apps/moo-dang/package.json",
+      "packages/theme/package.json",
+      "packages/ui/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency happy-dom to v20.0.2 [SECURITY]",
+  "updated_at": "2026-09-08T13:22:35.056507-07:00"
+}

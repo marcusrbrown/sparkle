@@ -1,0 +1,22 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "d447aae0-80ec-4628-8050-46216bf10c7e",
+  "created_at": "2026-09-08T13:22:40.836483-07:00",
+  "description": "- Add parseCommandPipeline function to handle command pipelines\n- Implement executePipeline function for executing command pipelines\n- Create pipeline test suite to validate parsing and execution\n- Enhance types for command parsing and I/O redirection\n- Integrate pipeline execution in shell worker message handling\n\nCloses #943.",
+  "metadata": {
+    "commit": "51c7abda71dee85453dc7834538064bbc33eda12",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-moo-dang-shell-1.md",
+      "apps/moo-dang/src/shell/parser.ts",
+      "apps/moo-dang/src/shell/pipeline.test.ts",
+      "apps/moo-dang/src/shell/pipeline.ts",
+      "apps/moo-dang/src/shell/types.ts",
+      "apps/moo-dang/src/workers/shell.worker.ts"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat: implement command pipeline execution with I/O redirection",
+  "updated_at": "2026-09-08T13:22:40.836483-07:00"
+}

@@ -1,0 +1,18 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "5aa239cf-424a-4e80-a3f4-6d64572e2b10",
+  "created_at": "2026-09-08T13:22:47.558389-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Change | [Age](https://docs.renovatebot.com/merge-confidence/) | [Confidence](https://docs.renovatebot.com/merge-confidence/) | OpenSSF | Code Search |\n|---|---|---|---|---|---|\n| [typedoc-plugin-markdown](https://typedoc-plugin-markdown.org) ([source](https://redirect.github.com/typedoc2md/typedoc-plugin-markdown/tree/HEAD/packages/typedoc-plugin-markdown)) | [`4.12.0` → `4.13.0`](https://renovatebot.com/diffs/npm/typedoc-plugin-markdown/4.12.0/4.13.0) | ![age](https://developer.mend.io/api/mc/badges/age/npm/typedoc-plugin-markdown/4.13.0?slim=true) | ![confidence](https://developer.mend.io/api/mc/badges/confidence/npm/typedoc-plugin-markdown/4.12.0/4.13.0?slim=true) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/typedoc2md/typedoc-plugin-markdown/badge)](https://securityscorecards.dev/viewer/?uri=github.com/typedoc2md/typedoc-plugin-markdown) | [![GitHub Code Search for \"typedoc-plugin-markdown\"](https://img.shields.io/badge/code_search-typedoc--plugin--markdown-2671E5.svg?logo=github)](https://redirect.github.com/search?q=repo:marcusrbrown%2Fsparkle+NOT+path:/package(-lock)%3F%5C.json%7Cyarn%5C.lock%7Cpnpm-lock%5C.yaml%7Cbun%5C.lock(b)/+typedoc-plugin-markdown) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "8508b7163202f2e547864b5419ab25253e55191c",
+    "confidence": 75,
+    "files": [
+      "docs/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency typedoc-plugin-markdown to v4.13.0",
+  "updated_at": "2026-09-08T13:22:47.558389-07:00"
+}

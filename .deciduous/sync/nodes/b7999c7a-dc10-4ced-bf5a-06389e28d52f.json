@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "b7999c7a-dc10-4ced-bf5a-06389e28d52f",
+  "created_at": "2025-10-04T22:14:26Z",
+  "metadata": {
+    "commit": "c78a1eccf87e64bc14705b19aabd9032cdff81b4",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update react monorepo to ~19.2.0 (#1047)",
+  "updated_at": "2025-10-04T22:14:26Z"
+}

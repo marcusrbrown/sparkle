@@ -1,0 +1,19 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "4ea64311-c7d0-4ba3-b247-f037d5e837b0",
+  "created_at": "2026-09-08T13:22:44.781712-07:00",
+  "description": "Deletes a high-severity advisory rather than mitigating it.\n\n`@lhci/cli` is flagged abandoned on the dependency dashboard — last release 2025-06-25 — and it drags in the only copy of `extract-zip <= 2.0.1`, [GHSA-jmr9-qjv8-65gv](https://github.com/advisories/GHSA-jmr9-qjv8-65gv). That advisory has **no patched release at any version**, so there is nothing to override to. The dependency was the advisory.\n\n## Nothing invoked it\n\nIts sole consumer was `scripts/accessibility-audit.sh`, and that script has no npm script, no workflow, and no reference anywhere outside the `.ai/` archive.\n\nThe script is 76 lines. Its only actual tool invocation:\n\n```sh\nnpx lhci autorun --upload.target=filesystem --upload.outputDir=./lighthouse-reports \\\n  --collect.url=\"http://localhost:6006/iframe.html?id=form--default\" \\\n  --collect.settings.chromeFlags=\"--no-sandbox\" || true\n```\n\nEverything else is `echo` statements and a `curl` liveness check against Storybook. The `|| true` means even that one command swallowed its own failures.\n\nIt would not have worked regardless — `lighthouserc.js` is listed as FILE-009 in `.ai/plan/infrastructure-testing-framework-1.md` and was never written, so `lhci autorun` had no configuration to read.\n\n## The audit that actually runs is unaffected\n\n`docs/package.json` defines:\n\n```json\n\"a11y:audit\": \"tsx scripts/accessibility-audit.ts\",\n\"a11y:audit:ci\": \"tsx scripts/accessibility-audit.ts --ci\"\n```\n\nThat is a different file — `docs/scripts/accessibility-audit.ts` — and it imports only `node:fs`, `node:path`, and `node:process`. Lighthouse was never part of the path that runs.\n\nTwo accessibility-audit implementations existed with similar names; only the TypeScript one was ever wired up.\n\n## Effect\n\n`pnpm-lock.yaml` drops from 823134 to 784786 bytes — the whole `puppeteer-core` / `lighthouse` / `@puppeteer/browsers` subtree goes with it.\n\nOpen advisories go from 31 to 30, with one fewer high and no mitigation debt. [description truncated to fit budget]",
+  "metadata": {
+    "commit": "5198458455cd2f7ddf3e863a2c68750acc285313",
+    "confidence": 70,
+    "files": [
+      "package.json",
+      "pnpm-lock.yaml",
+      "scripts/accessibility-audit.sh"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(deps): remove abandoned @lhci/cli and its orphaned audit script",
+  "updated_at": "2026-09-08T13:22:44.781712-07:00"
+}

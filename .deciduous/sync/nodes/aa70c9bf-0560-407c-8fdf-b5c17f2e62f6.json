@@ -1,0 +1,26 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "aa70c9bf-0560-407c-8fdf-b5c17f2e62f6",
+  "created_at": "2026-09-08T13:22:28.354728-07:00",
+  "description": "- Introduce outExtensions function to specify output file extensions\n- Update configurations for: config, error-testing, test-utils, theme, types, ui, and utils",
+  "metadata": {
+    "commit": "d66d35336a13e787dffd27e0bac3916494cd67ee",
+    "confidence": 75,
+    "files": [
+      "docs/src/content/docs/api/theme/src.md",
+      "docs/src/content/docs/api/ui/src.md",
+      "docs/src/content/docs/api/utils/src.md",
+      "packages/config/tsdown.config.ts",
+      "packages/error-testing/tsdown.config.ts",
+      "packages/test-utils/tsdown.config.ts",
+      "packages/theme/tsdown.config.ts",
+      "packages/types/tsdown.config.ts",
+      "packages/ui/tsdown.config.ts",
+      "packages/utils/tsdown.config.ts"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "build: add outExtensions configuration to tsdown.config.ts files",
+  "updated_at": "2026-09-08T13:22:28.354728-07:00"
+}

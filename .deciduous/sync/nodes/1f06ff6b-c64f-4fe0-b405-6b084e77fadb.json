@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "1f06ff6b-c64f-4fe0-b405-6b084e77fadb",
+  "created_at": "2025-04-10T02:04:50-07:00",
+  "metadata": {
+    "commit": "ae6a2af624b8c7df434fda7dbdec3ee9c7af7793",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(pnpm): disable strict peer dependencies (#581)",
+  "updated_at": "2025-04-10T02:04:50-07:00"
+}

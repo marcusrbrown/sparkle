@@ -1,0 +1,22 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "ff23aca3-4a91-4680-95b4-b90c3708e8ce",
+  "created_at": "2026-09-08T13:22:43.755835-07:00",
+  "description": "- Implement responsive adjustments for StorybookEmbed component.\n- Add useResponsive hook for better screen size detection.\n- Update CSS for improved mobile and tablet layouts in Sparkle theme.\n- Ensure proper display of code blocks and tables on smaller screens.\n- Optimize spacing and touch targets for navigation and buttons.\n\nRelates to TASK-034 on #875.",
+  "metadata": {
+    "commit": "034c051bafd36fb18215d06fa6ab8d3dd239e57d",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-astro-starlight-docs-1.md",
+      "docs/scripts/generate-theme-css.ts",
+      "docs/src/components/interactive/StorybookEmbed.tsx",
+      "docs/src/components/interactive/StorybookEmbedAstro.astro",
+      "docs/src/hooks/use-responsive.ts",
+      "docs/src/styles/sparkle-theme.css"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat: enhance responsive design across documentation components",
+  "updated_at": "2026-09-08T13:22:43.755835-07:00"
+}

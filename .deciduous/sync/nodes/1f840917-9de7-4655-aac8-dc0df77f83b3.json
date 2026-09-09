@@ -1,0 +1,19 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "1f840917-9de7-4655-aac8-dc0df77f83b3",
+  "created_at": "2026-09-08T13:22:45.008978-07:00",
+  "description": "Unblocks the `typedoc` `0.28.19` → `0.28.20` upgrade that #1812 has been stuck on.\n\n## The failure\n\n```\n[error] The plugin typedoc-plugin-frontmatter could not be loaded\n[error] Cannot find package '<root>/node_modules/typedoc/index.js'\n        imported from .../typedoc-plugin-frontmatter/dist/comments.js\n        Did you mean to import \"typedoc/dist/index.js\"?\n[error] Unknown option 'frontmatterGlobals'\n```\n\nCI-only. It never reproduced locally, under an identical lockfile, pnpm 11.25.0, and `shamefullyHoist: true`.\n\n## What it actually was\n\n`typedoc-plugin-frontmatter@1.3.1` imports `typedoc` with a bare specifier but declares no dependency on it — not in `dependencies`, not in `peerDependencies`, which list only `{\"typedoc-plugin-markdown\": \">=4.9.0\"}`. pnpm therefore never links `typedoc` into the plugin's own `node_modules`, and resolution walks up to whatever hoisting leaves at the workspace root.\n\nThat is where the two environments diverged. Probing the runner directly:\n\n```\nnode_modules/typedoc/          ← NOT a symlink\nnode_modules/typedoc/dist\nnode_modules/typedoc/dist/types    ← the entire contents\n```\n\nNo `package.json`. Node cannot read an `exports` map that is not there, so it falls back to a legacy directory-index lookup and asks for `node_modules/typedoc/index.js`, which does not exist. Hence the error, and hence Node's \"did you mean `typedoc/dist/index.js`?\" hint — it never got as far as `exports`.\n\nLocally the same hoist produces a complete symlink into `.pnpm`, `exports` resolves normally, and everything works. The plugin's own `node_modules` has sibling links for `typedoc-plugin-markdown` and `yaml`, but none for `typedoc`, on both platforms — the difference is entirely in what the root fallback happens to contain.\n\n## The change [description truncated to fit budget]",
+  "metadata": {
+    "commit": "bf6c2b935777d8897ed699770b7a4de4dd92b43e",
+    "confidence": 75,
+    "files": [
+      "docs/package.json",
+      "package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix(docs): declare typedoc at the workspace root to unblock 0.28.20",
+  "updated_at": "2026-09-08T13:22:45.008978-07:00"
+}

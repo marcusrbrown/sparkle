@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "939b9a1c-bb51-4eec-82cf-43cb746e472d",
+  "created_at": "2026-03-13T15:39:55Z",
+  "metadata": {
+    "commit": "a24ce2ac9630b1af1e19880294869e3a93ec83ca",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix(deps): update dependency @astrojs/mdx to v4.3.14 (#1475)",
+  "updated_at": "2026-03-13T15:39:55Z"
+}

@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "5fd082d7-f20e-4598-be23-916b2d98599c",
+  "created_at": "2025-06-03T10:14:35Z",
+  "metadata": {
+    "commit": "a5c35ca7351d9cad1b34f499bf4519771828dc81",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix(deps): update dependency react-native-web to ~0.20.0 (#640)",
+  "updated_at": "2025-06-03T10:14:35Z"
+}

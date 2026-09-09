@@ -3,3 +3,6 @@ pnpm-lock.yaml
 dist
 .specstory/
 .ai/
+.deciduous/sync/**
+docs/public/graph-data.json
+docs/public/git-history.json

@@ -1,0 +1,19 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "bb6221a2-fe0a-47c1-80e3-6c3a58b8fd44",
+  "created_at": "2026-09-08T13:22:33.878850-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [@axe-core/cli](https://redirect.github.com/dequelabs/axe-core-npm) | devDependencies | minor | [`4.10.2` -> `4.11.0`](https://renovatebot.com/diffs/npm/@axe-core%2fcli/4.10.2/4.11.0) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/dequelabs/axe-core-npm/badge)](https://securityscorecards.dev/viewer/?uri=github.com/dequelabs/axe-core-npm) |\n\n---\n\n### Release Notes\n\n---",
+  "metadata": {
+    "commit": "969dffc59c66d271c8dd01efd32ab75b2d4918e2",
+    "confidence": 75,
+    "files": [
+      "docs/package.json",
+      "package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency @axe-core/cli to v4.11.0",
+  "updated_at": "2026-09-08T13:22:33.878850-07:00"
+}

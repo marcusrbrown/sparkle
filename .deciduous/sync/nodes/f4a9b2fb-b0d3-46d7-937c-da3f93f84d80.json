@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "f4a9b2fb-b0d3-46d7-937c-da3f93f84d80",
+  "created_at": "2026-07-15T09:17:39Z",
+  "metadata": {
+    "commit": "7da4016016e5acd129e1de40aac70261ee514426",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency @types/node to v24.13.3 (#1832)",
+  "updated_at": "2026-07-15T09:17:39Z"
+}

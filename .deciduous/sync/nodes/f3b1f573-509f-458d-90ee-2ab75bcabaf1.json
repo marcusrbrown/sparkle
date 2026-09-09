@@ -1,0 +1,20 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "f3b1f573-509f-458d-90ee-2ab75bcabaf1",
+  "created_at": "2026-09-08T13:22:37.730695-07:00",
+  "description": "- Create a guide for configuring the custom domain sparkle.mrbro.dev\n- Add instructions for setting up GitHub Pages with automated deployment\n- Include DNS configuration details and verification steps\n- Document the deployment workflow and troubleshooting tips\n\nRelates to TASK-042 on #876.",
+  "metadata": {
+    "commit": "139cc0f7d59ab22b00a696b8a028d5583b40cce4",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-astro-starlight-docs-1.md",
+      "docs/public/CNAME",
+      "docs/src/content/docs/deployment/custom-domain-setup.md",
+      "docs/src/content/docs/deployment/github-pages-setup.md"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat: add custom domain setup and GitHub Pages configuration guides",
+  "updated_at": "2026-09-08T13:22:37.730695-07:00"
+}

@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "9a698d52-6853-48cf-8b1c-b88ebc20e126",
+  "created_at": "2025-09-03T20:33:10-07:00",
+  "metadata": {
+    "commit": "751e3785301e497c8a10f98d22653cb47e10700d",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "docs: finalize theme system with implementation plan (#818)",
+  "updated_at": "2025-09-03T20:33:10-07:00"
+}

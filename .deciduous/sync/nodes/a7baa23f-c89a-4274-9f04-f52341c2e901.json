@@ -1,0 +1,22 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "a7baa23f-c89a-4274-9f04-f52341c2e901",
+  "created_at": "2026-09-08T13:22:45.764318-07:00",
+  "description": "Replaces the `any` usages that had real types available, and leaves alone the ones that don't.\n\nThe repo has 24 `any` occurrences. Auditing them turned out to matter more than fixing them: 16 are load-bearing, and a blanket cleanup would have made three of them worse.\n\n## Changed\n\n### `(error as any).exitCode` — 4 sites in `apps/moo-dang/src/shell/commands.ts`\n\n`createShellCommandError` attaches `command` and `exitCode` via `Object.defineProperty` but declared its return type as plain `Error`, so every consumer had to cast to reach the fields it had just set.\n\nAdds an exported `ShellCommandError` interface and an `isShellCommandError` guard, and narrows both factory return types. Consumers go from:\n\n```ts\nif (error instanceof Error && 'exitCode' in error && typeof (error as any).exitCode === 'number') {\n  return createCommandResult(context, `...`, '', error.message, (error as any).exitCode, startTime)\n}\n```\n\nto:\n\n```ts\nif (isShellCommandError(error)) {\n  return createCommandResult(context, `...`, '', error.message, error.exitCode, startTime)\n}\n```\n\nOne assertion remains, at each factory's `return` — that is the single place the shape is actually constructed, and `Object.defineProperty` is invisible to the type system.\n\n### `configManager.reset(options.section as any)`\n\n`options.section` is a `string` straight from user input; `reset` takes a union of section literals. The cast was papering over a missing validation step, so an unknown section reached the config manager instead of producing an error.\n\nNow validated through a type guard, returning a proper command error that matches the existing `config list: section '...' not found` style. This is the one intentional behavior change here — invalid input now fails cleanly rather than being asserted past.\n\nThe section list was previously a local array inside `_formatFullConfig`. It is now a module-level `CONFIG_SECTION_NAMES` shared by validation and display, declared as: [description truncated to fit budget]",
+  "metadata": {
+    "commit": "5d7d15fbbbe69faad7a6e6aabf129aaa1dd999bb",
+    "confidence": 75,
+    "files": [
+      ".changeset/theme-compare-merge-fixes.md",
+      "apps/moo-dang/src/shell/commands.test.ts",
+      "apps/moo-dang/src/shell/commands.ts",
+      "packages/error-testing/src/builder.ts",
+      "packages/theme/src/utils/token-transformer.ts",
+      "packages/theme/test/token-transformer.test.ts"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "refactor(types): replace actionable any usages with precise types",
+  "updated_at": "2026-09-08T13:22:45.764318-07:00"
+}

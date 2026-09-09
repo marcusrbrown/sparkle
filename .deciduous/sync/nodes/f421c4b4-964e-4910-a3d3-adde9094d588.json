@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "f421c4b4-964e-4910-a3d3-adde9094d588",
+  "created_at": "2024-11-26T23:08:21-07:00",
+  "metadata": {
+    "commit": "49786dbb42f616771cce9b7e145df7f896d47fd2",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore: enable `shamefully-hoist` and move dep to devDeps (#410)",
+  "updated_at": "2024-11-26T23:08:21-07:00"
+}

@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "19abe203-2a2d-4218-91b5-6daa2e3dd723",
+  "created_at": "2026-09-06T15:42:53-07:00",
+  "metadata": {
+    "commit": "43a579bc92f64a1f4689d939aa516fa96bcc47b8",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix(ci): build packages before TypeDoc so cross-package types resolve (#2022)",
+  "updated_at": "2026-09-06T15:42:53-07:00"
+}

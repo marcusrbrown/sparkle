@@ -1,0 +1,22 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "9458738a-d464-4519-9c05-45d066fc2dd8",
+  "created_at": "2026-09-08T13:22:41.173819-07:00",
+  "description": "- Implement tests for standard shell commands including echo, pwd, ls, cat, and help.\n- Add tests for command parsing with various edge cases and quote handling.\n- Validate command registration, execution context creation, and result handling.\n\nRelates to TASK-014 on #943.",
+  "metadata": {
+    "commit": "081d626d7bf4cd25b2a143edce05d8f5f2529be8",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-moo-dang-shell-1.md",
+      "apps/moo-dang/src/shell/commands.test.ts",
+      "apps/moo-dang/src/shell/commands.ts",
+      "apps/moo-dang/src/shell/parser.test.ts",
+      "apps/moo-dang/src/shell/parser.ts",
+      "apps/moo-dang/src/workers/shell.worker.ts"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat: add tests for shell command execution and parsing functionality",
+  "updated_at": "2026-09-08T13:22:41.173819-07:00"
+}

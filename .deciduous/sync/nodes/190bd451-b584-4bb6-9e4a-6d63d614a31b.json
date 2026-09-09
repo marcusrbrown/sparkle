@@ -1,0 +1,21 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "190bd451-b584-4bb6-9e4a-6d63d614a31b",
+  "created_at": "2026-09-08T13:22:30.318367-07:00",
+  "description": "This PR contains the following updates:\n\n| Package | Type | Update | Change | OpenSSF |\n|---|---|---|---|---|\n| [@types/react-dom](https://redirect.github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/react-dom) ([source](https://redirect.github.com/DefinitelyTyped/DefinitelyTyped/tree/HEAD/types/react-dom)) | devDependencies | patch | [`19.2.2` -> `19.2.3`](https://renovatebot.com/diffs/npm/@types%2freact-dom/19.2.2/19.2.3) | [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/DefinitelyTyped/DefinitelyTyped/badge)](https://securityscorecards.dev/viewer/?uri=github.com/DefinitelyTyped/DefinitelyTyped) |\n\n---",
+  "metadata": {
+    "commit": "5ad4759473b39a8d6c77261f12326c26ed781b40",
+    "confidence": 75,
+    "files": [
+      "apps/moo-dang/package.json",
+      "docs/package.json",
+      "packages/storybook/package.json",
+      "packages/ui/package.json",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "chore(dev): update dependency @types/react-dom to v19.2.3",
+  "updated_at": "2026-09-08T13:22:30.318367-07:00"
+}

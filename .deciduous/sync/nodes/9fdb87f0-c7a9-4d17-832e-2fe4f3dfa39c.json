@@ -1,0 +1,24 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "9fdb87f0-c7a9-4d17-832e-2fe4f3dfa39c",
+  "created_at": "2026-09-08T13:22:38.333422-07:00",
+  "description": "- Audited and migrated content from docs-legacy/ to main docs/ structure.\n- Updated JSDoc comments to align with current API signatures.\n- Standardized documentation patterns across all packages for consistency.\n- Created new README files for @sparkle/config, @sparkle/error-testing, @sparkle/types, and @sparkle/utils packages.\n- Added detailed troubleshooting and development workflow guides to enhance developer experience.\n- Deprecated the docs-legacy/ directory with a clear migration summary and access instructions.\n\nRelates to TASK-014 and TASK-016 on #1009.",
+  "metadata": {
+    "commit": "67ec12c1c04bb3bb94b5f29e4592254956445cda",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/refactor-audit-improvements-1.md",
+      "docs-legacy/README.md",
+      "docs/src/content/docs/development/troubleshooting.md",
+      "docs/src/content/docs/development/workflows.md",
+      "packages/config/README.md",
+      "packages/error-testing/README.md",
+      "packages/types/README.md",
+      "packages/utils/README.md"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "refactor: complete documentation migration and standardization",
+  "updated_at": "2026-09-08T13:22:38.333422-07:00"
+}

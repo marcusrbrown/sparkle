@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "f4e70a46-bf3c-4ce0-b955-181b974f3f1a",
+  "created_at": "2025-09-10T22:24:48-07:00",
+  "metadata": {
+    "commit": "c45f88867ed619baab4e6d3dac54021e10ebd841",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat: enhance accessibility features across documentation (#911)",
+  "updated_at": "2025-09-10T22:24:48-07:00"
+}

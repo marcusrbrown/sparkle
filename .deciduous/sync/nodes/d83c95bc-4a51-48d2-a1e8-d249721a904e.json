@@ -1,0 +1,19 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "d83c95bc-4a51-48d2-a1e8-d249721a904e",
+  "created_at": "2026-09-08T13:22:41.350350-07:00",
+  "description": "- Add sample output demonstration for terminal rendering tests.\n- Improve command execution handling to prevent duplicate help command execution.\n- Update accessibility hook to provide additional functionality.\n- Implement tests for help command to ensure proper output handling.",
+  "metadata": {
+    "commit": "11e970e268131f218c0502db8d022ea52eb98f41",
+    "confidence": 75,
+    "files": [
+      "apps/moo-dang/src/App.tsx",
+      "apps/moo-dang/src/components/AccessibilityProvider.tsx",
+      "apps/moo-dang/src/help-command-fix.test.tsx"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat: enhance terminal command handling and accessibility features",
+  "updated_at": "2026-09-08T13:22:41.350350-07:00"
+}

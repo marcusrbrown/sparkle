@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "83858d2e-97e2-43cd-86c0-5c6ce3514287",
+  "created_at": "2025-11-17T05:36:39Z",
+  "metadata": {
+    "commit": "ceb0a4ad40fb83b61ff812a75b88419d7f1cecc1",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "chore(dev): update dependency ts-morph to v27 (#1165)",
+  "updated_at": "2025-11-17T05:36:39Z"
+}

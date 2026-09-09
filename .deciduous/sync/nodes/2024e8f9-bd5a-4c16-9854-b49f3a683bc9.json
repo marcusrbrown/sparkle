@@ -1,0 +1,22 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "2024e8f9-bd5a-4c16-9854-b49f3a683bc9",
+  "created_at": "2026-09-08T13:22:40.038193-07:00",
+  "description": "- Added `script-executor.ts` for executing shell scripts with support for variable scoping, control flow, function calls, and error handling.\n- Introduced `script-parser.ts` for parsing shell script syntax including comments, variable assignments, commands, and control structures.\n- Defined structured types in `script-types.ts` for script statements, execution context, and parsing results.\n- Enhanced error handling and logging for script execution and parsing processes.\n\nRelates to TASK-026 on #945.",
+  "metadata": {
+    "commit": "150328fc9c373344271bf6cdd19b941d4b39b3b3",
+    "confidence": 75,
+    "files": [
+      ".ai/plan/feature-moo-dang-shell-1.md",
+      "apps/moo-dang/src/shell/commands.test.ts",
+      "apps/moo-dang/src/shell/commands.ts",
+      "apps/moo-dang/src/shell/script-executor.ts",
+      "apps/moo-dang/src/shell/script-parser.ts",
+      "apps/moo-dang/src/shell/script-types.ts"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "feat: implement shell script execution engine and parser",
+  "updated_at": "2026-09-08T13:22:40.038193-07:00"
+}

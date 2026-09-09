@@ -1,0 +1,22 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "fc1919f0-e3ee-48c2-b39a-1aa23a370e60",
+  "created_at": "2026-09-08T13:22:45.495819-07:00",
+  "description": "`JobControlSystem` started a 30-second cleanup interval in its constructor and discarded the handle:\n\n```ts\nprivate startCleanupTimer(): void {\n  setInterval(() => {\n    this.cleanup()\n  }, 30000) // Run cleanup every 30 seconds\n}\n```\n\nNo `clearInterval` anywhere, and `JobController` had no disposal method — so the timer ran until its execution context died.\n\n## Blast radius\n\nBounded in production. `ShellEnvironment`'s constructor creates the controller, `shell.worker.ts` creates one environment, and `App.tsx:97` calls `worker.terminate()`, which tears the interval down with the worker.\n\nThe real accumulation is in tests. `job-controller.test.ts` builds a controller per test, and every suite that constructs a `ShellEnvironment` builds another — each leaking an interval into the vitest process for the length of the run.\n\nProven rather than asserted: spying on `cleanup()` and advancing fake timers by 5 × 30s against an undisposed controller records exactly 5 invocations. After `dispose()`, the same advance records 0.\n\n## Change\n\nStores the handle as `ReturnType<typeof setInterval>`, which covers both the DOM and Node timer types — relevant here because this runs inside a Web Worker.\n\nAdds `dispose()` to `JobController` and implements it idempotently, clearing the stored handle so a second call is a no-op. `ShellEnvironment` owns the controller, so it gains a matching `dispose()` that delegates — naming follows `Terminal.tsx`, which already uses `dispose()`.\n\nTests now dispose in `afterEach`.\n\n## Deliberately not done\n\n**No worker teardown was added.** `shell.worker.ts` has no `close` handler, `self.onclose`, or shutdown message path. Inventing a worker lifecycle to call disposal would be scope creep for a leak that `terminate()` already handles — so production is untouched and the disposal contract exists for the owners that actually need it. [description truncated to fit budget]",
+  "metadata": {
+    "commit": "88060f4b06e168dc34132ac45512bcefc80f87b3",
+    "confidence": 75,
+    "files": [
+      "apps/moo-dang/src/shell/commands.test.ts",
+      "apps/moo-dang/src/shell/completion.test.ts",
+      "apps/moo-dang/src/shell/environment.ts",
+      "apps/moo-dang/src/shell/job-controller.test.ts",
+      "apps/moo-dang/src/shell/job-controller.ts",
+      "apps/moo-dang/src/shell/job-types.ts"
+    ]
+  },
+  "node_type": "decision",
+  "status": "pending",
+  "title": "fix(moo-dang): dispose JobControlSystem cleanup interval",
+  "updated_at": "2026-09-08T13:22:45.495819-07:00"
+}

@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "09c6973f-6d07-453b-981b-136a48f4dfa0",
+  "created_at": "2025-09-01T19:54:10-07:00",
+  "metadata": {
+    "commit": "3ea6297c8af0b5a7257cbad5ce65fcd7f4f64720",
+    "confidence": 60
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "feat: migrate build scripts to tsdown for improved performance (#804)",
+  "updated_at": "2025-09-01T19:54:10-07:00"
+}

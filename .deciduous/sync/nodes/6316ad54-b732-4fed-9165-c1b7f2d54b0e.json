@@ -1,0 +1,13 @@
+{
+  "author": "Marcus R. Brown",
+  "change_id": "6316ad54-b732-4fed-9165-c1b7f2d54b0e",
+  "created_at": "2026-09-06T12:57:20-07:00",
+  "metadata": {
+    "commit": "6f748cad5e2adc75fa1254fc185351bb283ea7f8",
+    "confidence": 80
+  },
+  "node_type": "action",
+  "status": "pending",
+  "title": "fix(moo-dang): remove non-functional performance regression check (#2009)",
+  "updated_at": "2026-09-06T12:57:20-07:00"
+}
