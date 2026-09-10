@@ -69,7 +69,7 @@
     "typedoc": "0.28.20",
     "typescript": "5.9.3"
   },
-  "packageManager": "pnpm@11.25.0",
+  "packageManager": "pnpm@11.26.0",
   "engines": {
     "node": ">=22.13.1",
     "pnpm": ">=11.8.0"
