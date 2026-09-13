@@ -43,7 +43,7 @@
     "@types/react-dom": "19.3.0",
     "@vitejs/plugin-react-swc": "^4.0.0",
     "concurrently": "^9.1.0",
-    "happy-dom": "20.14.0",
+    "happy-dom": "20.14.3",
     "nodemon": "^3.1.7",
     "tsx": "4.23.13",
     "typescript": "5.9.3",
