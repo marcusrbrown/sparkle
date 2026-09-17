@@ -17,6 +17,32 @@ export function useTheme() {
 }
 
 /**
+ * Minimal shape of React Native's Appearance change event payload.
+ * Declared locally so we can type-check the optional global without
+ * depending on `react-native` types from this cross-platform package.
+ */
+interface RNAppearancePreferences {
+  colorScheme: 'light' | 'dark' | null
+}
+
+/**
+ * Minimal shape of React Native's global `Appearance` API that this hook
+ * relies on. Only the members actually used below are declared.
+ */
+interface RNAppearanceApi {
+  getColorScheme: () => 'light' | 'dark' | null
+  addChangeListener: (listener: (preferences: RNAppearancePreferences) => void) => {remove?: () => void} | undefined
+}
+
+/**
+ * Global scope shape when running under React Native, where a global
+ * `RNAppearance` bridge may be injected by the host environment.
+ */
+interface GlobalWithRNAppearance {
+  RNAppearance?: RNAppearanceApi
+}
+
+/**
  * Custom hook for detecting system color scheme preference
  * Works on both web (via matchMedia) and React Native (via Appearance API)
  * @returns Current system color scheme ('light' or 'dark')
@@ -55,23 +81,22 @@ export function useColorScheme(): 'light' | 'dark' {
     // React Native - check if Appearance is available in global context
     const setupReactNativeListener = () => {
       try {
-        // @ts-expect-error - React Native Appearance global check
-        if (typeof globalThis !== 'undefined' && globalThis.RNAppearance) {
-          // @ts-expect-error - React Native Appearance API
-          const Appearance = globalThis.RNAppearance
+        const globalWithRNAppearance = globalThis as GlobalWithRNAppearance
+        const Appearance = globalWithRNAppearance.RNAppearance
 
+        if (typeof globalThis !== 'undefined' && Appearance) {
           // Set initial color scheme
           const initialScheme = Appearance.getColorScheme()
           setColorScheme(initialScheme === 'dark' ? 'dark' : 'light')
 
           // Set up listener
-          const handleChange = (preferences: any) => {
+          const handleChange = (preferences: RNAppearancePreferences) => {
             const scheme = preferences.colorScheme
             setColorScheme(scheme === 'dark' ? 'dark' : 'light')
           }
 
           const subscription = Appearance.addChangeListener(handleChange)
-          return () => subscription?.remove()
+          return () => subscription?.remove?.()
         }
       } catch {
         // React Native not available, no cleanup needed
