@@ -14,6 +14,7 @@ packages:
   - scripts
 
 allowBuilds:
+  '@parcel/watcher': set this to true or false
   '@swc/core': true
   chromedriver: true
   esbuild: true
