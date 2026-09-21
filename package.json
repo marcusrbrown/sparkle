@@ -65,7 +65,7 @@
     "simple-git-hooks": "2.14.0",
     "tsdown": "0.16.8",
     "tsx": "4.23.13",
-    "turbo": "2.10.13",
+    "turbo": "2.11.1",
     "typedoc": "0.28.20",
     "typescript": "5.9.3"
   },
