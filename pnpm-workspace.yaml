@@ -58,6 +58,6 @@ shamefullyHoist: true
 strictPeerDependencies: false
 
 minimumReleaseAgeExclude:
-  - '@bfra.me/eslint-config@0.51.2 || 0.52.2'
+  - '@bfra.me/eslint-config@0.51.2 || 0.52.2 || 0.54.0'
   - '@bfra.me/prettier-config@0.16.10 || 0.16.11 || 0.16.13'
   - '@bfra.me/tsconfig@0.13.2'
