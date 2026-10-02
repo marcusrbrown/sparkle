@@ -36,6 +36,7 @@ overrides:
   brace-expansion@1.x: ^5.0.0
   brace-expansion@2.x: ^5.0.0
   decode-uri-component@<0.5.0: ^0.5.0
+  devalue@5.x: ^5.9.3
   dompurify@<3.4.13: ^3.4.13
   fast-uri@3.x: ^3.1.6
   js-yaml@3.x: ^3.15.2
