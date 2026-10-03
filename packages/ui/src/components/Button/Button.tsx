@@ -1,8 +1,7 @@
-import type {HTMLProperties} from '../../types'
 import React from 'react'
 import {cx} from '../../utils'
 
-export interface ButtonProps extends HTMLProperties<HTMLButtonElement> {
+export interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'color' | 'height' | 'width'> {
   /**
    * The visual style variant of the button
    * @default "primary"
