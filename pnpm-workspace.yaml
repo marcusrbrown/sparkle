@@ -35,6 +35,7 @@ overrides:
   adm-zip@<0.6.0: ^0.6.0
   brace-expansion@1.x: ^5.0.0
   brace-expansion@2.x: ^5.0.0
+  compression@<1.8.2: ^1.8.2
   decode-uri-component@<0.5.0: ^0.5.0
   devalue@5.x: ^5.9.3
   dompurify@<3.4.13: ^3.4.13
@@ -43,6 +44,7 @@ overrides:
   js-yaml@4.x: ^4.3.2
   nanoid@<3.3.17: ^3.3.17
   postcss@<8.5.23: ^8.5.23
+  source-map-js@<1.2.2: ^1.2.2
   svgo@4.x: ^4.1.0
   tmp@<0.2.6: ^0.2.6
 
