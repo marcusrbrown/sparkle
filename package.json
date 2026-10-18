@@ -47,7 +47,7 @@
   },
   "prettier": "@bfra.me/prettier-config/120-proof",
   "devDependencies": {
-    "@axe-core/cli": "4.13.0",
+    "@axe-core/cli": "4.14.0",
     "@bfra.me/eslint-config": "0.54.0",
     "@bfra.me/prettier-config": "0.16.13",
     "@bfra.me/tsconfig": "0.13.2",
@@ -69,7 +69,7 @@
     "typedoc": "0.28.20",
     "typescript": "5.9.3"
   },
-  "packageManager": "pnpm@11.28.5",
+  "packageManager": "pnpm@11.28.6",
   "engines": {
     "node": ">=22.13.1",
     "pnpm": ">=11.8.0"
