@@ -26,8 +26,8 @@ importers:
   .:
     devDependencies:
       '@axe-core/cli':
-        specifier: 4.13.0
-        version: 4.13.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+        specifier: 4.14.0
+        version: 4.14.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       '@bfra.me/eslint-config':
         specifier: 0.54.0
         version: 0.54.0(@typescript-eslint/eslint-plugin@8.70.1(@typescript-eslint/parser@8.70.1(eslint@9.39.5(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3))(eslint@9.39.5(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3))(@typescript-eslint/typescript-estree@8.70.1(supports-color@8.1.1)(typescript@5.9.3))(@typescript-eslint/utils@8.70.1(eslint@9.39.5(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3))(chokidar@5.0.0)(eslint-config-prettier@10.1.8(eslint@9.39.5(jiti@2.7.0)(supports-color@8.1.1)))(eslint-plugin-prettier@5.5.7(eslint-config-prettier@10.1.8(eslint@9.39.5(jiti@2.7.0)(supports-color@8.1.1)))(eslint@9.39.5(jiti@2.7.0)(supports-color@8.1.1))(prettier@3.9.10))(eslint@9.39.5(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(ts-declaration-location@1.0.7(typescript@5.9.3))(typescript@5.9.3)
@@ -299,11 +299,11 @@ importers:
         version: 3.23.0
     devDependencies:
       '@axe-core/cli':
-        specifier: 4.13.0
-        version: 4.13.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+        specifier: 4.14.0
+        version: 4.14.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       '@axe-core/playwright':
-        specifier: 4.13.0
-        version: 4.13.0(playwright-core@1.64.1)
+        specifier: 4.14.0
+        version: 4.14.0(playwright-core@1.64.1)
       '@microsoft/api-extractor':
         specifier: 7.59.4
         version: 7.59.4(@types/node@24.19.2)
@@ -812,18 +812,20 @@ packages:
   '@astrojs/yaml2ts@0.2.4':
     resolution: {integrity: sha512-8oddpOae35pJsXPQXhTkM0ypfKPskVsh2bCxRtbf7e+/Epw2nReakFYpLKjZMEr75CsoF203PMnCocpfz0s69A==}
 
-  '@axe-core/cli@4.13.0':
-    resolution: {integrity: sha512-LWjR4MQ28J/nDPC6mXG2kStRz/27jexFZzPeB40zMMkpW5dY1r+rMExEtsfY2aK8HHd2nLVphEn2ONsa6r2jEQ==}
-    engines: {node: '>=8'}
+  '@axe-core/cli@4.14.0':
+    resolution: {integrity: sha512-Icgv+iAXcQuJ+oXpbTCHOYcBoOniBwwe7mOn17JIOxVO+7QEZ+4+NW0Hnm3jad6KVqJevvGvQYRN9ZJJhv3KPQ==}
+    engines: {node: '>=22.12.0'}
     hasBin: true
 
-  '@axe-core/playwright@4.13.0':
-    resolution: {integrity: sha512-6YLx+kxXu5GJceG4ozFg+33a2EMTdjYwWGloJ3sb9Kta5pp+ZNS53uxGVog5JetIY8s++P5UrtX+cri+u0VAVg==}
+  '@axe-core/playwright@4.14.0':
+    resolution: {integrity: sha512-SGUhG5PIHd2eMdpgBF2PyQLOhX+qyDR2PT4cmoS4Qk2ak+jX/rrSvst9l0PGv5WTHolKpUMvVmoHpr4cZgf1RQ==}
+    engines: {node: '>=22.12.0'}
     peerDependencies:
       playwright-core: '>= 1.0.0'
 
-  '@axe-core/webdriverjs@4.13.0':
-    resolution: {integrity: sha512-FKNgdOA7gYPhak0M18j5aMth8ZQRDvKhpDvINwzM2SbdffnuLFgW3bXmCibps9dGAhUej14l2pwAiAP+yiyA+Q==}
+  '@axe-core/webdriverjs@4.14.0':
+    resolution: {integrity: sha512-qx8UbZoI5DSvZZnG++qeg+vhkxg2qgHiJcziL6EWsIA2UgYs0OV1it5UwoXljvMHOEP3nnbDVqNxZrbp86pSEw==}
+    engines: {node: '>=22.12.0'}
     peerDependencies:
       selenium-webdriver: '>3.0.0-beta  || >=2.53.1 || >4.0.0-alpha'
 
@@ -4862,10 +4864,6 @@ packages:
     peerDependencies:
       postcss: ^8.5.23
 
-  axe-core@4.13.0:
-    resolution: {integrity: sha512-UzGt8zg7Ny8djbYMhxl2zuEevVa7r2gJjYY5Lwr1xM7+XU2nd6CkIWFTVcCIbAP63vSz71NaVyyuSk9lHKcy0A==}
-    engines: {node: '>=4'}
-
   axe-core@4.14.0:
     resolution: {integrity: sha512-9WTZxEjsZ7b13TH8JPmbV2z8CHbl80/2hm3XPEG4JgNdQLK81IBRXmSxHfMAOkSqQeRxT/0dwNDz2GOm3zzpcQ==}
     engines: {node: '>=4'}
@@ -5177,8 +5175,8 @@ packages:
     engines: {node: '>=12.13.0'}
     hasBin: true
 
-  chromedriver@155.0.2:
-    resolution: {integrity: sha512-IcQx0Q/VnGkMot7fAGQf8h9N1b4+KiHJleDGt97ECNP2jIXc5/FM1/kNpmBckO5pNKP5z0BceZIEJ37iIB1Fog==}
+  chromedriver@152.0.3:
+    resolution: {integrity: sha512-6v3pquS2kgb1HedzALRZeaoFZVCgghW2u1QjlzaoZruw75QBxKQtv/PKzJ8Scb3L8Vx32gcFwvUKcHmW7xjIVg==}
     engines: {node: '>=22'}
     hasBin: true
 
@@ -5293,6 +5291,10 @@ packages:
     resolution: {integrity: sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA==}
     engines: {node: '>=18'}
 
+  commander@15.0.0:
+    resolution: {integrity: sha512-z67u4ZhzCL/Tydu1lJARtEZYWbWaN7oYLHbsuzocr6y4N6WZAagG3RQ4FW61V1/0+jImpj293XfrcYnd1qxtPg==}
+    engines: {node: '>=22.12.0'}
+
   commander@2.20.3:
     resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==}
 
@@ -5310,10 +5312,6 @@ packages:
   commander@8.3.0:
     resolution: {integrity: sha512-OkTL9umf+He2DZkUq8f8J9of7yL6RJKI24dVITBmNfZBmri9zYZQrKkuXiKhyfPSu8tUhnVBB1iKXevvnlR4Ww==}
     engines: {node: '>= 12'}
-
-  commander@9.5.0:
-    resolution: {integrity: sha512-KRs7WVDKg86PWiuAqhDrAQnTXZKraVcCc6vFdL14qrZ/DcWwuRo7VoiYXalXO7S5GKpqYiVEwCbgFDfxNHKJBQ==}
-    engines: {node: ^12.20.0 || >=14}
 
   comment-parser@1.4.7:
     resolution: {integrity: sha512-0h+uSNtQGW3D98eQt3jJ8L06Fves8hncB4V/PKdw/Qb8Hnk19VaKuTr55UNRYiSoVa7WwrFls+rh3ux9agmkeQ==}
@@ -8995,9 +8993,9 @@ packages:
     resolution: {integrity: sha512-3A6sD0WYP7+QrjbfNA2FN3FsOaGGFoekCVgTyypy53gPxhbkCIjtO6YWgdrfM+n/8sI8JeXZOIxsHjMTNxQ4nQ==}
     engines: {node: ^14.0.0 || >=16.0.0}
 
-  selenium-webdriver@4.44.0:
-    resolution: {integrity: sha512-7RbYoKK0zET+KMVak11UDCtKvNulOU6gFZp8HI5GN9K8+BhqrliIJU/FP6QADrvRAXFMr3wHxfE3JHOcAxO3GQ==}
-    engines: {node: '>= 20.0.0'}
+  selenium-webdriver@4.47.0:
+    resolution: {integrity: sha512-nxxJnH25tsJxz+pdMxtvH89tbrMnfff6W//uBIVlOWz1KZlADiQ7dyRPehknKdYiC3HwEypTy1l+tozxO0I2Qw==}
+    engines: {node: '>= 22.0.0'}
 
   sembear@0.7.0:
     resolution: {integrity: sha512-XyLTEich2D02FODCkfdto3mB9DetWPLuTzr4tvoofe9SvyM27h4nQSbV3+iVcYQz94AFyKtqBv5pcZbj3k2hdA==}
@@ -10676,15 +10674,15 @@ snapshots:
     dependencies:
       yaml: 2.9.0
 
-  '@axe-core/cli@4.13.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)':
+  '@axe-core/cli@4.14.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)':
     dependencies:
-      '@axe-core/webdriverjs': 4.13.0(selenium-webdriver@4.44.0)
-      axe-core: 4.13.0
-      chromedriver: 155.0.2(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@axe-core/webdriverjs': 4.14.0(selenium-webdriver@4.47.0)
+      axe-core: 4.14.0
+      chromedriver: 152.0.3(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       colors: 1.4.0
-      commander: 9.5.0
+      commander: 15.0.0
       dotenv: 17.4.2
-      selenium-webdriver: 4.44.0
+      selenium-webdriver: 4.47.0
     transitivePeerDependencies:
       - bufferutil
       - debug
@@ -10692,15 +10690,15 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@axe-core/playwright@4.13.0(playwright-core@1.64.1)':
+  '@axe-core/playwright@4.14.0(playwright-core@1.64.1)':
     dependencies:
-      axe-core: 4.13.0
+      axe-core: 4.14.0
       playwright-core: 1.64.1
 
-  '@axe-core/webdriverjs@4.13.0(selenium-webdriver@4.44.0)':
+  '@axe-core/webdriverjs@4.14.0(selenium-webdriver@4.47.0)':
     dependencies:
-      axe-core: 4.13.0
-      selenium-webdriver: 4.44.0
+      axe-core: 4.14.0
+      selenium-webdriver: 4.47.0
 
   '@babel/code-frame@7.10.4':
     dependencies:
@@ -15095,8 +15093,6 @@ snapshots:
       postcss: 8.5.26
       postcss-value-parser: 4.2.0
 
-  axe-core@4.13.0: {}
-
   axe-core@4.14.0: {}
 
   axios@1.19.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1):
@@ -15475,7 +15471,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  chromedriver@155.0.2(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1):
+  chromedriver@152.0.3(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1):
     dependencies:
       '@testim/chrome-version': 1.1.4
       adm-zip: 0.6.0
@@ -15590,6 +15586,8 @@ snapshots:
 
   commander@12.1.0: {}
 
+  commander@15.0.0: {}
+
   commander@2.20.3: {}
 
   commander@3.0.2: {}
@@ -15599,8 +15597,6 @@ snapshots:
   commander@7.2.0: {}
 
   commander@8.3.0: {}
-
-  commander@9.5.0: {}
 
   comment-parser@1.4.7: {}
 
@@ -20480,7 +20476,7 @@ snapshots:
       refa: 0.12.1
       regexp-ast-analysis: 0.7.1
 
-  selenium-webdriver@4.44.0:
+  selenium-webdriver@4.47.0:
     dependencies:
       '@bazel/runfiles': 6.5.0
       jszip: 3.10.1
