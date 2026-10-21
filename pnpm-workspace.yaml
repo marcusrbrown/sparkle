@@ -39,8 +39,10 @@ overrides:
   devalue@5.x: ^5.9.3
   dompurify@<3.4.13: ^3.4.13
   fast-uri@3.x: ^3.1.6
+  follow-redirects@<1.16.1: ^1.16.1
   js-yaml@3.x: ^3.15.2
   js-yaml@4.x: ^4.3.2
+  markdown-it@<14.3.3: ^14.3.3
   nanoid@<3.3.17: ^3.3.17
   postcss@<8.5.23: ^8.5.23
   svgo@4.x: ^4.1.0
