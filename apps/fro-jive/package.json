@@ -25,11 +25,11 @@
     "expo-status-bar": "~3.0.0",
     "expo-system-ui": "~6.0.0",
     "expo-web-browser": "~15.0.0",
-    "react": "19.3.0",
-    "react-dom": "19.3.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
     "react-native": "0.82.1",
-    "react-native-safe-area-context": "5.10.0",
-    "react-native-screens": "~4.28.0",
+    "react-native-safe-area-context": "5.10.1",
+    "react-native-screens": "~4.30.0",
     "react-native-web": "~0.21.0"
   },
   "devDependencies": {
@@ -39,10 +39,10 @@
     "@testing-library/react-native": "^13.0.0",
     "@types/react": "~19.3.0",
     "@vitejs/plugin-react-swc": "^4.0.0",
-    "happy-dom": "20.14.5",
+    "happy-dom": "21.0.4",
     "react-test-renderer": "^19.0.0",
     "typescript": "5.9.3",
-    "vite": "7.3.6",
+    "vite": "8.3.4",
     "vitest": "^4.0.0"
   }
 }
