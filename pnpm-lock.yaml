@@ -424,8 +424,8 @@ importers:
         specifier: 1.64.1
         version: 1.64.1
       '@storybook/addon-a11y':
-        specifier: 10.6.4
-        version: 10.6.4(storybook@10.6.2(@types/react@19.3.0)(prettier@3.9.10)(react@19.3.1))
+        specifier: 10.6.5
+        version: 10.6.5(storybook@10.6.2(@types/react@19.3.0)(prettier@3.9.10)(react@19.3.1))
       '@storybook/addon-docs':
         specifier: ^10.0.0
         version: 10.5.8(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(esbuild@0.28.2)(rollup@4.62.4)(storybook@10.6.2(@types/react@19.3.0)(prettier@3.9.10)(react@19.3.1))(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.50.0)(tsx@4.23.15)(yaml@2.9.0))
@@ -3808,10 +3808,10 @@ packages:
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
 
-  '@storybook/addon-a11y@10.6.4':
-    resolution: {integrity: sha512-a2SC6d7CrQOkuP6MXtBkQvi/lb3qmRE4Vp51bk88y4lVVwPBLsNFrSNrorY7RE+WoGivFBg6rDNYhzUy720GQA==}
+  '@storybook/addon-a11y@10.6.5':
+    resolution: {integrity: sha512-7dEH3OHKdE+0zakqEy50KtfhPORIm1xnhWeehyROO1Ct7Rx9s7cYcx6edUZvh0tCuX5VhDnDmkvQV+dbrPDmCA==}
     peerDependencies:
-      storybook: ^10.6.4
+      storybook: ^10.6.5
 
   '@storybook/addon-docs@10.5.8':
     resolution: {integrity: sha512-NlHiMKW/UvW/uL8HXFDCEVwoH3qZeGYZ/qlWax4d7H471b/T54MBq2KcB4ZrdA785FfIH3numAJdBb5jwn00Mg==}
@@ -13996,7 +13996,7 @@ snapshots:
 
   '@standard-schema/spec@1.1.0': {}
 
-  '@storybook/addon-a11y@10.6.4(storybook@10.6.2(@types/react@19.3.0)(prettier@3.9.10)(react@19.3.1))':
+  '@storybook/addon-a11y@10.6.5(storybook@10.6.2(@types/react@19.3.0)(prettier@3.9.10)(react@19.3.1))':
     dependencies:
       '@storybook/global': 5.0.0
       axe-core: 4.14.0
