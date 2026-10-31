@@ -14,6 +14,16 @@ import {runCommandBenchmarkSuite} from './command-benchmarks'
 import {runTerminalBenchmarkSuite} from './terminal-benchmarks'
 import {runWasmBenchmarkSuite} from './wasm-benchmarks'
 
+/**
+ * Extended Performance interface exposing the non-standard `memory` property
+ * available in Chromium-based environments, used for reporting heap limits.
+ */
+interface PerformanceWithMemory extends Performance {
+  memory?: {
+    jsHeapSizeLimit?: number
+  }
+}
+
 interface PerformanceReport {
   timestamp: string
   environment: {
@@ -49,8 +59,8 @@ function getEnvironmentInfo(): PerformanceReport['environment'] {
 
   // Add memory limit if available
   if (typeof performance !== 'undefined' && 'memory' in performance) {
-    const memory = (performance as any).memory
-    env.memoryLimit = memory.jsHeapSizeLimit
+    const memory = (performance as PerformanceWithMemory).memory
+    env.memoryLimit = memory?.jsHeapSizeLimit
   }
 
   return env
