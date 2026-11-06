@@ -64,3 +64,11 @@ export default await composeConfig(config)
       'docs/public/git-history.json',
     ],
   })
+  .append({
+    // Systematic parses its config without trailing-comma support (marcusrbrown/systematic#1313).
+    name: 'systematic config overrides',
+    files: ['.systematic.jsonc'],
+    rules: {
+      'prettier/prettier': ['error', {trailingComma: 'none'}],
+    },
+  })
