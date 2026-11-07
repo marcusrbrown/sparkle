@@ -5,6 +5,7 @@ dedupePeerDependents: true
 engineStrict: true
 
 ignoredBuiltDependencies:
+  - '@parcel/watcher'
   - '@tailwindcss/oxide'
 
 packages:
