@@ -339,7 +339,7 @@ across light/dark modes and supports validation states with semantic colors.
 
 ### createComponent()
 
-> **createComponent**\<`Props`, `DefaultElement`\>(`render`, `defaultElement`): (`props`) => `ReactElement`\<`unknown`, `string` \| `JSXElementConstructor`\<`any`\>\> \| `null` & `object`
+> **createComponent**\<`Props`, `DefaultElement`\>(`render`, `defaultElement`): ((`props`) => `ReactElement`\<`unknown`, `string` \| `JSXElementConstructor`\<`any`\>\> \| `null`) & `object`
 
 Creates a type-safe component factory
 
@@ -365,7 +365,7 @@ Creates a type-safe component factory
 
 #### Returns
 
-(`props`) => `ReactElement`\<`unknown`, `string` \| `JSXElementConstructor`\<`any`\>\> \| `null` & `object`
+((`props`) => `ReactElement`\<`unknown`, `string` \| `JSXElementConstructor`\<`any`\>\> \| `null`) & `object`
 
 ***
 
