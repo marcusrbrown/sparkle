@@ -770,7 +770,7 @@ jobs:
           git config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ${auth}"
 
       - name: Run Fro Bot
-        uses: fro-bot/agent@d5d9aa69e1f913ce5691eac1f1f7f59f0cbd57a0 # v0.136.0
+        uses: fro-bot/agent@3cbb000feac0a06e65872d4440718e687459f49a # v0.136.1
         env:
           OPENCODE_PROMPT_ARTIFACT: 'true'
           IS_SUNDAY_UTC: ${{ env.IS_SUNDAY_UTC || 'false' }}
