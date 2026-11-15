@@ -717,10 +717,8 @@ jobs:
           install-zig: 'true'
 
       - name: Resolve delivery mode
-        # Single source of truth for whether this run delivers via branch-pr.
-        # Both the credential step and the agent's output-mode input read from
-        # here, so the two can never drift apart -- which is the exact class of
-        # bug this workflow already hit once.
+        # Single source of truth for whether this run delivers via branch-pr;
+        # the agent's output-mode input reads it from here.
         #
         # Only autoheal delivers fixes. MAINTENANCE_PROMPT forbids opening PRs
         # (it updates one perpetual issue, which the API token covers) and
@@ -752,23 +750,6 @@ jobs:
           echo "output-mode=${mode}" >> "$GITHUB_OUTPUT"
           echo "Resolved delivery mode: ${mode}"
 
-      - name: Enable authenticated git push for branch-pr delivery
-        # Checkout uses persist-credentials: false so the PAT is never written
-        # into .git/config on the fork-PR-head comment path. Runs that deliver
-        # via branch-pr need a credential restored afterwards or the push fails.
-        #
-        # The credential is written to disk rather than passed via env or the
-        # gh credential helper because fro-bot/agent scrubs its child
-        # environment.
-        if: steps.gate.outputs.branch-pr == 'true'
-        env:
-          FRO_BOT_PAT: ${{ secrets.FRO_BOT_PAT }}
-        run: |
-          set -euo pipefail
-          auth="$(printf '%s' "x-access-token:${FRO_BOT_PAT}" | base64 | tr -d '\n')"
-          echo "::add-mask::${auth}"
-          git config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ${auth}"
-
       - name: Run Fro Bot
         uses: fro-bot/agent@4e394905b7eafda2d7424816eb7846d3f09c40df # v0.144.2
         env:
@@ -797,3 +778,4 @@ jobs:
           output-mode: ${{ steps.gate.outputs.output-mode }}
           prompt: ${{ env.PROMPT }}
           timeout: 0
+          isolate-agent: 'true'
