@@ -29,9 +29,11 @@ export default defineConfig({
     target: 'es2022',
     rollupOptions: {
       output: {
-        manualChunks: {
-          xterm: ['@xterm/xterm', '@xterm/addon-fit'],
-        },
+        // Vite 8 (Rolldown) only accepts the function form of `manualChunks`
+        manualChunks: (id: string): string | undefined =>
+          id.includes('/node_modules/@xterm/xterm/') || id.includes('/node_modules/@xterm/addon-fit/')
+            ? 'xterm'
+            : undefined,
       },
     },
   },
