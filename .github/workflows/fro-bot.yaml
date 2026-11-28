@@ -751,7 +751,7 @@ jobs:
           echo "Resolved delivery mode: ${mode}"
 
       - name: Run Fro Bot
-        uses: fro-bot/agent@893b5bb1fdb4f40f47c8f7dbcb88900130ca0a6f # v0.152.0
+        uses: fro-bot/agent@31f36006a499833a423d99e123ddac58bcea847b # v0.153.0
         env:
           OPENCODE_PROMPT_ARTIFACT: 'true'
           IS_SUNDAY_UTC: ${{ env.IS_SUNDAY_UTC || 'false' }}
