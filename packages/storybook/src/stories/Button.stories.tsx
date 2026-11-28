@@ -255,7 +255,7 @@ export const AllVariants: Story = {
             <Button variant="primary" size="md">
               Normal
             </Button>
-            <Button variant="primary" size="md" {...({disabled: true} as any)}>
+            <Button variant="primary" size="md" disabled>
               Disabled
             </Button>
           </div>
@@ -453,10 +453,10 @@ export const Accessibility: Story = {
             Disabled buttons are properly excluded from tab order and announced to screen readers.
           </p>
           <div className="flex flex-wrap gap-3">
-            <Button variant="primary" size="md" {...({disabled: true} as any)} aria-label="Action not available">
+            <Button variant="primary" size="md" disabled aria-label="Action not available">
               Disabled Primary
             </Button>
-            <Button variant="outline" size="md" {...({disabled: true} as any)} aria-label="Feature coming soon">
+            <Button variant="outline" size="md" disabled aria-label="Feature coming soon">
               Coming Soon
             </Button>
           </div>
